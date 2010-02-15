@@ -1,13 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+	android:id="@+id/relLay1"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/background"
+	xmlns:android="http://schemas.android.com/apk/res/android"> 
+
+<TableLayout
+	android:layout_width="148px"
+    android:layout_height="236px"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    android:id="@+id/top"
-    />
-</LinearLayout>
+    android:gravity="center"
+	android:layout_centerVertical="true"
+	android:layout_centerHorizontal="true"
+	android:background="#00000000">
+	/** the first two hex digits, represent */
+    the alpha channel which is used to define 
+    opacity. */
+	
+
+    <TableRow>
+        <Button
+		android:id="@+id/StartGame"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/startgame_button">
+		</Button>
+    </TableRow>
+
+	<TableRow>
+		<View
+        	android:layout_height="20dip"
+        	android:layout_width="148px"
+        	android:background="#00000000" />
+	</TableRow>
+
+    <TableRow>
+        <Button
+		android:id="@+id/Options"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/options_button">
+		</Button>
+    </TableRow>
+
+	<TableRow>
+		<View
+        	android:layout_height="20dip"
+        	android:layout_width="148px"
+        	android:background="#00000000" />
+	</TableRow>
+
+    <TableRow>
+        <Button
+		android:id="@+id/Help"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/help_button">
+		</Button>
+    </TableRow>
+
+	<TableRow>
+		<View
+        	android:layout_height="20dip"
+        	android:layout_width="148px"
+        	android:background="#00000000" />
+	</TableRow>
+
+    <TableRow>
+        <Button
+		android:id="@+id/Credits"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/credits_button">
+		</Button>
+    </TableRow>
+
+</TableLayout>
+</RelativeLayout>
