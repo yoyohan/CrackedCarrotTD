@@ -25,10 +25,13 @@ public final class R {
         public static final int options_button=0x7f02000b;
         public static final int options_highlighted=0x7f02000c;
         public static final int options_pressed=0x7f02000d;
-        public static final int startgame=0x7f02000e;
-        public static final int startgame_button=0x7f02000f;
-        public static final int startgame_highlighted=0x7f020010;
-        public static final int startgame_pressed=0x7f020011;
+        public static final int skate1=0x7f02000e;
+        public static final int skate2=0x7f02000f;
+        public static final int skate3=0x7f020010;
+        public static final int startgame=0x7f020011;
+        public static final int startgame_button=0x7f020012;
+        public static final int startgame_highlighted=0x7f020013;
+        public static final int startgame_pressed=0x7f020014;
     }
     public static final class id {
         public static final int Credits=0x7f050006;

@@ -1,3 +1,7 @@
 .classpath
 .project
+*.class
+.DS_Store
+classes.dex
+*.ap_
 default.properties
