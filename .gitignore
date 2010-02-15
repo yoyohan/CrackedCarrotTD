@@ -5,3 +5,4 @@
 classes.dex
 *.ap_
 default.properties
+/*.out.xml

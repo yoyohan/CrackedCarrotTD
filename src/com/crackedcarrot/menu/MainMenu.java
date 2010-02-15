@@ -1,13 +1,13 @@
 package com.crackedcarrot.menu;
 
-import com.crackedcarrot.menu.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.crackedcarrot.GameInit;
 
 public class MainMenu extends Activity {
     /** Called when the activity is first created. */
@@ -20,7 +20,9 @@ public class MainMenu extends Activity {
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent StartGame = new Intent(MainMenu.this,StartGame.class);
+        		//Intent StartGame = new Intent(MainMenu.this,StartGame.class);
+        		//startActivity(StartGame);
+        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
         		startActivity(StartGame);
         	}
         });
