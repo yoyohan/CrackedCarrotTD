@@ -1,7 +1,9 @@
 package com.crackedcarrot;
 
 import android.util.Log;
-
+/** 
+ * Class defining the relation between different screen resolutions
+ */
 public class Scaler {
 	private int res_x;
 	private int res_y;
