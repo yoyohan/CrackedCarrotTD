@@ -10,5 +10,5 @@ public class GameView extends GLSurfaceView {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 }

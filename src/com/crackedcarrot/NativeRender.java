@@ -2,6 +2,7 @@ package com.crackedcarrot;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,8 +22,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private static native void nativeDataPoolSize(int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
-//    private static native void nativeSurfaceCreated();
-	
+    private static native void nativeSurfaceCreated();
+    private static native int  nativeLoadTexture();
+    	
 	public Sprite[] mSprites;
 	public int[] mCropWorkspace;
 	public int[] mTextureNameWorkspace;
@@ -44,10 +46,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		System.loadLibrary("render");
 	}
 
-	//@Override
-	//public void drawFrame(GL10 gl) {
-	//	nativeDrawFrame();
-	//}
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		nativeDrawFrame();
@@ -60,12 +58,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		//nativeSurfaceCreated();
+		nativeSurfaceCreated();
+		
 		/*
          * Some one-time OpenGL initialization can be made here probably based
          * on features of this particular context
          */
-        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
+        /*gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 
         gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
         gl.glShadeModel(GL10.GL_FLAT);
@@ -76,11 +75,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
          * performance. One might want to tweak that especially on software
          * renderer.
          */
-        gl.glDisable(GL10.GL_DITHER);
+/*        gl.glDisable(GL10.GL_DITHER);
         gl.glDisable(GL10.GL_LIGHTING);
 
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        
+*/       
         if (mSprites != null) {
             
             // If we are using hardware buffers and the screen lost context
@@ -107,21 +106,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             }
         }
 	}
-
-	//@Override
-	//public int[] getConfigSpec() {
-		// We don't need a depth buffer, and don't care about our
-        // color depth.
-    //    int[] configSpec = { EGL10.EGL_DEPTH_SIZE, 0, EGL10.EGL_NONE };
-    //    return configSpec;
-	//}
-
-	//@Override
-	//public void shutdown(GL10 gl) {
-		// TODO Auto-generated method stub
-		
-	//}
-
+	
 	public void setSprites(Sprite[] spriteArray) {
         mSprites = spriteArray;
         nativeDataPoolSize(mSprites.length);
@@ -130,6 +115,37 @@ public class NativeRender implements GLSurfaceView.Renderer {
         }
 	}
 
+/*	public int loadBitmap(Context context, int resourceId){
+		
+		InputStream is = context.getResources().openRawResource(resourceId);
+		Bitmap bitmap;
+		
+		i
+		
+		try{
+			bitmap = BitmapFactory.decodeStream(is, null, sBitmapOptions);
+		}finally{
+				try{
+					is.close();
+				}catch(IOException e){
+					
+				}
+		}
+		
+        mCropWorkspace[0] = 0;
+        mCropWorkspace[1] = bitmap.getHeight();
+        mCropWorkspace[2] = bitmap.getWidth();
+        mCropWorkspace[3] = -bitmap.getHeight();
+                
+        ByteBuffer buf = ByteBuffer.allocateDirect(10000);
+        bitmap.copyPixelsToBuffer(buf);
+        
+        nativeLoadTexture();
+        
+		bitmap.recycle();
+		return 0;
+	}*/
+	
 	public int loadBitmap(Context context, GL10 gl, int resourceId) {
         int textureName = -1;
         if (context != null && gl != null) {
