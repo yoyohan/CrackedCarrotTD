@@ -17,6 +17,7 @@
 package com.crackedcarrot;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 /**
  * A simple runnable that updates the position of each sprite on the screen
@@ -34,7 +35,8 @@ public class GameLoop implements Runnable {
     static final long JUMBLE_EVERYTHING_DELAY = 15 * 1000;
     static final float MAX_VELOCITY = 8000.0f;
     
-    public void run() {
+    public void run() { while(true){
+    	Log.d("SIM ENGINE", "Calculating Sim Step ");
         // Perform a single simulation step.
         if (mRenderables != null) {
             final long time = SystemClock.uptimeMillis();
@@ -48,6 +50,7 @@ public class GameLoop implements Runnable {
                 object.x = object.x + (object.velocityX * timeDeltaSeconds);
             }
         }
+	}
     }
     
     public void setRenderables(Sprite[] renderables) {

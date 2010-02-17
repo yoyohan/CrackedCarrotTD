@@ -12,18 +12,15 @@ import com.crackedcarrot.menu.R;
 public class GameInit extends Activity {
 
     public GLSurfaceView mGLSurfaceView;
-	
+    private GameLoop simulationRuntime;
+    private Thread RenderThread;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
     	super.onCreate(savedInstanceState);
-        
-        //Scaler res= new Scaler(metrics.widthPixels, metrics.heightPixels);
-        //Coords recalc = res.scale(290,520);
-        //TextView tt = (TextView) this.findViewById(R.id.top);
-        //tt.setText(recalc.getX() + "  :  "+ recalc.getY() + "  |  "+ metrics.widthPixels +"   "+ metrics.heightPixels);
-        
+    	
         mGLSurfaceView = new GLSurfaceView(this);
         NativeRender nativeRenderer = new NativeRender(this);
         
@@ -66,17 +63,18 @@ public class GameInit extends Activity {
         r.gc();
         
         
-        //GameLoop simulationRuntime = new GameLoop();
-        //simulationRuntime.setRenderables(spriteArray);
+        simulationRuntime = new GameLoop();
+        RenderThread = new Thread(simulationRuntime);
         
-        //simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
-        //mGLSurfaceView.queueEvent(simulationRuntime);
-
+        simulationRuntime.setRenderables(spriteArray);
+        simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
 
         nativeRenderer.setSprites(spriteArray);
     	mGLSurfaceView.setRenderer(nativeRenderer);        
-                
+    	
         setContentView(mGLSurfaceView);
+        
+        RenderThread.start();
     }
 }
 
