@@ -29,6 +29,11 @@ public class Sprite {
     public float y;
     public float z;
     
+    // Velocity.
+    public float velocityX;
+    public float velocityY;
+    public float velocityZ;
+    
     // Size.
     public float width;
     public float height;

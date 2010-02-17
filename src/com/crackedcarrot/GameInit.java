@@ -40,10 +40,12 @@ public class GameInit extends Activity {
         Coords recalc = res.scale(64,64);
         robot.width = recalc.getX();
         robot.height = recalc.getY();
-        recalc = res.scale(200,400);
+        recalc = res.scale(400,800);
         robot.x = (float)recalc.getX();
         robot.y = (float)recalc.getY();
-        robot.velocityX = 50f;
+        robot.velocity = 50f;
+        WayPoints w = new WayPoints(7,res);
+        
 
         //robot.setGrid(spriteGrid);
         
@@ -67,7 +69,8 @@ public class GameInit extends Activity {
         RenderThread = new Thread(simulationRuntime);
         
         simulationRuntime.setRenderables(spriteArray);
-        simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
+        simulationRuntime.setWP(w);
+        //simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
 
         nativeRenderer.setSprites(spriteArray);
     	mGLSurfaceView.setRenderer(nativeRenderer);        

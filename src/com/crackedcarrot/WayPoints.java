@@ -9,28 +9,20 @@ package com.crackedcarrot;
 public class WayPoints {
 	
 public Coords[] way;
+private Scaler res;
 	
-	public WayPoints(int nrWP){
-		
+	public WayPoints(int nrWP, Scaler scale){
+		this.res = scale;
 		way = new Coords[nrWP];
 		
 		// Make the specific coordinates
-		Coords coord1 = new Coords(10,10);
-		Coords coord2 = new Coords(10,40);
-		Coords coord3 = new Coords(10,80);
-		Coords coord4 = new Coords(10,120);
-		Coords coord5 = new Coords(10,160);
-		Coords coord6 = new Coords(10,200);
-		Coords coord7 = new Coords(10,220);
-		
-		// Add the coordinates to the array
-		way[0] = coord1;
-		way[2] = coord2;
-		way[3] = coord3;
-		way[4] = coord4;
-		way[5] = coord5;
-		way[6] = coord6;
-		way[7] = coord7;
+		setWayPoint(100,10,0);
+		setWayPoint(200,40,1);
+		setWayPoint(100,200,2);
+		setWayPoint(200,300,3);
+		setWayPoint(100,400,4);
+		setWayPoint(200,600,5);
+		setWayPoint(400,800,6);
 		
 	}
 	
@@ -39,8 +31,12 @@ public Coords[] way;
 	 * @param coo
 	 * @param i
 	 */
-	public void setWayPoint(Coords coo, int i){
-		way[i] = coo;
+	public void setWayPoint(int x,int y, int i){
+		way[i] = res.scale(x,y);
+	}
+	
+	public Coords[] getCoords(){
+		return way;
 	}
 	
 }

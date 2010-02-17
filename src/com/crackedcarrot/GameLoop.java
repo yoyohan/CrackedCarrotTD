@@ -28,8 +28,9 @@ public class GameLoop implements Runnable {
     private Sprite[] mRenderables;
     private long mLastTime;
     //private long mLastJumbleTime;
-    private int mViewWidth;
-    private int mViewHeight;
+    //private int mViewWidth;
+    //private int mViewHeight;
+    private Coords[] wayP;
     private boolean run = true;
     static final float COEFFICIENT_OF_RESTITUTION = 0.75f;
     static final float SPEED_OF_GRAVITY = 150.0f;
@@ -56,7 +57,43 @@ public class GameLoop implements Runnable {
            
             for (int x = 1; x < mRenderables.length; x++) {
             	Creature object = (Creature)mRenderables[x];
+            	Coords co = wayP[object.nextWayPoint];
             	
+            	if (co == null)
+            		throw new NullPointerException("gfgg");
+            	if(object.x > co.x){
+            		object.x = object.x - (object.velocity * timeDeltaSeconds);
+            		if(!(object.x > co.x)){
+            			object.x = co.x;
+            				 
+            		}
+            	}
+            	else if (object.x < co.x) {
+            		object.x = object.x + (object.velocity * timeDeltaSeconds);
+            		if(!(object.x < co.x)){
+            			object.x = co.x;
+            		}
+            	}
+            	if(object.y > co.y){
+            		object.y = object.y - (object.velocity * timeDeltaSeconds);
+            		if(!(object.y > co.y)){
+            			object.y = co.y;
+            				 
+            		}
+            	}
+            	else if (object.y < co.y) {
+            		object.y = object.y + (object.velocity * timeDeltaSeconds);
+            		if(!(object.y < co.y)){
+            			object.y = co.y;
+            		}
+            	}
+            	
+            	
+            	if (object.y == co.y && object.x == co.x){
+            		object.updateWayPoint();
+            	}
+            	
+            	/*
             	if (object.velocityX > 0) {
                     object.x = object.x + (object.velocityX * timeDeltaSeconds);
             	}
@@ -83,7 +120,7 @@ public class GameLoop implements Runnable {
 	                 	object.velocityX = 50f;
                     }
                 }
-            	
+            	*/
                 
                 
                 
@@ -96,8 +133,12 @@ public class GameLoop implements Runnable {
     public void setRenderables(Sprite[] renderables) {
         mRenderables = renderables;
     }
-    public void setViewSize(int width, int height) {
-        mViewHeight = height;
-        mViewWidth = width;
+    //public void setViewSize(int width, int height) {
+    //    mViewHeight = height;
+    //    mViewWidth = width;
+    //}
+    
+    public void setWP(WayPoints wp){
+    	this.wayP = wp.getCoords();
     }
 }
