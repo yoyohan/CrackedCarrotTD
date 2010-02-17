@@ -43,7 +43,7 @@ public class GameInit extends Activity {
         recalc = res.scale(200,400);
         robot.x = (float)recalc.getX();
         robot.y = (float)recalc.getY();
-        robot.velocityX = 4000;
+        robot.velocityX = 50f;
 
         //robot.setGrid(spriteGrid);
         
