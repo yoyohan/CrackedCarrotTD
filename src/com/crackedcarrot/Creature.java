@@ -19,12 +19,13 @@ public class Creature extends Sprite{
     private int nextWayPoint;
 	
     
-	public Creature(){
-		
+	public Creature(int resourceId){
+		super(resourceId);
+		nextWayPoint = 0;
 	}
 	
 	public void updateWayPoint (){
-		
+		nextWayPoint++;
 	}
 	
 }

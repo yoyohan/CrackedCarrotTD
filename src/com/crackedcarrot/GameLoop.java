@@ -55,7 +55,7 @@ public class GameLoop implements Runnable {
             mLastTime = time;
            
             for (int x = 1; x < mRenderables.length; x++) {
-            	Sprite object = mRenderables[x];
+            	Creature object = (Creature)mRenderables[x];
             	
             	if (object.velocityX > 0) {
                     object.x = object.x + (object.velocityX * timeDeltaSeconds);

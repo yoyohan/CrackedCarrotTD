@@ -34,8 +34,8 @@ public class GameInit extends Activity {
         background.height = backgoundBitmap.getHeight();
         
         
-        Sprite robot;
-        robot = new Sprite(R.drawable.skate3);
+        Creature robot;
+        robot = new Creature(R.drawable.skate3);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         Coords recalc = res.scale(64,64);
         robot.width = recalc.getX();
