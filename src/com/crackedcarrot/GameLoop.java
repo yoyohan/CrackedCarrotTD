@@ -62,6 +62,7 @@ public class GameLoop implements Runnable {
             	if (co == null)
             		throw new NullPointerException("gfgg");
             	if(object.x > co.x){
+            		object.direction = Creature.LEFT;
             		object.x = object.x - (object.velocity * timeDeltaSeconds);
             		if(!(object.x > co.x)){
             			object.x = co.x;
@@ -69,12 +70,14 @@ public class GameLoop implements Runnable {
             		}
             	}
             	else if (object.x < co.x) {
+            		object.direction = Creature.RIGHT;
             		object.x = object.x + (object.velocity * timeDeltaSeconds);
             		if(!(object.x < co.x)){
             			object.x = co.x;
             		}
             	}
-            	if(object.y > co.y){
+            	else if(object.y > co.y){
+            		object.direction = Creature.DOWN;
             		object.y = object.y - (object.velocity * timeDeltaSeconds);
             		if(!(object.y > co.y)){
             			object.y = co.y;
@@ -82,6 +85,7 @@ public class GameLoop implements Runnable {
             		}
             	}
             	else if (object.y < co.y) {
+            		object.direction = Creature.UP;
             		object.y = object.y + (object.velocity * timeDeltaSeconds);
             		if(!(object.y < co.y)){
             			object.y = co.y;
