@@ -39,4 +39,8 @@ private Scaler res;
 		return way;
 	}
 	
+	public Coords getFirstWP(){
+		return way[0];
+	}
+	
 }

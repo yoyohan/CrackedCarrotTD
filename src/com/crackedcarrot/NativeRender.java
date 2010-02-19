@@ -47,17 +47,17 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	//public void drawFrame(GL10 gl) {
 	//	nativeDrawFrame();
 	//}
-	@Override
+	//@Override
 	public void onDrawFrame(GL10 gl) {
 		nativeDrawFrame();
 	}
 
-	@Override
+	//@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		nativeResize(width, height);
 	}
 	
-	@Override
+	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		//nativeSurfaceCreated();
 		/*

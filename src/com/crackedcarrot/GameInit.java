@@ -26,33 +26,38 @@ public class GameInit extends Activity {
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
- 
+        
+        // Gamemap
         Sprite background = new Sprite(R.drawable.background2);
         BitmapDrawable backgroundImage = (BitmapDrawable)getResources().getDrawable(R.drawable.background);
         Bitmap backgoundBitmap = backgroundImage.getBitmap();
         background.width = backgoundBitmap.getWidth();
         background.height = backgoundBitmap.getHeight();
         
-        
-        Creature robot;
-        robot = new Creature(R.drawable.skate3);
+        // Create Levels;// Will probebly be catched from main menu or something
+        //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
-        Coords recalc = res.scale(64,64);
-        robot.width = recalc.getX();
-        robot.height = recalc.getY();
-        recalc = res.scale(400,800);
-        robot.x = (float)recalc.getX();
-        robot.y = (float)recalc.getY();
-        robot.velocity = 50f;
         WayPoints w = new WayPoints(7,res);
+        int nbrOfLevels = 20;
+        Coords recalc;
+    	int nrCrLvl = 20; //We will start with 20 creatures on every level
+    	Level[] LevelList = new Level[20];
+    	recalc = res.scale(w.getFirstWP().x,w.getFirstWP().y);
         
-
-        //robot.setGrid(spriteGrid);
+        for (int i = 0; i < nbrOfLevels; i++) {
+        	Creature tmpCr = new Creature(R.drawable.skate3);
+            tmpCr.x = (float)recalc.getX();
+            tmpCr.y = (float)recalc.getY();
+            recalc = res.scale(64,64); //Creature size
+        	tmpCr.width = recalc.getX();
+            tmpCr.height = recalc.getY();
+            tmpCr.velocity = 50f;
+        	Level lvl = new Level(tmpCr,nrCrLvl);
+        	LevelList[i] = lvl;
+        }
         
-        // Add this robot to the spriteArray so it gets drawn and to the
-        // renderableArray so that it gets moved.
-        //spriteArray[x + 1] = robot;
-        //renderableArray[x] = robot;
+      
+        
         Sprite[] spriteArray = new Sprite[2];
         spriteArray[0] = background;
         spriteArray[1] = robot;
@@ -69,11 +74,15 @@ public class GameInit extends Activity {
         RenderThread = new Thread(simulationRuntime);
         
         simulationRuntime.setRenderables(spriteArray);
+
+        
         simulationRuntime.setWP(w);
         //simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
 
         nativeRenderer.setSprites(spriteArray);
-    	mGLSurfaceView.setRenderer(nativeRenderer);        
+    	
+        
+        mGLSurfaceView.setRenderer(nativeRenderer);        
     	
         setContentView(mGLSurfaceView);
         
