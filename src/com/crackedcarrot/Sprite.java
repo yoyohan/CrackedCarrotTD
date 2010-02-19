@@ -16,8 +16,6 @@
 
 package com.crackedcarrot;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 /**
  * This is the OpenGL ES version of a sprite.  It is more complicated than the
@@ -45,10 +43,13 @@ public class Sprite {
     // The id of the original resource that mTextureName is based on.
     public int mResourceId;
     // If drawing with verts or VBO verts, the grid object defining those verts.
-    public Grid mGrid;
+   // public Grid mGrid;
+    
+    public Sprite() {
+    	
+    }
     
     public Sprite(int resourceId) {
-        super();
         mResourceId = resourceId;
     }
     
@@ -68,32 +69,4 @@ public class Sprite {
         return mResourceId;
     }
     
-    public void setGrid(Grid grid) {
-        mGrid = grid;
-    }
-    
-    public Grid getGrid() {
-        return mGrid;
-    }
-    
-    public void draw(GL10 gl) {
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, mTextureName);
-
-        if (mGrid == null) {
-            // Draw using the DrawTexture extension.
-            ((GL11Ext) gl).glDrawTexfOES(x, y, z, width, height);
-        } else {
-            // Draw using verts or VBO verts.
-            gl.glPushMatrix();
-            gl.glLoadIdentity();
-            gl.glTranslatef(
-                    x, 
-                    y, 
-                    z);
-            
-            mGrid.draw(gl, true, false);
-            
-            gl.glPopMatrix();
-        } 
-    }
 }

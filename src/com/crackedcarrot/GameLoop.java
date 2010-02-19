@@ -28,36 +28,117 @@ public class GameLoop implements Runnable {
     private Sprite[] mRenderables;
     private long mLastTime;
     //private long mLastJumbleTime;
-    private int mViewWidth;
-    private int mViewHeight;
+    //private int mViewWidth;
+    //private int mViewHeight;
+    private Coords[] wayP;
+    private boolean run = true;
     static final float COEFFICIENT_OF_RESTITUTION = 0.75f;
     static final float SPEED_OF_GRAVITY = 150.0f;
     static final long JUMBLE_EVERYTHING_DELAY = 15 * 1000;
     static final float MAX_VELOCITY = 8000.0f;
     
-    public void run() { while(true){
-    	Log.d("SIM ENGINE", "Calculating Sim Step ");
-        // Perform a single simulation step.
+    public void run() { 
+        Log.d("GAMETHREAD", "start tthread");
+    	final long starttime = SystemClock.uptimeMillis();
+    	
+    	while(run){
+    	// Perform a single simulation step.
         if (mRenderables != null) {
-            final long time = SystemClock.uptimeMillis();
-            final long timeDelta = time - mLastTime;
+
+        	final long time = SystemClock.uptimeMillis();
+            if ((time-starttime) > 60000) {
+            	run = false;            	
+            }
+        	
+        	final long timeDelta = time - mLastTime;
             final float timeDeltaSeconds = 
                 mLastTime > 0.0f ? timeDelta / 1000.0f : 0.0f;
             mLastTime = time;
            
             for (int x = 1; x < mRenderables.length; x++) {
-            	Sprite object = mRenderables[x];
-                object.x = object.x + (object.velocityX * timeDeltaSeconds);
+            	Creature object = (Creature)mRenderables[x];
+            	Coords co = wayP[object.nextWayPoint];
+            	
+            	if (co == null)
+            		throw new NullPointerException("gfgg");
+            	if(object.x > co.x){
+            		object.x = object.x - (object.velocity * timeDeltaSeconds);
+            		if(!(object.x > co.x)){
+            			object.x = co.x;
+            				 
+            		}
+            	}
+            	else if (object.x < co.x) {
+            		object.x = object.x + (object.velocity * timeDeltaSeconds);
+            		if(!(object.x < co.x)){
+            			object.x = co.x;
+            		}
+            	}
+            	if(object.y > co.y){
+            		object.y = object.y - (object.velocity * timeDeltaSeconds);
+            		if(!(object.y > co.y)){
+            			object.y = co.y;
+            				 
+            		}
+            	}
+            	else if (object.y < co.y) {
+            		object.y = object.y + (object.velocity * timeDeltaSeconds);
+            		if(!(object.y < co.y)){
+            			object.y = co.y;
+            		}
+            	}
+            	
+            	
+            	if (object.y == co.y && object.x == co.x){
+            		object.updateWayPoint();
+            	}
+            	
+            	/*
+            	if (object.velocityX > 0) {
+                    object.x = object.x + (object.velocityX * timeDeltaSeconds);
+            	}
+            	if (object.velocityY > 0) {
+                    object.y = object.y + (object.velocityY * timeDeltaSeconds);
+            	}
+                
+            	if ((object.x < 0.0f && object.velocityX < 0.0f) || (object.x > mViewWidth - object.width && object.velocityX > 0.0f)) {
+                    Log.d("robot","krock x led");
+            		object.velocityX = 0.0f;
+                    object.velocityY = 50f;
+                    object.x = Math.max(0.0f,Math.min(object.x, mViewWidth - object.width));
+                    if (object.x < 0.0f && object.velocityX < 0.0f) {
+                        object.velocityY = -50f;
+                    }
+            	}
+                
+                if ((object.y < 0.0f && object.velocityY < 0.0f) || (object.y > mViewHeight - object.height && object.velocityY > 0.0f)) {
+                    Log.d("robot","krock y led");
+                    object.velocityY = 0.0f;
+                    object.velocityX = -50f;
+                    object.y = Math.max(0.0f, Math.min(object.y, mViewHeight - object.height));
+                    if (object.y < 0.0f && object.velocityY < 0.0f) {
+	                 	object.velocityX = 50f;
+                    }
+                }
+            	*/
+                
+                
+                
             }
         }
 	}
+    Log.d("GAMETHREAD", "dead tthread");
     }
     
     public void setRenderables(Sprite[] renderables) {
         mRenderables = renderables;
     }
-    public void setViewSize(int width, int height) {
-        mViewHeight = height;
-        mViewWidth = width;
+    //public void setViewSize(int width, int height) {
+    //    mViewHeight = height;
+    //    mViewWidth = width;
+    //}
+    
+    public void setWP(WayPoints wp){
+    	this.wayP = wp.getCoords();
     }
 }
