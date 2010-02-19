@@ -4,5 +4,6 @@
 .DS_Store
 classes.dex
 *.ap_
+.apk
 default.properties
 /*.out.xml
