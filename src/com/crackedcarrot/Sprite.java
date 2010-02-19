@@ -29,7 +29,10 @@ public class Sprite {
     public float y;
     public float z;
     
-    // Velocity.
+    // Is the sprite going to be draw'd or not?
+    public boolean draw = true;
+
+    //Velocity
     public float velocityX;
     public float velocityY;
     public float velocityZ;
@@ -42,8 +45,6 @@ public class Sprite {
     public int mTextureName;
     // The id of the original resource that mTextureName is based on.
     public int mResourceId;
-    // If drawing with verts or VBO verts, the grid object defining those verts.
-   // public Grid mGrid;
     
     public Sprite() {
     	

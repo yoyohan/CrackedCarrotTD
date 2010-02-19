@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 
+
 /**
 * A class that defines the specific way that each
 * creature will take, by adding specific Coords to
@@ -16,14 +17,20 @@ private Scaler res;
 		way = new Coords[nrWP];
 		
 		// Make the specific coordinates
-		setWayPoint(100,10,0);
-		setWayPoint(200,40,1);
-		setWayPoint(100,200,2);
-		setWayPoint(200,300,3);
-		setWayPoint(100,400,4);
-		setWayPoint(200,600,5);
-		setWayPoint(400,800,6);
-		
+		Coords recalc = res.scale(100,200);
+		setWayPoint(recalc.getX(),recalc.getY(),0);
+		recalc = res.scale(200,40);
+		setWayPoint(recalc.getX(),recalc.getY(),1);
+		recalc = res.scale(100,200);
+		setWayPoint(recalc.getX(),recalc.getY(),2);
+		recalc = res.scale(200,300);
+		setWayPoint(recalc.getX(),recalc.getY(),3);
+		recalc = res.scale(100,400);
+		setWayPoint(recalc.getX(),recalc.getY(),4);
+		recalc = res.scale(200,600);
+		setWayPoint(recalc.getX(),recalc.getY(),5);
+		recalc = res.scale(400,800);
+		setWayPoint(recalc.getX(),recalc.getY(),6);
 	}
 	
 	/**
@@ -37,6 +44,10 @@ private Scaler res;
 	
 	public Coords[] getCoords(){
 		return way;
+	}
+	
+	public Coords getFirstWP(){
+		return way[0];
 	}
 	
 }
