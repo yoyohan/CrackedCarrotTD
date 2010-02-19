@@ -33,35 +33,46 @@ public class GameInit extends Activity {
         Bitmap backgoundBitmap = backgroundImage.getBitmap();
         background.width = backgoundBitmap.getWidth();
         background.height = backgoundBitmap.getHeight();
+        Sprite[] bckgrd = new Sprite[1];
+        bckgrd[0] = background;
         
-        // Create Levels;// Will probebly be catched from main menu or something
+        // Create Levels;// Will probebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         WayPoints w = new WayPoints(7,res);
         int nbrOfLevels = 20;
         Coords recalc;
     	int nrCrLvl = 20; //We will start with 20 creatures on every level
-    	Level[] LevelList = new Level[20];
-    	recalc = res.scale(w.getFirstWP().x,w.getFirstWP().y);
+        Creature[] creatureList = new Creature[nrCrLvl]; // Maximum of creatures
+    	Level[] LevelList = new Level[nrCrLvl];
         
         for (int i = 0; i < nbrOfLevels; i++) {
-        	Creature tmpCr = new Creature(R.drawable.skate3);
-            tmpCr.x = (float)recalc.getX();
-            tmpCr.y = (float)recalc.getY();
+        	Creature tmpCr = new Creature(R.drawable.skate1);
+        	tmpCr.draw = false;
+        	tmpCr.x = (float)w.getFirstWP().x;
+            tmpCr.y = (float)w.getFirstWP().y;
             recalc = res.scale(64,64); //Creature size
         	tmpCr.width = recalc.getX();
             tmpCr.height = recalc.getY();
-            tmpCr.velocity = 50f;
+            recalc = res.scale(50,0);
+            tmpCr.velocity = recalc.getX();
         	Level lvl = new Level(tmpCr,nrCrLvl);
         	LevelList[i] = lvl;
         }
         
-      
-        
-        Sprite[] spriteArray = new Sprite[2];
-        spriteArray[0] = background;
-        spriteArray[1] = robot;
-        
+        //This for can probebly be better
+        for (int i = 0; i < nrCrLvl; i++) {
+        	Creature tmpCr = new Creature(R.drawable.skate1);
+        	tmpCr.draw = false;
+        	tmpCr.x = (float)w.getFirstWP().x;
+            tmpCr.y = (float)w.getFirstWP().y;
+            recalc = res.scale(64,64); //Creature size
+        	tmpCr.width = recalc.getX();
+            tmpCr.height = recalc.getY();
+            recalc = res.scale(50,0);
+            tmpCr.velocity = recalc.getX();
+            creatureList[i] = tmpCr;
+        }
         
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
@@ -69,21 +80,24 @@ public class GameInit extends Activity {
         Runtime r = Runtime.getRuntime();
         r.gc();
         
-        
+        // Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
-        RenderThread = new Thread(simulationRuntime);
-        
-        simulationRuntime.setRenderables(spriteArray);
-
-        
+        simulationRuntime.setCreatures(creatureList);
+        simulationRuntime.setLevels(LevelList);
         simulationRuntime.setWP(w);
         //simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
-
-        nativeRenderer.setSprites(spriteArray);
-    	
+        RenderThread = new Thread(simulationRuntime);
+        
+        
+        ////////////////////////////////////////////
+        // Nåt enligt nedan va?
+        //nativeRenderer.setSprites(bckgrd, 0);
+        //nativeRenderer.setSprites(creatureList,3);
+        nativeRenderer.setSprites(creatureList);
+        
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
-    	
+   	
         setContentView(mGLSurfaceView);
         
         RenderThread.start();
