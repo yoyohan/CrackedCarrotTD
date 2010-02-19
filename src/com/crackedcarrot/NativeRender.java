@@ -60,26 +60,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		nativeSurfaceCreated();
 		
-		/*
-         * Some one-time OpenGL initialization can be made here probably based
-         * on features of this particular context
-         */
-        /*gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
-
-        gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-        gl.glShadeModel(GL10.GL_FLAT);
-        gl.glDisable(GL10.GL_DEPTH_TEST);
-        gl.glEnable(GL10.GL_TEXTURE_2D);
-        /*
-         * By default, OpenGL enables features that improve quality but reduce
-         * performance. One might want to tweak that especially on software
-         * renderer.
-         */
-/*        gl.glDisable(GL10.GL_DITHER);
-        gl.glDisable(GL10.GL_LIGHTING);
-
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-*/       
         if (mSprites != null) {
             
             // If we are using hardware buffers and the screen lost context
@@ -116,6 +96,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 
 /*	public int loadBitmap(Context context, int resourceId){
+		
+		//TODO Move loading code over to c library.
 		
 		InputStream is = context.getResources().openRawResource(resourceId);
 		Bitmap bitmap;

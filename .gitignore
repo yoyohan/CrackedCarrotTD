@@ -5,4 +5,5 @@
 classes.dex
 *.ap_
 default.properties
+*.apk
 /*.out.xml
