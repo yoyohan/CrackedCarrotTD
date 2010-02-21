@@ -29,7 +29,7 @@ public class GameInit extends Activity {
         
         // Gamemap
         Sprite background = new Sprite(R.drawable.background2);
-        BitmapDrawable backgroundImage = (BitmapDrawable)getResources().getDrawable(R.drawable.background);
+        BitmapDrawable backgroundImage = (BitmapDrawable)getResources().getDrawable(R.drawable.background2);
         Bitmap backgoundBitmap = backgroundImage.getBitmap();
         background.width = backgoundBitmap.getWidth();
         background.height = backgoundBitmap.getHeight();
@@ -60,7 +60,7 @@ public class GameInit extends Activity {
         	LevelList[i] = lvl;
         }
         
-        //This for can probebly be better
+        //This for can probably be better
         for (int i = 0; i < nrCrLvl; i++) {
         	Creature tmpCr = new Creature(R.drawable.skate1);
         	tmpCr.draw = false;
@@ -74,12 +74,6 @@ public class GameInit extends Activity {
             creatureList[i] = tmpCr;
         }
         
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-        Runtime r = Runtime.getRuntime();
-        r.gc();
-        
         // Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
         simulationRuntime.setCreatures(creatureList);
@@ -91,14 +85,20 @@ public class GameInit extends Activity {
         
         ////////////////////////////////////////////
         // Nåt enligt nedan va?
-        //nativeRenderer.setSprites(bckgrd, 0);
-        //nativeRenderer.setSprites(creatureList,3);
-        nativeRenderer.setSprites(creatureList);
+        nativeRenderer.setSprites(bckgrd, NativeRender.BACKGROUND);
+        nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
+        //nativeRenderer.setSprites(creatureList);
         
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
    	
         setContentView(mGLSurfaceView);
+        
+        // Now's a good time to run the GC.  Since we won't do any explicit
+        // allocation during the test, the GC should stay dormant and not
+        // influence our results.
+        Runtime r = Runtime.getRuntime();
+        r.gc();
         
         RenderThread.start();
     }

@@ -1,0 +1,9 @@
+Figure out why the levels higher then 0 is broken.
+
+JNI onload funktion in render. -- This will make shit nicer.
+Dealloc code in render. -- memleeks are evil.
+Texture loading code in native code instead, for consistency.
+
+Implement support for dontDraw flag in sprites.
+
+Possibly new redesign, the current code may not be flexible enough for future needs.
