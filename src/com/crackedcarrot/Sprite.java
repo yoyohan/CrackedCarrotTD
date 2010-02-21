@@ -33,9 +33,9 @@ public class Sprite {
     public boolean draw = true;
 
     //Velocity
-    public float velocityX;
+    /*public float velocityX;
     public float velocityY;
-    public float velocityZ;
+    public float velocityZ;*/
     
     // Size.
     public float width;

@@ -2,7 +2,7 @@ package com.crackedcarrot;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
+//import java.nio.ByteBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,20 +17,26 @@ import android.opengl.GLUtils;
 import android.util.Log;
 
 public class NativeRender implements GLSurfaceView.Renderer {
+	
+	public	static final int BACKGROUND = 0;
+	public 	static final int CREATURE	= 1;
+	public	static final int TOWER		= 2;
+	public 	static final int SHOT		= 3;
 
-	private static native void nativeAlloc(int n, Sprite s);
-	private static native void nativeDataPoolSize(int size);
+	private static native void nativeAlloc(int n, Sprite s, int type);
+	private static native void nativeDataPoolSize(int size, int type);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
     private static native void nativeSurfaceCreated();
-    private static native int  nativeLoadTexture();
-    	
-	public Sprite[] mSprites;
-	public int[] mCropWorkspace;
-	public int[] mTextureNameWorkspace;
-	public boolean mUseHardwareBuffers;
-	public Context mContext;
-	public static BitmapFactory.Options sBitmapOptions
+//    private static native int  nativeLoadTexture();
+	
+	private Sprite[][] sprites = new Sprite[4][];
+	
+	private int[] mCropWorkspace;
+	private int[] mTextureNameWorkspace;
+	//public boolean mUseHardwareBuffers;
+	private Context mContext;
+	private static BitmapFactory.Options sBitmapOptions
     = new BitmapFactory.Options();
 
 	public NativeRender(Context context) {
@@ -58,39 +64,41 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		nativeSurfaceCreated();
-		
-        if (mSprites != null) {
-            
-            // If we are using hardware buffers and the screen lost context
-            // then the buffer indexes that we recorded previously are now
-            // invalid.  Forget them here and recreate them below.
-            
-            // Load our texture and set its texture name on all sprites.
-            
-            // To keep this sample simple we will assume that sprites that share
-            // the same texture are grouped together in our sprite list. A real
-            // app would probably have another level of texture management, 
-            // like a texture hash.
-            
-            int lastLoadedResource = -1;
-            int lastTextureId = -1;
-            
-            for (int x = 0; x < mSprites.length; x++) {
-                int resource = mSprites[x].getResourceId();
-                if (resource != lastLoadedResource) {
-					lastTextureId = loadBitmap(mContext, gl, resource);
-                    lastLoadedResource = resource;
-                }
-                mSprites[x].setTextureName(lastTextureId);
+		for(int i = 0; i < sprites.length; i++){
+            if(sprites[i] != null){
+	            // If we are using hardware buffers and the screen lost context
+	            // then the buffer indexes that we recorded previously are now
+	            // invalid.  Forget them here and recreate them below.
+	            
+	            // Load our texture and set its texture name on all sprites.
+	            
+	            // To keep this sample simple we will assume that sprites that share
+	            // the same texture are grouped together in our sprite list. A real
+	            // app would probably have another level of texture management, 
+	            // like a texture hash.
+	            
+	            int lastLoadedResource = -1;
+	            int lastTextureId = -1;
+	            
+	            for (int x = 0; x < sprites[i].length; x++) {
+	                int resource = sprites[i][x].getResourceId();
+	                if (resource != lastLoadedResource) {
+						lastTextureId = loadBitmap(mContext, gl, resource);
+	                    lastLoadedResource = resource;
+	                }
+	                sprites[i][x].setTextureName(lastTextureId);
+	            }
+            }else{
+            	Log.d("JAVA_LOADTEXTURE", "No sprites of type: " + i + "No texture loaded.");
             }
         }
 	}
 	
-	public void setSprites(Sprite[] spriteArray) {
-        mSprites = spriteArray;
-        nativeDataPoolSize(mSprites.length);
-        for(int i = 0; i < mSprites.length; i++){
-        	nativeAlloc(i, mSprites[i]);
+	public void setSprites(Sprite[] spriteArray, int type) {
+        sprites[type] = spriteArray;
+        nativeDataPoolSize(sprites[type].length, type);
+        for(int i = 0; i < sprites[type].length; i++){
+        	nativeAlloc(i, sprites[type][i], type);
         }
 	}
 
@@ -174,7 +182,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             }
         
         }
-
+        Log.d("JAVA_LOADTEXTURE", "Loading texture, id is: " + textureName);
         return textureName;
     }
 }

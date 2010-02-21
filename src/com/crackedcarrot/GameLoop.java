@@ -94,7 +94,7 @@ public class GameLoop implements Runnable {
     		Creature object = mCreatures[x];
     		
 			if (time > object.spawndelay && wayP[0].x == object.x && wayP[0].y == object.y) {
-	    		Log.d("START",object.toString());
+	    		//Log.d("START",object.toString());
 				object.draw = true;
 			}	            	
 			
@@ -135,7 +135,7 @@ public class GameLoop implements Runnable {
 		    	// Creature has reached is destination without being killed
 		    	if (object.nextWayPoint >= wayP.length){
 		    		object.draw = false;
-		    		Log.d("KLAR",object.toString());
+		    		//Log.d("KLAR",object.toString());
 		    		playerHealth--;
 		    		remainingCreatures--;
 		    	}

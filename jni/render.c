@@ -1,4 +1,5 @@
 #include "render.h"
+#define LOG_TAG "NATIVE_RENDER"
 
 
 	//The number of idividual sprites of the four differant kinds.
@@ -16,14 +17,18 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jint size,
 															jint type){
                                                                   
-    int* noOfSprites = &noOfType[size];
+    int* noOfSprites = &noOfType[type];
+	*noOfSprites = size;
 	
     typeSprites[type] = malloc(sizeof(GLSprite) * *noOfSprites);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
 	
-    __android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-						"Allocating memory pool for SpriteType %d\n", type);
+    __android_log_print(ANDROID_LOG_DEBUG, 
+						"NATIVE ALLOC",
+						"Allocating memory pool for SpriteType %d of size %d\n ", 
+						type, 
+						noOfType[type]);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
@@ -33,7 +38,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 													 jint type){
 	
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-						"Starting to Load Textures for SpriteType %d\n", type);
+						"Loading Texture for SpriteType %d, SpriteNo %d \n", type, spriteNO);
 	
 	GLSprite* sprites = typeSprites[type];
 	
@@ -62,12 +67,17 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	sprites[spriteNO].textureName = id;
 	
 	
-	__android_log_print(ANDROID_LOG_DEBUG, 
+	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
 						"Texture X:%f Texture Y:%f Texture Z:%f\n",
 						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].x),
 						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].y),
-						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].z));
+						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].z));*/
+	
+	/*__android_log_print(ANDROID_LOG_DEBUG, 
+						"NATIVE ALLOC", 
+						"The texture id is: ‰d",
+						(*env)->GetIntField(env,sprites[spriteNO].object, sprites[spriteNO].textureName));*/
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
@@ -88,18 +98,21 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
 	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
+	
     int i;
 	int j;
 	GLSprite* sprites;
-		//glMatrixMode(GL_MODELVIEW);
+	
+		//	glMatrixMode(GL_MODELVIEW);
 	
 	for (i = 0; i < noOfTypes; i++) {
-		sprites = typeSprites[i];		
+		sprites = typeSprites[i];
 		for (j = 0; sprites != NULL && j < noOfType[i]; j++) {
+				//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
+			
 			glBindTexture(GL_TEXTURE_2D,
 						  (*env)->GetIntField(env,sprites[j].object, sprites[j].textureName));
 			
@@ -127,6 +140,8 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glDisable(GL_LIGHTING);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATE", "The surface has been created.\n");
 
 }
 
