@@ -29,6 +29,9 @@ public class Sprite {
     public float y;
     public float z;
     
+    // Is the sprite going to be draw'd or not?
+    public boolean draw = true;
+    
     // Velocity.
     public float velocityX;
     public float velocityY;
