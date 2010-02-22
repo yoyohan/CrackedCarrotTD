@@ -11,6 +11,7 @@ import android.util.Log;
 public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[] mLvl;
+    private Shot[] mShot;
     private long mLastTime;
     private int lvlNbr;
     private int playerHealth;
@@ -18,14 +19,14 @@ public class GameLoop implements Runnable {
     private Coords[] wayP;
     public volatile boolean run = true;
     private long gameSpeed;
-    private long difficulty;
+    //private long difficulty;
     
     public void run() { 
     	final long starttime = SystemClock.uptimeMillis();
     	lvlNbr = 0;
 		playerHealth = 60;
 	    gameSpeed = 1;
-	    difficulty = 1;
+	    //difficulty = 1;
 
     	while(run){
     		Log.d("GAMELOOP","INIT GAMELOOP");
@@ -53,6 +54,8 @@ public class GameLoop implements Runnable {
 	            
 	            //Calls the method that moves the creature.
 	            moveCreature(timeDeltaSeconds,time-starttime);
+	            //Calls the method that handles the monsterkilling.
+	            killCreature(timeDeltaSeconds);
 
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
@@ -143,20 +146,94 @@ public class GameLoop implements Runnable {
 		    	// Creature has reached is destination without being killed
 		    	if (object.nextWayPoint >= wayP.length){
 		    		object.draw = false;
-		    		//Log.d("KLAR",object.toString());
 		    		playerHealth--;
 		    		remainingCreatures--;
 		    	}
 			}
     	}
     }
+
+    
+	/**
+	 * Will go through all of the towews and try to find targets
+	 * <p>
+	 * This method runs every loop the gameLoop takes. 
+	 *
+	 * @param  timeDeltaSeconds  	Time since last GameLoop lap 
+	 * @return      				void
+	 */
+    public void killCreature(float timeDeltaSeconds) {
+    	// If the list of shots is empty we will end this method
+    	if (mShot == null) {
+    		return;
+    	}
+    	for (int x = 0; x < mShot.length; x++) {
+    		Shot object = mShot[x];
+    		
+    		if (!object.draw) {
+    			// If the tower/shot is existing start calculations.
+    			object.trackEnemy(mCreatures);
+    			if (object.cre != null) {
+    				object.calcWayPoint(wayP);
+    				if (object.crTarget != null) {
+    					object.draw = true;
+    				}
+    			}
+    		}
+    		// if the creature is still alive or have not reached the goal
+    		if (object.draw && object.cre.draw) {
+    			Coords co = object.crTarget;
+				if(object.x > co.x){
+		    		object.x = object.x - (object.velocity * timeDeltaSeconds * gameSpeed);
+		    		if(!(object.x > co.x)){
+		    			object.x = co.x;
+		    		}
+		    	}
+				if (object.x < co.x) {
+		    		object.x = object.x + (object.velocity * timeDeltaSeconds * gameSpeed);
+		    		if(!(object.x < co.x)){
+		    			object.x = co.x;
+		    		}
+		    	}
+				if(object.y > co.y){
+		    		object.y = object.y - (object.velocity * timeDeltaSeconds * gameSpeed);
+		    		if(!(object.y > co.y)){
+		    			object.y = co.y;
+		    		}
+		    	}
+		    	else if (object.y < co.y) {
+		    		object.y = object.y + (object.velocity * timeDeltaSeconds * gameSpeed);
+		    		if(!(object.y < co.y)){
+		    			object.y = co.y;
+		    		}
+		    	}
+				// Shot has reached a creature
+		    	if (object.y == co.y && object.x == co.x){
+		    		object.draw = false;
+		    		object.resetShotCordinates();
+		    		//Basic way of implementing damage
+		    		object.cre.health = object.cre.health - object.tower.damage;
+		    		if (object.cre.health <= 0) {
+		    			object.cre.draw = false;		    		
+		    			remainingCreatures--;
+		    			Log.d("LOOP","Creature killed");
+		    		}
+		    	}
+			}
+    		else {
+	    		object.draw = false;
+	    		object.resetShotCordinates();
+    		}
+		}
+	}
+    
     
 	/**
 	 * Will set the list of creatures moving over the map.
 	 * <p>
 	 * This method is called before GameLoop is started. 
 	 *
-	 * @param  creature  		Time since last GameLoop lap 
+	 * @param  creature  	List of Creature. 
 	 * @return      		void
 	 */    
     public void setCreatures(Creature[] creatures) {
@@ -169,7 +246,7 @@ public class GameLoop implements Runnable {
 	 * <p>
 	 * This method is called before GameLoop is started. 
 	 *
-	 * @param  lvl			Time since this level started
+	 * @param  lvl			List of type Levels
 	 * @return      		void
 	 */    
     public void setLevels(Level[] lvl) {
@@ -181,10 +258,22 @@ public class GameLoop implements Runnable {
 	 * <p>
 	 * This method is called before GameLoop is started. 
 	 *
-	 * @param  wp			Time since this level started
+	 * @param  wp			Object of type WayPoints
 	 * @return     			void
 	 */    
     public void setWP(WayPoints wayP){
     	this.wayP = wayP.getCoords();
+    }
+
+    /**
+	 * Will set the Shots(Tower projectiles) for this map to  the GameLoop.
+	 * <p>
+	 * This method is called before GameLoop is started. 
+	 *
+	 * @param  sh			List of type Shot
+	 * @return     			void
+	 */    
+    public void setShots(Shot[] sh){
+    	this.mShot = sh;
     }
 }

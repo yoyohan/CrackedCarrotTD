@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-
-
 /**
 * A class that defines the specific way that each
 * creature will take, by adding specific Coords to
@@ -29,7 +27,8 @@ private Scaler res;
 	
 	/**
 	 * 
-	 * @param coo
+	 * @param x
+	 * @param i
 	 * @param i
 	 */
 	public void setWayPoint(int x,int y, int i){
