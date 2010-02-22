@@ -17,20 +17,14 @@ private Scaler res;
 		way = new Coords[nrWP];
 		
 		// Make the specific coordinates
-		Coords recalc = res.scale(100,200);
-		setWayPoint(recalc.getX(),recalc.getY(),0);
-		recalc = res.scale(200,40);
-		setWayPoint(recalc.getX(),recalc.getY(),1);
-		recalc = res.scale(100,200);
-		setWayPoint(recalc.getX(),recalc.getY(),2);
-		recalc = res.scale(200,300);
-		setWayPoint(recalc.getX(),recalc.getY(),3);
-		recalc = res.scale(100,400);
-		setWayPoint(recalc.getX(),recalc.getY(),4);
-		recalc = res.scale(200,600);
-		setWayPoint(recalc.getX(),recalc.getY(),5);
-		recalc = res.scale(400,800);
-		setWayPoint(recalc.getX(),recalc.getY(),6);
+		setWayPoint(100,720,0);
+		setWayPoint(100,600,1);
+		setWayPoint(300,600,2);
+		setWayPoint(300,400,3);
+		setWayPoint(100,400,4);
+		setWayPoint(100,40,5);
+		setWayPoint(440,40,6);
+		setWayPoint(440,720,7);
 	}
 	
 	/**
