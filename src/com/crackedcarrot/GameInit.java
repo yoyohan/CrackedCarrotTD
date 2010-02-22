@@ -39,7 +39,7 @@ public class GameInit extends Activity {
         // Create Levels;// Will probebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
-        WayPoints w = new WayPoints(7,res);
+        WayPoints w = new WayPoints(8,res);
         int nbrOfLevels = 20;
         Coords recalc;
     	int nrCrLvl = 20; //We will start with 20 creatures on every level
@@ -82,13 +82,11 @@ public class GameInit extends Activity {
         //simulationRuntime.setViewSize(dm.widthPixels, dm.heightPixels);
         RenderThread = new Thread(simulationRuntime);
         
-        
         ////////////////////////////////////////////
         // Nåt enligt nedan va?
         nativeRenderer.setSprites(bckgrd, NativeRender.BACKGROUND);
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         //nativeRenderer.setSprites(creatureList);
-        
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
    	
@@ -102,5 +100,29 @@ public class GameInit extends Activity {
         
         RenderThread.start();
     }
+    
+    //protected void onStart(){
+    	// Not implemented
+    //}
+    //protected void onRestart() {
+    	// Not implemented needs a proper onStart
+    //}
+    //protected void onResume() {
+    	//RenderThread.resume();
+    	//super.onResume();
+    //}
+    //protected void onPause() {
+    	// May cause deadlooks
+    //	RenderThread.suspend();
+    //	super.onPause();
+    //}
+    
+    protected void onStop() {
+    	simulationRuntime.run = false;
+    	super.onStop();
+    }
+
+    //protected void onDestroy() {
+    //}
 }
 
