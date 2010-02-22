@@ -29,7 +29,8 @@ private Scaler res;
 	
 	/**
 	 * 
-	 * @param coo
+	 * @param x
+	 * @param i
 	 * @param i
 	 */
 	public void setWayPoint(int x,int y, int i){
