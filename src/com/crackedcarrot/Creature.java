@@ -34,13 +34,13 @@ public class Creature extends Sprite{
 	    this.velocity = cr.velocity;
 	    this.direction = cr.direction;
 	    this.spawndelay = cr.spawndelay;
-	    this.x = cr.x;
-	    this.y = cr.y;
+	    super.x = cr.x;
+	    super.y = cr.y;
 	    this.draw  = cr.draw;
 	    this.width = cr.width;
 	    this.height = cr.height;
-	    this.mTextureName = cr.mTextureName;
-	    this.mResourceId = cr.mResourceId;
+	    super.mTextureName = cr.mTextureName;
+	    super.mResourceId = cr.mResourceId;
 	}
 
 	public void updateWayPoint (){

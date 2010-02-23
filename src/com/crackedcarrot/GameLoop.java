@@ -34,6 +34,9 @@ public class GameLoop implements Runnable {
     		//The following line contains the code for initiating every level
     		/////////////////////////////////////////////////////////////////
     		remainingCreatures = mLvl[lvlNbr].nrCr;
+    		
+    		Log.d("GAMELOOP","Creature count:" + remainingCreatures);
+    		
     		for (int z = 0; z < remainingCreatures; z++) {
     			// The following line is used to add the following wave of creatures to the list of creatures.
     			mCreatures[z].cloneCreature(mLvl[lvlNbr].cr);
