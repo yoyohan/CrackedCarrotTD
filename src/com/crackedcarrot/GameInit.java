@@ -116,6 +116,7 @@ public class GameInit extends Activity {
         simulationRuntime.setLevels(levelList);
         simulationRuntime.setWP(w);
         simulationRuntime.setShots(shotList);
+        simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
 
         // Sends an array with sprites to the renderer
