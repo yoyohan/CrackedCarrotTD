@@ -178,7 +178,7 @@ public class GameLoop implements Runnable {
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
     					// play shot1.mp3
-    					soundManager.playSound(1);
+    					soundManager.playSound(0);
     					object.draw = true;
     				}
     			}
@@ -221,7 +221,7 @@ public class GameLoop implements Runnable {
 		    			remainingCreatures--;
 		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
-		    			soundManager.playSound(2);
+		    			soundManager.playSound(10);
 		    		}
 		    	}
 			}

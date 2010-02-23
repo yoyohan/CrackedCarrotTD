@@ -4,7 +4,7 @@ package com.crackedcarrot;
 *
 * Class defining creature in the game
 */
-public class Creature extends Sprite{
+public class Creature extends Sprite {
 	
     
     // A creatures health
