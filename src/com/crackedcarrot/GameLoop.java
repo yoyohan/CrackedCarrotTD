@@ -20,6 +20,7 @@ public class GameLoop implements Runnable {
     public volatile boolean run = true;
     private long gameSpeed;
     //private long difficulty;
+    private SoundManager soundManager;
     
     public void run() { 
     	final long starttime = SystemClock.uptimeMillis();
@@ -176,6 +177,7 @@ public class GameLoop implements Runnable {
     			if (object.cre != null) {
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
+    					soundManager.playSound(1);
     					object.draw = true;
     				}
     			}
@@ -217,6 +219,7 @@ public class GameLoop implements Runnable {
 		    			object.cre.draw = false;		    		
 		    			remainingCreatures--;
 		    			Log.d("LOOP","Creature killed");
+		    			soundManager.playSound(2);
 		    		}
 		    	}
 			}
@@ -276,4 +279,9 @@ public class GameLoop implements Runnable {
     public void setShots(Shot[] sh){
     	this.mShot = sh;
     }
+    
+    public void setSoundManager(SoundManager sm) {
+    	this.soundManager = sm;
+    }
+    
 }
