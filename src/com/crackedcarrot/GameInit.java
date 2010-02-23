@@ -134,7 +134,6 @@ public class GameInit extends Activity {
         // influence our results.
         Runtime r = Runtime.getRuntime();
         r.gc();
-        
         RenderThread.start();
     }
     
