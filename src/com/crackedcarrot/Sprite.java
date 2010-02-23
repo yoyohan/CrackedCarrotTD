@@ -32,11 +32,6 @@ public class Sprite {
     // Is the sprite going to be draw'd or not?
     public boolean draw = true;
 
-    //Velocity
-    /*public float velocityX;
-    public float velocityY;
-    public float velocityZ;*/
-    
     // Size.
     public float width;
     public float height;

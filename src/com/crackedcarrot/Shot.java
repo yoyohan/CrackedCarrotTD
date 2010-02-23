@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-
 /**
 *
 * Class defining a shot in the game
@@ -11,18 +10,20 @@ public class Shot extends Sprite{
     public int nextWayPoint;
 	// The speed of the shot
     public float velocity;
-    // The creature target
-    public Creature creature;
     // The tower object which the shot belongs to
     public Tower tower;
     // The length in pixels between a creature and its next way point
     public float creLength;
     // The length in pixels between a shot (same pos. as the tower) and its target point
     public float shotLength;
+    // The current target coordinate for the shot
+    public Coords crTarget;
+    // The current target creature
+    public Creature cre;
     
-	
-	public Shot(int resourceId){
+	public Shot(int resourceId, Tower tower){
 		super(resourceId);
+		this.tower = tower;
 	}
 	
 	/**
@@ -31,17 +32,15 @@ public class Shot extends Sprite{
 	 * @param null 
 	 */
 	public void trackEnemy(Creature[] cres){
-		int listLength = cres.length;
-		for(int i = 0;i < listLength; i++ ){
+		cre = null;
+		for(int i = 0;i < cres.length; i++ ){
 			if(cres[i].draw == true){ // Is the creature still alive?
-				float distance = Math.abs(this.x - cres[i].x) + Math.abs(this.y - cres[i].y);
+				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
 				if(distance < tower.range){ // Is the creature within tower range?
-					this.creature = cres[i];
-					break;
-				} else {
-					i++;
+					cre = cres[i];
+					return;
 				}
-			}	
+			}
 		}
 	}
 	
@@ -52,7 +51,7 @@ public class Shot extends Sprite{
 	 * @param cre
 	 * @param wayPointList
 	 */
-	public Coords calcWayPoint(Creature cre, Coords[] wayPointList){
+	public void calcWayPoint(Coords[] wayPointList){
 		float creDistx = Math.abs(cre.x - wayPointList[cre.nextWayPoint].x);
 		float creDisty = Math.abs(cre.y - wayPointList[cre.nextWayPoint].y);
 		this.creLength = creDistx + creDisty;
@@ -63,7 +62,7 @@ public class Shot extends Sprite{
 		float shotTime = this.shotLength / this.velocity;
 		if(creTime < shotTime){ // Will the creature reach next way point before the shot will?
 			//Ta hänsyn till sträcka till nästa way point också
-			return wayPointList[cre.nextWayPoint]; //Skjut mot way point sålänge
+			crTarget = wayPointList[cre.nextWayPoint]; //Skjut mot way point sålänge
 		}else { //Utgå från första way point
 			switch(cre.direction){
 				case Creature.LEFT:
@@ -73,7 +72,7 @@ public class Shot extends Sprite{
 						this.shotLength = Math.abs(Math.abs(Math.abs(shotDistx) + Math.abs(shotDisty)));
 						if((i/cre.velocity) == this.shotLength/this.velocity){ // cre time = shot time?
 							Coords co = new Coords((int)i, (int)cre.y);
-							return co;
+							crTarget = co;
 						}
 					}
 				case Creature.RIGHT:
@@ -83,7 +82,7 @@ public class Shot extends Sprite{
 						this.shotLength = Math.abs(Math.abs(Math.abs(shotDistx) + Math.abs(shotDisty)));
 						if((i/cre.velocity) == this.shotLength/this.velocity){ // cre time = shot time?
 							Coords co = new Coords((int)i, (int)cre.y);
-							return co;
+							crTarget = co;
 						}
 					}
 				case Creature.UP:
@@ -93,7 +92,7 @@ public class Shot extends Sprite{
 						this.shotLength = Math.abs(Math.abs(Math.abs(shotDistx) + Math.abs(shotDisty)));
 						if((i/cre.velocity) == this.shotLength/this.velocity){ // cre time = shot time?
 							Coords co = new Coords((int)i, (int)cre.y);
-							return co;
+							crTarget = co;
 						}
 					}
 				case Creature.DOWN:
@@ -103,13 +102,16 @@ public class Shot extends Sprite{
 						this.shotLength = Math.abs(Math.abs(Math.abs(shotDistx) + Math.abs(shotDisty)));
 						if((i/cre.velocity) == this.shotLength/this.velocity){ // cre time = shot time?
 							Coords co = new Coords((int)i, (int)cre.y);
-							return co;
+							crTarget = co;
 						}
 					}
 			}//switch
-			return null;
+			crTarget = null;
 		}
-		
 	}
 	
+	public void resetShotCordinates() {
+		super.x = tower.x + tower.width/2;
+		super.y = tower.y + tower.height/2;	
+	}
 }

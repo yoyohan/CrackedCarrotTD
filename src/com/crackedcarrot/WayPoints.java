@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-
-
 /**
 * A class that defines the specific way that each
 * creature will take, by adding specific Coords to

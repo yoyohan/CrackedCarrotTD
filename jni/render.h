@@ -14,5 +14,6 @@ typedef struct {
     jobject object;
     jfieldID width, height;
     jfieldID x, y, z;
+	jfieldID draw;
     jfieldID textureName;
 } GLSprite;
