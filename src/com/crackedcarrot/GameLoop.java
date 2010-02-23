@@ -253,7 +253,7 @@ public class GameLoop implements Runnable {
 	 * @param  wp			Object of type WayPoints
 	 * @return     			void
 	 */    
-    public void setWP(WayPoints wayP){
+    public void setWP(Waypoints wayP){
     	this.wayP = wayP.getCoords();
     }
 
