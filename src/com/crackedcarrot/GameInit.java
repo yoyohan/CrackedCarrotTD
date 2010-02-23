@@ -123,6 +123,7 @@ public class GameInit extends Activity {
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         nativeRenderer.setSprites(towerList, NativeRender.TOWER);
         nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+        nativeRenderer.finalizeSprites();
 
         mGLSurfaceView.setRenderer(nativeRenderer);        
    	

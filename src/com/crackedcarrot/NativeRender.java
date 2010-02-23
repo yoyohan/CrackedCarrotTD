@@ -23,14 +23,15 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public	static final int TOWER		= 2;
 	public 	static final int SHOT		= 3;
 
-	private static native void nativeAlloc(int n, Sprite s, int type);
-	private static native void nativeDataPoolSize(int size, int type);
+	private static native void nativeAlloc(int n, Sprite s);
+	private static native void nativeDataPoolSize(int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
     private static native void nativeSurfaceCreated();
 //    private static native int  nativeLoadTexture();
 	
 	private Sprite[][] sprites = new Sprite[4][];
+	private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;
 	private int[] mTextureNameWorkspace;
@@ -94,14 +95,32 @@ public class NativeRender implements GLSurfaceView.Renderer {
         }
 	}
 	
-	public void setSprites(Sprite[] spriteArray, int type) {
-        sprites[type] = spriteArray;
-        nativeDataPoolSize(sprites[type].length, type);
-        for(int i = 0; i < sprites[type].length; i++){
-        	nativeAlloc(i, sprites[type][i], type);
+	public void finalizeSprites() {
+		int listSize = 0;
+		for(int i = 0; i < sprites.length; i++){
+			listSize += sprites[i].length;
+		}
+		
+        renderList = new Sprite[listSize];
+        
+        for(int i = 0, j = 0; i < sprites.length; i++){
+        	for(int k = 0; k < sprites[i].length; k++){
+        		renderList[j] = sprites[i][k];
+        		j++;
+        	}
+        }
+        
+        nativeDataPoolSize(renderList.length);
+        
+        for(int i = 0; i < renderList.length; i++){
+        	nativeAlloc(i, renderList[i]);
         }
 	}
-
+	
+	public void setSprites(Sprite[] spriteArray, int type){
+		sprites[type] = spriteArray;
+	}
+	
 /*	public int loadBitmap(Context context, int resourceId){
 		
 		//TODO Move loading code over to c library.
