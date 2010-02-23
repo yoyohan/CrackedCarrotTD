@@ -2,11 +2,10 @@
 #define LOG_TAG "NATIVE_RENDER"
 
 
-	//The number of idividual sprites of the four differant kinds.
-int noOfTypes = 4;
-int noOfType[4];
-	//Array with pointers to arrays of GLSprites, one array per kind of sprite.
-GLSprite* typeSprites[4];
+	//The number of idividual sprites.
+int noOfSprites = 4;
+	//Array with pointers to GLSprites.
+GLSprite* renderSprites;
 
 	//GLuint* textureNameWorkspace;
 	//GLuint* cropWorkspace;
@@ -14,33 +13,28 @@ GLSprite* typeSprites[4];
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
-															jint size,
-															jint type){
+															jint size){
                                                                   
-    int* noOfSprites = &noOfType[type];
-	*noOfSprites = size;
-	
-    typeSprites[type] = malloc(sizeof(GLSprite) * *noOfSprites);
+    noOfSprites = size;
+    renderSprites = malloc(sizeof(GLSprite) * noOfSprites);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
 	
     __android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
-						"Allocating memory pool for SpriteType %d of size %d\n ", 
-						type, 
-						noOfType[type]);
+						"Allocating memory pool for Sprites of size %d\n ", 
+						noOfSprites);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
 													 jobject thiz, 
 													 jint spriteNO, 
-													 jobject sprite, 
-													 jint type){
+													 jobject sprite){
 	
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-						"Loading Texture for SpriteType %d, SpriteNo %d \n", type, spriteNO);
+						"Loading Texture for SpriteNo %d \n", spriteNO);
 	
-	GLSprite* sprites = typeSprites[type];
+	GLSprite* sprites = renderSprites;
 	
 	sprites[spriteNO].object = (*env)->NewGlobalRef(env,sprite);
 	
@@ -103,25 +97,21 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	
     int i;
-	int j;
-	GLSprite* sprites;
-	
+	GLSprite* sprites = renderSprites;
+		
 		//	glMatrixMode(GL_MODELVIEW);
 	
-	for (i = 0; i < noOfTypes; i++) {
-		sprites = typeSprites[i];
-		for (j = 0; sprites != NULL && j < noOfType[i]; j++) {
-				//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
-			
-			glBindTexture(GL_TEXTURE_2D,
-						  (*env)->GetIntField(env,sprites[j].object, sprites[j].textureName));
-			
-			glDrawTexfOES((*env)->GetFloatField(env,sprites[j].object, sprites[j].x)
-						, (*env)->GetFloatField(env,sprites[j].object, sprites[j].y)
-						, (*env)->GetFloatField(env,sprites[j].object, sprites[j].z)
-						, (*env)->GetFloatField(env,sprites[j].object, sprites[j].width)
-						, (*env)->GetFloatField(env,sprites[j].object, sprites[j].height));
-		}
+	for (i = 0; i < noOfSprites; i++) {
+					//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
+		
+		glBindTexture(GL_TEXTURE_2D,
+					  (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName));
+		
+		glDrawTexfOES((*env)->GetFloatField(env,sprites[i].object, sprites[i].x)
+					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].y)
+					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].z)
+					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].width)
+					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].height));
     }
 }
 

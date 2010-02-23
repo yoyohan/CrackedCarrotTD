@@ -271,5 +271,4 @@ public class GameLoop implements Runnable {
     public void setShots(Shot[] sh){
     	this.mShot = sh;
     }
-    
 }

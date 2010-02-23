@@ -117,12 +117,13 @@ public class GameInit extends Activity {
         simulationRuntime.setWP(w);
         simulationRuntime.setShots(shotList);
         RenderThread = new Thread(simulationRuntime);
-        
+
         // Sends an array with sprites to the renderer
         nativeRenderer.setSprites(bckgrd, NativeRender.BACKGROUND);
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         nativeRenderer.setSprites(towerList, NativeRender.TOWER);
         nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+        nativeRenderer.finalizeSprites();
 
         mGLSurfaceView.setRenderer(nativeRenderer);        
    	
