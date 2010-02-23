@@ -62,7 +62,8 @@ public class Shot extends Sprite{
 		float shotTime = this.shotLength / this.velocity;
 		if(creTime < shotTime){ // Will the creature reach next way point before the shot will?
 			//Ta hänsyn till sträcka till nästa way point också
-			crTarget = wayPointList[cre.nextWayPoint]; //Skjut mot way point sålänge
+			Coords co = new Coords((int)cre.x, (int)cre.y);
+			crTarget = co; //Skjut mot way point sålänge
 		}else { //Utgå från första way point
 			switch(cre.direction){
 				case Creature.LEFT:
@@ -106,8 +107,10 @@ public class Shot extends Sprite{
 						}
 					}
 			}//switch
-			crTarget = null;
+			Coords co = new Coords((int)cre.x, (int)cre.y);
+			crTarget = co;
 		}
+		
 	}
 	
 	public void resetShotCordinates() {
