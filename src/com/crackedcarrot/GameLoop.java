@@ -22,7 +22,6 @@ public class GameLoop implements Runnable {
     //private long difficulty;
     
     public void run() { 
-    	final long starttime = SystemClock.uptimeMillis();
     	lvlNbr = 0;
 		playerHealth = 60;
 	    gameSpeed = 1;
@@ -30,16 +29,23 @@ public class GameLoop implements Runnable {
 
     	while(run){
     		Log.d("GAMELOOP","INIT GAMELOOP");
+        	final long starttime = SystemClock.uptimeMillis();
     		
     		//The following line contains the code for initiating every level
     		/////////////////////////////////////////////////////////////////
     		remainingCreatures = mLvl[lvlNbr].nrCr;
-    		
-    		Log.d("GAMELOOP","Creature count:" + remainingCreatures);
-    		
+
     		for (int z = 0; z < remainingCreatures; z++) {
     			// The following line is used to add the following wave of creatures to the list of creatures.
-    			mCreatures[z].cloneCreature(mLvl[lvlNbr].cr);
+        		
+    			Log.d("GAMELOOP","Tex gammal:" + mCreatures[z].getTextureName());
+
+        		mCreatures[z].cloneCreature(mLvl[lvlNbr].cr);
+
+        		Log.d("GAMELOOP","Tex ny:" + mCreatures[z].getTextureName());
+    			
+    			
+    			
     			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
     			mCreatures[z].spawndelay = z * (int)(mCreatures[z].velocity * mCreatures[z].height * gameSpeed);
     		}
@@ -67,7 +73,6 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	} 
 	        }
-
     		// Check if the GameLoop are to run the level loop one more time.
             if (playerHealth < 1) {
         		//If you have lost all your lives then the game ends.
@@ -84,7 +89,6 @@ public class GameLoop implements Runnable {
         			run = false;
         		}
         	}
-
 	    }
     	Log.d("GAMETHREAD", "dead thread");
     }

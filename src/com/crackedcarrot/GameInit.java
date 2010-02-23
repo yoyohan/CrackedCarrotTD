@@ -50,7 +50,7 @@ public class GameInit extends Activity {
     	Shot[] shotList = new Shot[maxNbrTowers];
         
         for (int i = 0; i < nbrOfLevels; i++) {
-        	Creature tmpCr = new Creature(R.drawable.skate1);
+        	Creature tmpCr = new Creature(R.drawable.skate2);
         	tmpCr.draw = false;
         	tmpCr.x = (float)w.getFirstWP().x;
             tmpCr.y = (float)w.getFirstWP().y;
@@ -64,21 +64,11 @@ public class GameInit extends Activity {
         	levelList[i] = lvl;
         }
         
-        //Creature init. This for can probably be better
+        //Creature init. We dont want to send an empty list to addSprite(). This for can probably be better
         for (int i = 0; i < nrCrLvl; i++) {
         	Creature tmpCr = new Creature(R.drawable.skate1);
-        	tmpCr.draw = false;
-        	tmpCr.x = (float)w.getFirstWP().x;
-            tmpCr.y = (float)w.getFirstWP().y;
-            recalc = res.scale(64,64); //Creature size
-        	tmpCr.width = recalc.getX();
-            tmpCr.height = recalc.getY();
-            tmpCr.health = 20;
-            recalc = res.scale(50,0);
-            tmpCr.velocity = recalc.getX();
             creatureList[i] = tmpCr;
         }
-
         //Tower init. This for can probably be better
         for (int i = 0; i < maxNbrTowers; i++) {
         	Tower tmpTw = new Tower(R.drawable.skate2);
@@ -126,14 +116,14 @@ public class GameInit extends Activity {
         nativeRenderer.finalizeSprites();
 
         mGLSurfaceView.setRenderer(nativeRenderer);        
-   	
-        setContentView(mGLSurfaceView);
-        
+
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
         // influence our results.
         Runtime r = Runtime.getRuntime();
         r.gc();
+   	
+        setContentView(mGLSurfaceView);
         RenderThread.start();
     }
     
@@ -142,3 +132,5 @@ public class GameInit extends Activity {
     	super.onStop();
     }
 }
+
+
