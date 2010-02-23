@@ -7,6 +7,8 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
+import com.crackedcarrot.fileloader.Map;
+import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.menu.R;
 
 public class GameInit extends Activity {
@@ -14,6 +16,7 @@ public class GameInit extends Activity {
     public GLSurfaceView mGLSurfaceView;
     private GameLoop simulationRuntime;
     private Thread RenderThread;
+    private MapLoader mapLoad;
     
     /** Called when the activity is first created. */
     @Override
@@ -39,7 +42,11 @@ public class GameInit extends Activity {
         // Create Levels;// Will probebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
-        WayPoints w = new WayPoints(8,res);
+        mapLoad = new MapLoader(this,res);
+        Map m = mapLoad.readLevel(1, R.raw.level1);
+        
+        Waypoints w = m.getWaypoints();
+        
         int nbrOfLevels = 20;
         Coords recalc;
     	int nrCrLvl = 20; //We will start with 20 creatures on every level
