@@ -32,5 +32,4 @@ private Scaler res;
 	public Coords getFirstWP(){
 		return way[0];
 	}
-	
 }

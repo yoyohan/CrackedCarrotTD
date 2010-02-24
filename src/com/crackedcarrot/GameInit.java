@@ -1,14 +1,14 @@
 package com.crackedcarrot;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
+import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
+import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
 
 public class GameInit extends Activity {
@@ -26,56 +26,32 @@ public class GameInit extends Activity {
     	
         mGLSurfaceView = new GLSurfaceView(this);
         NativeRender nativeRenderer = new NativeRender(this);
-        
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        
-        // Gamemap
-        Sprite background = new Sprite(R.drawable.background2);
-        BitmapDrawable backgroundImage = (BitmapDrawable)getResources().getDrawable(R.drawable.background2);
-        Bitmap backgoundBitmap = backgroundImage.getBitmap();
-        background.width = backgoundBitmap.getWidth();
-        background.height = backgoundBitmap.getHeight();
-        Sprite[] bckgrd = new Sprite[1];
-        bckgrd[0] = background;
         
         // Create Levels;// Will probebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         mapLoad = new MapLoader(this,res);
-        Map m = mapLoad.readLevel(1, R.raw.level1);
-        
+        Map m = mapLoad.readLevel("level1");
         Waypoints w = m.getWaypoints();
         
-        int nbrOfLevels = 20;
+        WaveLoader waveLoad = new WaveLoader(this,res);
+        Level[] waveList  = waveLoad.readWave("wave1");
+              
         Coords recalc;
     	int nrCrLvl = 20; //We will start with 20 creatures on every level
         int maxNbrTowers = 1;
     	Creature[] creatureList = new Creature[nrCrLvl]; // Maximum of creatures
-    	Level[] levelList = new Level[nrCrLvl];
     	Tower[] towerList = new Tower[maxNbrTowers];
     	Shot[] shotList = new Shot[maxNbrTowers];
         
-        for (int i = 0; i < nbrOfLevels; i++) {
-        	Creature tmpCr = new Creature(R.drawable.skate2);
-        	tmpCr.draw = false;
-        	tmpCr.x = (float)w.getFirstWP().x;
-            tmpCr.y = (float)w.getFirstWP().y;
-            recalc = res.scale(64,64); //Creature size
-        	tmpCr.width = recalc.getX();
-            tmpCr.height = recalc.getY();
-            tmpCr.health = 40;
-            recalc = res.scale(50,0);
-            tmpCr.velocity = recalc.getX();
-        	Level lvl = new Level(tmpCr,nrCrLvl);
-        	levelList[i] = lvl;
-        }
-        
-        //Creature init. We dont want to send an empty list to addSprite(). This for can probably be better
+        //Creature init. We dont want to send an empty list to addSprite(). This can probably be done in a better way
         for (int i = 0; i < nrCrLvl; i++) {
         	Creature tmpCr = new Creature(R.drawable.skate1);
             creatureList[i] = tmpCr;
         }
+        
         //Tower init. This for can probably be better
         for (int i = 0; i < maxNbrTowers; i++) {
         	Tower tmpTw = new Tower(R.drawable.skate2);
@@ -110,16 +86,22 @@ public class GameInit extends Activity {
         // Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
         simulationRuntime.setCreatures(creatureList);
-        simulationRuntime.setLevels(levelList);
+        simulationRuntime.setLevels(waveList);
         simulationRuntime.setWP(w);
         simulationRuntime.setShots(shotList);
         RenderThread = new Thread(simulationRuntime);
 
         // Sends an array with sprites to the renderer
-        nativeRenderer.setSprites(bckgrd, NativeRender.BACKGROUND);
+        nativeRenderer.setSprites(m.getBackground(), NativeRender.BACKGROUND);
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         nativeRenderer.setSprites(towerList, NativeRender.TOWER);
         nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+
+        // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
+        // ritas men vi behöver texturen som ligger i varje "lvl"
+        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
+        
+        
         nativeRenderer.finalizeSprites();
 
         mGLSurfaceView.setRenderer(nativeRenderer);        
@@ -139,5 +121,3 @@ public class GameInit extends Activity {
     	super.onStop();
     }
 }
-
-
