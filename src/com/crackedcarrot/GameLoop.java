@@ -43,7 +43,7 @@ public class GameLoop implements Runnable {
     		}
     		
 			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
-    		while(remainingCreatures > 0 && playerHealth > 0 && run){
+    		while(remainingCreatures > 0 && run){
 	    		//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
 				
@@ -62,20 +62,27 @@ public class GameLoop implements Runnable {
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (playerHealth < 1) {
             		//If you have lost all your lives then the game ends.
-                	Log.d("GAMETHREAD", "You are dead");
 	            	run = false;
             	} 
-            	else if (remainingCreatures < 1) {
-            		//If you have survied the entire wave without dying. Proceed to next next level.
-                	Log.d("GAMETHREAD", "Level " + lvlNbr + "complete");
-            		lvlNbr++;
-            		if (lvlNbr > mLvl.length) {
-            			// You have completed this map
-                    	Log.d("GAMETHREAD", "You have completed this map");
-            			run = false;
-            		}
-            	}
 	        }
+
+    		// Check if the GameLoop are to run the level loop one more time.
+            if (playerHealth < 1) {
+        		//If you have lost all your lives then the game ends.
+            	Log.d("GAMETHREAD", "You are dead");
+            	run = false;
+        	} 
+        	else if (remainingCreatures < 1) {
+        		//If you have survied the entire wave without dying. Proceed to next next level.
+            	Log.d("GAMETHREAD", "Level " + lvlNbr + "complete");
+        		lvlNbr++;
+        		if (lvlNbr > mLvl.length) {
+        			// You have completed this map
+                	Log.d("GAMETHREAD", "You have completed this map");
+        			run = false;
+        		}
+        	}
+
 	    }
     	Log.d("GAMETHREAD", "dead thread");
     }
@@ -186,32 +193,12 @@ public class GameLoop implements Runnable {
     		// if the creature is still alive or have not reached the goal
     		if (object.draw && object.cre.draw) {
     			Coords co = object.crTarget;
-				if(object.x > co.x){
-		    		object.x = object.x - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x > co.x)){
-		    			object.x = co.x;
-		    		}
-		    	}
-				if (object.x < co.x) {
-		    		object.x = object.x + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x < co.x)){
-		    			object.x = co.x;
-		    		}
-		    	}
-				if(object.y > co.y){
-		    		object.y = object.y - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y > co.y)){
-		    			object.y = co.y;
-		    		}
-		    	}
-		    	else if (object.y < co.y) {
-		    		object.y = object.y + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y < co.y)){
-		    			object.y = co.y;
-		    		}
-		    	}
-				// Shot has reached a creature
-		    	if (object.y == co.y && object.x == co.x){
+
+    			float yDistance = co.y - object.y;
+    			float xDistance = co.x - object.x;
+    			double xyMovement = (object.velocity * timeDeltaSeconds * gameSpeed);
+    			
+    			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
 		    		object.draw = false;
 		    		object.resetShotCordinates();
 		    		//Basic way of implementing damage
@@ -223,7 +210,12 @@ public class GameLoop implements Runnable {
 		    			// play died1.mp3
 		    			soundManager.playSound(10);
 		    		}
-		    	}
+    			}
+    			else {
+        			double radian = Math.atan2(yDistance, xDistance);
+    				object.x += Math.cos(radian) * xyMovement;
+    				object.y += Math.sin(radian) * xyMovement;
+    			}
 			}
     		else {
 	    		object.draw = false;
