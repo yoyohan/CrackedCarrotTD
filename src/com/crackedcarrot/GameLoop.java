@@ -188,15 +188,15 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
-    				object.calcWayPoint(wayP);
-    				if (object.crTarget != null) {
+    				//object.calcWayPoint(wayP);
+    				//if (object.crTarget != null) {
     					object.draw = true;
-    				}
+    				//}
     			}
     		}
     		// if the creature is still alive or have not reached the goal
     		if (object.draw && object.cre.draw) {
-    			Coords co = object.crTarget;
+    			Creature co = object.cre;
 
     			float yDistance = co.y - object.y;
     			float xDistance = co.x - object.x;
