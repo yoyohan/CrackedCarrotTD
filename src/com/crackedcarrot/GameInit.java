@@ -58,6 +58,7 @@ public class GameInit extends Activity {
         	tmpCr.width = recalc.getX();
             tmpCr.height = recalc.getY();
             tmpCr.health = 40;
+            tmpCr.money = 5;
             recalc = res.scale(50,0);
             tmpCr.velocity = recalc.getX();
         	Level lvl = new Level(tmpCr,nrCrLvl);
@@ -74,6 +75,7 @@ public class GameInit extends Activity {
         	tmpCr.width = recalc.getX();
             tmpCr.height = recalc.getY();
             tmpCr.health = 20;
+            tmpCr.money = 5;
             recalc = res.scale(50,0);
             tmpCr.velocity = recalc.getX();
             creatureList[i] = tmpCr;
@@ -110,12 +112,19 @@ public class GameInit extends Activity {
             towerList[i] = tmpTw;
         }
         
+        // TODO: define player specific variables.
+        Player p = new Player();
+        p.difficulty = 1;
+        p.health     = 60;
+        p.money      = 100;
+        
         // Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
         simulationRuntime.setCreatures(creatureList);
         simulationRuntime.setLevels(levelList);
         simulationRuntime.setWP(w);
         simulationRuntime.setShots(shotList);
+        simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
 

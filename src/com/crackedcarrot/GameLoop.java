@@ -14,18 +14,18 @@ public class GameLoop implements Runnable {
     private Shot[] mShot;
     private long mLastTime;
     private int lvlNbr;
-    private int playerHealth;
+    //private int playerHealth;
     private int remainingCreatures;
     private Coords[] wayP;
     public volatile boolean run = true;
     private long gameSpeed;
     //private long difficulty;
     private SoundManager soundManager;
+    private Player player;
     
     public void run() { 
     	final long starttime = SystemClock.uptimeMillis();
     	lvlNbr = 0;
-		playerHealth = 60;
 	    gameSpeed = 1;
 	    //difficulty = 1;
 
@@ -60,14 +60,17 @@ public class GameLoop implements Runnable {
 
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
-	            if (playerHealth < 1) {
+	            if (player.health < 1) {
             		//If you have lost all your lives then the game ends.
 	            	run = false;
             	} 
 	        }
+    		
+    		player.calculateInterest();
+    		Log.d("GAMELOOP", "Money: " + player.money);
 
     		// Check if the GameLoop are to run the level loop one more time.
-            if (playerHealth < 1) {
+            if (player.health < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
             	run = false;
@@ -154,8 +157,8 @@ public class GameLoop implements Runnable {
 		    	// Creature has reached is destination without being killed
 		    	if (object.nextWayPoint >= wayP.length){
 		    		object.draw = false;
-		    		playerHealth--;
-		    		remainingCreatures--;
+		    		player.health --;
+		    		remainingCreatures --;
 		    	}
 			}
     	}
@@ -206,6 +209,7 @@ public class GameLoop implements Runnable {
 		    		if (object.cre.health <= 0) {
 		    			object.cre.draw = false;		    		
 		    			remainingCreatures--;
+		    			player.money = player.money + object.cre.money;
 		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
 		    			soundManager.playSound(10);
@@ -276,6 +280,10 @@ public class GameLoop implements Runnable {
     
     public void setSoundManager(SoundManager sm) {
     	this.soundManager = sm;
+    }
+    
+    public void setPlayer(Player p) {
+    	this.player = p;
     }
     
 }
