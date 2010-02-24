@@ -56,6 +56,8 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "height", "F");
 	sprites[spriteNO].height = id;
 	
+	id = (*env)->GetFieldID(env, class, "draw", "Z");
+	sprites[spriteNO].draw = id;
 		//cache TextureName
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	sprites[spriteNO].textureName = id;
@@ -102,16 +104,19 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		//	glMatrixMode(GL_MODELVIEW);
 	
 	for (i = 0; i < noOfSprites; i++) {
-					//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
+		//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
 		
-		glBindTexture(GL_TEXTURE_2D,
-					  (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName));
+		if((*env)->GetBooleanField(env,sprites[i].object, sprites[i].draw)){
 		
-		glDrawTexfOES((*env)->GetFloatField(env,sprites[i].object, sprites[i].x)
-					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].y)
-					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].z)
-					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].width)
-					, (*env)->GetFloatField(env,sprites[i].object, sprites[i].height));
+			glBindTexture(GL_TEXTURE_2D,
+					  	(*env)->GetIntField(env,sprites[i].object, sprites[i].textureName));
+		
+			glDrawTexfOES((*env)->GetFloatField(env,sprites[i].object, sprites[i].x)
+						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].y)
+						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].z)
+						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].width)
+						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].height));
+		}
     }
 }
 
