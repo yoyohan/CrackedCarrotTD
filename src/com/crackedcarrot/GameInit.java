@@ -35,7 +35,6 @@ public class GameInit extends Activity {
         mapLoad = new MapLoader(this,res);
         Map m = mapLoad.readLevel("level1");
         Waypoints w = m.getWaypoints();
-        
         WaveLoader waveLoad = new WaveLoader(this,res);
         Level[] waveList  = waveLoad.readWave("wave1");
               
@@ -47,7 +46,7 @@ public class GameInit extends Activity {
     	Shot[] shotList = new Shot[maxNbrTowers];
         
         //Creature init. We dont want to send an empty list to addSprite(). This can probably be done in a better way
-        for (int i = 0; i < nrCrLvl; i++) {
+        for (int i = 0; i < creatureList.length; i++) {
         	Creature tmpCr = new Creature(R.drawable.skate1);
             creatureList[i] = tmpCr;
         }
@@ -96,7 +95,6 @@ public class GameInit extends Activity {
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         nativeRenderer.setSprites(towerList, NativeRender.TOWER);
         nativeRenderer.setSprites(shotList, NativeRender.SHOT);
-
         // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
         // ritas men vi behöver texturen som ligger i varje "lvl"
         // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
