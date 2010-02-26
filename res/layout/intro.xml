@@ -8,8 +8,8 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"> 
     
     <TableLayout
-	android:layout_width="100px"
-    android:layout_height="100px"
+	android:layout_width="65dp"
+    android:layout_height="65dp"
     android:orientation="vertical"
     android:gravity="center"
 	android:layout_centerVertical="true"
@@ -18,8 +18,8 @@
 	
     	<TableRow>
     		<ImageView
-    			android:layout_width="64px"
-    			android:layout_height="64px"
+    			android:layout_width="wrap_content"
+    			android:layout_height="wrap_content"
     			android:src="@drawable/intro"/>
 		</TableRow>
 	</TableLayout>

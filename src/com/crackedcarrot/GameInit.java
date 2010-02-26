@@ -59,7 +59,8 @@ public class GameInit extends Activity {
         	tmpTw.draw = true; //Tower drawable
         	tmpSh.draw = false; //Shot not drawable until launch
 
-        	tmpTw.damage = 10;
+        	tmpTw.minDamage = 10;
+        	tmpTw.maxDamage = 20;
         	
             recalc = res.scale(96,96); //Tower size
         	tmpTw.width = recalc.getX(); //Tower width
@@ -73,6 +74,7 @@ public class GameInit extends Activity {
         	tmpTw.x = recalc.getX();//Tower location x
             tmpTw.y = recalc.getY();//Tower location y
             tmpSh.resetShotCordinates();//Same location as midpoint of Tower
+            tmpSh.coolDown = 3;
 
             recalc = res.scale(200,0);
             tmpSh.velocity = recalc.getX();
