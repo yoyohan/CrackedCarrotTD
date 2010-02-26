@@ -14,7 +14,7 @@
     android:gravity="center"
 	android:layout_centerVertical="true"
 	android:layout_centerHorizontal="true"
-	android:background="#88660000">
+	android:background="#00000000">
 	/** the first two hex digits, represent */
     the alpha channel which is used to define 
     opacity. */

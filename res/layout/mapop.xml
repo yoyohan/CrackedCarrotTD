@@ -13,7 +13,7 @@
     android:gravity="center"
 	android:layout_centerVertical="true"
 	android:layout_centerHorizontal="true"
-	android:background="#66660000">
+	android:background="#00000000">
 	
     <TableRow>
     	<LinearLayout
@@ -28,6 +28,7 @@
 				android:gravity="center"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_marginLeft="20dp"
         		android:layout_weight="1"
 				android:background="@drawable/button_left">
 			</Button>
@@ -37,8 +38,8 @@
         		android:gravity="center"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="35dp"
-        		android:layout_marginLeft="35dp"
+        		android:layout_marginRight="20dp"
+        		android:layout_marginLeft="20dp"
         		android:layout_weight="1"
         		android:src="@drawable/map_choose" />
       
@@ -47,6 +48,7 @@
 				android:gravity="center"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_marginRight="20dp"
         		android:layout_weight="1"
 				android:background="@drawable/button_right">
 			</Button>
@@ -60,7 +62,7 @@
 	</TableRow>
 
     <TableRow>
-        <TextView android:text="Map 1 -> Cool"
+        <TextView android:text="Map 1: The field of grass."
 			android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

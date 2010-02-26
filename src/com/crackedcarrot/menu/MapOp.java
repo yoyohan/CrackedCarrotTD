@@ -52,13 +52,13 @@ public class MapOp extends Activity {
                 //Set the text belonging to the current map  
                 switch(indexMaps){
                 	case 0: 
-                		tv.setText("Map 1 -> Cool");
+                		tv.setText("Map 1: The field of grass.");
                 		break;	
                 	case 1: 
-                		tv.setText("Map 2 -> Soft");
+                		tv.setText("Map 2: The field of longer grass.");
                 		break;
                 	case 2: 
-                		tv.setText("Map 3 -> Booring");
+                		tv.setText("Map 3: The field of longest grass.");
                 		break;
                 	}	
         	}
@@ -77,13 +77,13 @@ public class MapOp extends Activity {
                 //Set the text belonging to the current map  
                 switch(indexMaps){
                 	case 0: 
-                		tv.setText("Map 1 -> Cool");
+                		tv.setText("Map 1: The field of grass.");
                 		break;	
                 	case 1: 
-                		tv.setText("Map 2 -> Soft");
+                		tv.setText("Map 2: The field of longer grass.");
                 		break;
                 	case 2: 
-                		tv.setText("Map 3 -> Booring");
+                		tv.setText("Map 3: The field of longest grass.");
                 		break;
                 	}	
         	}
