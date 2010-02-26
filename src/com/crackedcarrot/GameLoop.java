@@ -203,11 +203,7 @@ public class GameLoop implements Runnable {
     				if (object.crTarget != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
-<<<<<<< HEAD
-=======
     					object.tmpCoolDown = object.coolDown;
-
->>>>>>> d991f0fc4c666fd4186c922ee8d3f81d0dcd7a3f
     					object.draw = true;
     				}
     			}

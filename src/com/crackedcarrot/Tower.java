@@ -41,9 +41,7 @@ public class Tower extends Sprite{
 	public Tower(int resourceId){
 		super(resourceId);
 	}
-<<<<<<< HEAD
-=======
-	
+
 	/**
 	 * Method that calculates the damage for a specific tower
 	 * depending on the upgrade level and a random integer
@@ -56,5 +54,4 @@ public class Tower extends Sprite{
 		return randomInt;
 	}
 	
->>>>>>> d991f0fc4c666fd4186c922ee8d3f81d0dcd7a3f
 }

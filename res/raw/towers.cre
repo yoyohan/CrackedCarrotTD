@@ -9,7 +9,7 @@ resell value::8
 minDamage::10
 maxDamage::15
 velocity::250
-cooldown::1000
+cooldown::2
 specialAbility::0
 upgradelink1::1
 upgradelink2::-1
@@ -23,7 +23,7 @@ resell value::75
 minDamage::100
 maxDamage::150
 velocity::250
-cooldown::1000
+cooldown::2
 specialAbility::0
 upgradelink1::2
 upgradelink2::-1
@@ -37,7 +37,7 @@ resell value::75
 minDamage::1000
 maxDamage::1500
 velocity::250
-cooldown::1000
+cooldown::2
 specialAbility::0
 upgradelink1::-1
 upgradelink2::-1

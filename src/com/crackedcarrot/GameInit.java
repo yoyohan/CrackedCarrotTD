@@ -33,6 +33,7 @@ public class GameInit extends Activity {
         // Create Levels;// Will propebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        
         mapLoad = new MapLoader(this,res);
         Map m = mapLoad.readLevel("level1");
         Waypoints w = m.getWaypoints();
@@ -65,6 +66,7 @@ public class GameInit extends Activity {
             tmpSh.height = recalc.getY(); //Shot height
         	recalc = res.scale(220,300);
         	tmpSh.velocity = tmpTw.velocity;
+        	tmpSh.coolDown = tmpTw.cooldown;
         	tmpTw.x = recalc.getX();//Tower location x
             tmpTw.y = recalc.getY();//Tower location y
             tmpSh.resetShotCordinates();//Same location as midpoint of Tower
