@@ -190,9 +190,12 @@ public class GameLoop implements Runnable {
     		return;
     	}
     	for (int x = 0; x < mShot.length; x++) {
-    		Shot object = mShot[x];
     		
-    		if (!object.draw) {
+    		Shot object = mShot[x];
+    		// Decrease the coolDown variable and check if it has reached zero
+    		Log.d("hejsanhopp", ""+object.tmpCoolDown);
+    		object.tmpCoolDown = object.tmpCoolDown - timeDeltaSeconds;
+    		if (!object.draw && (object.tmpCoolDown <= 0)) {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
@@ -200,6 +203,11 @@ public class GameLoop implements Runnable {
     				if (object.crTarget != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
+<<<<<<< HEAD
+=======
+    					object.tmpCoolDown = object.coolDown;
+
+>>>>>>> d991f0fc4c666fd4186c922ee8d3f81d0dcd7a3f
     					object.draw = true;
     				}
     			}
@@ -216,7 +224,7 @@ public class GameLoop implements Runnable {
 		    		object.draw = false;
 		    		object.resetShotCordinates();
 		    		//Basic way of implementing damage
-		    		object.cre.health = object.cre.health - object.tower.damage;
+		    		object.cre.health = object.cre.health - object.tower.createDamage();
 		    		if (object.cre.health <= 0) {
 		    			//object.cre.draw = false;
 		    			object.cre.opacity = object.cre.opacity - 0.1f;

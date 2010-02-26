@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.Random;
+
 /**
 * Class defining a tower in the game
 */
@@ -39,4 +41,20 @@ public class Tower extends Sprite{
 	public Tower(int resourceId){
 		super(resourceId);
 	}
+<<<<<<< HEAD
+=======
+	
+	/**
+	 * Method that calculates the damage for a specific tower
+	 * depending on the upgrade level and a random integer
+	 * so the damage wont be predictable during game play
+	 * @return a random integer between a towers min- and max damage
+	 */
+	public int createDamage(){
+		Random rand = new Random();
+		int randomInt = rand.nextInt((this.maxDamage-this.minDamage)) + this.minDamage;
+		return randomInt;
+	}
+	
+>>>>>>> d991f0fc4c666fd4186c922ee8d3f81d0dcd7a3f
 }

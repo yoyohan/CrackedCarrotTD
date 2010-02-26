@@ -20,6 +20,10 @@ public class Shot extends Sprite{
     public Coords crTarget;
     // The current target creature
     public Creature cre;
+    // The time existing between each fired shot
+    public float coolDown;
+    // The temporary variable representing the time existing between each fired shot
+    public float tmpCoolDown;
     
 	public Shot(int resourceId, Tower tower){
 		super(resourceId);
