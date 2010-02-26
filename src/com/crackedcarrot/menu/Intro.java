@@ -24,7 +24,6 @@ public class Intro extends Activity {
          * this intro after INTRO_LENGTH seconds
          */
         new Handler().postDelayed(new Runnable(){
-            @Override
             public void run() {
                  /* Create an Intent that will start the Menu-Activity. */
                  Intent theMain = new Intent(Intro.this, MainMenu.class);

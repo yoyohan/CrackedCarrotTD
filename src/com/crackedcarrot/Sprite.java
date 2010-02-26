@@ -28,43 +28,28 @@ public class Sprite {
     public float x;
     public float y;
     public float z;
-    
     // Is the sprite going to be draw'd or not?
     public boolean draw = true;
-    
     // Opacity for this sprite.
     public float opacity = 1.0f;
-
-
-    //Velocity
-    /*public float velocityX;
-    public float velocityY;
-    public float velocityZ;*/
-    
-
     // Size.
     public float width;
     public float height;
-	
     // The OpenGL ES texture handle to draw.
     public int mTextureName;
     // The id of the original resource that mTextureName is based on.
     public int mResourceId;
     
     public Sprite() {
-    	
     }
     
     public Sprite(int resourceId) {
         mResourceId = resourceId;
     }
     
+    //Används av native renderer men den verkar aldrig accessas?
     public void setTextureName(int name) {
         mTextureName = name;
-    }
-    
-    public int getTextureName() {
-        return mTextureName;
     }
     
     public void setResourceId(int id) {

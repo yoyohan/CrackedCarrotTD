@@ -196,12 +196,10 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
-
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
-
     					object.draw = true;
     				}
     			}

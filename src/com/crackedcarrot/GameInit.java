@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
+import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
 
@@ -29,7 +30,7 @@ public class GameInit extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         
-        // Create Levels;// Will probebly be taken from main menu or something
+        // Create Levels;// Will propebly be taken from main menu or something
         //////////////////////////////////        
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         mapLoad = new MapLoader(this,res);
@@ -37,6 +38,8 @@ public class GameInit extends Activity {
         Waypoints w = m.getWaypoints();
         WaveLoader waveLoad = new WaveLoader(this,res);
         Level[] waveList  = waveLoad.readWave("wave1");
+        TowerLoader towerLoad = new TowerLoader(this,res);
+        Tower[] allTowers  = towerLoad.readTowers("towers");
               
         Coords recalc;
     	int nrCrLvl = 20; //We will start with 20 creatures on every level
@@ -53,31 +56,18 @@ public class GameInit extends Activity {
         
         //Tower init. This for can probably be better
         for (int i = 0; i < maxNbrTowers; i++) {
-        	Tower tmpTw = new Tower(R.drawable.skate2);
+        	Tower tmpTw = allTowers[0];
         	Shot tmpSh = new Shot(R.drawable.skate3, tmpTw);
         	tmpTw.draw = true; //Tower drawable
         	tmpSh.draw = false; //Shot not drawable until launch
-
-        	tmpTw.damage = 10;
-        	
-            recalc = res.scale(96,96); //Tower size
-        	tmpTw.width = recalc.getX(); //Tower width
-            tmpTw.height = recalc.getY(); //Tower height
-
             recalc = res.scale(16,16); //Shot size
         	tmpSh.width = recalc.getX(); //Shot width
             tmpSh.height = recalc.getY(); //Shot height
-
         	recalc = res.scale(220,300);
+        	tmpSh.velocity = tmpTw.velocity;
         	tmpTw.x = recalc.getX();//Tower location x
             tmpTw.y = recalc.getY();//Tower location y
             tmpSh.resetShotCordinates();//Same location as midpoint of Tower
-
-            recalc = res.scale(200,0);
-            tmpSh.velocity = recalc.getX();
-            recalc = res.scale(300,0);
-            tmpTw.range = recalc.getX();
-	
             shotList[i] = tmpSh;
             towerList[i] = tmpTw;
         }
@@ -106,7 +96,6 @@ public class GameInit extends Activity {
         // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
         // ritas men vi behöver texturen som ligger i varje "lvl"
         // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        
         
         nativeRenderer.finalizeSprites();
 
