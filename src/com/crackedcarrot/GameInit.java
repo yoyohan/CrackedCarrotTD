@@ -83,12 +83,20 @@ public class GameInit extends Activity {
             towerList[i] = tmpTw;
         }
         
+        // TODO: define player specific variables.
+        Player p = new Player();
+        p.difficulty = 1;
+        p.health     = 60;
+        p.money      = 100;
+        
         // Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
         simulationRuntime.setCreatures(creatureList);
         simulationRuntime.setLevels(waveList);
         simulationRuntime.setWP(w);
         simulationRuntime.setShots(shotList);
+        simulationRuntime.setPlayer(p);
+        simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
 
         // Sends an array with sprites to the renderer

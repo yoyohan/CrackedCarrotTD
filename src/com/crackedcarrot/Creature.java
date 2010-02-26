@@ -19,12 +19,19 @@ public class Creature extends Sprite{
     public int direction;
     // Delay before spawning the creature to the map
     public int spawndelay;
+<<<<<<< HEAD
     // Value of the creature 
     public int goldValue;
     // Creature special ability
     public int specialAbility;
 	
     public Creature(int resourceId){
+=======
+    // How much gold this creature gives when it's killed.
+    public int money;
+    
+	public Creature(int resourceId){
+>>>>>>> 7dedd5cf0f4886bdc5530b9d563027aced3139cc
 		super(resourceId);
 		super.draw = false;
 		nextWayPoint = 0;
@@ -32,6 +39,7 @@ public class Creature extends Sprite{
 	
 	public void cloneCreature(Creature cr) {
 	    this.health = cr.health;
+	    this.money  = cr.money;
 	    this.nextWayPoint = cr.nextWayPoint;
 	    this.velocity = cr.velocity;
 	    this.draw  = cr.draw;

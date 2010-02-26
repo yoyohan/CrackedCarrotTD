@@ -16,16 +16,17 @@ public class GameLoop implements Runnable {
     private Shot[] mShot;
     private long mLastTime;
     private int lvlNbr;
-    private int playerHealth;
+    //private int playerHealth;
     private int remainingCreatures;
     private Coords[] wayP;
     public volatile boolean run = true;
     private long gameSpeed;
     //private long difficulty;
+    private SoundManager soundManager;
+    private Player player;
     
     public void run() { 
     	lvlNbr = 0;
-		playerHealth = 60;
 	    gameSpeed = 1;
 
     	while(run){
@@ -63,13 +64,20 @@ public class GameLoop implements Runnable {
 
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
-	            if (playerHealth < 1) {
+	            if (player.health < 1) {
             		//If you have lost all your lives then the game ends.
 	            	run = false;
             	} 
 	        }
+<<<<<<< HEAD
+=======
+    		
+    		player.calculateInterest();
+    		Log.d("GAMELOOP", "Money: " + player.money);
+
+>>>>>>> 7dedd5cf0f4886bdc5530b9d563027aced3139cc
     		// Check if the GameLoop are to run the level loop one more time.
-            if (playerHealth < 1) {
+            if (player.health < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
             	run = false;
@@ -152,8 +160,8 @@ public class GameLoop implements Runnable {
 		    	// Creature has reached is destination without being killed
 		    	if (object.nextWayPoint >= wayP.length){
 		    		object.draw = false;
-		    		playerHealth--;
-		    		remainingCreatures--;
+		    		player.health --;
+		    		remainingCreatures --;
 		    	}
 			}
     	}
@@ -180,8 +188,15 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
+<<<<<<< HEAD
     				//object.calcWayPoint(wayP);
     				//if (object.crTarget != null) {
+=======
+    				object.calcWayPoint(wayP);
+    				if (object.crTarget != null) {
+    					// play shot1.mp3
+    					soundManager.playSound(0);
+>>>>>>> 7dedd5cf0f4886bdc5530b9d563027aced3139cc
     					object.draw = true;
     				//}
     			}
@@ -202,7 +217,10 @@ public class GameLoop implements Runnable {
 		    		if (object.cre.health <= 0) {
 		    			object.cre.draw = false;		    		
 		    			remainingCreatures--;
+		    			player.money = player.money + object.cre.money;
 		    			Log.d("LOOP","Creature killed");
+		    			// play died1.mp3
+		    			soundManager.playSound(10);
 		    		}
     			}
     			else {
@@ -267,4 +285,13 @@ public class GameLoop implements Runnable {
     public void setShots(Shot[] sh){
     	this.mShot = sh;
     }
+    
+    public void setSoundManager(SoundManager sm) {
+    	this.soundManager = sm;
+    }
+    
+    public void setPlayer(Player p) {
+    	this.player = p;
+    }
+    
 }
