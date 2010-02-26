@@ -24,11 +24,12 @@ package com.crackedcarrot;
 
 //import com.crackedcarrot.menu.R;
 
-import android.R;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
+
+import com.crackedcarrot.menu.R;
 
 
 public class SoundManager {
