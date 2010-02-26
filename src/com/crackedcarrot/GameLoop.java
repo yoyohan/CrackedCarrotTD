@@ -16,16 +16,17 @@ public class GameLoop implements Runnable {
     private Shot[] mShot;
     private long mLastTime;
     private int lvlNbr;
-    private int playerHealth;
+    //private int playerHealth;
     private int remainingCreatures;
     private Coords[] wayP;
     public volatile boolean run = true;
     private long gameSpeed;
     //private long difficulty;
+    private SoundManager soundManager;
+    private Player player;
     
     public void run() { 
     	lvlNbr = 0;
-		playerHealth = 60;
 	    gameSpeed = 1;
 
     	while(run){
@@ -63,13 +64,19 @@ public class GameLoop implements Runnable {
 
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
-	            if (playerHealth < 1) {
+	            if (player.health < 1) {
             		//If you have lost all your lives then the game ends.
 	            	run = false;
             	} 
 	        }
+
+    		
+    		player.calculateInterest();
+    		Log.d("GAMELOOP", "Money: " + player.money);
+
+
     		// Check if the GameLoop are to run the level loop one more time.
-            if (playerHealth < 1) {
+            if (player.health < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
             	run = false;
@@ -111,7 +118,7 @@ public class GameLoop implements Runnable {
 				object.draw = true;
 			}	            	
 			// If the creature is living start movement calculations.
-			if (object.draw) {
+			if (object.draw && object.opacity == 1.0f) {
 	    		Coords co = wayP[object.nextWayPoint];
 	    		// Creature is moving left.
 				if(object.x > co.x){
@@ -152,9 +159,18 @@ public class GameLoop implements Runnable {
 		    	// Creature has reached is destination without being killed
 		    	if (object.nextWayPoint >= wayP.length){
 		    		object.draw = false;
-		    		playerHealth--;
-		    		remainingCreatures--;
+		    		player.health --;
+		    		remainingCreatures --;
 		    	}
+		    	
+		    	// Creature is dead and fading...
+			} else if (object.draw && object.opacity > 0.0f) {
+					// If we divide by 2 the creature stays on the screen a while longer...
+				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
+				if (object.opacity <= 0.0f) {
+					Log.d("GAMELOOP", "Fading...Draw=False");
+					object.draw = false;
+				}
 			}
     	}
     }
@@ -180,18 +196,22 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
-    				//object.calcWayPoint(wayP);
-    				//if (object.crTarget != null) {
+
+    				object.calcWayPoint(wayP);
+    				if (object.crTarget != null) {
+    					// play shot1.mp3
+    					soundManager.playSound(0);
+
     					object.draw = true;
-    				//}
+    				}
     			}
     		}
     		// if the creature is still alive or have not reached the goal
     		if (object.draw && object.cre.draw) {
-    			Creature co = object.cre;
+    			Creature cro = object.cre;
 
-    			float yDistance = co.y - object.y;
-    			float xDistance = co.x - object.x;
+    			float yDistance = (cro.y+(cro.height/2)) - object.y;
+    			float xDistance = (cro.x+(cro.width/2)) - object.x;
     			double xyMovement = (object.velocity * timeDeltaSeconds * gameSpeed);
     			
     			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
@@ -200,9 +220,13 @@ public class GameLoop implements Runnable {
 		    		//Basic way of implementing damage
 		    		object.cre.health = object.cre.health - object.tower.damage;
 		    		if (object.cre.health <= 0) {
-		    			object.cre.draw = false;		    		
-		    			remainingCreatures--;
+		    			//object.cre.draw = false;
+		    			object.cre.opacity = object.cre.opacity - 0.1f;
+		    			remainingCreatures --;
+		    			player.money = player.money + object.cre.money;
 		    			Log.d("LOOP","Creature killed");
+		    			// play died1.mp3
+		    			soundManager.playSound(10);
 		    		}
     			}
     			else {
@@ -215,7 +239,7 @@ public class GameLoop implements Runnable {
 	    		object.draw = false;
 	    		object.resetShotCordinates();
     		}
-		}
+    	}
 	}
     
     
@@ -267,4 +291,13 @@ public class GameLoop implements Runnable {
     public void setShots(Shot[] sh){
     	this.mShot = sh;
     }
+    
+    public void setSoundManager(SoundManager sm) {
+    	this.soundManager = sm;
+    }
+    
+    public void setPlayer(Player p) {
+    	this.player = p;
+    }
+    
 }

@@ -34,7 +34,7 @@ public class Shot extends Sprite{
 	public void trackEnemy(Creature[] cres){
 		cre = null;
 		for(int i = 0;i < cres.length; i++ ){
-			if(cres[i].draw == true){ // Is the creature still alive?
+			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
 				if(distance < tower.range){ // Is the creature within tower range?
 					cre = cres[i];
@@ -62,9 +62,13 @@ public class Shot extends Sprite{
 		float shotTime = this.shotLength / this.velocity;
 		if(creTime < shotTime){ // Will the creature reach next way point before the shot will?
 			//Ta hänsyn till sträcka till nästa way point också
-			crTarget = wayPointList[cre.nextWayPoint]; //Skjut mot way point sålänge
+			Coords co = new Coords((int)wayPointList[cre.nextWayPoint].x, (int)wayPointList[cre.nextWayPoint].y);
+			crTarget = co; //Skjut mot way point sålänge
 		}else { //Utgå från första way point
-			switch(cre.direction){
+			Coords co = new Coords((int)cre.x, (int)cre.y);
+			crTarget = co;
+		}
+			/**switch(cre.direction){
 				case Creature.LEFT:
 					for(float i = (cre.x - creDistx); i < cre.x; i++){ // iterate to right
 						shotDistx = this.x - i;
@@ -106,8 +110,10 @@ public class Shot extends Sprite{
 						}
 					}
 			}//switch
-			crTarget = null;
+			Coords co = new Coords((int)cre.x, (int)cre.y);
+			crTarget = co;
 		}
+		*/
 	}
 	
 	public void resetShotCordinates() {
