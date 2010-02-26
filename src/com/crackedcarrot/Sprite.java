@@ -31,6 +31,9 @@ public class Sprite {
     
     // Is the sprite going to be draw'd or not?
     public boolean draw = true;
+    
+    // Opacity for this sprite.
+    public float opacity = 1.0f;
 
 
     //Velocity
