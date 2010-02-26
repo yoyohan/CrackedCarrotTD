@@ -3,7 +3,6 @@ package com.crackedcarrot.fileloader;
 import java.io.IOException;
 import java.io.InputStream;
 import android.content.Context;
-import android.util.Log;
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 
@@ -20,8 +19,8 @@ public class WaveLoader {
 	/**
 	 * Constructor 
 	 * 
-	 * @param  Context  	The context of the activity that requested the maploader.
-	 * @param  Scaler	 	A scaler for the waypoint.	
+	 * @param  Context  	The context of the activity that requested the map.
+	 * @param  Scaler	 	A scaler.	
 	 */
 	public WaveLoader(Context context, Scaler scaler){
 		this.context = context;
@@ -63,7 +62,6 @@ public class WaveLoader {
 					}
 					else{
 			            tmpCount++;
-						Log.d("FEL",tmpCount + buf);
 			            if (tmpCount == 1) {
 				        	// Do nothing. This line contains wave info
 				        }

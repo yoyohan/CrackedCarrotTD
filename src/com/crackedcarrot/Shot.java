@@ -38,7 +38,7 @@ public class Shot extends Sprite{
 	public void trackEnemy(Creature[] cres){
 		cre = null;
 		for(int i = 0;i < cres.length; i++ ){
-			if(cres[i].draw == true){ // Is the creature still alive?
+			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
 				if(distance < tower.range){ // Is the creature within tower range?
 					cre = cres[i];

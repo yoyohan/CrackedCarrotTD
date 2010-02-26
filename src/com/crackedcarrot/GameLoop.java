@@ -118,7 +118,7 @@ public class GameLoop implements Runnable {
 				object.draw = true;
 			}	            	
 			// If the creature is living start movement calculations.
-			if (object.draw) {
+			if (object.draw && object.opacity == 1.0f) {
 	    		Coords co = wayP[object.nextWayPoint];
 	    		// Creature is moving left.
 				if(object.x > co.x){
@@ -162,6 +162,15 @@ public class GameLoop implements Runnable {
 		    		player.health --;
 		    		remainingCreatures --;
 		    	}
+		    	
+		    	// Creature is dead and fading...
+			} else if (object.draw && object.opacity > 0.0f) {
+					// If we divide by 2 the creature stays on the screen a while longer...
+				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
+				if (object.opacity <= 0.0f) {
+					Log.d("GAMELOOP", "Fading...Draw=False");
+					object.draw = false;
+				}
 			}
     	}
     }
@@ -190,13 +199,11 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
-
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
     					object.tmpCoolDown = object.coolDown;
-
     					object.draw = true;
     				}
     			}
@@ -215,8 +222,9 @@ public class GameLoop implements Runnable {
 		    		//Basic way of implementing damage
 		    		object.cre.health = object.cre.health - object.tower.createDamage();
 		    		if (object.cre.health <= 0) {
-		    			object.cre.draw = false;		    		
-		    			remainingCreatures--;
+		    			//object.cre.draw = false;
+		    			object.cre.opacity = object.cre.opacity - 0.1f;
+		    			remainingCreatures --;
 		    			player.money = player.money + object.cre.money;
 		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
