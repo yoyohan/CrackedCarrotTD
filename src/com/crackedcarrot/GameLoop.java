@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import com.crackedcarrot.fileloader.Level;
+
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -22,23 +24,25 @@ public class GameLoop implements Runnable {
     //private long difficulty;
     
     public void run() { 
-    	final long starttime = SystemClock.uptimeMillis();
     	lvlNbr = 0;
 		playerHealth = 60;
 	    gameSpeed = 1;
-	    //difficulty = 1;
 
     	while(run){
     		Log.d("GAMELOOP","INIT GAMELOOP");
+        	final long starttime = SystemClock.uptimeMillis();
     		
     		//The following line contains the code for initiating every level
     		/////////////////////////////////////////////////////////////////
-    		remainingCreatures = mLvl[lvlNbr].nrCr;
+    		remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+
     		for (int z = 0; z < remainingCreatures; z++) {
     			// The following line is used to add the following wave of creatures to the list of creatures.
-    			mCreatures[z].cloneCreature(mLvl[lvlNbr].cr);
+        		mCreatures[z].cloneCreature(mLvl[lvlNbr]);
     			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-    			mCreatures[z].spawndelay = z * (int)(mCreatures[z].velocity * mCreatures[z].height * gameSpeed);
+        		mCreatures[z].x = wayP[0].x;
+        		mCreatures[z].y = wayP[0].y;
+        		mCreatures[z].spawndelay = z * (int)(mCreatures[z].velocity * mCreatures[z].height * gameSpeed);
     		}
     		
 			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
@@ -64,7 +68,6 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	} 
 	        }
-
     		// Check if the GameLoop are to run the level loop one more time.
             if (playerHealth < 1) {
         		//If you have lost all your lives then the game ends.
@@ -81,7 +84,6 @@ public class GameLoop implements Runnable {
         			run = false;
         		}
         	}
-
 	    }
     	Log.d("GAMETHREAD", "dead thread");
     }
@@ -102,18 +104,15 @@ public class GameLoop implements Runnable {
     	if (mCreatures == null) {
     		return;
     	}
-    	for (int x = 0; x < mLvl[lvlNbr].nrCr; x++) {
+    	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
     		Creature object = mCreatures[x];
-    		
     		// Check to see if a not existing creature is supposed to spawn on to the map
 			if (time > object.spawndelay && wayP[0].x == object.x && wayP[0].y == object.y) {
 				object.draw = true;
 			}	            	
-			
 			// If the creature is living start movement calculations.
 			if (object.draw) {
 	    		Coords co = wayP[object.nextWayPoint];
-
 	    		// Creature is moving left.
 				if(object.x > co.x){
 		    		object.direction = Creature.LEFT;
@@ -253,7 +252,7 @@ public class GameLoop implements Runnable {
 	 * @param  wp			Object of type WayPoints
 	 * @return     			void
 	 */    
-    public void setWP(WayPoints wayP){
+    public void setWP(Waypoints wayP){
     	this.wayP = wayP.getCoords();
     }
 
@@ -268,5 +267,4 @@ public class GameLoop implements Runnable {
     public void setShots(Shot[] sh){
     	this.mShot = sh;
     }
-    
 }
