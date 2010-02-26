@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.crackedcarrot.GameInit;
-
 public class MainMenu extends Activity {
     /** Called when the activity is first created. */
     @Override
@@ -22,7 +20,7 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		//Intent StartGame = new Intent(MainMenu.this,StartGame.class);
         		//startActivity(StartGame);
-        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
+        		Intent StartGame = new Intent(v.getContext(),MapOp.class);
         		startActivity(StartGame);
         	}
         });

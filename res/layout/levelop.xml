@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/relLay1"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/background"
+	xmlns:android="http://schemas.android.com/apk/res/android"> 
+
+<TableLayout
+	android:layout_width="148px"
+    android:layout_height="236px"
+    android:orientation="vertical"
+    android:gravity="center"
+	android:layout_centerVertical="true"
+	android:layout_centerHorizontal="true"
+	android:background="#00000000">
+	/** the first two hex digits, represent */
+    the alpha channel which is used to define 
+    opacity. */
+	
+
+    <TableRow>
+        <RadioGroup
+      		android:layout_width="fill_parent"
+      		android:layout_height="wrap_content"
+      		android:orientation="vertical">
+      		<RadioButton android:id="@+id/radio_red"
+          		android:layout_width="wrap_content"
+          		android:layout_height="wrap_content"
+          		android:text="Level 1" />
+      		<RadioButton android:id="@+id/radio_blue"
+          		android:layout_width="wrap_content"
+          		android:layout_height="wrap_content"
+          		android:text="Level 2" />
+          	<RadioButton android:id="@+id/radio_red"
+          		android:layout_width="wrap_content"
+          		android:layout_height="wrap_content"
+          		android:text="Level 3" />
+    	</RadioGroup>
+    </TableRow>
+
+	<TableRow>
+		
+	</TableRow>
+
+    <TableRow>
+       
+    </TableRow>
+
+
+</TableLayout>
+</RelativeLayout>
