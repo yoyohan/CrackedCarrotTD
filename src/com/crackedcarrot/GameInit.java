@@ -1,5 +1,6 @@
 package com.crackedcarrot;
 
+import android.R;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
-import com.crackedcarrot.menu.R;
 
 public class GameInit extends Activity {
 

@@ -69,13 +69,12 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	} 
 	        }
-<<<<<<< HEAD
-=======
+
     		
     		player.calculateInterest();
     		Log.d("GAMELOOP", "Money: " + player.money);
 
->>>>>>> 7dedd5cf0f4886bdc5530b9d563027aced3139cc
+
     		// Check if the GameLoop are to run the level loop one more time.
             if (player.health < 1) {
         		//If you have lost all your lives then the game ends.
@@ -188,17 +187,14 @@ public class GameLoop implements Runnable {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
-<<<<<<< HEAD
-    				//object.calcWayPoint(wayP);
-    				//if (object.crTarget != null) {
-=======
+
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
->>>>>>> 7dedd5cf0f4886bdc5530b9d563027aced3139cc
+
     					object.draw = true;
-    				//}
+    				}
     			}
     		}
     		// if the creature is still alive or have not reached the goal
@@ -233,7 +229,7 @@ public class GameLoop implements Runnable {
 	    		object.draw = false;
 	    		object.resetShotCordinates();
     		}
-		}
+    	}
 	}
     
     
