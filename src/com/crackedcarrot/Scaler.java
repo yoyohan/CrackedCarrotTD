@@ -36,5 +36,11 @@ public class Scaler {
 
 		return new Coords((int)fRX,(int)fRY);
 	}
-	
+	public int getX() {
+		return res_x;
+	}
+	public int getY() {
+		return res_y;
+	}
+
 }
