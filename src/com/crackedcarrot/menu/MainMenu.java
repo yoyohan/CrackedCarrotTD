@@ -2,6 +2,7 @@ package com.crackedcarrot.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +14,9 @@ public class MainMenu extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        /** Ensures that the activity is displayed only in the portrait orientation */
+    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {

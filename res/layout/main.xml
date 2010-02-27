@@ -10,7 +10,6 @@
 <TableLayout
 	android:layout_width="200dp"
     android:layout_height="250dp"
-    android:orientation="vertical"
     android:gravity="center"
 	android:layout_centerVertical="true"
 	android:layout_centerHorizontal="true"

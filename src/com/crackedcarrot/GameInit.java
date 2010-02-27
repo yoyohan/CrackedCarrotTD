@@ -1,6 +1,8 @@
 package com.crackedcarrot;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -19,11 +21,15 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
     	super.onCreate(savedInstanceState);
+    	
+    	/** Ensures that the activity is displayed only in the portrait orientation */
+    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
         mGLSurfaceView = new GLSurfaceView(this);
         NativeRender nativeRenderer = new NativeRender(this);
@@ -111,6 +117,10 @@ public class GameInit extends Activity {
    	
         setContentView(mGLSurfaceView);
         RenderThread.start();
+    }
+    
+    public void onConfigurationChanged(Configuration newConfig) {
+    	super.onConfigurationChanged(newConfig);
     }
     
     protected void onStop() {

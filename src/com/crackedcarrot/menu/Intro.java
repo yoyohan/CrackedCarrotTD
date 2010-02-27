@@ -2,6 +2,7 @@ package com.crackedcarrot.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -19,6 +20,9 @@ public class Intro extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro);
+        
+        /** Ensures that the activity is displayed only in the portrait orientation */
+    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         /** This handler starts the main activity and closes 
          * this intro after INTRO_LENGTH seconds
