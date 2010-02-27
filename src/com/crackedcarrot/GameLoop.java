@@ -165,10 +165,9 @@ public class GameLoop implements Runnable {
 		    	
 		    	// Creature is dead and fading...
 			} else if (object.draw && object.opacity > 0.0f) {
-					// If we divide by 2 the creature stays on the screen a while longer...
+					// If we divide by 10 the creature stays on the screen a while longer...
 				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
 				if (object.opacity <= 0.0f) {
-					Log.d("GAMELOOP", "Fading...Draw=False");
 					object.draw = false;
 				}
 			}
@@ -193,11 +192,16 @@ public class GameLoop implements Runnable {
     		
     		Shot object = mShot[x];
     		// Decrease the coolDown variable and check if it has reached zero
+<<<<<<< HEAD
+=======
+    		//Log.d("hejsanhopp", ""+object.tmpCoolDown);
+>>>>>>> 314179c16fabee76e5fa960e58195a45b66d0798
     		object.tmpCoolDown = object.tmpCoolDown - timeDeltaSeconds;
     		if (!object.draw && (object.tmpCoolDown <= 0)) {
     			// If the tower/shot is existing start calculations.
     			object.trackEnemy(mCreatures);
     			if (object.cre != null) {
+
     				object.calcWayPoint(wayP);
     				if (object.crTarget != null) {
     					// play shot1.mp3
