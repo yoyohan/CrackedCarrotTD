@@ -101,7 +101,7 @@ public class GameInit extends Activity {
         int difficulty = 0;
         if(extras != null) {
         	levelChoice = extras.getInt("com.crackedcarrot.menu.levelVal");
-        	difficulty = extras.getInt("com.crackedcarrot.menu.difficulty");
+        	difficulty = extras.getInt("com.crackedcarrot.menu.dificultVal");
         }        
         
         // Create the map requested by the player
@@ -121,13 +121,13 @@ public class GameInit extends Activity {
 
         //Define player specific variables depending on difficulty.
         Player p = new Player();
-        p.difficulty = difficulty;
+        p.difficulty = difficulty +1;
         if (difficulty == 2)
         	p.health = 40;
-        if (difficulty == 3)
+        if (difficulty == 1)
         	p.health = 20;
         else
-        	p.health = 20;
+        	p.health = 60;
         p.money      = 100;
         
         // Load all available towers and the shots related to the tower
@@ -194,6 +194,8 @@ public class GameInit extends Activity {
         // influence our results.
         Runtime r = Runtime.getRuntime();
         r.gc();
+        
+        registerForContextMenu(mGLSurfaceView);
         
         setContentView(mGLSurfaceView);
         // Start GameLoop

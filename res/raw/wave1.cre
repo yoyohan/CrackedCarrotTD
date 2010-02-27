@@ -3,7 +3,7 @@ Total number of levels::30
 // level 1
 Texture::skate1
 size::64
-health::120
+health::20
 specialability::0
 goldValue::1
 nbrOfCreaturs::20
