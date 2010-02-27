@@ -5,15 +5,35 @@
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 
-#define BACKGROUND 0;
-#define CREATURE 1;
-#define TOWER 2;
-#define SHOT 3;
+enum spriteType {
+	BACKGROUND,
+	SHOT,
+	MONSTER,
+	TOWER
+};
 
 typedef struct {
+	
+	enum spriteType type;
+	
     jobject object;
     jfieldID width, height;
     jfieldID x, y, z;
 	jfieldID draw;
     jfieldID textureName;
+	
+	
+	GLfloat* vertBuffer;
+	GLfloat* textureCoordBuffer;
+	GLuint* indexBuffer;
+	GLuint 	indexCount;
+	
+	GLuint bufferName[3];
+
 } GLSprite;
+
+enum bufferTag {
+	INDEX_OBJECT = 0,
+	VERT_OBJECT = 1,
+	TEX_OBJECT	= 2
+};

@@ -3,7 +3,7 @@
 
 
 	//The number of idividual sprites.
-int noOfSprites = 4;
+int noOfSprites = 0;
 	//Array with pointers to GLSprites.
 GLSprite* renderSprites;
 
@@ -62,7 +62,23 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	sprites[spriteNO].textureName = id;
 	
+	sprites[spriteNO].vertBuffer = malloc(sizeof(GLfloat) * 4 * 3);
+	sprites[spriteNO].textureCoordBuffer = malloc(sizeof(GLfloat) * 4 * 2);
+	sprites[spriteNO].indexBuffer = malloc(sizeof(GLuint) * 6);
+	sprites[spriteNO].indexCount = 6;
 	
+	GLuint* indexBuffer = sprites[spriteNO].indexBuffer;
+	
+	indexBuffer[0] = 0;
+	indexBuffer[1] = 1;
+	indexBuffer[2] = 2;
+	indexBuffer[3] = 3;
+	indexBuffer[4] = 2;
+	indexBuffer[5] = 1;
+	
+	GLfloat* vertBuffer = sprites[spriteNO].vertBuffer;
+	
+		
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
 						"Texture X:%f Texture Y:%f Texture Z:%f\n",
@@ -74,6 +90,9 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 						"NATIVE ALLOC", 
 						"The texture id is: ‰d",
 						(*env)->GetIntField(env,sprites[spriteNO].object, sprites[spriteNO].textureName));*/
+						
+						
+	
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
@@ -90,6 +109,8 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
 	glEnable(GL_TEXTURE_2D);
@@ -100,22 +121,54 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	
     int i;
 	GLSprite* sprites = renderSprites;
-		
+	GLint prevTexture = -1;
+	GLint currTexture = 0;
+	GLfloat* vertBuffer;
+	GLfloat* textureCoordBuffer;
+	GLuint* indexBuffer;
+	GLuint  indexCount;
 		//	glMatrixMode(GL_MODELVIEW);
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	for (i = 0; i < noOfSprites; i++) {
 		//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
 		
 		if((*env)->GetBooleanField(env,sprites[i].object, sprites[i].draw)){
+			
+			vertBuffer 			= sprites[i].vertBuffer;
+			textureCoordBuffer 	= sprites[i].textureCoordBuffer;
+			indexBuffer			= sprites[i].indexBuffer;
+			indexCount			= sprites[i].indexCount;
+			currTexture = (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName);
+			if(currTexture != prevTexture){ 
+				glBindTexture(GL_TEXTURE_2D, currTexture);
+				prevTexture = currTexture;
+			}
 		
-			glBindTexture(GL_TEXTURE_2D,
-					  	(*env)->GetIntField(env,sprites[i].object, sprites[i].textureName));
-		
-			glDrawTexfOES((*env)->GetFloatField(env,sprites[i].object, sprites[i].x)
-						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].y)
-						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].z)
-						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].width)
-						, (*env)->GetFloatField(env,sprites[i].object, sprites[i].height));
+			glPushMatrix();
+			glLoadIdentity();
+			glTranslatef((*env)->GetFloatField(env, sprites[i].object, sprites[i].x),
+						(*env)->GetFloatField(env, sprites[i].object, sprites[i].y),
+						(*env)->GetFloatField(env, sprites[i].object, sprites[i].z));
+						
+			glBindBuffer(GL_ARRAY_BUFFER, *vertBuffer);
+			glVertexPointer(3, GL_FLOAT, 0, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, *textureCoordBuffer);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+			
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
+			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			
+			glPopMatrix();
+			
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
     }
 }
@@ -124,7 +177,6 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glClearColor(0.5f, 0.5f, 0.5f, 1);
 	glShadeModel(GL_FLAT);
-	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 	/*
 	 * By default, OpenGL enables features that improve quality but reduce
@@ -138,6 +190,10 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATE", "The surface has been created.\n");
 
+}
+
+void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
+	noOfSprites = 0;
 }
 
 /*jint Java_com_crackedcarrot_NativeRender_nativeLoadTexture(JNIEnv* env, jobject thiz, ????){
