@@ -16,7 +16,7 @@ public class Player {
 		// Formula for calculating interest.
 		Log.d("PLAYER", "Interest1: " + money);
 		if (money > 10) {
-			int interest = (money / 10) * (3-difficulty);
+			int interest = (money / 20) * (4-difficulty);
 			money = money + interest;
 		}
 		Log.d("PLAYER", "Interest2: " + money);
