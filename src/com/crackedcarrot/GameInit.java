@@ -4,6 +4,13 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -18,6 +25,41 @@ public class GameInit extends Activity {
     private GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
+    
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo){
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Restart");
+
+		SubMenu quitMenu = menu.addSubMenu("Quit");
+		quitMenu.setHeaderTitle("Save?");
+		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "Yes");
+		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "No");
+	}
+	
+	@Override
+	public boolean onContextItemSelected (MenuItem item) {
+		String title = (String) item.getTitle();
+		
+		if (title.matches("Restart")) {
+			return true;
+			
+		} else if (title.matches("Quit")) {
+			return true;
+			
+		} else if (title.matches("Yes")) {
+			return true;
+			
+		} else if (title.matches("No")) {
+			return true;
+			
+		} else {
+			// This should never happen.
+			Log.d("GameInit", "ContextMenu: " + item.getTitle());
+			return super.onContextItemSelected(item);
+		}
+		
+	}
     
     /** Called when the activity is first created. */
     @Override
@@ -110,6 +152,10 @@ public class GameInit extends Activity {
         r.gc();
    	
         setContentView(mGLSurfaceView);
+        
+        	// Allows for long-click menus.
+        registerForContextMenu(mGLSurfaceView);
+        
         RenderThread.start();
     }
     

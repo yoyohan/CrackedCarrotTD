@@ -8,7 +8,21 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class MainMenu extends Activity {
-    /** Called when the activity is first created. */
+	
+	/*
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // When the user center presses, let them pick a contact.
+    		Intent Credits = new Intent(MainMenu.this,Credits.class);
+			Log.d("MAINMENU", "User pressed a button.");
+            return true;
+        }
+        return false;
+    }
+    */
+    
+
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +38,7 @@ public class MainMenu extends Activity {
         		startActivity(StartGame);
         	}
         });
-        
+
         Button OptionsButton = (Button)findViewById(R.id.Options);
         OptionsButton.setOnClickListener(new OnClickListener() {
         	
