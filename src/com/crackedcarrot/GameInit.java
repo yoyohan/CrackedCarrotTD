@@ -25,6 +25,21 @@ public class GameInit extends Activity {
     private GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart");
+        restart.setIcon(R.drawable.restart_key_button);
+        MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
+        quit.setIcon(R.drawable.quit_key_button);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return false;
+    }
     
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo){
