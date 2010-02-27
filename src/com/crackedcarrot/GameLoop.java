@@ -163,10 +163,9 @@ public class GameLoop implements Runnable {
 		    	
 		    	// Creature is dead and fading...
 			} else if (object.draw && object.opacity > 0.0f) {
-					// If we divide by 2 the creature stays on the screen a while longer...
+					// If we divide by 10 the creature stays on the screen a while longer...
 				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
 				if (object.opacity <= 0.0f) {
-					Log.d("GAMELOOP", "Fading...Draw=False");
 					object.draw = false;
 				}
 			}
