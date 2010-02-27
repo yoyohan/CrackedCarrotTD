@@ -13,15 +13,13 @@ import android.util.Log;
 public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[] mLvl;
-    private Shot[] mShot;
+    private Tower[] mTower;
     private long mLastTime;
     private int lvlNbr;
-    //private int playerHealth;
     private int remainingCreatures;
     private Coords[] wayP;
     public volatile boolean run = true;
     private long gameSpeed;
-    //private long difficulty;
     private SoundManager soundManager;
     private Player player;
     
@@ -186,46 +184,47 @@ public class GameLoop implements Runnable {
 	 */
     public void killCreature(float timeDeltaSeconds) {
     	// If the list of shots is empty we will end this method
-    	if (mShot == null) {
+    	if (mTower == null) {
     		return;
     	}
-    	for (int x = 0; x < mShot.length; x++) {
+    	//TODO: If we would use mTower.length.. The game will try to check all
+    	//towers but since we only use one and don't have enabled buying
+    	//we will wait with this loop.
+    	for (int x = 0; x < 1; x++) {
     		
-    		Shot object = mShot[x];
+    		Tower towerObject = mTower[x];
     		// Decrease the coolDown variable and check if it has reached zero
-    		Log.d("hejsanhopp", ""+object.tmpCoolDown);
-    		object.tmpCoolDown = object.tmpCoolDown - timeDeltaSeconds;
-    		if (!object.draw && (object.tmpCoolDown <= 0)) {
+    		towerObject.tmpCoolDown = towerObject.tmpCoolDown - (timeDeltaSeconds * gameSpeed);
+    		if (!towerObject.relatedShot.draw && (towerObject.tmpCoolDown <= 0)) {
     			// If the tower/shot is existing start calculations.
-    			object.trackEnemy(mCreatures);
-    			if (object.cre != null) {
-    				object.calcWayPoint(wayP);
-    				if (object.crTarget != null) {
+    			towerObject.trackEnemy(mCreatures);
+    			if (towerObject.targetCreature != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
-    					object.tmpCoolDown = object.coolDown;
-    					object.draw = true;
-    				}
+    					towerObject.tmpCoolDown = towerObject.coolDown;
+    					towerObject.relatedShot.draw = true;
     			}
     		}
     		// if the creature is still alive or have not reached the goal
-    		if (object.draw && object.cre.draw) {
-    			Creature cro = object.cre;
+    		if (towerObject.relatedShot.draw && towerObject.targetCreature.draw) {
+    			Creature targetCreature = towerObject.targetCreature;
 
-    			float yDistance = (cro.y+(cro.height/2)) - object.y;
-    			float xDistance = (cro.x+(cro.width/2)) - object.x;
-    			double xyMovement = (object.velocity * timeDeltaSeconds * gameSpeed);
+    			float yDistance = (targetCreature.y+(targetCreature.height/2)) - towerObject.relatedShot.y;
+    			float xDistance = (targetCreature.x+(targetCreature.width/2)) - towerObject.relatedShot.x;
+    			double xyMovement = (towerObject.velocity * timeDeltaSeconds * gameSpeed);
+    			
+ //   			Log.d("FEL",""+towerObject.relatedShot.x);
     			
     			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
-		    		object.draw = false;
-		    		object.resetShotCordinates();
+		    		towerObject.relatedShot.draw = false;
+		    		towerObject.resetShotCordinates();
 		    		//Basic way of implementing damage
-		    		object.cre.health = object.cre.health - object.tower.createDamage();
-		    		if (object.cre.health <= 0) {
+		    		targetCreature.health = targetCreature.health - towerObject.createDamage();
+		    		if (targetCreature.health <= 0) {
 		    			//object.cre.draw = false;
-		    			object.cre.opacity = object.cre.opacity - 0.1f;
+		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
 		    			remainingCreatures --;
-		    			player.money = player.money + object.cre.money;
+		    			player.money = player.money + targetCreature.goldValue;
 		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
 		    			soundManager.playSound(10);
@@ -233,13 +232,13 @@ public class GameLoop implements Runnable {
     			}
     			else {
         			double radian = Math.atan2(yDistance, xDistance);
-    				object.x += Math.cos(radian) * xyMovement;
-    				object.y += Math.sin(radian) * xyMovement;
+        			towerObject.relatedShot.x += Math.cos(radian) * xyMovement;
+        			towerObject.relatedShot.y += Math.sin(radian) * xyMovement;
     			}
 			}
     		else {
-	    		object.draw = false;
-	    		object.resetShotCordinates();
+    			towerObject.relatedShot.draw = false;
+	    		towerObject.resetShotCordinates();
     		}
     	}
 	}
@@ -290,8 +289,8 @@ public class GameLoop implements Runnable {
 	 * @param  sh			List of type Shot
 	 * @return     			void
 	 */    
-    public void setShots(Shot[] sh){
-    	this.mShot = sh;
+    public void setTowers(Tower[] tw){
+    	this.mTower = tw;
     }
     
     public void setSoundManager(SoundManager sm) {

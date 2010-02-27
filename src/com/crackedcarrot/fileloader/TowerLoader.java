@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
+import com.crackedcarrot.Shot;
 import com.crackedcarrot.Tower;
 
 /**
@@ -74,61 +75,87 @@ public class TowerLoader {
 				        	// Do nothing. This line contains tower information
 				        }
 			            else if (tmpCount == 2) {
+			            	// Load tower texture
 			            	tmpStr = buf.split("::");
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	tmpTwr = new Tower(resID);
 			            }
 			            else if (tmpCount == 3) {
+			            	// Tower title(name)
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.title = tmpStr[1].trim();
 			            }
 			            else if (tmpCount == 4) {
+			            	// Tower size
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpTwr.width = recalc.getX();
 			            	tmpTwr.height = recalc.getX();
-			            }
+			            }			            
 			            else if (tmpCount == 5) {
+			            	// Tower price
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.price = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 6) {
+			            	//Tower resell value
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.resellPrice = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 7) {
+			            	//Tower minimum damage
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.minDamage = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 8) {
+			            	//Tower maximum damage
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.maxDamage = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 9) {
+			            	//Tower velocity of bullets
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpTwr.velocity = recalc.getX();
 			            }
 			            else if (tmpCount == 10) {
+			            	//Cooldown between each shot
 			            	tmpStr = buf.split("::");
-			            	tmpTwr.cooldown = Integer.parseInt(tmpStr[1].trim());
+			            	tmpTwr.coolDown = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 11) {
+			            	// Special ability if the tower has any
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.specialAbility = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 12) {
+			            	// 1 upgrade (LEFT)
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.upgrade1 = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 13) {
+			            	// 2 upgrade (RIGHT)
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.upgrade2 = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 14) {
+			            	// Tower range
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpTwr.range = recalc.getX();
+			            }
+			            else if (tmpCount == 15) {
+			            	// Shot texture
+			            	tmpStr = buf.split("::");
+			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
+			            	tmpTwr.relatedShot = new Shot(resID, tmpTwr);
+			            }
+			            else if (tmpCount == 16) {
+			            	// Shot size
+			            	tmpStr = buf.split("::");
+			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
+			            	tmpTwr.relatedShot.width = recalc.getX();
+			            	tmpTwr.relatedShot.height = recalc.getX();
 			            	towerList[twrNbr] = tmpTwr;
 			            	twrNbr++;
 			            	tmpCount = 0;
@@ -138,7 +165,6 @@ public class TowerLoader {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

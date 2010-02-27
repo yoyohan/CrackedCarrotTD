@@ -35,14 +35,20 @@ public class WaveLoader {
 	 * @param  String	The filename of the requested file
  	 * @return Level[]  A list of Level objects			
 	 */
-	public Level[] readWave(String waveFile){
+	public Level[] readWave(String waveFile,int difficulty){
 		int resID = context.getResources().getIdentifier(waveFile, "raw", context.getPackageName());
 		in = context.getResources().openRawResource(resID);
 		int i = 0;
 		int lineNo = 0;
 		int lvlNbr = 0;
 		int tmpCount = 0;
+		String tmpStr[] = null;
 		Level tmpLvl = null;
+		double gameDifficulty;
+		
+		if (difficulty == 2) gameDifficulty = 1;
+		if (difficulty == 3) gameDifficulty = 1.2;
+		else gameDifficulty = 0.8;
 		
 		try {
 			String buf = "";
@@ -54,11 +60,12 @@ public class WaveLoader {
 				else if(c == '\n'){
 					lineNo++;
 
-					if(lineNo <= 3){
+					if(lineNo <= 1){
 						//Contains info about the file. Do nothing here.
 					}
-					else if(lineNo == 4){
-						levelList = new Level[Integer.parseInt(buf.trim())];
+					else if(lineNo == 2){
+		            	tmpStr = buf.split("::");
+						levelList = new Level[Integer.parseInt(tmpStr[1].trim())];
 					}
 					else{
 			            tmpCount++;
@@ -66,11 +73,13 @@ public class WaveLoader {
 				        	// Do nothing. This line contains wave info
 				        }
 			            else if (tmpCount == 2) {
-							resID = context.getResources().getIdentifier(buf.trim(), "drawable", context.getPackageName());
+			            	tmpStr = buf.split("::");
+			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	tmpLvl = new Level(resID);
 			            }
 			            else if (tmpCount == 3) {
-			            	Coords recalc = scaler.scale(Integer.parseInt(buf.trim()),0);
+			            	tmpStr = buf.split("::");
+			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpLvl.width = recalc.getX();
 			            	tmpLvl.height = recalc.getX();
 			            	
@@ -79,16 +88,21 @@ public class WaveLoader {
 			            	tmpLvl.velocity = recalc.getX();
 			            }
 			            else if (tmpCount == 4) {
-			            	tmpLvl.health = Integer.parseInt(buf.trim());
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.health = Integer.parseInt(tmpStr[1].trim());
+			            	tmpLvl.health = (int)(tmpLvl.health * gameDifficulty);
 			            }
 			            else if (tmpCount == 5) {
-			            	tmpLvl.specialAbility = Integer.parseInt(buf.trim());
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.specialAbility = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 6) {
-			            	tmpLvl.goldValue = Integer.parseInt(buf.trim());
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.goldValue = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 7) {
-			            	tmpLvl.nbrCreatures = Integer.parseInt(buf.trim());
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;
 			            	tmpCount = 0;

@@ -14,6 +14,8 @@ specialAbility::0
 upgradelink1::1
 upgradelink2::-1
 range::150
+Shot texture::skate3
+Shot size::16
 //Tower arrow Lvl 2
 texture::skate2
 title::Arrow tower lvl 2
@@ -28,6 +30,8 @@ specialAbility::0
 upgradelink1::2
 upgradelink2::-1
 range::150
+Shot texture::skate3
+Shot size::16
 //Tower arrow Lvl 3
 texture::skate2
 title::Arrow tower lvl 3
@@ -42,4 +46,6 @@ specialAbility::0
 upgradelink1::-1
 upgradelink2::-1
 range::150
+Shot texture::skate3
+Shot size::16
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
