@@ -23,8 +23,11 @@ typedef struct {
     jfieldID textureName;
 	
 	
+	GLsizeiptr vertBufSize;
 	GLfloat* vertBuffer;
+	GLsizeiptr textCoordBufSize;
 	GLfloat* textureCoordBuffer;
+	GLsizeiptr indexBufSize;
 	GLuint* indexBuffer;
 	GLuint 	indexCount;
 	
@@ -37,3 +40,5 @@ enum bufferTag {
 	VERT_OBJECT = 1,
 	TEX_OBJECT	= 2
 };
+
+void initHwBuffers(GLSprite* sprite);

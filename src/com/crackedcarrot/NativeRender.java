@@ -121,39 +121,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		sprites[type] = spriteArray;
 	}
 	
-/*	public int loadBitmap(Context context, int resourceId){
-		
-		//TODO Move loading code over to c library.
-		
-		InputStream is = context.getResources().openRawResource(resourceId);
-		Bitmap bitmap;
-		
-		i
-		
-		try{
-			bitmap = BitmapFactory.decodeStream(is, null, sBitmapOptions);
-		}finally{
-				try{
-					is.close();
-				}catch(IOException e){
-					
-				}
-		}
-		
-        mCropWorkspace[0] = 0;
-        mCropWorkspace[1] = bitmap.getHeight();
-        mCropWorkspace[2] = bitmap.getWidth();
-        mCropWorkspace[3] = -bitmap.getHeight();
-                
-        ByteBuffer buf = ByteBuffer.allocateDirect(10000);
-        bitmap.copyPixelsToBuffer(buf);
-        
-        nativeLoadTexture();
-        
-		bitmap.recycle();
-		return 0;
-	}*/
-	
 	public int loadBitmap(Context context, GL10 gl, int resourceId) {
         int textureName = -1;
         if (context != null && gl != null) {

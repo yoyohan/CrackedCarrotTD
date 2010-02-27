@@ -33,10 +33,9 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
 						"Loading Texture for SpriteNo %d \n", spriteNO);
+	GLSprite* thisSprite = &renderSprites[spriteNO];			
 	
-	GLSprite* sprites = renderSprites;
-	
-	sprites[spriteNO].object = (*env)->NewGlobalRef(env,sprite);
+	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
 	
 		//Get GLSprite class and renderable class.
 	jclass class = (*env)->GetObjectClass(env, sprite);
@@ -44,55 +43,118 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	
 		//cache the x,y,z pos ID
 	jfieldID id = (*env)->GetFieldID(env, class, "x", "F");
-	sprites[spriteNO].x = id;
+	thisSprite->x = id;
 	id = (*env)->GetFieldID(env, class, "y", "F");
-	sprites[spriteNO].y = id;
+	thisSprite->y = id;
 	id = (*env)->GetFieldID(env, class, "z", "F");
-	sprites[spriteNO].z = id;
+	thisSprite->z = id;
 	
 		//cache the width/height IDs
 	id = (*env)->GetFieldID(env, class, "width", "F");
-	sprites[spriteNO].width = id;
+	thisSprite->width = id;
 	id = (*env)->GetFieldID(env, class, "height", "F");
-	sprites[spriteNO].height = id;
+	thisSprite->height = id;
 	
 	id = (*env)->GetFieldID(env, class, "draw", "Z");
-	sprites[spriteNO].draw = id;
+	thisSprite->draw = id;
 		//cache TextureName
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
-	sprites[spriteNO].textureName = id;
+	thisSprite->textureName = id;
 	
-	sprites[spriteNO].vertBuffer = malloc(sizeof(GLfloat) * 4 * 3);
-	sprites[spriteNO].textureCoordBuffer = malloc(sizeof(GLfloat) * 4 * 2);
-	sprites[spriteNO].indexBuffer = malloc(sizeof(GLuint) * 6);
-	sprites[spriteNO].indexCount = 6;
+	thisSprite->vertBufSize = sizeof(GLfloat) * 4 * 3;
+	thisSprite->textCoordBufSize = sizeof(GLfloat) * 4 * 2;
+	thisSprite->indexBufSize = sizeof(GLuint) * 6;
 	
-	GLuint* indexBuffer = sprites[spriteNO].indexBuffer;
+	thisSprite->vertBuffer = malloc(thisSprite->vertBufSize);
+	thisSprite->textureCoordBuffer = malloc(thisSprite->textCoordBufSize);
+	thisSprite->indexBuffer = malloc(thisSprite->indexBufSize);
+	thisSprite->indexCount = 6;
 	
+	GLuint* indexBuffer = thisSprite->indexBuffer;
+	
+	
+	//This be the vertex order for our quad, its totaly square man.
 	indexBuffer[0] = 0;
 	indexBuffer[1] = 1;
 	indexBuffer[2] = 2;
-	indexBuffer[3] = 3;
+	indexBuffer[3] = 0;
 	indexBuffer[4] = 2;
-	indexBuffer[5] = 1;
+	indexBuffer[5] = 3;
 	
-	GLfloat* vertBuffer = sprites[spriteNO].vertBuffer;
+	GLfloat* vertBuffer = thisSprite->vertBuffer;
 	
-		
+	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
+	
+	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
+	
+	
+	//VERT1
+	vertBuffer[0] = 0.0;
+	vertBuffer[1] = 0.0;
+	vertBuffer[2] = 0.0;	
+	//VERT2
+	vertBuffer[3] = 0.0;
+	vertBuffer[4] = height;
+	vertBuffer[5] = 0.0;
+	//VERT3
+	vertBuffer[6] = width;
+	vertBuffer[7] = height;
+	vertBuffer[8] = 0.0;
+	//VERT4
+	vertBuffer[9] = width;
+	vertBuffer[10] = 0.0;
+	vertBuffer[11] = 0.0;
+	//WOOO I CAN HAS QUAD!
+	
+	
+	GLfloat* textureCoordBuffer = thisSprite->textureCoordBuffer;
+	//Texture Coords
+	textureCoordBuffer[0] = 0.0;
+	textureCoordBuffer[1] = 1.0;
+	
+	textureCoordBuffer[2] = 0.0;
+	textureCoordBuffer[3] = 0.0;
+	
+	textureCoordBuffer[4] = 1.0;
+	textureCoordBuffer[5] = 0.0;
+	
+	textureCoordBuffer[6] = 1.0;
+	textureCoordBuffer[7] = 1.0;
+	
+	//Init of our quad is done.
+	
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
 						"Texture X:%f Texture Y:%f Texture Z:%f\n",
-						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].x),
-						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].y),
-						(*env)->GetFloatField(env,sprites[spriteNO].object,sprites[spriteNO].z));*/
+						(*env)->GetFloatField(env,thisSprite->object,thisSprite->x),
+						(*env)->GetFloatField(env,thisSprite->object,thisSprite->y),
+						(*env)->GetFloatField(env,thisSprite->object,thisSprite->z));*/
 	
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
 						"The texture id is: ‰d",
-						(*env)->GetIntField(env,sprites[spriteNO].object, sprites[spriteNO].textureName));*/
-						
-						
+						(*env)->GetIntField(env,thisSprite->object, thisSprite->textureName));*/
 	
+	initHwBuffers(thisSprite);					
+	
+}
+
+void initHwBuffers(GLSprite* sprite){
+	
+	glGenBuffers(3, sprite->bufferName);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[VERT_OBJECT]);
+	glBufferData(GL_ARRAY_BUFFER, sprite->vertBufSize, sprite->vertBuffer, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[TEX_OBJECT]);
+	glBufferData(GL_ARRAY_BUFFER, sprite->textCoordBufSize, sprite->textureCoordBuffer,GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sprite->indexBufSize, sprite->indexBuffer, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
@@ -123,10 +185,8 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	GLSprite* sprites = renderSprites;
 	GLint prevTexture = -1;
 	GLint currTexture = 0;
-	GLfloat* vertBuffer;
-	GLfloat* textureCoordBuffer;
-	GLuint* indexBuffer;
-	GLuint  indexCount;
+	GLuint* bufferName;
+	GLuint indexCount;
 		//	glMatrixMode(GL_MODELVIEW);
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,10 +198,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		
 		if((*env)->GetBooleanField(env,sprites[i].object, sprites[i].draw)){
 			
-			vertBuffer 			= sprites[i].vertBuffer;
-			textureCoordBuffer 	= sprites[i].textureCoordBuffer;
-			indexBuffer			= sprites[i].indexBuffer;
-			indexCount			= sprites[i].indexCount;
+			bufferName = sprites[i].bufferName;
+			indexCount = sprites[i].indexCount;
+			
 			currTexture = (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName);
 			if(currTexture != prevTexture){ 
 				glBindTexture(GL_TEXTURE_2D, currTexture);
@@ -154,12 +213,12 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 						(*env)->GetFloatField(env, sprites[i].object, sprites[i].y),
 						(*env)->GetFloatField(env, sprites[i].object, sprites[i].z));
 						
-			glBindBuffer(GL_ARRAY_BUFFER, *vertBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 			glVertexPointer(3, GL_FLOAT, 0, 0);
-			glBindBuffer(GL_ARRAY_BUFFER, *textureCoordBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
 			glTexCoordPointer(2, GL_FLOAT, 0, 0);
 			
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
 			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
