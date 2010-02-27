@@ -133,10 +133,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
 						"The texture id is: ‰d",
-						(*env)->GetIntField(env,thisSprite->object, thisSprite->textureName));*/
-	
-	initHwBuffers(thisSprite);					
-	
+						(*env)->GetIntField(env,thisSprite->object, thisSprite->textureName));*/	
 }
 
 void initHwBuffers(GLSprite* sprite){
@@ -167,12 +164,12 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);
+	glOrthof(0.0f, w, 0.0f, h, 0.1f, 10.0f);
 	
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
+	//glDepthMask(GL_TRUE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
 	glEnable(GL_TEXTURE_2D);
@@ -233,6 +230,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
+	int i = 0;
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glClearColor(0.5f, 0.5f, 0.5f, 1);
 	glShadeModel(GL_FLAT);
@@ -247,8 +245,15 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATE", "The surface has been created.\n");
-
+	for(i = 0; i < noOfSprites; i++){
+		GLSprite* thisSprite = &renderSprites[i];
+		initHwBuffers(thisSprite);
+		int err = glGetError();
+		__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_INITHW", "Hardware Init repports error: %d  (0 = success)", err);
+		
+	}
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATE", "The surface has been created.");
+	
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
