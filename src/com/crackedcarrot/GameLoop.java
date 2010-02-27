@@ -192,7 +192,7 @@ public class GameLoop implements Runnable {
     		
     		Shot object = mShot[x];
     		// Decrease the coolDown variable and check if it has reached zero
-    		//Log.d("hejsanhopp", ""+object.tmpCoolDown);
+
     		object.tmpCoolDown = object.tmpCoolDown - timeDeltaSeconds;
     		if (!object.draw && (object.tmpCoolDown <= 0)) {
     			// If the tower/shot is existing start calculations.
