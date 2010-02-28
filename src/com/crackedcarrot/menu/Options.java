@@ -3,6 +3,7 @@ package com.crackedcarrot.menu;
 import com.crackedcarrot.menu.R;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 public class Options extends Activity {
@@ -11,6 +12,8 @@ public class Options extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.options);      
-              
+          
+        /** Ensures that the activity is displayed only in the portrait orientation */
+    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

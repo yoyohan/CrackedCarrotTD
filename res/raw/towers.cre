@@ -1,0 +1,51 @@
+// Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
+Total number of towers::3
+//Tower arrow
+texture::skate2
+title::Arrow tower lvl 1
+size::64
+price::10
+resell value::8
+minDamage::10
+maxDamage::15
+velocity::250
+cooldown::2
+specialAbility::0
+upgradelink1::1
+upgradelink2::-1
+range::150
+Shot texture::skate3
+Shot size::16
+//Tower arrow Lvl 2
+texture::skate2
+title::Arrow tower lvl 2
+size::64
+price::100
+resell value::75
+minDamage::100
+maxDamage::150
+velocity::250
+cooldown::2
+specialAbility::0
+upgradelink1::2
+upgradelink2::-1
+range::150
+Shot texture::skate3
+Shot size::16
+//Tower arrow Lvl 3
+texture::skate2
+title::Arrow tower lvl 3
+size::64
+price::1000
+resell value::75
+minDamage::1000
+maxDamage::1500
+velocity::250
+cooldown::2
+specialAbility::0
+upgradelink1::-1
+upgradelink2::-1
+range::150
+Shot texture::skate3
+Shot size::16
+// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
