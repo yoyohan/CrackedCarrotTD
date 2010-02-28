@@ -1,0 +1,8 @@
+// MAPNAME: LEVEL 1 | AUTHOR: CRACKEDCARROT | First 3 lines will not be read by the loader.
+// Line 4: Background image(without file extension) | Line5: number of waypoints on the map 
+// Line6 - Line(6 + nbrOfwaypoints): each waypoint xcord,ycord,waypointNbr
+background2
+2
+10,400,0
+380,400,1
+// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

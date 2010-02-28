@@ -3,12 +3,9 @@ package com.crackedcarrot.fileloader;
 import java.io.IOException;
 import java.io.InputStream;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.Waypoints;
-import com.crackedcarrot.menu.R;
 
 
 /**
@@ -68,10 +65,10 @@ public class MapLoader {
 
 				        // Gamemap
 						Sprite background = new Sprite(resID);
-						BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
-				        Bitmap backgoundBitmap = backgroundImage.getBitmap();
-				        background.width = backgoundBitmap.getWidth();
-				        background.height = backgoundBitmap.getHeight();
+						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
+				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
+				        background.width = s.getX();
+				        background.height = s.getY();
 				        bckgrd = new Sprite[1];
 				        bckgrd[0] = background;
 					}

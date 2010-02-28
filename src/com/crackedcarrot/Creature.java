@@ -19,12 +19,12 @@ public class Creature extends Sprite{
     public int direction;
     // Delay before spawning the creature to the map
     public int spawndelay;
-    // Value of the creature 
+    // How much gold this creature gives when it's killed.
     public int goldValue;
     // Creature special ability
     public int specialAbility;
-	
-    public Creature(int resourceId){
+    
+	public Creature(int resourceId){
 		super(resourceId);
 		super.draw = false;
 		nextWayPoint = 0;
@@ -40,7 +40,6 @@ public class Creature extends Sprite{
 	    this.goldValue = cr.goldValue;
 	    this.specialAbility = cr.goldValue;
 	    super.mResourceId = cr.mResourceId;
-	    super.mTextureName = cr.mTextureName;
 	}
 
 	public void updateWayPoint (){
