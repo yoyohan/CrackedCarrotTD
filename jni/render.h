@@ -41,4 +41,4 @@ enum bufferTag {
 	TEX_OBJECT	= 2
 };
 
-void initHwBuffers(GLSprite* sprite);
+void initHwBuffers(JNIEnv* env, GLSprite* sprite);

@@ -84,9 +84,8 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	GLfloat* vertBuffer = thisSprite->vertBuffer;
 	
 	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
-	
 	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
-	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC", "Setting verts useing: %f , %f", width, height);
 	
 	//VERT1
 	vertBuffer[0] = 0.0;
@@ -136,7 +135,18 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 						(*env)->GetIntField(env,thisSprite->object, thisSprite->textureName));*/	
 }
 
-void initHwBuffers(GLSprite* sprite){
+void initHwBuffers(JNIEnv* env, GLSprite* sprite){
+	
+	
+	float w = (*env)->GetFloatField(env, sprite->object, sprite->width);
+	float h = (*env)->GetFloatField(env, sprite->object, sprite->height);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "sprite has width: %f and hegiht %f", w,h);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "init HW buffers useing data:");
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Indices : %d %d %d %d %d %d",
+						sprite->indexBuffer[0], sprite->indexBuffer[1], sprite->indexBuffer[2],
+						sprite->indexBuffer[3],sprite->indexBuffer[4],sprite->indexBuffer[5]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Triangle 0: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[1],sprite->vertBuffer[2]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Triangle 1: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[2],sprite->vertBuffer[3]);
 	
 	glGenBuffers(3, sprite->bufferName);
 	
@@ -206,9 +216,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			}
 		
 		
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Drawing quad for sprite %d useing data:", i);
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 0: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[1],sprites[0].vertBuffer[2]);
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 1: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[2],sprites[0].vertBuffer[3]);
+			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Drawing quad for sprite %d useing data:", i);
+			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 0: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[1],sprites[0].vertBuffer[2]);
+			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 1: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[2],sprites[0].vertBuffer[3]);
 			glPushMatrix();
 			glLoadIdentity();
 			glTranslatef((*env)->GetFloatField(env, sprites[i].object, sprites[i].x),
@@ -252,7 +262,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glMatrixMode(GL_MODELVIEW);
 	for(i = 0; i < noOfSprites; i++){
 		GLSprite* thisSprite = &renderSprites[i];
-		initHwBuffers(thisSprite);
+		initHwBuffers(env, thisSprite);
 		int err = glGetError();
 		__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_INITHW", "Hardware Init repports error: %d  (0 = success)", err);
 		
