@@ -31,8 +31,8 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 													 jint spriteNO, 
 													 jobject sprite){
 	
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-						"Loading Texture for SpriteNo %d \n", spriteNO);
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
+	//					"Loading Texture for SpriteNo %d \n", spriteNO);
 	GLSprite* thisSprite = &renderSprites[spriteNO];			
 	
 	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
@@ -152,6 +152,7 @@ void initHwBuffers(GLSprite* sprite){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sprite->indexBufSize, sprite->indexBuffer, GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
@@ -204,6 +205,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 				prevTexture = currTexture;
 			}
 		
+		
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Drawing quad for sprite %d useing data:", i);
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 0: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[1],sprites[0].vertBuffer[2]);
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 1: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[2],sprites[0].vertBuffer[3]);
 			glPushMatrix();
 			glLoadIdentity();
 			glTranslatef((*env)->GetFloatField(env, sprites[i].object, sprites[i].x),
@@ -244,7 +249,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glDisable(GL_LIGHTING);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	glMatrixMode(GL_MODELVIEW);
 	for(i = 0; i < noOfSprites; i++){
 		GLSprite* thisSprite = &renderSprites[i];
 		initHwBuffers(thisSprite);
