@@ -39,7 +39,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private Context mContext;
 	private static BitmapFactory.Options sBitmapOptions
     = new BitmapFactory.Options();
-
+	
+	private GL10 glcontext;
+	
 	public NativeRender(Context context) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
@@ -64,9 +66,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		nativeSurfaceCreated();
-		for(int i = 0; i < sprites.length; i++){
-            if(sprites[i] != null){
+		glcontext = gl;
+		for(int i = 0; i < renderList.length; i++){
+            if(renderList[i] != null){
 	            // If we are using hardware buffers and the screen lost context
 	            // then the buffer indexes that we recorded previously are now
 	            // invalid.  Forget them here and recreate them below.
@@ -81,32 +83,36 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	            int lastLoadedResource = -1;
 	            int lastTextureId = -1;
 	            
-	            for (int x = 0; x < sprites[i].length; x++) {
-	                int resource = sprites[i][x].getResourceId();
+	            for (int x = 0; x < renderList.length; x++) {
+	                int resource = renderList[i].getResourceId();
 	                if (resource != lastLoadedResource) {
 						lastTextureId = loadBitmap(mContext, gl, resource);
 	                    lastLoadedResource = resource;
 	                }
-	                sprites[i][x].setTextureName(lastTextureId);
+	                renderList[i].setTextureName(lastTextureId);
 	            }
             }else{
             	Log.d("JAVA_LOADTEXTURE", "No sprites of type: " + i + "No texture loaded.");
             }
         }
+		nativeSurfaceCreated();
 	}
 	
 	public void finalizeSprites() {
 		int listSize = 0;
 		for(int i = 0; i < sprites.length; i++){
+			if(sprites[i] != null)
 			listSize += sprites[i].length;
 		}
 		
         renderList = new Sprite[listSize];
         
         for(int i = 0, j = 0; i < sprites.length; i++){
-        	for(int k = 0; k < sprites[i].length; k++){
-        		renderList[j] = sprites[i][k];
-        		j++;
+        	if(sprites[i] != null){
+        		for(int k = 0; k < sprites[i].length; k++){
+        			renderList[j] = sprites[i][k];
+        			j++;
+        		}
         	}
         }
         
@@ -121,7 +127,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		sprites[type] = spriteArray;
 	}
 	
-	public int loadBitmap(Context context, GL10 gl, int resourceId) {
+	public int loadBitmap(int resourceId){
+		return loadBitmap(mContext, glcontext, resourceId);
+	}
+	
+	private int loadBitmap(Context context, GL10 gl, int resourceId) {
         int textureName = -1;
         if (context != null && gl != null) {
             gl.glGenTextures(1, mTextureNameWorkspace, 0);

@@ -169,7 +169,7 @@ public class GameInit extends Activity {
     	towerList[0] = tmpTw;
 
     	// Sending data to GAME LOOP
-        simulationRuntime = new GameLoop();
+        simulationRuntime = new GameLoop(nativeRenderer);
         simulationRuntime.setCreatures(creatureList);
         simulationRuntime.setLevels(waveList);
         simulationRuntime.setWP(gameWaypoints);
@@ -177,29 +177,45 @@ public class GameInit extends Activity {
         simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
+        Sprite[] sp = gameMap.getBackground();
+        sp[0].x = 0;
+        sp[0].y = 0;
+        sp[0].z = 0;
+        
+        Sprite test = new Sprite(R.drawable.skate3);
+        
+        sp[0] = test;
+        test.width = 128;
+        test.height = 128;
+        test.x = 100;
+        test.y = 100;
+        test.z = 0;
+        
+        test.draw = true;
+        
+        nativeRenderer.setSprites(sp, NativeRender.BACKGROUND);
+        
+        //nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
+        //nativeRenderer.setSprites(towerList, NativeRender.TOWER);
+        //nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+        nativeRenderer.finalizeSprites();
+        
+        mGLSurfaceView.setRenderer(nativeRenderer);        
+        registerForContextMenu(mGLSurfaceView);
+        setContentView(mGLSurfaceView);
 
         // Sends an array with sprites to the renderer
-        nativeRenderer.setSprites(gameMap.getBackground(), NativeRender.BACKGROUND);
-        nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
-        nativeRenderer.setSprites(towerList, NativeRender.TOWER);
-        nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+
         // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
         // ritas men vi behöver texturen som ligger i varje "lvl"
         // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        nativeRenderer.finalizeSprites();
-        mGLSurfaceView.setRenderer(nativeRenderer);        
-
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
         // influence our results.
         Runtime r = Runtime.getRuntime();
         r.gc();
-        
-        registerForContextMenu(mGLSurfaceView);
-        
-        setContentView(mGLSurfaceView);
         // Start GameLoop
-        RenderThread.start();
+        //RenderThread.start();
     }
     
     public void onConfigurationChanged(Configuration newConfig) {

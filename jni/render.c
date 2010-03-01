@@ -5,7 +5,8 @@
 	//The number of idividual sprites.
 int noOfSprites = 0;
 	//Array with pointers to GLSprites.
-GLSprite* renderSprites;
+GLSprite* renderSprites = NULL;
+int spritesReady = 0;
 
 	//GLuint* textureNameWorkspace;
 	//GLuint* cropWorkspace;
@@ -77,7 +78,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	indexBuffer[0] = 0;
 	indexBuffer[1] = 1;
 	indexBuffer[2] = 2;
-	indexBuffer[3] = 0;
+	indexBuffer[3] = 1;
 	indexBuffer[4] = 2;
 	indexBuffer[5] = 3;
 	
@@ -85,23 +86,22 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	
 	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
 	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC", "Setting verts useing: %f , %f", width, height);
-	
+		
 	//VERT1
 	vertBuffer[0] = 0.0;
 	vertBuffer[1] = 0.0;
 	vertBuffer[2] = 0.0;	
 	//VERT2
-	vertBuffer[3] = 0.0;
-	vertBuffer[4] = height;
+	vertBuffer[3] = width;
+	vertBuffer[4] = 0.0;
 	vertBuffer[5] = 0.0;
 	//VERT3
-	vertBuffer[6] = width;
+	vertBuffer[6] = 0.0;
 	vertBuffer[7] = height;
 	vertBuffer[8] = 0.0;
 	//VERT4
 	vertBuffer[9] = width;
-	vertBuffer[10] = 0.0;
+	vertBuffer[10] = height;
 	vertBuffer[11] = 0.0;
 	//WOOO I CAN HAS QUAD!
 	
@@ -111,16 +111,25 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	textureCoordBuffer[0] = 0.0;
 	textureCoordBuffer[1] = 1.0;
 	
-	textureCoordBuffer[2] = 0.0;
-	textureCoordBuffer[3] = 0.0;
+	textureCoordBuffer[2] = 1.0;
+	textureCoordBuffer[3] = 1.0;
 	
-	textureCoordBuffer[4] = 1.0;
+	textureCoordBuffer[4] = 0.0;
 	textureCoordBuffer[5] = 0.0;
 	
 	textureCoordBuffer[6] = 1.0;
-	textureCoordBuffer[7] = 1.0;
+	textureCoordBuffer[7] = 0.0;
+	
+	thisSprite->bufferName[0] = 0;
+	thisSprite->bufferName[1] = 0;
+	thisSprite->bufferName[2] = 0;
+	
 	
 	//Init of our quad is done.
+	
+	//initHwBuffers(env, thisSprite);
+	
+	spritesReady = 1;
 	
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC", 
@@ -145,8 +154,10 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Indices : %d %d %d %d %d %d",
 						sprite->indexBuffer[0], sprite->indexBuffer[1], sprite->indexBuffer[2],
 						sprite->indexBuffer[3],sprite->indexBuffer[4],sprite->indexBuffer[5]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Triangle 0: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[1],sprite->vertBuffer[2]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Triangle 1: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[2],sprite->vertBuffer[3]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 0: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[1],sprite->vertBuffer[2]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 1: %f,%f,%f", sprite->vertBuffer[3],sprite->vertBuffer[4],sprite->vertBuffer[5]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 3: %f,%f,%f", sprite->vertBuffer[6],sprite->vertBuffer[7],sprite->vertBuffer[8]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 4: %f,%f,%f", sprite->vertBuffer[9],sprite->vertBuffer[10],sprite->vertBuffer[11]);
 	
 	glGenBuffers(3, sprite->bufferName);
 	
@@ -162,6 +173,10 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sprite->indexBufSize, sprite->indexBuffer, GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "IndexObject %d", sprite->bufferName[INDEX_OBJECT]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "VertObject  %d", sprite->bufferName[VERT_OBJECT]);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "TextureObject %d", sprite->bufferName[TEX_OBJECT]);
 		
 }
 
@@ -175,16 +190,17 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0.0f, w, 0.0f, h, 0.1f, 10.0f);
+	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);
 	
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
+	
 	//glDepthMask(GL_TRUE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
 	glEnable(GL_TEXTURE_2D);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
@@ -195,11 +211,14 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	GLint currTexture = 0;
 	GLuint* bufferName;
 	GLuint indexCount;
-		//	glMatrixMode(GL_MODELVIEW);
+	GLfloat* vertBuffer;
+	GLfloat* texCoordBuffer;
+	GLuint* indexBuffer; 
+	glMatrixMode(GL_MODELVIEW);
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_TEXTURE_2D);
 	
 	for (i = 0; i < noOfSprites; i++) {
 		//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
@@ -208,40 +227,56 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			
 			bufferName = sprites[i].bufferName;
 			indexCount = sprites[i].indexCount;
+			vertBuffer = sprites[i].vertBuffer;
+			texCoordBuffer = sprites[i].textureCoordBuffer;
+			indexBuffer = sprites[i].indexBuffer;
 			
 			currTexture = (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName);
-			if(currTexture != prevTexture){ 
-				glBindTexture(GL_TEXTURE_2D, currTexture);
-				prevTexture = currTexture;
-			}
+			//if(currTexture != prevTexture){ 
+			glBindTexture(GL_TEXTURE_2D, currTexture);
+			//	prevTexture = currTexture;
+			//}
 		
-		
-			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Drawing quad for sprite %d useing data:", i);
-			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 0: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[1],sprites[0].vertBuffer[2]);
-			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Triangle 1: %f,%f,%f", sprites[i].vertBuffer[0],sprites[i].vertBuffer[2],sprites[0].vertBuffer[3]);
 			glPushMatrix();
 			glLoadIdentity();
 			glTranslatef((*env)->GetFloatField(env, sprites[i].object, sprites[i].x),
 						(*env)->GetFloatField(env, sprites[i].object, sprites[i].y),
 						(*env)->GetFloatField(env, sprites[i].object, sprites[i].z));
-						
-			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
-			glVertexPointer(3, GL_FLOAT, 0, 0);
-			glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
-			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+		
+			//glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
+			glVertexPointer(3, GL_FLOAT, 0, vertBuffer);
 			
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
-			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
+			//glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
+			glTexCoordPointer(2, GL_FLOAT, 0, texCoordBuffer);
 			
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Texture:%d", currTexture);
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"RENDER USEING DATA:");
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Verts: { %f,%f,%f} { %f,%f,%f} { %f,%f,%f} { %f,%f,%f}",
+								vertBuffer[0],vertBuffer[1],vertBuffer[2],vertBuffer[3],
+								vertBuffer[4],vertBuffer[5],vertBuffer[6],vertBuffer[7],
+								vertBuffer[8],vertBuffer[9],vertBuffer[10],vertBuffer[11]);
+											
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "TextCoords: {%f,%f} {%f,%f} {%f,%f} {%f,%f}",
+								texCoordBuffer[0],texCoordBuffer[1],texCoordBuffer[2],texCoordBuffer[3],
+								texCoordBuffer[4],texCoordBuffer[5],texCoordBuffer[6],texCoordBuffer[7]);
+								
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Indices: {%d,%d,%d,%d,%d,%d}",
+								indexBuffer[0],indexBuffer[1],indexBuffer[2],indexBuffer[3],
+								indexBuffer[4],indexBuffer[5]);
+			
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "IndexCount: %d", indexCount);
+			
+			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
+			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, indexBuffer);
+			
+			//glBindBuffer(GL_ARRAY_BUFFER, 0);
+			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			
 			glPopMatrix();
-			
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
     }
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
@@ -249,6 +284,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	glClearColor(0.5f, 0.5f, 0.5f, 1);
 	glShadeModel(GL_FLAT);
+	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 	/*
 	 * By default, OpenGL enables features that improve quality but reduce
@@ -259,7 +295,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	glDisable(GL_LIGHTING);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
+		
 	for(i = 0; i < noOfSprites; i++){
 		GLSprite* thisSprite = &renderSprites[i];
 		initHwBuffers(env, thisSprite);
@@ -274,30 +310,3 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 	noOfSprites = 0;
 }
-
-/*jint Java_com_crackedcarrot_NativeRender_nativeLoadTexture(JNIEnv* env, jobject thiz, ????){
-	
-	GLuint* texture;
-	
-	glGenTextures(1, textureNameWorkspace, 0);
-	texture = textureNameWorkspace[0];
-	
-	glBindTexture(GL_TEXTURE_2D, texture);
-	
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	
-	texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
-	
-	mCropWorkspace[0] = 0;
-	mCropWorkspace[1] = bitmap.getHeight();
-	mCropWorkspace[2] = bitmap.getWidth();
-	mCropWorkspace[3] = -bitmap.getHeight();
-	
-	return *texture;
-}*/

@@ -2,6 +2,7 @@ package com.crackedcarrot;
 
 import com.crackedcarrot.fileloader.Level;
 
+import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -22,6 +23,11 @@ public class GameLoop implements Runnable {
     private long gameSpeed;
     private SoundManager soundManager;
     private Player player;
+    private NativeRender renderHandle;
+
+    public GameLoop(NativeRender handle){
+    	renderHandle = handle;
+    }
     
     public void run() { 
     	lvlNbr = 0;
@@ -44,6 +50,8 @@ public class GameLoop implements Runnable {
         		mCreatures[z].spawndelay = z * (int)(mCreatures[z].velocity * mCreatures[z].height * gameSpeed);
     		}
     		
+            renderHandle.finalizeSprites();
+
 			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
 	    		//Systemclock. Used to help determine speed of the game. 
