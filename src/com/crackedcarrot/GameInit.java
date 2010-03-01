@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -150,23 +152,11 @@ public class GameInit extends Activity {
         }        
         //We dont want to send an empty list of towers or shots  to then native renderer.        
         for (int i = 0; i < maxNbrTowers; i++) {
-        	Tower tmpTw = new Tower(R.drawable.skate2);
-        	Shot tmpSh = new Shot(R.drawable.skate3,tmpTw);
-            shotList[i] = tmpSh;
+    		Tower tmpTw = new Tower(R.drawable.skate2);
+    		tmpTw.relatedShot = new Shot(R.drawable.skate3,tmpTw);
+        	shotList[i] = tmpTw.relatedShot;
         	towerList[i] = tmpTw;
         }
-        
-        // TODO: Only needed until we have real way to place towers on the map
-        Coords recalc;
-    	Tower tmpTw = allTowers[0];
-    	tmpTw.draw = true; //Tower drawable
-    	Shot tmpSh = tmpTw.relatedShot;
-    	recalc = res.scale(220,300);
-    	tmpTw.x = recalc.getX();//Tower location x
-        tmpTw.y = recalc.getY();//Tower location y
-        tmpTw.resetShotCordinates();//Same location of Shot as midpoint of Tower
-        shotList[0] = tmpSh;
-    	towerList[0] = tmpTw;
 
     	// Sending data to GAME LOOP
         simulationRuntime = new GameLoop();
@@ -174,10 +164,22 @@ public class GameInit extends Activity {
         simulationRuntime.setLevels(waveList);
         simulationRuntime.setWP(gameWaypoints);
         simulationRuntime.setTowers(towerList);
+        simulationRuntime.setAllTowers(allTowers);
+        simulationRuntime.setScaler(res);
         simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
-
+        
+        //Will try to create 50 different towers of type 0        
+    	Random rand = new Random();
+        for (int i = 0; i < 50; i++) {
+        	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
+        	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));
+        	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
+        	boolean test = simulationRuntime.createTower(tmp, 0);
+        	Log.d("Towercreate status:","" + test);
+        }
+        
         // Sends an array with sprites to the renderer
         nativeRenderer.setSprites(gameMap.getBackground(), NativeRender.BACKGROUND);
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);

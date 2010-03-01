@@ -1,9 +1,7 @@
 package com.crackedcarrot;
-
-import com.crackedcarrot.fileloader.Level;
-
 import android.os.SystemClock;
 import android.util.Log;
+import com.crackedcarrot.fileloader.Level;
 
 /**
  * A runnable that updates the position of each creature and projectile
@@ -14,6 +12,8 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[] mLvl;
     private Tower[] mTower;
+    private int totalNumberOfTowers = 0;
+    private Tower[] mAllTowers;
     private long mLastTime;
     private int lvlNbr;
     private int remainingCreatures;
@@ -22,11 +22,20 @@ public class GameLoop implements Runnable {
     private long gameSpeed;
     private SoundManager soundManager;
     private Player player;
+    private Scaler mScaler;
     
     public void run() { 
     	lvlNbr = 0;
 	    gameSpeed = 1;
 
+	    //Sleep to give renderer time to finish allocate
+	    try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
     	while(run){
     		Log.d("GAMELOOP","INIT GAMELOOP");
         	final long starttime = SystemClock.uptimeMillis();
@@ -34,19 +43,23 @@ public class GameLoop implements Runnable {
     		//The following line contains the code for initiating every level
     		/////////////////////////////////////////////////////////////////
     		remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-
+    		int reverse = remainingCreatures; 
     		for (int z = 0; z < remainingCreatures; z++) {
+    			reverse--;
     			// The following line is used to add the following wave of creatures to the list of creatures.
         		mCreatures[z].cloneCreature(mLvl[lvlNbr]);
     			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
         		mCreatures[z].x = wayP[0].x;
         		mCreatures[z].y = wayP[0].y;
-        		mCreatures[z].spawndelay = z * (int)(mCreatures[z].velocity * mCreatures[z].height * gameSpeed);
+        		mCreatures[z].draw = false;
+        		mCreatures[z].opacity = 1;
+        		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
     		}
     		
 			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
-    		while(remainingCreatures > 0 && run){
-	    		//Systemclock. Used to help determine speed of the game. 
+        	while(remainingCreatures > 0 && run){
+
+    			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
 				
 	            // Used to calculate creature movement.
@@ -56,21 +69,19 @@ public class GameLoop implements Runnable {
 	            mLastTime = time;
 	            
 	            //Calls the method that moves the creature.
-	            moveCreature(timeDeltaSeconds,time-starttime);
+	            moveCreature(timeDeltaSeconds,time);
 	            //Calls the method that handles the monsterkilling.
 	            killCreature(timeDeltaSeconds);
-
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.health < 1) {
             		//If you have lost all your lives then the game ends.
 	            	run = false;
-            	} 
+            	}
 	        }
-
-    		
     		player.calculateInterest();
-    		Log.d("GAMELOOP", "Money: " + player.money);
+    		// Allocates MEMORY, BIG NO
+    		//Log.d("GAMELOOP", "Money: " + player.money);
 
 
     		// Check if the GameLoop are to run the level loop one more time.
@@ -81,7 +92,7 @@ public class GameLoop implements Runnable {
         	} 
         	else if (remainingCreatures < 1) {
         		//If you have survied the entire wave without dying. Proceed to next next level.
-            	Log.d("GAMETHREAD", "Level " + lvlNbr + "complete");
+            	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
         		if (lvlNbr > mLvl.length) {
         			// You have completed this map
@@ -167,6 +178,7 @@ public class GameLoop implements Runnable {
 				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
 				if (object.opacity <= 0.0f) {
 					object.draw = false;
+	    			remainingCreatures --;
 				}
 			}
     	}
@@ -189,14 +201,14 @@ public class GameLoop implements Runnable {
     	//TODO: If we would use mTower.length.. The game will try to check all
     	//towers but since we only use one and don't have enabled buying
     	//we will wait with this loop.
-    	for (int x = 0; x < 1; x++) {
+    	for (int x = 0; x < mTower.length; x++) {
     		
     		Tower towerObject = mTower[x];
     		// Decrease the coolDown variable and check if it has reached zero
     		towerObject.tmpCoolDown = towerObject.tmpCoolDown - (timeDeltaSeconds * gameSpeed);
     		if (!towerObject.relatedShot.draw && (towerObject.tmpCoolDown <= 0)) {
     			// If the tower/shot is existing start calculations.
-    			towerObject.trackEnemy(mCreatures);
+    			towerObject.trackEnemy(mCreatures,mLvl[lvlNbr].nbrCreatures);
     			if (towerObject.targetCreature != null) {
     					// play shot1.mp3
     					soundManager.playSound(0);
@@ -205,14 +217,12 @@ public class GameLoop implements Runnable {
     			}
     		}
     		// if the creature is still alive or have not reached the goal
-    		if (towerObject.relatedShot.draw && towerObject.targetCreature.draw) {
+    		if (towerObject.relatedShot.draw && towerObject.targetCreature.draw && towerObject.targetCreature.opacity == 1.0) {
     			Creature targetCreature = towerObject.targetCreature;
 
     			float yDistance = (targetCreature.y+(targetCreature.height/2)) - towerObject.relatedShot.y;
     			float xDistance = (targetCreature.x+(targetCreature.width/2)) - towerObject.relatedShot.x;
     			double xyMovement = (towerObject.velocity * timeDeltaSeconds * gameSpeed);
-    			
- //   			Log.d("FEL",""+towerObject.relatedShot.x);
     			
     			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
 		    		towerObject.relatedShot.draw = false;
@@ -222,7 +232,6 @@ public class GameLoop implements Runnable {
 		    		if (targetCreature.health <= 0) {
 		    			//object.cre.draw = false;
 		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
-		    			remainingCreatures --;
 		    			player.money = player.money + targetCreature.goldValue;
 		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
@@ -299,5 +308,28 @@ public class GameLoop implements Runnable {
     public void setPlayer(Player p) {
     	this.player = p;
     }
+
+    public void setAllTowers(Tower[] allTw) {
+    	this.mAllTowers = allTw;
+    }
     
+    public void setScaler(Scaler scaler) {
+    	this.mScaler = scaler;
+    }
+    
+    public boolean createTower(Coords TowerPos, int towerType) {
+		if (mAllTowers.length > towerType && totalNumberOfTowers < mTower.length) {
+			mTower[totalNumberOfTowers].cloneTower(mAllTowers[towerType]);
+			mTower[totalNumberOfTowers].draw = true; //Tower drawable
+	    	Coords tmp = mScaler.getGridPos(TowerPos.x,TowerPos.y);//Tower location
+	    	mTower[totalNumberOfTowers].x = tmp.x;
+	    	mTower[totalNumberOfTowers].y = tmp.y;
+	    	mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
+	    	totalNumberOfTowers++;
+	    	return true;
+		}
+		else {
+			return false;
+		}
+    }
 }

@@ -3,27 +3,27 @@ Total number of levels::30
 // level 1
 Texture::skate1
 size::64
-health::20
+health::120
 specialability::0
 goldValue::1
 nbrOfCreaturs::20
 // level 2
 Texture::skate1
-size::64
-health::120
+size::128
+health::6000
 specialability::0
 goldValue::1
-nbrOfCreaturs::20
+nbrOfCreaturs::1
 // level 3
 Texture::skate1
-size::64
-health::120
+size::32
+health::300
 specialability::0
 goldValue::1
-nbrOfCreaturs::20
+nbrOfCreaturs::10
 // level 4
 Texture::skate1
-size::64
+size::16
 health::120
 specialability::0
 goldValue::1
@@ -31,10 +31,10 @@ nbrOfCreaturs::20
 // level 5
 Texture::skate1
 size::64
-health::120
+health::600
 specialability::0
 goldValue::1
-nbrOfCreaturs::20
+nbrOfCreaturs::5
 // level 6
 Texture::skate1
 size::64
@@ -45,10 +45,10 @@ nbrOfCreaturs::20
 // level 7
 Texture::skate1
 size::64
-health::120
+health::200
 specialability::0
 goldValue::1
-nbrOfCreaturs::20
+nbrOfCreaturs::15
 // level 8
 Texture::skate1
 size::64

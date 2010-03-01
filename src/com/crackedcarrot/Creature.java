@@ -18,7 +18,7 @@ public class Creature extends Sprite{
     // The current direction of the creature
     public int direction;
     // Delay before spawning the creature to the map
-    public int spawndelay;
+    public long spawndelay;
     // How much gold this creature gives when it's killed.
     public int goldValue;
     // Creature special ability
@@ -26,7 +26,7 @@ public class Creature extends Sprite{
     
 	public Creature(int resourceId){
 		super(resourceId);
-		super.draw = false;
+		this.draw = false;
 		nextWayPoint = 0;
 	}
 	

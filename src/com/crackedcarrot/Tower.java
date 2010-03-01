@@ -6,17 +6,10 @@ import java.util.Random;
 * Class defining a tower in the game
 */
 public class Tower extends Sprite{
-	
-	// The damage factor when calculating the damage
-	public static final int DAMFACTOR = 10;
 	// The current level of a tower
 	public int level;
 	// The current range of a tower
 	public float range;
-	// The type of Shot for a tower
-	public Shot shot;
-	// The current damage for a tower
-	public int damage;
 	// Tower title
 	public String title;
 	// Price for the tower
@@ -43,9 +36,12 @@ public class Tower extends Sprite{
     public float tmpCoolDown;
     // The current target creature
     public Creature targetCreature;
-	
+	// Random used to calculate damage
+    private Random rand;
+    
 	public Tower(int resourceId){
 		super(resourceId);
+		rand = new Random();
 	}
 
 	/**
@@ -55,7 +51,6 @@ public class Tower extends Sprite{
 	 * @return a random integer between a towers min- and max damage
 	 */
 	public int createDamage(){
-		Random rand = new Random();
 		int randomInt = rand.nextInt((this.maxDamage-this.minDamage)) + this.minDamage;
 		return randomInt;
 	}
@@ -65,9 +60,10 @@ public class Tower extends Sprite{
 	 * the first creature in the list that is within the range of the tower 
 	 * @param null 
 	 */
-	public void trackEnemy(Creature[] cres){
+	public void trackEnemy(Creature[] cres, int nbrCreatures){
 		targetCreature = null;
-		for(int i = 0;i < cres.length; i++ ){
+		
+		for(int i = 0;i < nbrCreatures; i++ ){
 			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
 				if(distance < range){ // Is the creature within tower range?
@@ -81,5 +77,28 @@ public class Tower extends Sprite{
 	public void resetShotCordinates() {
 		relatedShot.x = x + width/2;
 		relatedShot.y = y + height/2;	
+	}
+	
+	public void cloneTower(Tower temp) {
+		this.coolDown = temp.coolDown;
+		this.height = temp.height;
+		this.level = temp.level;
+		this.maxDamage = temp.maxDamage;
+		this.minDamage = temp.minDamage;
+		this.mResourceId = temp.mResourceId;
+		this.mTextureName = temp.mTextureName;
+		this.price = temp.price;
+		this.range = temp.range;
+		this.resellPrice = temp.resellPrice;
+		this.specialAbility = temp.specialAbility;
+		this.title = temp.title;
+		this.upgrade1 = temp.upgrade1;
+		this.upgrade2 = temp.upgrade2;
+		this.velocity = temp.velocity;
+		this.width = temp.width;
+		this.relatedShot.height = temp.relatedShot.height;
+		this.relatedShot.mResourceId = temp.relatedShot.mResourceId;
+		this.relatedShot.mTextureName = temp.relatedShot.mTextureName;
+		this.relatedShot.width = temp.relatedShot.width;
 	}
 }
