@@ -185,11 +185,11 @@ public class GameInit extends Activity {
         Sprite test = new Sprite(R.drawable.skate3);
         
         sp[0] = test;
-        test.width = 128;
-        test.height = 128;
-        test.x = 100;
-        test.y = 100;
-        test.z = 0;
+        test.width = 128.0f;
+        test.height = 128.0f;
+        test.x = 100.0f;
+        test.y = 100.0f;
+        test.z = 1.0f;
         
         test.draw = true;
         
@@ -206,8 +206,8 @@ public class GameInit extends Activity {
 
         // Sends an array with sprites to the renderer
 
-        // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
-        // ritas men vi behöver texturen som ligger i varje "lvl"
+        // Nï¿½t sï¿½nt hï¿½r skulle jag vilja att renderaren hanterar. Denna lista behï¿½ver aldig
+        // ritas men vi behï¿½ver texturen som ligger i varje "lvl"
         // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not

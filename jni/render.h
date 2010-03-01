@@ -28,7 +28,7 @@ typedef struct {
 	GLsizeiptr textCoordBufSize;
 	GLfloat* textureCoordBuffer;
 	GLsizeiptr indexBufSize;
-	GLuint* indexBuffer;
+	GLushort* indexBuffer;
 	GLushort 	indexCount;
 	
 	GLuint bufferName[3];

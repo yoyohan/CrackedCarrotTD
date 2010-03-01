@@ -71,7 +71,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->indexBuffer = malloc(thisSprite->indexBufSize);
 	thisSprite->indexCount = 6;
 	
-	GLuint* indexBuffer = thisSprite->indexBuffer;
+	GLushort* indexBuffer = thisSprite->indexBuffer;
 	
 	
 	//This be the vertex order for our quad, its totaly square man.
@@ -190,66 +190,67 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);
+	glOrthof(0.0f, w, 0.0f, h, 0.0f, 10.0f);
 	
 	glShadeModel(GL_FLAT);
-	glEnable(GL_BLEND);
-	//glEnable(GL_DEPTH_TEST);
-	//glDisable(GL_DEPTH_TEST);
-	
-	//glDepthMask(GL_TRUE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
+	
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
+	
+	/*
+	 * By default, OpenGL enables features that improve quality but reduce
+	 * performance. One might want to tweak that especially on software
+	 * renderer.
+	 */
+    glDisable(GL_DITHER);
+	glDisable(GL_LIGHTING);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+	
+	glClearColor(0.5f, 0.5f, 0.5f, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_MODELVIEW);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	
     int i;
-	GLSprite* sprites = renderSprites;
-	GLint prevTexture = -1;
-	GLint currTexture = 0;
-	GLuint* bufferName;
-	GLuint indexCount;
-	GLfloat* vertBuffer;
-	GLfloat* texCoordBuffer;
-	GLuint* indexBuffer; 
-	glMatrixMode(GL_MODELVIEW);
-	
+    
+    GLuint* bufferName;
+    GLint currTexture = -1;
+    GLint prevTexture = -2;
+    
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnable(GL_TEXTURE_2D);
 	
-	for (i = 0; i < noOfSprites; i++) {
-		//__android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, "Drawing sprite no:%d of a total:%d of type %d !\n", j, noOfType[i], i);
-		
-		if((*env)->GetBooleanField(env,sprites[i].object, sprites[i].draw)){
+	for (i = 0; i < noOfSprites; i++) {		
+		if((*env)->GetBooleanField(env,renderSprites[i].object, renderSprites[i].draw)){
 			
-			bufferName = sprites[i].bufferName;
-			indexCount = sprites[i].indexCount;
-			vertBuffer = sprites[i].vertBuffer;
-			texCoordBuffer = sprites[i].textureCoordBuffer;
-			indexBuffer = sprites[i].indexBuffer;
+			bufferName = renderSprites[i].bufferName;
 			
-			currTexture = (*env)->GetIntField(env,sprites[i].object, sprites[i].textureName);
-			//if(currTexture != prevTexture){ 
-			glBindTexture(GL_TEXTURE_2D, currTexture);
-			//	prevTexture = currTexture;
-			//}
+			currTexture = (*env)->GetIntField(env,renderSprites[i].object, renderSprites[i].textureName);
+			if(currTexture != prevTexture){ 
+			    glBindTexture(GL_TEXTURE_2D, currTexture);
+				prevTexture = currTexture;
+			}
 		
 			glPushMatrix();
 			glLoadIdentity();
-			glTranslatef((*env)->GetFloatField(env, sprites[i].object, sprites[i].x),
-						(*env)->GetFloatField(env, sprites[i].object, sprites[i].y),
-						(*env)->GetFloatField(env, sprites[i].object, sprites[i].z));
+			glTranslatef((*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].x),
+						(*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].y),
+						(*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].z));
 		
-			//glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
-			glVertexPointer(3, GL_FLOAT, 0, vertBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
+			glVertexPointer(3, GL_FLOAT, 0, 0);
 			
-			//glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
-			glTexCoordPointer(2, GL_FLOAT, 0, texCoordBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
 			
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Texture:%d", currTexture);
+			/*__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Texture:%d", currTexture);
 			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"RENDER USEING DATA:");
 			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Verts: { %f,%f,%f} { %f,%f,%f} { %f,%f,%f} { %f,%f,%f}",
 								vertBuffer[0],vertBuffer[1],vertBuffer[2],vertBuffer[3],
@@ -260,17 +261,20 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 								texCoordBuffer[0],texCoordBuffer[1],texCoordBuffer[2],texCoordBuffer[3],
 								texCoordBuffer[4],texCoordBuffer[5],texCoordBuffer[6],texCoordBuffer[7]);
 								
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Indices: {%d,%d,%d,%d,%d,%d}",
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Indices: {%u,%u,%u,%u,%u,%u}",
 								indexBuffer[0],indexBuffer[1],indexBuffer[2],indexBuffer[3],
 								indexBuffer[4],indexBuffer[5]);
 			
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "IndexCount: %d", indexCount);
+			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "IndexCount: %u", indexCount);
+			*/
 			
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
-			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, indexBuffer);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
+			glDrawElements(GL_TRIANGLES, renderSprites[i].indexCount, GL_UNSIGNED_SHORT, 0);
 			
-			//glBindBuffer(GL_ARRAY_BUFFER, 0);
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			//__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "DrawElements returned error: %d ", glGetError());
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			
 			glPopMatrix();
 		}
@@ -280,22 +284,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
-	int i = 0;
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-	glClearColor(0.5f, 0.5f, 0.5f, 1);
-	glShadeModel(GL_FLAT);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_TEXTURE_2D);
-	/*
-	 * By default, OpenGL enables features that improve quality but reduce
-	 * performance. One might want to tweak that especially on software
-	 * renderer.
-	 */
-	glDisable(GL_DITHER);
-	glDisable(GL_LIGHTING);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+	int i;		
 	for(i = 0; i < noOfSprites; i++){
 		GLSprite* thisSprite = &renderSprites[i];
 		initHwBuffers(env, thisSprite);
