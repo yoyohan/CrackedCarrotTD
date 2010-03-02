@@ -91,7 +91,7 @@ public class GameInit extends Activity {
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
         mGLSurfaceView = new GLSurfaceView(this);
-        NativeRender nativeRenderer = new NativeRender(this);
+        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
@@ -159,7 +159,7 @@ public class GameInit extends Activity {
         }
 
     	// Sending data to GAME LOOP
-        simulationRuntime = new GameLoop();
+        simulationRuntime = new GameLoop(nativeRenderer);
         simulationRuntime.setCreatures(creatureList);
         simulationRuntime.setLevels(waveList);
         simulationRuntime.setWP(gameWaypoints);
@@ -185,21 +185,25 @@ public class GameInit extends Activity {
         nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         nativeRenderer.setSprites(towerList, NativeRender.TOWER);
         nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+                
         // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
         // ritas men vi behöver texturen som ligger i varje "lvl"
         // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        nativeRenderer.finalizeSprites();
+        
         mGLSurfaceView.setRenderer(nativeRenderer);        
+        registerForContextMenu(mGLSurfaceView);
+        setContentView(mGLSurfaceView);
 
+        // Sends an array with sprites to the renderer
+
+        // Nï¿½t sï¿½nt hï¿½r skulle jag vilja att renderaren hanterar. Denna lista behï¿½ver aldig
+        // ritas men vi behï¿½ver texturen som ligger i varje "lvl"
+        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
         // influence our results.
         Runtime r = Runtime.getRuntime();
         r.gc();
-        
-        registerForContextMenu(mGLSurfaceView);
-        
-        setContentView(mGLSurfaceView);
         // Start GameLoop
         RenderThread.start();
     }
