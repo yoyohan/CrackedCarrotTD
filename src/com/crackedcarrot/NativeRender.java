@@ -121,20 +121,27 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	        	}
 	        }
 	        
-	        nativeDataPoolSize(renderList.length);
-	        
-	        for(int i = 0; i < renderList.length; i++){
-	        	final int j = i;
-	        	view.queueEvent(new Runnable(){
-				@Override
-				public void run() {
+	        //This needs to run on the render Thread to get access to the glContext.
+        	view.queueEvent(new Runnable(){
+			@Override
+			public void run() {
+		        nativeDataPoolSize(renderList.length);
+		        int lastLoadedResource = -1;
+	            int lastTextureId = -1;
+		        for(int i = 0; i < renderList.length; i++){
 					// TODO Auto-generated method stub
-					nativeAlloc(j, renderList[j]);
+					nativeAlloc(i, renderList[i]);
 		        	//Try to load textures
-		        	renderList[j].setTextureName(loadBitmap(mContext, glContext, renderList[j].mResourceId));
-				}});
-	        }
-	        
+					int resource = renderList[i].getResourceId();
+	                if (resource != lastLoadedResource) {
+						lastTextureId = loadBitmap(mContext, glContext, resource);
+	                    lastLoadedResource = resource;
+	                }
+	                renderList[i].setTextureName(lastTextureId);
+				}
+		    }
+        	});
+        	//End of code that needs to run in the render thread.
 	        surfaceReady.release();
 	        
 		} catch (InterruptedException e) {
