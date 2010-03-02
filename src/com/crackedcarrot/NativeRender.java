@@ -2,7 +2,7 @@ package com.crackedcarrot;
 
 import java.io.IOException;
 import java.io.InputStream;
-//import java.nio.ByteBuffer;
+import java.util.concurrent.Semaphore;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -30,6 +30,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private static native void nativeSurfaceCreated();
 //    private static native int  nativeLoadTexture();
 	
+    private Semaphore surfaceReady = new Semaphore(0);
+    
 	private Sprite[][] sprites = new Sprite[4][];
 	private Sprite[] renderList;
 	
@@ -37,11 +39,12 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private int[] mTextureNameWorkspace;
 	//public boolean mUseHardwareBuffers;
 	private Context mContext;
+	private GLSurfaceView view;
 	private GL10 glContext;
 	private static BitmapFactory.Options sBitmapOptions
     = new BitmapFactory.Options();
-
-	public NativeRender(Context context) {
+		
+	public NativeRender(Context context, GLSurfaceView view) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -51,6 +54,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
         sBitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;
         
 		mContext = context;
+		this.view = view;
 		System.loadLibrary("render");
 	}
 
@@ -65,9 +69,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		nativeSurfaceCreated();
-		for(int i = 0; i < sprites.length; i++){
-            if(sprites[i] != null){
+		if(renderList != null){
+			for(int i = 0; i < renderList.length; i++){
 	            // If we are using hardware buffers and the screen lost context
 	            // then the buffer indexes that we recorded previously are now
 	            // invalid.  Forget them here and recreate them below.
@@ -82,50 +85,78 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	            int lastLoadedResource = -1;
 	            int lastTextureId = -1;
 	            
-	            for (int x = 0; x < sprites[i].length; x++) {
-	                int resource = sprites[i][x].getResourceId();
+	            for (int x = 0; x < renderList.length; x++) {
+	                int resource = renderList[i].getResourceId();
 	                if (resource != lastLoadedResource) {
 						lastTextureId = loadBitmap(mContext, gl, resource);
 	                    lastLoadedResource = resource;
 	                }
-	                sprites[i][x].setTextureName(lastTextureId);
+	                renderList[i].setTextureName(lastTextureId);
 	            }
-            }else{
-            	Log.d("JAVA_LOADTEXTURE", "No sprites of type: " + i + "No texture loaded.");
-            }
-        }
+	        }
+		}
 		glContext = gl;
+		nativeSurfaceCreated();
+		surfaceReady.release();
 	}
 	
 	public void finalizeSprites() {
-		int listSize = 0;
-		for(int i = 0; i < sprites.length; i++){
-			listSize += sprites[i].length;
-		}
 		
-        renderList = new Sprite[listSize];
-        
-        for(int i = 0, j = 0; i < sprites.length; i++){
-        	for(int k = 0; k < sprites[i].length; k++){
-        		renderList[j] = sprites[i][k];
-        		j++;
-        	}
-        }
-        
-        nativeDataPoolSize(renderList.length);
-        
-        for(int i = 0; i < renderList.length; i++){
-        	nativeAlloc(i, renderList[i]);
-        }
+		try {
+			surfaceReady.acquire();
+			int listSize = 0;
+			for(int i = 0; i < sprites.length; i++){
+				if(sprites[i] != null)
+				listSize += sprites[i].length;
+			}
+			
+	        renderList = new Sprite[listSize];
+	        
+	        for(int i = 0, j = 0; i < sprites.length; i++){
+	        	if(sprites[i] != null){
+	        		for(int k = 0; k < sprites[i].length; k++){
+	        			renderList[j] = sprites[i][k];
+	        			j++;
+	        		}
+	        	}
+	        }
+	        
+	        nativeDataPoolSize(renderList.length);
+	        
+	        for(int i = 0; i < renderList.length; i++){
+	        	final int j = i;
+	        	view.queueEvent(new Runnable(){
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					nativeAlloc(j, renderList[j]);
+		        	//Try to load textures
+		        	renderList[j].setTextureName(loadBitmap(mContext, glContext, renderList[j].mResourceId));
+				}});
+	        }
+	        
+	        surfaceReady.release();
+	        
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void setSprites(Sprite[] spriteArray, int type){
 		sprites[type] = spriteArray;
 	}
 	
-	public int loadBitmap(int resourceId){
-		//SEM
-		return loadBitmap(mContext, glContext, resourceId);
+	public int loadTexture(int resourceId){
+		try {
+			surfaceReady.acquire();
+			surfaceReady.release();
+			return loadBitmap(mContext, glContext, resourceId);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
