@@ -36,11 +36,18 @@ public class Scaler {
 
 		return new Coords((int)fRX,(int)fRY);
 	}
-	public int getX() {
+	public int getScreenResolutionX() {
 		return res_x;
 	}
-	public int getY() {
+	public int getScreenResolutionY() {
 		return res_y;
 	}
 
+	public Coords getGridPos(int x,int y) {
+		Coords tmp = scale(48,50);
+		tmp.x = (x / tmp.x) * tmp.x; 
+		tmp.y = (y / tmp.y) * tmp.y; 
+		return tmp;
+	}
+	
 }

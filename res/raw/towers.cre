@@ -3,7 +3,7 @@ Total number of towers::3
 //Tower arrow
 texture::skate2
 title::Arrow tower lvl 1
-size::64
+size::48
 price::10
 resell value::8
 minDamage::10
@@ -19,7 +19,7 @@ Shot size::16
 //Tower arrow Lvl 2
 texture::skate2
 title::Arrow tower lvl 2
-size::64
+size::48
 price::100
 resell value::75
 minDamage::100
@@ -35,7 +35,7 @@ Shot size::16
 //Tower arrow Lvl 3
 texture::skate2
 title::Arrow tower lvl 3
-size::64
+size::48
 price::1000
 resell value::75
 minDamage::1000
