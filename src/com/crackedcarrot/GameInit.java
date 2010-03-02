@@ -177,23 +177,25 @@ public class GameInit extends Activity {
         simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
-        Sprite[] sp = gameMap.getBackground();
-        sp[0].x = 0;
-        sp[0].y = 0;
-        sp[0].z = 0;
+        Sprite[] bg = gameMap.getBackground();
+        bg[0].x = 0;
+        bg[0].y = 0;
+        bg[0].z = 0;
         
         Sprite test = new Sprite(R.drawable.skate3);
         
-        sp[0] = test;
+        Sprite[] fg = new Sprite[1];
+        fg[0] = test;
         test.width = 128.0f;
         test.height = 128.0f;
         test.x = 100.0f;
         test.y = 100.0f;
-        test.z = 1.0f;
+        test.z = 0.0f;
         
         test.draw = true;
         
-        nativeRenderer.setSprites(sp, NativeRender.BACKGROUND);
+        nativeRenderer.setSprites(bg, NativeRender.BACKGROUND);
+        nativeRenderer.setSprites(fg, NativeRender.CREATURE);
         
         //nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
         //nativeRenderer.setSprites(towerList, NativeRender.TOWER);

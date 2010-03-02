@@ -197,7 +197,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
 	
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 	
 	/*
@@ -205,7 +205,8 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 * performance. One might want to tweak that especially on software
 	 * renderer.
 	 */
-    glDisable(GL_DITHER);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DITHER);
 	glDisable(GL_LIGHTING);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	
