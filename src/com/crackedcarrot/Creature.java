@@ -39,7 +39,7 @@ public class Creature extends Sprite{
 	    this.height = cr.height;
 	    this.goldValue = cr.goldValue;
 	    this.specialAbility = cr.goldValue;
-	    super.mResourceId = cr.mResourceId;
+	    //super.mResourceId = cr.mResourceId;
 	}
 
 	public void updateWayPoint (){

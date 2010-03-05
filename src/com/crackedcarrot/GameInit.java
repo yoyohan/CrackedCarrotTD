@@ -145,7 +145,7 @@ public class GameInit extends Activity {
         
         //We dont want to send an empty list of creatures to native renderer.
         for (int i = 0; i < creatureList.length; i++) {
-        	Creature tmpCr = new Creature(R.drawable.skate1);
+        	Creature tmpCr = new Creature(R.drawable.bjoern);
             creatureList[i] = tmpCr;
         }        
         //We dont want to send an empty list of towers or shots  to then native renderer.        
