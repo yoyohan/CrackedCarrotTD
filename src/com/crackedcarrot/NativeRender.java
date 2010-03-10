@@ -123,7 +123,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	        
 	        //This needs to run on the render Thread to get access to the glContext.
         	view.queueEvent(new Runnable(){
-			@Override
+			//@Override
 			public void run() {
 		        nativeDataPoolSize(renderList.length);
 		        int lastLoadedResource = -1;
