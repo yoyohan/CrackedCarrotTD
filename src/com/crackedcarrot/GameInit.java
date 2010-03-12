@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -29,6 +31,7 @@ public class GameInit extends Activity {
     private GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
+    private ExpandMenu expandMenu = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,11 +93,67 @@ public class GameInit extends Activity {
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
-        mGLSurfaceView = new GLSurfaceView(this);
+    	/** Use the xml layout file. The GLSufaceView is declared in this */
+    	setContentView(R.layout.gameinit);
+    	
+    	/** Create objects of GLSurfaceView, NativeRender and the two objects
+    	 *  that are used for define the pixel resolution of current display;
+    	 *  DisplayMetrics & Scaler */
+        mGLSurfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
         NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        
+        /** Create the expandable menu */
+        expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
+        
+        /** Listeners for the five icons in the in-game menu.
+         *  When clicked on, it's possible to place a tower
+         *  on an empty space on the map. The first button
+         *  expands the menu. */
+        Button inMenu1 = (Button)findViewById(R.id.inmenu1);
+        inMenu1.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		expandMenu.switchMenu();
+        	}
+        });
+        Button inMenu2 = (Button)findViewById(R.id.inmenu2);
+        inMenu2.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		// A tower of type 1 has been chosen, where to put it?
+        	}
+        });
+        Button inMenu3 = (Button)findViewById(R.id.inmenu3);
+        inMenu3.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		// A tower of type 2 has been chosen, where to put it?
+        	}
+        });
+        Button inMenu4 = (Button)findViewById(R.id.inmenu4);
+        inMenu4.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		// A tower of type 3 has been chosen, where to put it?
+        	}
+        });
+        Button inMenu5 = (Button)findViewById(R.id.inmenu5);
+        inMenu5.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		// A tower of type 4 has been chosen, where to put it?
+        	}
+        });
+        Button inMenu6 = (Button)findViewById(R.id.inmenu6);
+        inMenu6.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		expandMenu.switchMenu();
+        	}
+        });
         
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
@@ -192,7 +251,7 @@ public class GameInit extends Activity {
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
         registerForContextMenu(mGLSurfaceView);
-        setContentView(mGLSurfaceView);
+        
 
         // Sends an array with sprites to the renderer
 
