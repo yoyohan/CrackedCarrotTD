@@ -168,10 +168,13 @@ public class GameInit extends Activity {
         simulationRuntime.setScaler(res);
         simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
+        simulationRuntime.setTowerGrid(gameMap.getTowerGrid());
+        
         RenderThread = new Thread(simulationRuntime);
         
         //Will try to create 50 different towers of type 0        
     	Random rand = new Random();
+    	
         for (int i = 0; i < 50; i++) {
         	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
         	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));

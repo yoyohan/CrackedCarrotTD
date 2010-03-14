@@ -2,7 +2,11 @@ package com.crackedcarrot.fileloader;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import android.content.Context;
+import android.util.Log;
+
+import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.Waypoints;
@@ -18,6 +22,7 @@ public class MapLoader {
 	private Scaler s;
 	private Waypoints wps;
 	private Sprite[] bckgrd;
+	private TowerGrid[][] twg;
 
 	/**
 	 * Constructor 
@@ -28,6 +33,12 @@ public class MapLoader {
 	public MapLoader(Context context, Scaler s){
 		this.context = context;
 		this.s = s;
+		twg = new TowerGrid[8][10];
+		for (int x = 0; x < twg.length; x++) {
+			for (int y = 0; y < twg[0].length; y++) {
+				twg[x][y] = new TowerGrid();
+			}
+		}
 	}
 
 	/**
@@ -79,8 +90,33 @@ public class MapLoader {
 					else{
 						//Each waypoint
 						String[] wp = buf.split(",");
-						wps.setWaypoint(Integer.parseInt(wp[0].trim()),
-								Integer.parseInt(wp[1].trim()), Integer.parseInt(wp[2].trim()));
+						int tmpgridx = Integer.parseInt(wp[0].trim());
+						int tmpgridy = Integer.parseInt(wp[1].trim());
+						int wpNbr = Integer.parseInt(wp[2].trim());
+						Coords tmpCoord = s.getPosFromGrid(tmpgridx, tmpgridy);
+						wps.way[wpNbr] = tmpCoord;
+						
+						Log.d("TEST",""+wps.way[wpNbr].x+";"+wps.way[wpNbr].y);
+						if (wpNbr != 0) {						
+							Coords cp = wps.way[wpNbr-1];
+							cp = s.getGridXandY(cp.x, cp.y);
+							
+							while (!(cp.y == tmpgridy && cp.x == tmpgridx)){
+								if(tmpgridx > cp.x){
+						    		cp.x = cp.x + 1;
+								}
+								else if (tmpgridx < cp.x) {
+						    		cp.x = cp.x -1;
+						    	}
+								else if(cp.y > tmpgridy){
+						    		cp.y = cp.y - 1;
+						    	}
+						    	else if (cp.y < tmpgridy) {
+						    		cp.y = cp.y + 1;
+						    	}
+								twg[cp.x][cp.y].empty = false;
+							}
+						}
 					}
 					buf = "";
 				}
@@ -90,6 +126,7 @@ public class MapLoader {
 			e.printStackTrace();
 		}
 		
-		return new Map(wps,bckgrd);
+		
+		return new Map(wps,bckgrd,twg);
 	}
 }

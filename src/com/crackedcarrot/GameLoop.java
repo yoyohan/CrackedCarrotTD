@@ -3,6 +3,7 @@ package com.crackedcarrot;
 import android.os.SystemClock;
 import android.util.Log;
 import com.crackedcarrot.fileloader.Level;
+import com.crackedcarrot.fileloader.TowerGrid;
 
 /**
  * A runnable that updates the position of each creature and projectile
@@ -15,6 +16,7 @@ public class GameLoop implements Runnable {
     private Tower[] mTower;
     private int totalNumberOfTowers = 0;
     private Tower[] mAllTowers;
+    private TowerGrid[][] mTowerGrid;
     private long mLastTime;
     private int lvlNbr;
     private int remainingCreatures;
@@ -327,17 +329,38 @@ public class GameLoop implements Runnable {
     
     public boolean createTower(Coords TowerPos, int towerType) {
 		if (mAllTowers.length > towerType && totalNumberOfTowers < mTower.length) {
-			mTower[totalNumberOfTowers].cloneTower(mAllTowers[towerType]);
-			mTower[totalNumberOfTowers].draw = true; //Tower drawable
-	    	Coords tmp = mScaler.getGridPos(TowerPos.x,TowerPos.y);//Tower location
-	    	mTower[totalNumberOfTowers].x = tmp.x;
-	    	mTower[totalNumberOfTowers].y = tmp.y;
-	    	mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
-	    	totalNumberOfTowers++;
-	    	return true;
+			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
+				//You are trying to place a tower on a spot outside the grid
+				return false;
+			}
+
+			
+			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
+			int tmpx = tmpC.x;
+			int tmpy = tmpC.y;
+			Log.d("Towercreate status:",""+tmpx+","+tmpy);
+			Log.d("Towercreate status:",""+TowerPos.x+","+TowerPos.y);
+			
+			if (mTowerGrid[tmpx][tmpy].empty) {
+				mTower[totalNumberOfTowers].cloneTower(mAllTowers[towerType]);
+				mTower[totalNumberOfTowers].draw = true; //Tower drawable
+				Coords tmp = mScaler.getGridPos(TowerPos.x,TowerPos.y);//Tower location
+				mTower[totalNumberOfTowers].x = tmp.x;
+				mTower[totalNumberOfTowers].y = tmp.y;
+				mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
+				totalNumberOfTowers++;
+				mTowerGrid[tmpx][tmpy].empty = false;
+				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
+	    		return true;
+			}
 		}
-		else {
-			return false;
-		}
+		return false;
     }
+    public boolean setTowerGrid(TowerGrid[][] twg) {
+    	if (twg != null)
+    		this.mTowerGrid = twg;
+    	else return false;
+    	return true;
+    }
+    
 }
