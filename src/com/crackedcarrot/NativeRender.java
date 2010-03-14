@@ -33,8 +33,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private static native void nativeFreeSprites();
     private static native void nativeFreeTex(int i);
     
-    
     private Semaphore surfaceReady = new Semaphore(0);
+    public Semaphore rendererReady = new Semaphore(0);
     
 	private Sprite[][] sprites = new Sprite[4][];
 	private Sprite[] renderList;
@@ -137,11 +137,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
 						textureMap.put(resource, lastTextureId);
 	                }
 	                renderList[i].setTextureName(lastTextureId);
+	                surfaceReady.release();
+	                rendererReady.release();
 				}
 		    }
         	});
         	//End of code that needs to run in the render thread.
-	        surfaceReady.release();
+	       
 	        
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -190,15 +192,24 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @param resourceId
 	 * @return textureName
 	 */
-	public int loadTexture(int resourceId){
+	public void loadTexture(int rId){
 		try {
 			surfaceReady.acquire();
+			final int resourceId = rId;
+			view.queueEvent(new Runnable(){
+				//@Override
+				public void run() {
+					int lastTextureId = 0;
+					if (!textureMap.containsKey(resourceId)) {
+						lastTextureId = loadBitmap(mContext, glContext, resourceId);
+						textureMap.put(resourceId, lastTextureId);
+		            }
+				}
+			});
 			surfaceReady.release();
-			return loadBitmap(mContext, glContext, resourceId);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return -1;
 		}
 	}
 	

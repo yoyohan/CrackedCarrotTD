@@ -78,27 +78,5 @@ public class Tower extends Sprite{
 		relatedShot.x = x + width/2;
 		relatedShot.y = y + height/2;	
 	}
-	
-	public void cloneTower(Tower temp) {
-		this.coolDown = temp.coolDown;
-		this.height = temp.height;
-		this.level = temp.level;
-		this.maxDamage = temp.maxDamage;
-		this.minDamage = temp.minDamage;
-		this.mResourceId = temp.mResourceId;
-		this.mTextureName = temp.mTextureName;
-		this.price = temp.price;
-		this.range = temp.range;
-		this.resellPrice = temp.resellPrice;
-		this.specialAbility = temp.specialAbility;
-		this.title = temp.title;
-		this.upgrade1 = temp.upgrade1;
-		this.upgrade2 = temp.upgrade2;
-		this.velocity = temp.velocity;
-		this.width = temp.width;
-		this.relatedShot.height = temp.relatedShot.height;
-		this.relatedShot.mResourceId = temp.relatedShot.mResourceId;
-		this.relatedShot.mTextureName = temp.relatedShot.mTextureName;
-		this.relatedShot.width = temp.relatedShot.width;
-	}
+
 }
