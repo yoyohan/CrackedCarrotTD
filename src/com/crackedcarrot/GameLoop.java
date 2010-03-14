@@ -1,6 +1,6 @@
 package com.crackedcarrot;
 
-import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -75,15 +75,26 @@ public class GameLoop implements Runnable {
 
     		initializeLvl();
     		//Will try to create 50 different towers of type 0  
-        	Random rand = new Random();
-            for (int i = 0; i < 50; i++) {
-            	int randomInt1 = rand.nextInt((mScaler.getScreenResolutionX()));
-            	int randomInt2 = rand.nextInt((mScaler.getScreenResolutionY()));
-            	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-            	boolean test = createTower(tmp, 0);
-            	Log.d("Towercreate status:","" + test);
-            }
+        	//Random rand = new Random();
+            //for (int i = 0; i < 50; i++) {
+            //	int randomInt1 = rand.nextInt((mScaler.getScreenResolutionX()));
+            //	int randomInt2 = rand.nextInt((mScaler.getScreenResolutionY()));
+            //	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
+            //	boolean test = createTower(tmp, 0);
+            //	Log.d("Towercreate status:","" + test);
+            //}
 			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
+
+    		try {
+				renderHandle.rendererReady.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+    		createTower(new Coords(200,200), 0);
+    		
+    		
     		while(remainingCreatures > 0 && run){
 
     			//Systemclock. Used to help determine speed of the game. 
@@ -181,7 +192,7 @@ public class GameLoop implements Runnable {
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
         // influence our results.
-        Runtime r = Runtime.getRuntime();
+		Runtime r = Runtime.getRuntime();
         r.gc();
 	}
 
@@ -332,14 +343,6 @@ public class GameLoop implements Runnable {
 	}
 
     public boolean createTower(Coords TowerPos, int towerType) {
-
-    	
-    	Log.d("CREATETOWER",""+mTower.length);
-    	Log.d("CREATETOWER",""+mTTypes.length);
-    	
-    	
-    	
-    	
 		if (mTTypes.length > towerType && totalNumberOfTowers < mTower.length) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
 				//You are trying to place a tower on a spot outside the grid
