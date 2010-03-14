@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -174,7 +172,6 @@ public class GameInit extends Activity {
         	gameMap = mapLoad.readLevel("level2");
         else
         	gameMap = mapLoad.readLevel("level3");
-        Waypoints gameWaypoints = gameMap.getWaypoints();
 
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this,res);
@@ -193,79 +190,33 @@ public class GameInit extends Activity {
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this,res);
-        Tower[] allTowers  = towerLoad.readTowers("towers");
+        Tower[] tTypes  = towerLoad.readTowers("towers");
         
-        // When all data needed for the game is loaded we allocate memory for towers and
-        // creatures. If we do this right we will hopefully not activate the garbage collector during
-        // the game
-        int maxNbrCreaturs = 20; // Maximum number of creatures on the map on the same time
-        int maxNbrTowers = 40; // Maximum number of towers on the map on the same time
-        Creature[] creatureList = new Creature[maxNbrCreaturs];
-    	Tower[] towerList = new Tower[maxNbrTowers];
-    	Shot[] shotList = new Shot[maxNbrTowers]; //Will always be the same number of shots as the number of towers
-        
-        //We dont want to send an empty list of creatures to native renderer.
-        for (int i = 0; i < creatureList.length; i++) {
-        	Creature tmpCr = new Creature(R.drawable.bjoern);
-            creatureList[i] = tmpCr;
-        }        
-        //We dont want to send an empty list of towers or shots  to then native renderer.        
-        for (int i = 0; i < maxNbrTowers; i++) {
-    		Tower tmpTw = new Tower(R.drawable.skate2);
-    		tmpTw.relatedShot = new Shot(R.drawable.skate3,tmpTw);
-        	shotList[i] = tmpTw.relatedShot;
-        	towerList[i] = tmpTw;
-        }
 
-    	// Sending data to GAME LOOP
+    	// Sending data to GAMELOOP
         simulationRuntime = new GameLoop(nativeRenderer);
-        simulationRuntime.setCreatures(creatureList);
+
+        simulationRuntime.setMap(gameMap);
         simulationRuntime.setLevels(waveList);
-        simulationRuntime.setWP(gameWaypoints);
-        simulationRuntime.setTowers(towerList);
-        simulationRuntime.setAllTowers(allTowers);
-        simulationRuntime.setScaler(res);
+        simulationRuntime.setTowerTypes(tTypes);
         simulationRuntime.setPlayer(p);
         simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
-        simulationRuntime.setTowerGrid(gameMap.getTowerGrid());
         
         RenderThread = new Thread(simulationRuntime);
         
         //Will try to create 50 different towers of type 0        
-    	Random rand = new Random();
-    	
-        for (int i = 0; i < 50; i++) {
-        	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
-        	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));
-        	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-        	boolean test = simulationRuntime.createTower(tmp, 0);
-        	Log.d("Towercreate status:","" + test);
-        }
-        
-        // Sends an array with sprites to the renderer
-        nativeRenderer.setSprites(gameMap.getBackground(), NativeRender.BACKGROUND);
-        nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
-        nativeRenderer.setSprites(towerList, NativeRender.TOWER);
-        nativeRenderer.setSprites(shotList, NativeRender.SHOT);
+    	//Random rand = new Random();
+        //for (int i = 0; i < 50; i++) {
+        //	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
+        //	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));
+        //	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
+        //	boolean test = simulationRuntime.createTower(tmp, 0);
+        //	Log.d("Towercreate status:","" + test);
+        //}
                 
-        // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
-        // ritas men vi behöver texturen som ligger i varje "lvl"
-        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        
         mGLSurfaceView.setRenderer(nativeRenderer);        
         registerForContextMenu(mGLSurfaceView);
-        
 
-        // Sends an array with sprites to the renderer
-
-        // Nï¿½t sï¿½nt hï¿½r skulle jag vilja att renderaren hanterar. Denna lista behï¿½ver aldig
-        // ritas men vi behï¿½ver texturen som ligger i varje "lvl"
-        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-        Runtime r = Runtime.getRuntime();
-        r.gc();
         // Start GameLoop
         RenderThread.start();
     }

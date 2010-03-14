@@ -163,10 +163,14 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		try {
 			surfaceReady.acquire();
 			view.queueEvent(new Runnable(){
-				@Override
+				//@Override
 				public void run() {
 			        nativeFreeSprites();		    }
 	        });
+			this.renderList = null;
+			for (int i=0; i < sprites.length; i++)
+				this.sprites[i] = null;
+			
 			surfaceReady.release();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -213,7 +217,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		try {
 			surfaceReady.acquire();
 			view.queueEvent(new Runnable(){
-				@Override
+				//@Override
 				public void run() {
 					Integer i = textureMap.get(rId);
 			        nativeFreeTex(i.intValue());		    }
@@ -239,7 +243,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			
 			surfaceReady.acquire();
 			view.queueEvent(new Runnable(){
-				@Override
+				//@Override
 				public void run() {
 					
 					Iterator<Integer> it = map.values().iterator();

@@ -127,6 +127,6 @@ public class MapLoader {
 		}
 		
 		
-		return new Map(wps,bckgrd,twg);
+		return new Map(wps,bckgrd,twg,s);
 	}
 }
