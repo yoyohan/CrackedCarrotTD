@@ -192,28 +192,10 @@ public class GameInit extends Activity {
         TowerLoader towerLoad = new TowerLoader(this,res);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
-
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer);
-
-        simulationRuntime.setMap(gameMap);
-        simulationRuntime.setLevels(waveList);
-        simulationRuntime.setTowerTypes(tTypes);
-        simulationRuntime.setPlayer(p);
-        simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
-        
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
         
-        //Will try to create 50 different towers of type 0        
-    	//Random rand = new Random();
-        //for (int i = 0; i < 50; i++) {
-        //	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
-        //	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));
-        //	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-        //	boolean test = simulationRuntime.createTower(tmp, 0);
-        //	Log.d("Towercreate status:","" + test);
-        //}
-                
         mGLSurfaceView.setRenderer(nativeRenderer);        
         registerForContextMenu(mGLSurfaceView);
 
