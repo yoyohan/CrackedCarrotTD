@@ -2,6 +2,8 @@ package com.crackedcarrot;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -28,8 +30,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
     private static native void nativeSurfaceCreated();
-//    private static native int  nativeLoadTexture();
-	
+    private static native void nativeFreeSprites();
+    private static native void nativeFreeTex(int i);
+    
+    
     private Semaphore surfaceReady = new Semaphore(0);
     
 	private Sprite[][] sprites = new Sprite[4][];
@@ -43,7 +47,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private GL10 glContext;
 	private static BitmapFactory.Options sBitmapOptions
     = new BitmapFactory.Options();
-		
+	
+	private HashMap<Integer,Integer> textureMap = new HashMap<Integer,Integer>();
+	
 	public NativeRender(Context context, GLSurfaceView view) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
@@ -77,19 +83,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	            
 	            // Load our texture and set its texture name on all sprites.
 	            
-	            // To keep this sample simple we will assume that sprites that share
-	            // the same texture are grouped together in our sprite list. A real
-	            // app would probably have another level of texture management, 
-	            // like a texture hash.
-	            
-	            int lastLoadedResource = -1;
 	            int lastTextureId = -1;
-	            
+	            textureMap.clear();
 	            for (int x = 0; x < renderList.length; x++) {
 	                int resource = renderList[i].getResourceId();
-	                if (resource != lastLoadedResource) {
+	                if (!textureMap.containsKey(resource)) {
 						lastTextureId = loadBitmap(mContext, gl, resource);
-	                    lastLoadedResource = resource;
+						textureMap.put(resource, lastTextureId);
 	                }
 	                renderList[i].setTextureName(lastTextureId);
 	            }
@@ -126,16 +126,15 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			//@Override
 			public void run() {
 		        nativeDataPoolSize(renderList.length);
-		        int lastLoadedResource = -1;
 	            int lastTextureId = -1;
 		        for(int i = 0; i < renderList.length; i++){
 					// TODO Auto-generated method stub
 					nativeAlloc(i, renderList[i]);
 		        	//Try to load textures
 					int resource = renderList[i].getResourceId();
-	                if (resource != lastLoadedResource) {
+	                if (!textureMap.containsKey(resource)) {
 						lastTextureId = loadBitmap(mContext, glContext, resource);
-	                    lastLoadedResource = resource;
+						textureMap.put(resource, lastTextureId);
 	                }
 	                renderList[i].setTextureName(lastTextureId);
 				}
@@ -154,6 +153,39 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		sprites[type] = spriteArray;
 	}
 	
+	/**
+	 * Frees all allocated sprite data in the render.
+	 * this means nothing is left on the screen after this.
+	 * 
+	 * However All textures remain in their buffers. And can be reused.
+	 */
+	public void freeSprites(){
+		try {
+			surfaceReady.acquire();
+			view.queueEvent(new Runnable(){
+				@Override
+				public void run() {
+			        nativeFreeSprites();		    }
+	        });
+			surfaceReady.release();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * This loads a texture into the render for drawing,
+	 * needs to be done before use. If the texture is already
+	 * loaded it just returns the texture name without loading
+	 * again.
+	 * 
+	 * Takes the resource id of the sprite and returns the
+	 * internal texture name;
+	 * 
+	 * 
+	 * @param resourceId
+	 * @return textureName
+	 */
 	public int loadTexture(int resourceId){
 		try {
 			surfaceReady.acquire();
@@ -164,6 +196,74 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	
+	/**
+	 * This frees the texture specified by resource id
+	 * from the buffers.
+	 * 
+	 * Use full when you want to reuse most of the allocated
+	 * textures for a new wave and want to avoid reloading all of them.
+	 * 
+	 * @param resourceId
+	 */
+	public void freeTexture(int resourceId){
+		final int rId = resourceId;
+		try {
+			surfaceReady.acquire();
+			view.queueEvent(new Runnable(){
+				@Override
+				public void run() {
+					Integer i = textureMap.get(rId);
+			        nativeFreeTex(i.intValue());		    }
+	        });
+			surfaceReady.release();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Free all textures from buffers.
+	 * To draw anything after this new textures must be loaded.
+	 */
+	@SuppressWarnings("unchecked")
+	public void freeAllTextures(){
+		try {
+			
+			final HashMap<Integer,Integer> map = (HashMap<Integer, Integer>) textureMap.clone();
+			
+			textureMap.clear();
+			
+			surfaceReady.acquire();
+			view.queueEvent(new Runnable(){
+				@Override
+				public void run() {
+					
+					Iterator<Integer> it = map.values().iterator();
+					while(it.hasNext()){
+				        nativeFreeTex(it.next().intValue());
+					}
+				}
+			});
+			
+			surfaceReady.release();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tackes the resourceId of a sprite and 
+	 * returns the texture name if it exist.
+	 * @param resourceId
+	 * @return
+	 */
+	public int getTextureName(int resourceId){
+		return textureMap.get(resourceId);
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
