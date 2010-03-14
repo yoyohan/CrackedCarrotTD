@@ -1,6 +1,6 @@
 #include "render.h"
 #define LOG_TAG "NATIVE_RENDER"
-
+#define emulator
 
 	//The number of idividual sprites.
 int noOfSprites = 0;
@@ -296,7 +296,10 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 		free(currentSprite->vertBuffer);
 		free(currentSprite->textureCoordBuffer);
 		free(currentSprite->indexBuffer);
-		//glDeleteBuffers(3, currentSprite->bufferName);
+		
+		#ifndef emulator
+		glDeleteBuffers(3, currentSprite->bufferName);
+		#endif
 		(*env)->DeleteGlobalRef(env, currentSprite->object);
 	}
 	

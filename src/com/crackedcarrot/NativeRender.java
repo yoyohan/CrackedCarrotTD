@@ -169,6 +169,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 				public void run() {
 			        nativeFreeSprites();		    }
 	        });
+			
 			this.renderList = null;
 			for (int i=0; i < sprites.length; i++)
 				this.sprites[i] = null;
