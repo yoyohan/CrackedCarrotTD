@@ -283,6 +283,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 	GLSprite* freeSprites = renderSprites;
+	GLSprite* currentSprite;
 	int spritesToFree = noOfSprites;
 	int i;
 	
@@ -290,13 +291,15 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 	renderSprites = NULL;
 	
 	for(i = 0; i < spritesToFree; i++){
-		(*env)->DeleteGlobalRef(env, freeSprites[i].object);
-		free(freeSprites[i].vertBuffer);
-		free(freeSprites[i].textureCoordBuffer);
-		free(freeSprites[i].indexBuffer);
-		
-		glDeleteBuffers(3, freeSprites[i].bufferName);
+		currentSprite = &freeSprites[i];
+		//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currentSprite->bufferName[INDEX_OBJECT]);
+		free(currentSprite->vertBuffer);
+		free(currentSprite->textureCoordBuffer);
+		free(currentSprite->indexBuffer);
+		//glDeleteBuffers(3, currentSprite->bufferName);
+		(*env)->DeleteGlobalRef(env, currentSprite->object);
 	}
+	
 	free(freeSprites);
 	freeSprites = NULL;
 }

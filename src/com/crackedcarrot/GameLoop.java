@@ -104,7 +104,7 @@ public class GameLoop implements Runnable {
 		//The following line contains the code for initiating every level
 		/////////////////////////////////////////////////////////////////
 		renderHandle.freeSprites();
-		//renderHandle.freeAllTextures();
+		renderHandle.freeAllTextures();
 
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
     	mCreatures = new Creature[remainingCreatures];
