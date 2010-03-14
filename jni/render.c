@@ -282,5 +282,25 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
+	GLSprite* freeSprites = renderSprites;
+	int spritesToFree = noOfSprites;
+	int i;
+	
 	noOfSprites = 0;
+	renderSprites = NULL;
+	
+	for(i = 0; i < spritesToFree; i++){
+		(*env)->DeleteGlobalRef(env, freeSprites[i].object);
+		free(freeSprites[i].vertBuffer);
+		free(freeSprites[i].textureCoordBuffer);
+		free(freeSprites[i].indexBuffer);
+		
+		glDeleteBuffers(3, freeSprites[i].bufferName);
+	}
+	free(freeSprites);
+	freeSprites = NULL;
+}
+
+Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName){
+	glDeleteTextures(1, &textureName);
 }
