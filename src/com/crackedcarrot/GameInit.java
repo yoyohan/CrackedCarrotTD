@@ -46,43 +46,6 @@ public class GameInit extends Activity {
         return false;
     }
     
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo){
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuItem restart = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Restart");
-		// Apparently Android doesnt support icons in a Context-menu.
-		//restart.setIcon(R.drawable.restart_key_button);
-
-		SubMenu quitMenu = menu.addSubMenu("Quit");
-		quitMenu.setHeaderTitle("Save?");
-		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "Yes");
-		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "No");
-	}
-	
-	@Override
-	public boolean onContextItemSelected (MenuItem item) {
-		String title = (String) item.getTitle();
-		
-		if (title.matches("Restart")) {
-			return true;
-			
-		} else if (title.matches("Quit")) {
-			return true;
-			
-		} else if (title.matches("Yes")) {
-			return true;
-			
-		} else if (title.matches("No")) {
-			return true;
-			
-		} else {
-			// This should never happen.
-			Log.d("GameInit", "ContextMenu: " + item.getTitle());
-			return super.onContextItemSelected(item);
-		}
-		
-	}
-    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
