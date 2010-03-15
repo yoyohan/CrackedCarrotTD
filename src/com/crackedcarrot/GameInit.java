@@ -12,10 +12,12 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import com.crackedcarrot.fileloader.Level;
@@ -32,6 +34,8 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
+    
+    private int highlightIcon = R.drawable.map_choose;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,11 +123,21 @@ public class GameInit extends Activity {
         		expandMenu.switchMenu();
         	}
         });
-        Button inMenu2 = (Button)findViewById(R.id.inmenu2);
+        /**final OnTouchListener o = new View.OnTouchListener() {
+			
+			public boolean onTouch(View v1, MotionEvent event){
+				v1.setBackgroundResource(R.drawable.inmenu2_button);
+				o = null;
+				return true;
+			}
+		}; */
+        final Button inMenu2 = (Button)findViewById(R.id.inmenu2);
         inMenu2.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
+        		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
+        		v.setOnTouchListener(o); */
         	}
         });
         Button inMenu3 = (Button)findViewById(R.id.inmenu3);
