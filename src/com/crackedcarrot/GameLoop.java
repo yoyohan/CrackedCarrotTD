@@ -165,6 +165,8 @@ public class GameLoop implements Runnable {
     		mCreatures[z].draw = false;
     		mCreatures[z].opacity = 1;
     		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
+
+    		renderHandle.loadTexture(mLvl[lvlNbr].mDeadResourceId);
 		}
 
 		// Sends an array with sprites to the renderer
@@ -178,6 +180,7 @@ public class GameLoop implements Runnable {
 			renderHandle.loadTexture(mTTypes[i].mResourceId);
 			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
 		}
+		
 		renderHandle.finalizeSprites();
 
         // Now's a good time to run the GC.  Since we won't do any explicit
@@ -310,6 +313,9 @@ public class GameLoop implements Runnable {
 		    		//Basic way of implementing damage
 		    		targetCreature.health = targetCreature.health - towerObject.createDamage();
 		    		if (targetCreature.health <= 0) {
+		    			//Set new texture
+		    			//targetCreature.mTextureName = renderHandle.getTextureName(targetCreature.mDeadResourceId);
+
 		    			//object.cre.draw = false;
 		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
 		    			player.money = player.money + targetCreature.goldValue;
@@ -366,8 +372,8 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].relatedShot.mTextureName = mTTypes[towerType].relatedShot.mTextureName;
 
 				
-				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].height;
-				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].width;
+				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].relatedShot.height;
+				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].relatedShot.width;
 				mTower[totalNumberOfTowers].relatedShot.draw = false;
 				
 				Coords tmp = mScaler.getPosFromGrid(tmpx, tmpy);

@@ -8,6 +8,8 @@ public class Creature extends Sprite{
     public int health;
     // The next way point for a given creature
     public int nextWayPoint;
+    // SPRITE DEAD RESOURCE
+    public int mDeadResourceId;
     // The speed of the creature
     public float velocity;
     // The different directions for a creature

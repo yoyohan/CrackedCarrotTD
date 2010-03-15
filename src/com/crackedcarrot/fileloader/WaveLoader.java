@@ -79,6 +79,11 @@ public class WaveLoader {
 			            }
 			            else if (tmpCount == 3) {
 			            	tmpStr = buf.split("::");
+			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
+			            	tmpLvl.mDeadResourceId = resID;
+			            }
+			            else if (tmpCount == 4) {
+			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpLvl.width = recalc.getX();
 			            	tmpLvl.height = recalc.getX();
@@ -87,20 +92,20 @@ public class WaveLoader {
 			            	recalc = scaler.scale(50,0);
 			            	tmpLvl.velocity = recalc.getX();
 			            }
-			            else if (tmpCount == 4) {
+			            else if (tmpCount == 5) {
 			            	tmpStr = buf.split("::");
 			            	tmpLvl.health = Integer.parseInt(tmpStr[1].trim());
 			            	tmpLvl.health = (int)(tmpLvl.health * gameDifficulty);
 			            }
-			            else if (tmpCount == 5) {
+			            else if (tmpCount == 6) {
 			            	tmpStr = buf.split("::");
 			            	tmpLvl.specialAbility = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 6) {
+			            else if (tmpCount == 7) {
 			            	tmpStr = buf.split("::");
 			            	tmpLvl.goldValue = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 7) {
+			            else if (tmpCount == 8) {
 			            	tmpStr = buf.split("::");
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
