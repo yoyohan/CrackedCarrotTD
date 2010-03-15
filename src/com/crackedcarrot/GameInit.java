@@ -8,11 +8,10 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-<<<<<<< HEAD
+
 import android.view.MotionEvent;
 import android.view.SubMenu;
-=======
->>>>>>> 1a96cb95c30fed8519d570d0835321669c632573
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
