@@ -53,6 +53,14 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 
+	    
+	    for (int i = 0; i < mTower.length; i++) {
+	    	mTower[i] = new Tower(R.drawable.skate3);
+	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
+	    	mTower[i].relatedShot = mShots[i];
+	    	mTower[i].draw = false;
+	    	mShots[i].draw = false;
+	    } 
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.skate3);
 	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
@@ -66,6 +74,8 @@ public class GameLoop implements Runnable {
     	
     	lvlNbr = 0;
 	    gameSpeed = 1;
+
+	    initializeDataStructures();
 	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
     	while(run){
@@ -134,14 +144,38 @@ public class GameLoop implements Runnable {
     }
 
     
-	private void initializeLvl() {
-    	final long starttime = SystemClock.uptimeMillis();
-		
+	private void initializeDataStructures() {
 		//The following line contains the code for initiating every level
 		/////////////////////////////////////////////////////////////////
 		renderHandle.freeSprites();
-		renderHandle.freeAllTextures();
+		renderHandle.freeAllTextures();		
+		
+		//TODO: OPTIMIZESD?
+		for (int i = 0; i < mTTypes.length; i++) {
+			renderHandle.loadTexture(mTTypes[i].mResourceId);
+			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+		}
+		renderHandle.loadTexture(mLvl[lvlNbr].mDeadResourceId);
+		
+		// Sends an array with sprites to the renderer
+		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
+		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
+		renderHandle.setSprites(mTower, NativeRender.TOWER);
+		renderHandle.setSprites(mShots, NativeRender.SHOT);
 
+		renderHandle.finalizeSprites();
+		
+        // Now's a good time to run the GC.  Since we won't do any explicit
+        // allocation during the test, the GC should stay dormant and not
+        // influence our results.
+		Runtime r = Runtime.getRuntime();
+        r.gc();
+		
+	}
+
+	private void initializeLvl() {
+    	final long starttime = SystemClock.uptimeMillis();
+		
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
     	mCreatures = new Creature[remainingCreatures];
     	int reverse = remainingCreatures; 
@@ -149,8 +183,8 @@ public class GameLoop implements Runnable {
 		for (int z = 0; z < mCreatures.length; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
-    		mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
-			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
+			//mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
+			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
     		mCreatures[z].x = wayP[0].x;
     		mCreatures[z].y = wayP[0].y;
     		
@@ -164,30 +198,10 @@ public class GameLoop implements Runnable {
     		
     		mCreatures[z].draw = false;
     		mCreatures[z].opacity = 1;
+
+    		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
     		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
-
-    		renderHandle.loadTexture(mLvl[lvlNbr].mDeadResourceId);
 		}
-
-		// Sends an array with sprites to the renderer
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
-
-		//TODO: OPTIMIZESD?
-		for (int i = 0; i < mTTypes.length; i++) {
-			renderHandle.loadTexture(mTTypes[i].mResourceId);
-			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
-		}
-		
-		renderHandle.finalizeSprites();
-
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-		Runtime r = Runtime.getRuntime();
-        r.gc();
 	}
 
 	/**
