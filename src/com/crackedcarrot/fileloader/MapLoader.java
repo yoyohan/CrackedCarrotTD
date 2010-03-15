@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
@@ -96,7 +95,6 @@ public class MapLoader {
 						Coords tmpCoord = s.getPosFromGrid(tmpgridx, tmpgridy);
 						wps.way[wpNbr] = tmpCoord;
 						
-						Log.d("TEST",""+wps.way[wpNbr].x+";"+wps.way[wpNbr].y);
 						if (wpNbr != 0) {						
 							Coords cp = wps.way[wpNbr-1];
 							cp = s.getGridXandY(cp.x, cp.y);
@@ -125,7 +123,6 @@ public class MapLoader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		
 		return new Map(wps,bckgrd,twg,s);
 	}

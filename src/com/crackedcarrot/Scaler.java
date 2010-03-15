@@ -10,13 +10,16 @@ public class Scaler {
 	private final int FX = 480;
 	private final int FY = 800;
 	private Coords tmpGridSize;
-	private Coords tmpRange;
+	private Coords tmpPosStatusBar;
+	private Coords tmpTowerMenu;
 	
 	public Scaler(int x, int y) {
 		this.res_x = x;
 		this.res_y = y;
 		tmpGridSize = scale(60,60);
-		tmpRange = scale(80,740);
+		tmpPosStatusBar = scale(0,740);
+		tmpTowerMenu = scale(0,80);
+		
 	}
 
 	public Coords scale(int currX, int currY) { 
@@ -49,24 +52,17 @@ public class Scaler {
 		return res_y;
 	}
 
-	// Returns pixel position in the grid.
-	public Coords getGridPos(int x,int y) {
-		int tmpX = (x / tmpGridSize.x) * tmpGridSize.x; 
-		int tmpY = (y / tmpGridSize.y) * tmpGridSize.y; 
-		return new Coords(tmpX,tmpY);
-	}
-
 	// Returns position in the grid
 	public Coords getGridXandY(int x,int y) {
 		int tmpX = ((x / tmpGridSize.x));
-		int tmpY = (((y-tmpRange.x) / tmpGridSize.y));
+		int tmpY = (((y-tmpTowerMenu.y) / tmpGridSize.y));
 		return new Coords(tmpX,tmpY);
 	}
 
 	// Return pixel position from a grid position
 	public Coords getPosFromGrid(int gridX,int gridY) {
 		int tmpPosX = tmpGridSize.x * gridX;
-		int tmpPosY = (tmpGridSize.y * gridY) + tmpRange.x;
+		int tmpPosY = (tmpGridSize.y * gridY) + tmpTowerMenu.y;
 		return new Coords(tmpPosX,tmpPosY);
 	}
 	
@@ -74,10 +70,15 @@ public class Scaler {
 	public boolean insideGrid(int x,int y) {
 		if (x > res_x || y > res_y || x < 0 || y < 0)
 			return false;
-		// Are we above menu?
-		if (y < tmpRange.x || y > tmpRange.y)
+		
+		//Are we belove statusbar?
+		if (!(y < tmpPosStatusBar.y))
 			return false;
-
+	
+		//Are we above menu?
+		if (!(y > tmpTowerMenu.y))
+			return false;
+		
 		return true;
 	}
 	

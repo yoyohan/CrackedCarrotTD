@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import java.util.Random;
-
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -52,8 +50,8 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
-	    this.mTower = new Tower[100];
-	    this.mShots = new Shot[100];
+	    this.mTower = new Tower[60];
+	    this.mShots = new Shot[60];
 
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.skate3);
@@ -70,29 +68,26 @@ public class GameLoop implements Runnable {
 	    gameSpeed = 1;
 	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
-
     	while(run){
-
     		initializeLvl();
-
-
     		try {
 				renderHandle.rendererReady.acquire();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			//Will try to create towers of type 0  
+	        if (lvlNbr == 0) {
+				for (int i = 0; i < 8; i++) {
+		        	for (int z = 0; z < 11; z++) {
+		        		Coords tmp = mScaler.getPosFromGrid(i,z);
+		        		tmp.y = tmp.y+10; 
+		        		createTower(tmp, 0);
+		        	}
+		        }
+	        }
 			
-    		//Will try to create 200 different towers of type 0  
-        	Random rand = new Random();
-            for (int i = 0; i < 10000; i++) {
-            	int randomInt1 = rand.nextInt((mScaler.getScreenResolutionX()));
-            	int randomInt2 = rand.nextInt((mScaler.getScreenResolutionY()));
-            	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-            	boolean test = createTower(tmp, 0);
-            	Log.d("Towercreate status:","" + test);
-            }
-    		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
 
@@ -117,9 +112,6 @@ public class GameLoop implements Runnable {
             	}
 	        }
     		player.calculateInterest();
-    		// Allocates MEMORY, BIG NO
-    		//Log.d("GAMELOOP", "Money: " + player.money);
-
 
     		// Check if the GameLoop are to run the level loop one more time.
             if (player.health < 1) {
@@ -288,9 +280,7 @@ public class GameLoop implements Runnable {
     	if (mTower == null) {
     		return;
     	}
-    	//TODO: If we would use mTower.length.. The game will try to check all
-    	//towers but since we only use one and don't have enabled buying
-    	//we will wait with this loop.
+    	
     	for (int x = 0; x < mTower.length; x++) {
     		
     		Tower towerObject = mTower[x];
@@ -323,7 +313,6 @@ public class GameLoop implements Runnable {
 		    			//object.cre.draw = false;
 		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
 		    			player.money = player.money + targetCreature.goldValue;
-		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
 		    			soundManager.playSound(10);
 		    		}
@@ -351,11 +340,11 @@ public class GameLoop implements Runnable {
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
 			int tmpx = tmpC.x;
 			int tmpy = tmpC.y;
-			Log.d("Towercreate status:",""+tmpx+","+tmpy);
-			Log.d("Towercreate status:",""+TowerPos.x+","+TowerPos.y);
 			
 			if (mTowerGrid[tmpx][tmpy].empty) {
-				mTower[totalNumberOfTowers].mTextureName = renderHandle.getTextureName(mTTypes[towerType].mResourceId);
+				//mTower[totalNumberOfTowers].mTextureName = renderHandle.getTextureName(mTTypes[towerType].mResourceId);
+				mTower[totalNumberOfTowers].mTextureName = mTTypes[towerType].mTextureName;
+
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
@@ -372,13 +361,17 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].velocity = mTTypes[towerType].velocity;
 				mTower[totalNumberOfTowers].draw = true; //Tower drawable
 
-				mTower[totalNumberOfTowers].relatedShot.mTextureName = 
-					renderHandle.getTextureName(mTTypes[towerType].relatedShot.mResourceId);
+				//mTower[totalNumberOfTowers].relatedShot.mTextureName = 
+				//	renderHandle.getTextureName(mTTypes[towerType].relatedShot.mResourceId);
+				mTower[totalNumberOfTowers].relatedShot.mTextureName = mTTypes[towerType].relatedShot.mTextureName;
+
+				
 				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].width;
 				mTower[totalNumberOfTowers].relatedShot.draw = false;
 				
-				Coords tmp = mScaler.getGridPos(TowerPos.x,TowerPos.y);//Tower location
+				Coords tmp = mScaler.getPosFromGrid(tmpx, tmpy);
+				
 				mTower[totalNumberOfTowers].x = tmp.x;
 				mTower[totalNumberOfTowers].y = tmp.y;
 				mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
