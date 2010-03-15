@@ -1,6 +1,6 @@
 package com.crackedcarrot;
 
-import java.util.concurrent.Semaphore;
+import java.util.Random;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -52,8 +52,8 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
-	    this.mTower = new Tower[40];
-	    this.mShots = new Shot[40];
+	    this.mTower = new Tower[100];
+	    this.mShots = new Shot[100];
 
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.skate3);
@@ -74,16 +74,7 @@ public class GameLoop implements Runnable {
     	while(run){
 
     		initializeLvl();
-    		//Will try to create 50 different towers of type 0  
-        	//Random rand = new Random();
-            //for (int i = 0; i < 50; i++) {
-            //	int randomInt1 = rand.nextInt((mScaler.getScreenResolutionX()));
-            //	int randomInt2 = rand.nextInt((mScaler.getScreenResolutionY()));
-            //	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-            //	boolean test = createTower(tmp, 0);
-            //	Log.d("Towercreate status:","" + test);
-            //}
-			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
+
 
     		try {
 				renderHandle.rendererReady.acquire();
@@ -92,9 +83,17 @@ public class GameLoop implements Runnable {
 				e.printStackTrace();
 			}
 			
-    		createTower(new Coords(200,200), 0);
+    		//Will try to create 200 different towers of type 0  
+        	Random rand = new Random();
+            for (int i = 0; i < 10000; i++) {
+            	int randomInt1 = rand.nextInt((mScaler.getScreenResolutionX()));
+            	int randomInt2 = rand.nextInt((mScaler.getScreenResolutionY()));
+            	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
+            	boolean test = createTower(tmp, 0);
+            	Log.d("Towercreate status:","" + test);
+            }
     		
-    		
+            // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
 
     			//Systemclock. Used to help determine speed of the game. 

@@ -33,7 +33,7 @@ public class MapLoader {
 	public MapLoader(Context context, Scaler s){
 		this.context = context;
 		this.s = s;
-		twg = new TowerGrid[8][10];
+		twg = new TowerGrid[8][11];
 		for (int x = 0; x < twg.length; x++) {
 			for (int y = 0; y < twg[0].length; y++) {
 				twg[x][y] = new TowerGrid();

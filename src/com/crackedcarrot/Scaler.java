@@ -10,12 +10,13 @@ public class Scaler {
 	private final int FX = 480;
 	private final int FY = 800;
 	private Coords tmpGridSize;
+	private Coords tmpRange;
 	
 	public Scaler(int x, int y) {
 		this.res_x = x;
 		this.res_y = y;
 		tmpGridSize = scale(60,60);
-
+		tmpRange = scale(80,740);
 	}
 
 	public Coords scale(int currX, int currY) { 
@@ -58,14 +59,14 @@ public class Scaler {
 	// Returns position in the grid
 	public Coords getGridXandY(int x,int y) {
 		int tmpX = ((x / tmpGridSize.x));
-		int tmpY = (((y-tmpGridSize.y*2) / tmpGridSize.y));
+		int tmpY = (((y-tmpRange.x) / tmpGridSize.y));
 		return new Coords(tmpX,tmpY);
 	}
 
 	// Return pixel position from a grid position
 	public Coords getPosFromGrid(int gridX,int gridY) {
 		int tmpPosX = tmpGridSize.x * gridX;
-		int tmpPosY = (tmpGridSize.y * gridY) + 2*tmpGridSize.y;
+		int tmpPosY = (tmpGridSize.y * gridY) + tmpRange.x;
 		return new Coords(tmpPosX,tmpPosY);
 	}
 	
@@ -73,22 +74,10 @@ public class Scaler {
 	public boolean insideGrid(int x,int y) {
 		if (x > res_x || y > res_y || x < 0 || y < 0)
 			return false;
-
-		Log.d("Towercreate status:","step1");		
-		
 		// Are we above menu?
-		if (!((y-tmpGridSize.y*2) > 0))
+		if (y < tmpRange.x || y > tmpRange.y)
 			return false;
 
-		Log.d("Towercreate status:","step2");		
-		
-		// are we below the statusbar?
-		if (y >(tmpGridSize.y*2 + 10*tmpGridSize.y))
-			return false;
-
-		Log.d("Towercreate status:","step3");		
-		
-		
 		return true;
 	}
 	
