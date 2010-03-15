@@ -2,7 +2,11 @@ package com.crackedcarrot;
 
 import android.os.SystemClock;
 import android.util.Log;
+
 import com.crackedcarrot.fileloader.Level;
+import com.crackedcarrot.fileloader.Map;
+import com.crackedcarrot.fileloader.TowerGrid;
+import com.crackedcarrot.menu.R;
 
 /**
  * A runnable that updates the position of each creature and projectile
@@ -10,62 +14,82 @@ import com.crackedcarrot.fileloader.Level;
  * track of player life, level count etc.
  */
 public class GameLoop implements Runnable {
-    private Creature[] mCreatures;
-    private Level[] mLvl;
-    private Tower[] mTower;
-    private int totalNumberOfTowers = 0;
-    private Tower[] mAllTowers;
-    private long mLastTime;
-    private int lvlNbr;
-    private int remainingCreatures;
-    private Coords[] wayP;
-    public volatile boolean run = true;
-    private long gameSpeed;
-    private SoundManager soundManager;
     private Player player;
+    private Map mGameMap;
+
+    private Creature[] mCreatures;
+    private int remainingCreatures;
+
+    private Level[] mLvl;
+    private int lvlNbr;
+    private Coords[] wayP;
+    
+    private Tower[] mTower;
+    private TowerGrid[][] mTowerGrid;
+    private Tower[] mTTypes;
+    private int totalNumberOfTowers = 0;
+    private Shot[] mShots;
+    
+    private long mLastTime;
+    public volatile boolean run = true;
+
+    private long gameSpeed;
+    
+    private SoundManager soundManager;
     private Scaler mScaler;
     private NativeRender renderHandle;
     
-    public GameLoop(NativeRender renderHandle){
+    public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
+			Player p, SoundManager sm){
     	this.renderHandle = renderHandle;
+		this.mGameMap = gameMap;
+		this.wayP = gameMap.getWaypoints().getCoords();
+   		this.mTowerGrid = gameMap.getTowerGrid();
+   		this.mScaler = gameMap.getScaler();
+		this.mTTypes = tTypes;
+        this.mLvl = waveList;
+    	this.soundManager = sm;
+    	this.player = p;
+	    this.mTower = new Tower[60];
+	    this.mShots = new Shot[60];
+
+	    for (int i = 0; i < mTower.length; i++) {
+	    	mTower[i] = new Tower(R.drawable.skate3);
+	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
+	    	mTower[i].relatedShot = mShots[i];
+	    	mTower[i].draw = false;
+	    	mShots[i].draw = false;
+	    } 
     }
     
-    public void run() { 
+    public void run() {
+    	
     	lvlNbr = 0;
 	    gameSpeed = 1;
-
-	    //Sleep to give renderer time to finish allocate
-	    try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	    
+	    Log.d("GAMELOOP","INIT GAMELOOP");
     	while(run){
-    		Log.d("GAMELOOP","INIT GAMELOOP");
-        	final long starttime = SystemClock.uptimeMillis();
-    		
-    		//The following line contains the code for initiating every level
-    		/////////////////////////////////////////////////////////////////
-    		remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-    		int reverse = remainingCreatures; 
-    		for (int z = 0; z < remainingCreatures; z++) {
-    			reverse--;
-    			// The following line is used to add the following wave of creatures to the list of creatures.
-        		mCreatures[z].cloneCreature(mLvl[lvlNbr]);
-    			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-        		mCreatures[z].x = wayP[0].x;
-        		mCreatures[z].y = wayP[0].y;
-        		mCreatures[z].draw = false;
-        		mCreatures[z].opacity = 1;
-        		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
-    		}
-    		
-            renderHandle.finalizeSprites();
+    		initializeLvl();
+    		try {
+				renderHandle.rendererReady.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-			// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
-        	while(remainingCreatures > 0 && run){
+			//Will try to create towers of type 0  
+	        if (lvlNbr == 0) {
+				for (int i = 0; i < 8; i++) {
+		        	for (int z = 0; z < 11; z++) {
+		        		Coords tmp = mScaler.getPosFromGrid(i,z);
+		        		tmp.y = tmp.y+10; 
+		        		createTower(tmp, 0);
+		        	}
+		        }
+	        }
+			
+            // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
+    		while(remainingCreatures > 0 && run){
 
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
@@ -88,9 +112,6 @@ public class GameLoop implements Runnable {
             	}
 	        }
     		player.calculateInterest();
-    		// Allocates MEMORY, BIG NO
-    		//Log.d("GAMELOOP", "Money: " + player.money);
-
 
     		// Check if the GameLoop are to run the level loop one more time.
             if (player.health < 1) {
@@ -113,6 +134,59 @@ public class GameLoop implements Runnable {
     }
 
     
+	private void initializeLvl() {
+    	final long starttime = SystemClock.uptimeMillis();
+		
+		//The following line contains the code for initiating every level
+		/////////////////////////////////////////////////////////////////
+		renderHandle.freeSprites();
+		renderHandle.freeAllTextures();
+
+    	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	mCreatures = new Creature[remainingCreatures];
+    	int reverse = remainingCreatures; 
+		
+		for (int z = 0; z < mCreatures.length; z++) {
+			reverse--;
+			// The following line is used to add the following wave of creatures to the list of creatures.
+    		mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
+			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
+    		mCreatures[z].x = wayP[0].x;
+    		mCreatures[z].y = wayP[0].y;
+    		
+    		mCreatures[z].health = mLvl[lvlNbr].health;
+    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
+    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
+    		mCreatures[z].width = mLvl[lvlNbr].width;
+    		mCreatures[z].height = mLvl[lvlNbr].height;
+    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
+    		mCreatures[z].specialAbility = mLvl[lvlNbr].goldValue;
+    		
+    		mCreatures[z].draw = false;
+    		mCreatures[z].opacity = 1;
+    		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
+		}
+
+		// Sends an array with sprites to the renderer
+		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
+		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
+		renderHandle.setSprites(mTower, NativeRender.TOWER);
+		renderHandle.setSprites(mShots, NativeRender.SHOT);
+
+		//TODO: OPTIMIZESD?
+		for (int i = 0; i < mTTypes.length; i++) {
+			renderHandle.loadTexture(mTTypes[i].mResourceId);
+			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+		}
+		renderHandle.finalizeSprites();
+
+        // Now's a good time to run the GC.  Since we won't do any explicit
+        // allocation during the test, the GC should stay dormant and not
+        // influence our results.
+		Runtime r = Runtime.getRuntime();
+        r.gc();
+	}
+
 	/**
 	 * Will go through all of the creatures from this level and
 	 * calculate the movement. 
@@ -206,9 +280,7 @@ public class GameLoop implements Runnable {
     	if (mTower == null) {
     		return;
     	}
-    	//TODO: If we would use mTower.length.. The game will try to check all
-    	//towers but since we only use one and don't have enabled buying
-    	//we will wait with this loop.
+    	
     	for (int x = 0; x < mTower.length; x++) {
     		
     		Tower towerObject = mTower[x];
@@ -241,7 +313,6 @@ public class GameLoop implements Runnable {
 		    			//object.cre.draw = false;
 		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
 		    			player.money = player.money + targetCreature.goldValue;
-		    			Log.d("LOOP","Creature killed");
 		    			// play died1.mp3
 		    			soundManager.playSound(10);
 		    		}
@@ -258,86 +329,60 @@ public class GameLoop implements Runnable {
     		}
     	}
 	}
-    
-    
-	/**
-	 * Will set the list of creatures moving over the map.
-	 * <p>
-	 * This method is called before GameLoop is started. 
-	 *
-	 * @param  creature  	List of Creature. 
-	 * @return      		void
-	 */    
-    public void setCreatures(Creature[] creatures) {
-        this.mCreatures = creatures;
-    }
-    
-	/**
-	 * Will give level information to the GameLoop.
-	 * calculate the movement. 
-	 * <p>
-	 * This method is called before GameLoop is started. 
-	 *
-	 * @param  lvl			List of type Levels
-	 * @return      		void
-	 */    
-    public void setLevels(Level[] lvl) {
-        this.mLvl = lvl;
-    }
-    
-	/**
-	 * Will set the WayPoints for this map to  the GameLoop.
-	 * <p>
-	 * This method is called before GameLoop is started. 
-	 *
-	 * @param  wp			Object of type WayPoints
-	 * @return     			void
-	 */    
-    public void setWP(Waypoints wayP){
-    	this.wayP = wayP.getCoords();
-    }
 
-    /**
-	 * Will set the Shots(Tower projectiles) for this map to  the GameLoop.
-	 * <p>
-	 * This method is called before GameLoop is started. 
-	 *
-	 * @param  sh			List of type Shot
-	 * @return     			void
-	 */    
-    public void setTowers(Tower[] tw){
-    	this.mTower = tw;
-    }
-    
-    public void setSoundManager(SoundManager sm) {
-    	this.soundManager = sm;
-    }
-    
-    public void setPlayer(Player p) {
-    	this.player = p;
-    }
-
-    public void setAllTowers(Tower[] allTw) {
-    	this.mAllTowers = allTw;
-    }
-    
-    public void setScaler(Scaler scaler) {
-    	this.mScaler = scaler;
-    }
-    
     public boolean createTower(Coords TowerPos, int towerType) {
-		if (mAllTowers.length > towerType && totalNumberOfTowers < mTower.length) {
-			mTower[totalNumberOfTowers].cloneTower(mAllTowers[towerType]);
-			mTower[totalNumberOfTowers].draw = true; //Tower drawable
-	    	Coords tmp = mScaler.getGridPos(TowerPos.x,TowerPos.y);//Tower location
-	    	mTower[totalNumberOfTowers].x = tmp.x;
-	    	mTower[totalNumberOfTowers].y = tmp.y;
-	    	mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
-	    	totalNumberOfTowers++;
-	    	return true;
+		if (mTTypes.length > towerType && totalNumberOfTowers < mTower.length) {
+			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
+				//You are trying to place a tower on a spot outside the grid
+				return false;
+			}
+			
+			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
+			int tmpx = tmpC.x;
+			int tmpy = tmpC.y;
+			
+			if (mTowerGrid[tmpx][tmpy].empty) {
+				//mTower[totalNumberOfTowers].mTextureName = renderHandle.getTextureName(mTTypes[towerType].mResourceId);
+				mTower[totalNumberOfTowers].mTextureName = mTTypes[towerType].mTextureName;
+
+				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
+				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
+				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
+				mTower[totalNumberOfTowers].level = mTTypes[towerType].level;
+				mTower[totalNumberOfTowers].maxDamage = mTTypes[towerType].maxDamage;
+				mTower[totalNumberOfTowers].minDamage = mTTypes[towerType].minDamage;
+				mTower[totalNumberOfTowers].price = mTTypes[towerType].price;
+				mTower[totalNumberOfTowers].range = mTTypes[towerType].range;
+				mTower[totalNumberOfTowers].resellPrice = mTTypes[towerType].resellPrice;
+				mTower[totalNumberOfTowers].specialAbility = mTTypes[towerType].specialAbility;
+				mTower[totalNumberOfTowers].title = mTTypes[towerType].title;
+				mTower[totalNumberOfTowers].upgrade1 = mTTypes[towerType].upgrade1;
+				mTower[totalNumberOfTowers].upgrade2 = mTTypes[towerType].upgrade2;
+				mTower[totalNumberOfTowers].velocity = mTTypes[towerType].velocity;
+				mTower[totalNumberOfTowers].draw = true; //Tower drawable
+
+				//mTower[totalNumberOfTowers].relatedShot.mTextureName = 
+				//	renderHandle.getTextureName(mTTypes[towerType].relatedShot.mResourceId);
+				mTower[totalNumberOfTowers].relatedShot.mTextureName = mTTypes[towerType].relatedShot.mTextureName;
+
+				
+				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].height;
+				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].width;
+				mTower[totalNumberOfTowers].relatedShot.draw = false;
+				
+				Coords tmp = mScaler.getPosFromGrid(tmpx, tmpy);
+				
+				mTower[totalNumberOfTowers].x = tmp.x;
+				mTower[totalNumberOfTowers].y = tmp.y;
+				mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
+				
+				totalNumberOfTowers++;
+				mTowerGrid[tmpx][tmpy].empty = false;
+				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
+	    		return true;
+			}
 		}
-		else {
-			return false;
-		}
+		return false;
     }
+
 }

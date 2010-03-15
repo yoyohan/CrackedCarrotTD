@@ -29,20 +29,6 @@ public class Creature extends Sprite{
 		this.draw = false;
 		nextWayPoint = 0;
 	}
-	
-	public void cloneCreature(Creature cr) {
-	    this.health = cr.health;
-	    this.nextWayPoint = cr.nextWayPoint;
-	    this.velocity = cr.velocity;
-	    this.draw  = cr.draw;
-	    this.width = cr.width;
-	    this.height = cr.height;
-	    this.goldValue = cr.goldValue;
-	    this.specialAbility = cr.goldValue;
-	    //super.mResourceId = cr.mResourceId;
-	    super.mResourceId = cr.mResourceId;
-	    super.mTextureName = cr.mTextureName;
-	}
 
 	public void updateWayPoint (){
 		nextWayPoint++;

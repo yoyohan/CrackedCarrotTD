@@ -35,6 +35,13 @@ typedef struct {
 
 } GLSprite;
 
+//The number of idividual sprites.
+int noOfSprites;
+//Array with pointers to GLSprites.
+GLSprite* renderSprites;
+//GLuint* textureNameWorkspace;
+//GLuint* cropWorkspace;
+
 enum bufferTag {
 	INDEX_OBJECT = 0,
 	VERT_OBJECT = 1,
@@ -42,3 +49,11 @@ enum bufferTag {
 };
 
 void initHwBuffers(JNIEnv* env, GLSprite* sprite);
+void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h);
+void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env);
+void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env);
+
+void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env, jobject thiz, jint size);
+void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, jobject thiz, jint spriteNO, jobject sprite);
+void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env);
+void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName);

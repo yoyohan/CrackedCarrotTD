@@ -8,7 +8,7 @@ package com.crackedcarrot;
 public class Waypoints {
 	
 public Coords[] way;
-private Scaler res;
+public Scaler res;
 	
 	public Waypoints(int nrWP, Scaler scale){
 		this.res = scale;

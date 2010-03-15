@@ -1,21 +1,19 @@
 package com.crackedcarrot;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+<<<<<<< HEAD
 import android.view.MotionEvent;
 import android.view.SubMenu;
+=======
+>>>>>>> 1a96cb95c30fed8519d570d0835321669c632573
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
@@ -51,43 +49,6 @@ public class GameInit extends Activity {
 
         return false;
     }
-    
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo){
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuItem restart = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Restart");
-		// Apparently Android doesnt support icons in a Context-menu.
-		//restart.setIcon(R.drawable.restart_key_button);
-
-		SubMenu quitMenu = menu.addSubMenu("Quit");
-		quitMenu.setHeaderTitle("Save?");
-		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "Yes");
-		quitMenu.add(Menu.NONE,Menu.NONE,Menu.NONE, "No");
-	}
-	
-	@Override
-	public boolean onContextItemSelected (MenuItem item) {
-		String title = (String) item.getTitle();
-		
-		if (title.matches("Restart")) {
-			return true;
-			
-		} else if (title.matches("Quit")) {
-			return true;
-			
-		} else if (title.matches("Yes")) {
-			return true;
-			
-		} else if (title.matches("No")) {
-			return true;
-			
-		} else {
-			// This should never happen.
-			Log.d("GameInit", "ContextMenu: " + item.getTitle());
-			return super.onContextItemSelected(item);
-		}
-		
-	}
     
     /** Called when the activity is first created. */
     @Override
@@ -188,7 +149,6 @@ public class GameInit extends Activity {
         	gameMap = mapLoad.readLevel("level2");
         else
         	gameMap = mapLoad.readLevel("level3");
-        Waypoints gameWaypoints = gameMap.getWaypoints();
 
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this,res);
@@ -207,76 +167,15 @@ public class GameInit extends Activity {
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this,res);
-        Tower[] allTowers  = towerLoad.readTowers("towers");
+        Tower[] tTypes  = towerLoad.readTowers("towers");
         
-        // When all data needed for the game is loaded we allocate memory for towers and
-        // creatures. If we do this right we will hopefully not activate the garbage collector during
-        // the game
-        int maxNbrCreaturs = 20; // Maximum number of creatures on the map on the same time
-        int maxNbrTowers = 40; // Maximum number of towers on the map on the same time
-        Creature[] creatureList = new Creature[maxNbrCreaturs];
-    	Tower[] towerList = new Tower[maxNbrTowers];
-    	Shot[] shotList = new Shot[maxNbrTowers]; //Will always be the same number of shots as the number of towers
-        
-        //We dont want to send an empty list of creatures to native renderer.
-        for (int i = 0; i < creatureList.length; i++) {
-        	Creature tmpCr = new Creature(R.drawable.bjoern);
-            creatureList[i] = tmpCr;
-        }        
-        //We dont want to send an empty list of towers or shots  to then native renderer.        
-        for (int i = 0; i < maxNbrTowers; i++) {
-    		Tower tmpTw = new Tower(R.drawable.skate2);
-    		tmpTw.relatedShot = new Shot(R.drawable.skate3,tmpTw);
-        	shotList[i] = tmpTw.relatedShot;
-        	towerList[i] = tmpTw;
-        }
-
-    	// Sending data to GAME LOOP
-        simulationRuntime = new GameLoop(nativeRenderer);
-        simulationRuntime.setCreatures(creatureList);
-        simulationRuntime.setLevels(waveList);
-        simulationRuntime.setWP(gameWaypoints);
-        simulationRuntime.setTowers(towerList);
-        simulationRuntime.setAllTowers(allTowers);
-        simulationRuntime.setScaler(res);
-        simulationRuntime.setPlayer(p);
-        simulationRuntime.setSoundManager(new SoundManager(getBaseContext()));
+    	// Sending data to GAMELOOP
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
-        
-        //Will try to create 50 different towers of type 0        
-    	Random rand = new Random();
-        for (int i = 0; i < 50; i++) {
-        	int randomInt1 = rand.nextInt((res.getScreenResolutionX()));
-        	int randomInt2 = rand.nextInt((res.getScreenResolutionY()));
-        	Coords tmp = new Coords(randomInt1,randomInt2);//Tower location
-        	boolean test = simulationRuntime.createTower(tmp, 0);
-        	Log.d("Towercreate status:","" + test);
-        }
-        
-        // Sends an array with sprites to the renderer
-        nativeRenderer.setSprites(gameMap.getBackground(), NativeRender.BACKGROUND);
-        nativeRenderer.setSprites(creatureList, NativeRender.CREATURE);
-        nativeRenderer.setSprites(towerList, NativeRender.TOWER);
-        nativeRenderer.setSprites(shotList, NativeRender.SHOT);
-                
-        // Nåt sånt här skulle jag vilja att renderaren hanterar. Denna lista behöver aldig
-        // ritas men vi behöver texturen som ligger i varje "lvl"
-        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
         registerForContextMenu(mGLSurfaceView);
-        
 
-        // Sends an array with sprites to the renderer
-
-        // Nï¿½t sï¿½nt hï¿½r skulle jag vilja att renderaren hanterar. Denna lista behï¿½ver aldig
-        // ritas men vi behï¿½ver texturen som ligger i varje "lvl"
-        // nativeRenderer.setSprites(waveList, NativeRender.WAVE);
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-        Runtime r = Runtime.getRuntime();
-        r.gc();
         // Start GameLoop
         RenderThread.start();
     }
