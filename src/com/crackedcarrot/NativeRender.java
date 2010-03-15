@@ -33,8 +33,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private static native void nativeFreeSprites();
     private static native void nativeFreeTex(int i);
     
-    private Semaphore surfaceReady = new Semaphore(0);
-    public Semaphore rendererReady = new Semaphore(0);
+    private Semaphore lock1 = new Semaphore(0);
+    private Semaphore lock2 = new Semaphore(0);
     
 	private Sprite[][] sprites = new Sprite[4][];
 	private Sprite[] renderList;
@@ -72,7 +72,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		nativeResize(width, height);
 	}
-	
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		if(renderList != null){
@@ -97,58 +96,51 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		}
 		glContext = gl;
 		nativeSurfaceCreated();
-		surfaceReady.release();
+		lock1.release();
 	}
 	
-	public void finalizeSprites() {
-		
-		try {
-			surfaceReady.acquire();
-			int listSize = 0;
-			for(int i = 0; i < sprites.length; i++){
-				if(sprites[i] != null)
+	public void finalizeSprites() throws InterruptedException {
+		lock1.acquire();
+		int listSize = 0;
+		for(int i = 0; i < sprites.length; i++){
+			if(sprites[i] != null)
 				listSize += sprites[i].length;
+		}
+
+		renderList = new Sprite[listSize];
+
+		for(int i = 0, j = 0; i < sprites.length; i++){
+			if(sprites[i] != null){
+				for(int k = 0; k < sprites[i].length; k++){
+					renderList[j] = sprites[i][k];
+					j++;
+				}
 			}
-			
-	        renderList = new Sprite[listSize];
-	        
-	        for(int i = 0, j = 0; i < sprites.length; i++){
-	        	if(sprites[i] != null){
-	        		for(int k = 0; k < sprites[i].length; k++){
-	        			renderList[j] = sprites[i][k];
-	        			j++;
-	        		}
-	        	}
-	        }
-	        
-	        //This needs to run on the render Thread to get access to the glContext.
-        	view.queueEvent(new Runnable(){
+		}
+
+		//This needs to run on the render Thread to get access to the glContext.
+		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-		        nativeDataPoolSize(renderList.length);
-	            int lastTextureId = -1;
-		        for(int i = 0; i < renderList.length; i++){
+				nativeDataPoolSize(renderList.length);
+				int lastTextureId = -1;
+				for(int i = 0; i < renderList.length; i++){
 					// TODO Auto-generated method stub
 					nativeAlloc(i, renderList[i]);
-		        	//Try to load textures
+					//Try to load textures
 					int resource = renderList[i].getResourceId();
-	                if (!textureMap.containsKey(resource)) {
+					if (!textureMap.containsKey(resource)) {
 						lastTextureId = loadBitmap(mContext, glContext, resource);
 						textureMap.put(resource, lastTextureId);
-	                }
-	                renderList[i].setTextureName(lastTextureId);
-	                surfaceReady.release();
-	                rendererReady.release();
+					}
+					renderList[i].setTextureName(lastTextureId);
 				}
-		    }
-        	});
-        	//End of code that needs to run in the render thread.
-	       
-	        
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				lock2.release();
+			}
+		});
+		lock2.acquire();
+		lock1.release();
+		//End of code that needs to run in the render thread.
 	}
 	
 	public void setSprites(Sprite[] spriteArray, int type){
@@ -160,25 +152,21 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * this means nothing is left on the screen after this.
 	 * 
 	 * However All textures remain in their buffers. And can be reused.
+	 * @throws InterruptedException 
 	 */
-	public void freeSprites(){
-		try {
-			surfaceReady.acquire();
-			view.queueEvent(new Runnable(){
-				//@Override
-				public void run() {
-			        nativeFreeSprites();		    }
-	        });
-			
-			this.renderList = null;
-			for (int i=0; i < sprites.length; i++)
-				this.sprites[i] = null;
-			
-			surfaceReady.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void freeSprites() throws InterruptedException{
+		lock1.acquire();
+		view.queueEvent(new Runnable(){
+			//@Override
+			public void run() {
+				nativeFreeSprites();
+				lock2.release();
+			}
+		});
+
+		this.renderList = null;
+		lock2.acquire();
+		lock1.release();
 	}
 	/**
 	 * This loads a texture into the render for drawing,
@@ -192,26 +180,24 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * 
 	 * @param resourceId
 	 * @return textureName
+	 * @throws InterruptedException 
 	 */
-	public void loadTexture(int rId){
-		try {
-			surfaceReady.acquire();
-			final int resourceId = rId;
-			view.queueEvent(new Runnable(){
-				//@Override
-				public void run() {
-					int lastTextureId = 0;
-					if (!textureMap.containsKey(resourceId)) {
-						lastTextureId = loadBitmap(mContext, glContext, resourceId);
-						textureMap.put(resourceId, lastTextureId);
-		            }
+	public void loadTexture(int rId) throws InterruptedException{
+		lock1.acquire();
+		final int resourceId = rId;
+		view.queueEvent(new Runnable(){
+			//@Override
+			public void run() {
+				int lastTextureId = 0;
+				if (!textureMap.containsKey(resourceId)) {
+					lastTextureId = loadBitmap(mContext, glContext, resourceId);
+					textureMap.put(resourceId, lastTextureId);
 				}
-			});
-			surfaceReady.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				lock2.release();
+			}
+		});
+		lock2.acquire();
+		lock1.release();
 	}
 	
 	
@@ -223,53 +209,47 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * textures for a new wave and want to avoid reloading all of them.
 	 * 
 	 * @param resourceId
+	 * @throws InterruptedException 
 	 */
-	public void freeTexture(int resourceId){
+	public void freeTexture(int resourceId) throws InterruptedException{
+		lock1.acquire();
 		final int rId = resourceId;
-		try {
-			surfaceReady.acquire();
-			view.queueEvent(new Runnable(){
-				//@Override
-				public void run() {
-					Integer i = textureMap.get(rId);
-			        nativeFreeTex(i.intValue());		    }
-	        });
-			surfaceReady.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		view.queueEvent(new Runnable(){
+			//@Override
+			public void run() {
+				Integer i = textureMap.get(rId);
+				nativeFreeTex(i.intValue());
+				lock2.release();
+			}
+		});
+		lock2.acquire();
+		lock1.release();
 	}
 	
 	/**
 	 * Free all textures from buffers.
 	 * To draw anything after this new textures must be loaded.
+	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public void freeAllTextures(){
-		try {
-			
-			final HashMap<Integer,Integer> map = (HashMap<Integer, Integer>) textureMap.clone();
-			
-			textureMap.clear();
-			
-			surfaceReady.acquire();
-			view.queueEvent(new Runnable(){
-				//@Override
-				public void run() {
-					
-					Iterator<Integer> it = map.values().iterator();
-					while(it.hasNext()){
-				        nativeFreeTex(it.next().intValue());
-					}
+	public void freeAllTextures() throws InterruptedException{	
+		lock1.acquire();
+		final HashMap<Integer,Integer> map = (HashMap<Integer, Integer>) textureMap.clone();
+		textureMap.clear();
+
+		view.queueEvent(new Runnable(){
+			//@Override
+			public void run() {
+
+				Iterator<Integer> it = map.values().iterator();
+				while(it.hasNext()){
+					nativeFreeTex(it.next().intValue());
 				}
-			});
-			
-			surfaceReady.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				lock2.release();
+			}
+		});
+		lock2.acquire();
+		lock1.release();
 	}
 	
 	/**
@@ -277,9 +257,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * returns the texture name if it exist.
 	 * @param resourceId
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	public int getTextureName(int resourceId){
-		return textureMap.get(resourceId);
+	public int getTextureName(int resourceId) throws InterruptedException{
+		lock1.acquire();
+		int texId = textureMap.get(resourceId);
+		lock1.release();
+		return texId;
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {

@@ -52,6 +52,7 @@ public class GameLoop implements Runnable {
     	this.player = p;
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
+	    this.mCreatures = new Creature[50];
 
 	    
 	    for (int i = 0; i < mTower.length; i++) {
@@ -61,12 +62,9 @@ public class GameLoop implements Runnable {
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
-	    for (int i = 0; i < mTower.length; i++) {
-	    	mTower[i] = new Tower(R.drawable.skate3);
-	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
-	    	mTower[i].relatedShot = mShots[i];
-	    	mTower[i].draw = false;
-	    	mShots[i].draw = false;
+	    for (int i = 0; i < mCreatures.length; i++) {
+	    	mCreatures[i] = new Creature(R.drawable.skate1);
+	    	mCreatures[i].draw = false;
 	    } 
     }
     
@@ -80,12 +78,6 @@ public class GameLoop implements Runnable {
 	    Log.d("GAMELOOP","INIT GAMELOOP");
     	while(run){
     		initializeLvl();
-    		try {
-				renderHandle.rendererReady.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			//Will try to create towers of type 0  
 	        if (lvlNbr == 0) {
@@ -147,23 +139,30 @@ public class GameLoop implements Runnable {
 	private void initializeDataStructures() {
 		//The following line contains the code for initiating every level
 		/////////////////////////////////////////////////////////////////
-		renderHandle.freeSprites();
-		renderHandle.freeAllTextures();		
-		
-		//TODO: OPTIMIZESD?
-		for (int i = 0; i < mTTypes.length; i++) {
-			renderHandle.loadTexture(mTTypes[i].mResourceId);
-			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+		try {
+			renderHandle.freeSprites();
+			renderHandle.freeAllTextures();		
+
+			//TODO: OPTIMIZESD?
+			for (int i = 0; i < mTTypes.length; i++) {
+				renderHandle.loadTexture(mTTypes[i].mResourceId);
+				renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+			}
+
+			for(int i = 0; i < mLvl.length; i++){
+
+				renderHandle.loadTexture(mLvl[i].mDeadResourceId);
+				renderHandle.loadTexture(mLvl[i].mResourceId);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		renderHandle.loadTexture(mLvl[lvlNbr].mDeadResourceId);
-		
 		// Sends an array with sprites to the renderer
 		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
 		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
-
-		renderHandle.finalizeSprites();
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
@@ -177,10 +176,9 @@ public class GameLoop implements Runnable {
     	final long starttime = SystemClock.uptimeMillis();
 		
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-    	mCreatures = new Creature[remainingCreatures];
     	int reverse = remainingCreatures; 
 		
-		for (int z = 0; z < mCreatures.length; z++) {
+		for (int z = 0; z < remainingCreatures; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			//mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
@@ -201,6 +199,12 @@ public class GameLoop implements Runnable {
 
     		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
     		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
+		}
+		try {
+			renderHandle.finalizeSprites();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
