@@ -1,11 +1,14 @@
 // Name: waweSet1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::30
+Total number of levels::2
 // level 1
 Texture alive::cat
 Texture dead::cat
 size::60
 health::120
-specialability::0
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 // level 2
@@ -13,231 +16,10 @@ Texture alive::cat
 Texture dead::cat
 size::60
 health::6000
-specialability::0
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
 goldValue::1
 nbrOfCreaturs::1
-// level 3
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::60
-health::300
-specialability::0
-goldValue::1
-nbrOfCreaturs::10
-// level 4
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::16
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 5
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::600
-specialability::0
-goldValue::1
-nbrOfCreaturs::5
-// level 6
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 7
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::200
-specialability::0
-goldValue::1
-nbrOfCreaturs::15
-// level 8
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 9
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 10
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 11
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 12
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 13
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 14
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 15
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 16
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 17
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 18
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 19
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 20
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 21
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 22
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 23
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 24
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 25
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 26
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 27
-Texture alive::cat
-Texture dead::cat
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 28
-Texture alive::cat
-Texture dead::cat
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 29
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
-// level 30
-Texture alive::bunny_pink_alive
-Texture dead::bunny_pink_dead
-size::64
-health::120
-specialability::0
-goldValue::1
-nbrOfCreaturs::20
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

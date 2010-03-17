@@ -87,10 +87,6 @@ public class WaveLoader {
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpLvl.width = recalc.getX();
 			            	tmpLvl.height = recalc.getX();
-			            	
-			            	// I will put velocity here
-			            	recalc = scaler.scale(50,0);
-			            	tmpLvl.velocity = recalc.getX();
 			            }
 			            else if (tmpCount == 5) {
 			            	tmpStr = buf.split("::");
@@ -99,13 +95,30 @@ public class WaveLoader {
 			            }
 			            else if (tmpCount == 6) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.specialAbility = Integer.parseInt(tmpStr[1].trim());
+			            	tmpLvl.creatureFast = Boolean.getBoolean(tmpStr[1].trim());
+			            	// I will put velocity here
+			            	Coords recalc = scaler.scale(30,0);
+			        		if (tmpLvl.creatureFast)
+				            	tmpLvl.velocity = recalc.getX()* 2;
+			        		else tmpLvl.velocity = recalc.getX();
 			            }
 			            else if (tmpCount == 7) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.goldValue = Integer.parseInt(tmpStr[1].trim());
+			            	tmpLvl.creatureFireResistant = Boolean.getBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 8) {
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.creatureFrostResistant = Boolean.getBoolean(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 9) {
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.creaturePoisonResistant = Boolean.getBoolean(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 10) {
+			            	tmpStr = buf.split("::");
+			            	tmpLvl.goldValue = Integer.parseInt(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 11) {
 			            	tmpStr = buf.split("::");
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;

@@ -71,7 +71,7 @@ public class Scaler {
 		if (x > res_x || y > res_y || x < 0 || y < 0)
 			return false;
 		
-		//Are we belove statusbar?
+		//Are we below statusbar?
 		if (!(y < tmpPosStatusBar.y))
 			return false;
 	
