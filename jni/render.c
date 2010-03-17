@@ -59,7 +59,6 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			
 			bufferName = renderSprites[i].bufferName;
 			
-			
 /*			vertBuffer = renderSprites[i].vertBuffer;
 			texCoordBuffer = renderSprites[i].textureCoordBuffer;
 			indexBuffer = renderSprites[i].indexBuffer;
@@ -67,6 +66,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 */			
 			
 			currTexture = (*env)->GetIntField(env,renderSprites[i].object, renderSprites[i].textureName);
+			if(currTexture == 0){
+				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
+			}
 			if(currTexture != prevTexture){ 
 			    glBindTexture(GL_TEXTURE_2D, currTexture);
 				prevTexture = currTexture;

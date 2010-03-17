@@ -50,11 +50,15 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
+    }
+    
+	private void initializeDataStructures() {
+		//this allocates the space we need for shots towers and creatures.
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
 
-	    
+	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.skate3);
 	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
@@ -62,25 +66,132 @@ public class GameLoop implements Runnable {
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
+	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
 	    	mCreatures[i] = new Creature(R.drawable.skate1);
 	    	mCreatures[i].draw = false;
 	    } 
-    }
+		
+	    //Free all allocated data in the render
+	    //Not needed really.. but now we know for sure that
+	    //we don't have any garbage anywhere.
+		try {
+			renderHandle.freeSprites();
+			renderHandle.freeAllTextures();		
+			
+			//Load textures for towers.
+			
+			for (int i = 0; i < mTTypes.length; i++) {
+				renderHandle.loadTexture(mTTypes[i].mResourceId);
+				renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+			}
+
+			//Load textures for all creature types.
+			for(int i = 0; i < mLvl.length; i++){
+
+				renderHandle.loadTexture(mLvl[i].mDeadResourceId);
+				renderHandle.loadTexture(mLvl[i].mResourceId);
+			}
+			//Ok, here comes something superduper mega important.
+			//The folowing looks up what names the render assigned
+			//To every texture from their resource ids 
+			//And assigns that id to the template objects for
+			//Towers shots and creatures.
+			
+			for(int i = 0; i < mTTypes.length; i++){
+				mTTypes[i].mTextureName = renderHandle.getTextureName(mTTypes[i].mResourceId);
+				mTTypes[i].relatedShot.mTextureName = renderHandle.getTextureName(mTTypes[i].relatedShot.mResourceId);
+				
+			}
+			
+			for(int i = 0; i < mLvl.length; i++){
+				mLvl[i].mTextureName = renderHandle.getTextureName(mLvl[i].mResourceId);
+			}
+						
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Sends an array with sprites to the renderer
+		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
+		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
+		renderHandle.setSprites(mTower, NativeRender.TOWER);
+		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		
+        // Now's a good time to run the GC.  Since we won't do any explicit
+        // allocation during the test, the GC should stay dormant and not
+        // influence our results.
+		Runtime r = Runtime.getRuntime();
+        r.gc();
+		
+	}
     
+	private void initializeLvl() {
+		try {
+			//Free last levels sprites to clear the video mem and ram from
+			//Unused creatures and settings that are no longer valid.
+			renderHandle.freeSprites();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	final long starttime = SystemClock.uptimeMillis();
+		
+    	//Set the creatures texture size and other atributes.
+    	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	//Need to reverse the list for to draw correctly.
+    	int reverse = remainingCreatures; 
+		for (int z = 0; z < remainingCreatures; z++) {
+			reverse--;
+			// The following line is used to add the following wave of creatures to the list of creatures.
+			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
+			mCreatures[z].mResourceId = mLvl[lvlNbr].mResourceId;
+			mCreatures[z].mDeadResourceId = mLvl[lvlNbr].mDeadResourceId;
+			
+    		mCreatures[z].x = wayP[0].x;
+    		mCreatures[z].y = wayP[0].y;
+    		
+    		mCreatures[z].health = mLvl[lvlNbr].health;
+    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
+    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
+    		
+    		mCreatures[z].width = mLvl[lvlNbr].width;
+    		mCreatures[z].height = mLvl[lvlNbr].height;
+    		
+    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
+    		mCreatures[z].specialAbility = mLvl[lvlNbr].goldValue;
+    		
+    		mCreatures[z].draw = false;
+    		mCreatures[z].opacity = 1;
+
+    		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
+    		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
+		}
+		try {
+			
+			//Finally send of the sprites to the render to be allocated
+			//And after that drawn.
+			renderHandle.finalizeSprites();
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
     public void run() {
     	
+	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
-
-	    initializeDataStructures();
 	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
+	    
     	while(run){
-    		initializeLvl();
-
+    		
 			//Will try to create towers of type 0  
-	        if (lvlNbr == 0) {
+    		if (lvlNbr == 0) {
 				for (int i = 0; i < 8; i++) {
 		        	for (int z = 0; z < 11; z++) {
 		        		Coords tmp = mScaler.getPosFromGrid(i,z);
@@ -89,7 +200,10 @@ public class GameLoop implements Runnable {
 		        	}
 		        }
 	        }
-			
+    		//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
+    		//OR they will be infinitely small.
+    		initializeLvl();
+    		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
 
@@ -134,79 +248,6 @@ public class GameLoop implements Runnable {
 	    }
     	Log.d("GAMETHREAD", "dead thread");
     }
-
-    
-	private void initializeDataStructures() {
-		//The following line contains the code for initiating every level
-		/////////////////////////////////////////////////////////////////
-		try {
-			renderHandle.freeSprites();
-			renderHandle.freeAllTextures();		
-
-			//TODO: OPTIMIZESD?
-			for (int i = 0; i < mTTypes.length; i++) {
-				renderHandle.loadTexture(mTTypes[i].mResourceId);
-				renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
-			}
-
-			for(int i = 0; i < mLvl.length; i++){
-
-				renderHandle.loadTexture(mLvl[i].mDeadResourceId);
-				renderHandle.loadTexture(mLvl[i].mResourceId);
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// Sends an array with sprites to the renderer
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
-		
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-		Runtime r = Runtime.getRuntime();
-        r.gc();
-		
-	}
-
-	private void initializeLvl() {
-    	final long starttime = SystemClock.uptimeMillis();
-		
-    	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-    	int reverse = remainingCreatures; 
-		
-		for (int z = 0; z < remainingCreatures; z++) {
-			reverse--;
-			// The following line is used to add the following wave of creatures to the list of creatures.
-			//mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
-			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
-    		mCreatures[z].x = wayP[0].x;
-    		mCreatures[z].y = wayP[0].y;
-    		
-    		mCreatures[z].health = mLvl[lvlNbr].health;
-    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
-    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
-    		mCreatures[z].width = mLvl[lvlNbr].width;
-    		mCreatures[z].height = mLvl[lvlNbr].height;
-    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
-    		mCreatures[z].specialAbility = mLvl[lvlNbr].goldValue;
-    		
-    		mCreatures[z].draw = false;
-    		mCreatures[z].opacity = 1;
-
-    		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-    		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
-		}
-		try {
-			renderHandle.finalizeSprites();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Will go through all of the creatures from this level and
@@ -286,7 +327,6 @@ public class GameLoop implements Runnable {
 			}
     	}
     }
-
     
 	/**
 	 * Will go through all of the towews and try to find targets
@@ -366,9 +406,8 @@ public class GameLoop implements Runnable {
 			int tmpy = tmpC.y;
 			
 			if (mTowerGrid[tmpx][tmpy].empty) {
-				//mTower[totalNumberOfTowers].mTextureName = renderHandle.getTextureName(mTTypes[towerType].mResourceId);
+				
 				mTower[totalNumberOfTowers].mTextureName = mTTypes[towerType].mTextureName;
-
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;

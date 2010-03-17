@@ -129,11 +129,14 @@ public class NativeRender implements GLSurfaceView.Renderer {
 					nativeAlloc(i, renderList[i]);
 					//Try to load textures
 					int resource = renderList[i].getResourceId();
+					if(resource == 0){
+						Log.d("FIN SPRITES", "Error Invalid resource ID");
+					}
 					if (!textureMap.containsKey(resource)) {
 						lastTextureId = loadBitmap(mContext, glContext, resource);
 						textureMap.put(resource, lastTextureId);
 					}
-					renderList[i].setTextureName(lastTextureId);
+					renderList[i].setTextureName(textureMap.get(resource));
 				}
 				lock2.release();
 			}
