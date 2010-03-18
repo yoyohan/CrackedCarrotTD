@@ -80,7 +80,7 @@ public class WaveLoader {
 			            else if (tmpCount == 3) {
 			            	tmpStr = buf.split("::");
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
-			            	tmpLvl.mDeadResourceId = resID;
+			            	tmpLvl.setDeadResourceId(resID);
 			            }
 			            else if (tmpCount == 4) {
 			            	tmpStr = buf.split("::");

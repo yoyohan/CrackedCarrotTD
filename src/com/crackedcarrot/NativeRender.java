@@ -202,8 +202,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		lock2.acquire();
 		lock1.release();
 	}
-	
-	
+		
 	/**
 	 * This frees the texture specified by resource id
 	 * from the buffers.
@@ -256,7 +255,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	
 	/**
-	 * Tackes the resourceId of a sprite and 
+	 * Takes the resourceId of a sprite and 
 	 * returns the texture name if it exist.
 	 * @param resourceId
 	 * @return

@@ -36,20 +36,15 @@ public class Sprite {
     public float width;
     public float height;
     // The OpenGL ES texture handle to draw.
-    public int mTextureName;
+    private int mTextureName;
     // The id of the original resource that mTextureName is based on.
-    public int mResourceId;
+    private int mResourceId;
     
     public Sprite() {
     }
     
     public Sprite(int resourceId) {
         mResourceId = resourceId;
-    }
-    
-    //Används av native renderer men den verkar aldrig accessas?
-    public void setTextureName(int name) {
-        mTextureName = name;
     }
     
     public void setResourceId(int id) {
@@ -59,5 +54,13 @@ public class Sprite {
     public int getResourceId() {
         return mResourceId;
     }
+
+	public void setTextureName(int mTextureName) {
+		this.mTextureName = mTextureName;
+	}
+
+	public int getTextureName() {
+		return mTextureName;
+	}
     
 }
