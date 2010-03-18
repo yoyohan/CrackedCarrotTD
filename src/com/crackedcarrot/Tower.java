@@ -33,11 +33,17 @@ public class Tower extends Sprite{
 	// Speed of the shots
 	public int velocity;
 	// If the tower have frost damage
-	public boolean frostDamage;
+	public boolean hasFrostDamage;
+	// If the tower have frost damage. How long?
+	public int frostTime;
 	// If the tower have fire damage
-	public boolean fireDamage;
+	public boolean hasFireDamage;
 	// If the tower have poison damage
-	public boolean poisonDamage;
+	public boolean hasPoisonDamage;
+	// If the tower have poison damage, how mutch?
+	public int poisonDamage;
+	// If the tower have poison damage, how long?
+	public int poisonTime;
 	// The first linked update for this tower
 	public int upgrade1;
 	// The second linked update for this tower
@@ -73,19 +79,20 @@ public class Tower extends Sprite{
 		}
 		
 		// Target is frost resistant?
-		if (!tmpCreature.creatureFrostResistant && frostDamage) {
+		if (!tmpCreature.creatureFrostResistant && this.hasFrostDamage) {
 			if (aoeTower)
-				tmpCreature.creatureFrozenTime = 3;
+				tmpCreature.creatureFrozenTime = this.frostTime/2;
 			else 
-				tmpCreature.creatureFrozenTime = 5;
+				tmpCreature.creatureFrozenTime = this.frostTime;
 		}
 		
 		// Target is fire resistant?
-		if (!tmpCreature.creatureFireResistant && fireDamage)
+		if (tmpCreature.creatureFireResistant && this.hasFireDamage)
 			damageFactor = 0.4;
+		else damageFactor = 1;
 		
 		// Target is poison resistant?
-		if (!tmpCreature.creaturePoisonResistant && poisonDamage) {
+		if (!tmpCreature.creaturePoisonResistant && this.hasPoisonDamage) {
 			// If target is already affected by poison damage we dont want to remove the previous buff
 			float tmpED = 0;
 			int tmpPD = tmpCreature.creaturePoisonDamage;
@@ -93,14 +100,14 @@ public class Tower extends Sprite{
 		
 			if (aoeTower) {
 				if (tmpPD > 0 && tmpPT > 0)
-					tmpED = (tmpPD * tmpPT) / 3;
-				tmpCreature.creaturePoisonTime = 3;
-				tmpCreature.creaturePoisonDamage = (int)(this.aoeDamage + tmpED);
+					tmpED = (tmpPD * tmpPT) / (this.poisonTime/2);
+				tmpCreature.creaturePoisonTime = this.poisonTime/2;
+				tmpCreature.creaturePoisonDamage = (int)(this.poisonDamage + tmpED);
 			} else {
 				if (tmpPD > 0 && tmpPT > 0)
-					tmpED = (tmpPD * tmpPT) / 10;
-				tmpCreature.creaturePoisonTime = 10;
-				tmpCreature.creaturePoisonDamage = this.aoeDamage + (int)tmpED;
+					tmpED = (tmpPD * tmpPT) / this.poisonTime;
+				tmpCreature.creaturePoisonTime = this.poisonTime;
+				tmpCreature.creaturePoisonDamage = (int)(this.poisonDamage + tmpED);
 			}
 		}
 		
@@ -152,7 +159,7 @@ public class Tower extends Sprite{
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
-				if(distance < this.rangeAOE){ 
+				if(distance < this.range){ 
 					double damageFactor = specialDamage(cres[i]);
 					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
 					cres[i].health = cres[i].health - randomInt;

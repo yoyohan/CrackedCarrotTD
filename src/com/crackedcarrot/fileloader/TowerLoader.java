@@ -124,59 +124,74 @@ public class TowerLoader {
 			            	tmpTwr.coolDown = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 13) {
-			            	// Frost damage
+			            	// has tower frost damage?
 			            	tmpStr = buf.split("::");
-			            	tmpTwr.frostDamage = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpTwr.hasFrostDamage = Boolean.parseBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 14) {
-			            	// Firedamage
+			            	// if tower has frost damage? for how long
 			            	tmpStr = buf.split("::");
-			            	tmpTwr.fireDamage = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpTwr.frostTime = Integer.parseInt(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 15) {
-			            	// Posion damage
+			            	// has tower firedamage?
 			            	tmpStr = buf.split("::");
-			            	tmpTwr.poisonDamage = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpTwr.hasFireDamage = Boolean.parseBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 16) {
+			            	// has tower posion damage?
+			            	tmpStr = buf.split("::");
+			            	tmpTwr.hasPoisonDamage = Boolean.parseBoolean(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 17) {
+			            	// Posion damage
+			            	tmpStr = buf.split("::");
+			            	tmpTwr.poisonDamage = Integer.parseInt(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 18) {
+			            	// Posion time
+			            	tmpStr = buf.split("::");
+			            	tmpTwr.poisonTime = Integer.parseInt(tmpStr[1].trim());
+			            }
+			            else if (tmpCount == 19) {
 			            	// Towertype
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.towerType = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 17) {
+			            else if (tmpCount == 20) {
 			            	// 1 upgrade (LEFT)
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.upgrade1 = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 18) {
+			            else if (tmpCount == 21) {
 			            	// 2 upgrade (RIGHT)
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.upgrade2 = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 19) {
+			            else if (tmpCount == 22) {
 			            	// Tower range
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpTwr.range = recalc.getX();
 			            }
-			            else if (tmpCount == 20) {
+			            else if (tmpCount == 23) {
 			            	// AOE range
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpTwr.rangeAOE = recalc.getX();
 			            }
-			            else if (tmpCount == 21) {
+			            else if (tmpCount == 24) {
 			            	// AOE damage
 			            	tmpStr = buf.split("::");
 			            	tmpTwr.aoeDamage = Integer.parseInt(tmpStr[1].trim());
 			            }
-			            else if (tmpCount == 22) {
+			            else if (tmpCount == 25) {
 			            	// Shot texture
 			            	tmpStr = buf.split("::");
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	tmpTwr.relatedShot = new Shot(resID, tmpTwr);
 			            }
-			            else if (tmpCount == 23) {
+			            else if (tmpCount == 26) {
 			            	// Shot size
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);

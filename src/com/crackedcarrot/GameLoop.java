@@ -374,20 +374,29 @@ public class GameLoop implements Runnable {
     	}
     	
     	for (int x = 0; x <= totalNumberOfTowers; x++) {
-    		
     		Tower towerObject = mTower[x];
     		// Decrease the coolDown variable and check if it has reached zero
     		towerObject.tmpCoolDown = towerObject.tmpCoolDown - (timeDeltaSeconds * gameSpeed);
-    		if (!towerObject.relatedShot.draw && (towerObject.tmpCoolDown <= 0)) {
 
-    			// Depending of which kind of tower we have. We must do different calculations
-    			if (towerObject.towerType == towerObject.PUREAOE) {
+    		// This code is used to display the AOE for a pure AOE shot. This is for testing.
+    		if (towerObject.towerType == towerObject.PUREAOE) {
+    			
+    			if (towerObject.tmpCoolDown <= towerObject.coolDown/2)
+    				towerObject.relatedShot.draw = false;
+    			
+    			if (towerObject.tmpCoolDown <= 0) {
     				if (towerObject.createPureAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures)) {
     					soundManager.playSound(0);
     					towerObject.tmpCoolDown = towerObject.coolDown;
+    					towerObject.relatedShot.draw = true;
+    		    		towerObject.relatedShot.x = towerObject.x + towerObject.width/2 - towerObject.relatedShot.width/2;
+    		    		towerObject.relatedShot.y = towerObject.y + towerObject.height/2 - towerObject.relatedShot.height/2;
     				}
     			}
-    			else  {
+    		}
+    		// This code is for towers that use projectile damage.
+    		else {
+    			if (!towerObject.relatedShot.draw && (towerObject.tmpCoolDown <= 0)) {
 	    			// If the tower/shot is existing start calculations.
 	    			towerObject.trackEnemy(mCreatures,mLvl[lvlNbr].nbrCreatures);
 	    			if (towerObject.targetCreature != null) {
@@ -397,37 +406,37 @@ public class GameLoop implements Runnable {
 	    					towerObject.relatedShot.draw = true;
 	    			}
     			}
-    		}
-    		// if the creature is still alive or have not reached the goal
-    		if (towerObject.towerType != towerObject.PUREAOE && towerObject.relatedShot.draw && towerObject.targetCreature.draw && towerObject.targetCreature.opacity == 1.0) {
-    			Creature targetCreature = towerObject.targetCreature;
-
-    			float yDistance = (targetCreature.y+(targetCreature.height/2)) - towerObject.relatedShot.y;
-    			float xDistance = (targetCreature.x+(targetCreature.width/2)) - towerObject.relatedShot.x;
-    			double xyMovement = (towerObject.velocity * timeDeltaSeconds * gameSpeed);
-    			
-    			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
-		    		towerObject.relatedShot.draw = false;
+	    		// if the creature is still alive or have not reached the goal
+	    		if (towerObject.towerType != towerObject.PUREAOE && towerObject.relatedShot.draw && towerObject.targetCreature.draw && towerObject.targetCreature.opacity == 1.0) {
+	    			Creature targetCreature = towerObject.targetCreature;
+	
+	    			float yDistance = (targetCreature.y+(targetCreature.height/2)) - towerObject.relatedShot.y;
+	    			float xDistance = (targetCreature.x+(targetCreature.width/2)) - towerObject.relatedShot.x;
+	    			double xyMovement = (towerObject.velocity * timeDeltaSeconds * gameSpeed);
+	    			
+	    			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
+			    		towerObject.relatedShot.draw = false;
+			    		towerObject.resetShotCordinates();
+			    		//More advanced way of implementing damage
+			    		towerObject.createProjectileDamage();
+			    		//IF A CANNONTOWER FIRES A SHOT we also have to damage surrounding creatures
+			    		if (towerObject.towerType == towerObject.PROJECTILEAOE){
+					    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
+			    		}
+			    		if (targetCreature.health <= 0) {
+			    			creatureDied(targetCreature);
+			    		}
+	    			}
+	    			else {
+	        			double radian = Math.atan2(yDistance, xDistance);
+	        			towerObject.relatedShot.x += Math.cos(radian) * xyMovement;
+	        			towerObject.relatedShot.y += Math.sin(radian) * xyMovement;
+	    			}
+				}
+	    		else if (towerObject.towerType != towerObject.PUREAOE) {
+	    			towerObject.relatedShot.draw = false;
 		    		towerObject.resetShotCordinates();
-		    		//More advanced way of implementing damage
-		    		towerObject.createProjectileDamage();
-		    		//IF A CANNONTOWER FIRES A SHOT we also have to damage surrounding creatures
-		    		if (towerObject.towerType == towerObject.PROJECTILEAOE){
-				    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
-		    		}
-		    		if (targetCreature.health <= 0) {
-		    			creatureDied(targetCreature);
-		    		}
-    			}
-    			else {
-        			double radian = Math.atan2(yDistance, xDistance);
-        			towerObject.relatedShot.x += Math.cos(radian) * xyMovement;
-        			towerObject.relatedShot.y += Math.sin(radian) * xyMovement;
-    			}
-			}
-    		else if (towerObject.towerType != towerObject.PUREAOE) {
-    			towerObject.relatedShot.draw = false;
-	    		towerObject.resetShotCordinates();
+	    		}
     		}
     	}
 	}
@@ -462,9 +471,12 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].price = mTTypes[towerType].price;
 				mTower[totalNumberOfTowers].range = mTTypes[towerType].range;
 				mTower[totalNumberOfTowers].resellPrice = mTTypes[towerType].resellPrice;
-				mTower[totalNumberOfTowers].fireDamage = mTTypes[towerType].fireDamage;
-				mTower[totalNumberOfTowers].frostDamage = mTTypes[towerType].frostDamage;
+				mTower[totalNumberOfTowers].hasFireDamage = mTTypes[towerType].hasFireDamage;
+				mTower[totalNumberOfTowers].hasFrostDamage = mTTypes[towerType].hasFrostDamage;
+				mTower[totalNumberOfTowers].frostTime = mTTypes[towerType].frostTime;
+				mTower[totalNumberOfTowers].hasPoisonDamage = mTTypes[towerType].hasPoisonDamage;
 				mTower[totalNumberOfTowers].poisonDamage = mTTypes[towerType].poisonDamage;
+				mTower[totalNumberOfTowers].poisonTime = mTTypes[towerType].poisonTime;
 				mTower[totalNumberOfTowers].title = mTTypes[towerType].title;
 				mTower[totalNumberOfTowers].upgrade1 = mTTypes[towerType].upgrade1;
 				mTower[totalNumberOfTowers].upgrade2 = mTTypes[towerType].upgrade2;
