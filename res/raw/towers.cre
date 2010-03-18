@@ -3,7 +3,7 @@ Total number of towers::2
 ////////////////////////////////////
 // Cannon tower with frost damage
 ////////////////////////////////////
-texture::skate2
+texture::tower1
 title::Cannon tower FROST
 size::60
 price::10
@@ -19,31 +19,31 @@ poisonDamage::false
 upgradelink1::1
 upgradelink2::-1
 range::150
-aoe range:: 50
+aoe range:: 30
 aoe damage::10 
-Shot texture::skate3
+Shot texture::cannonball
 Shot size::8
 ////////////////////////////////////
 // AOE tower
 ////////////////////////////////////
-texture::skate2
+texture::tower1
 title::AOE tower FIRE
 size::60
 price::100
 resell value::75
-minDamage::20
+minDamage::50
 maxDamage::100
 velocity::500
-cooldown::2
+cooldown::3
 frostDamage::false
 fireDamage::false
-poisonDamage::true
+poisonDamage::false
 0proj,1projaoe,2aoe::2
 upgradelink1::1
 upgradelink2::-1
 range::100
 aoe range:: 100
-aoe damage::60 
-Shot texture::skate3
+aoe damage::20 
+Shot texture::cannonball
 Shot size::16
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

@@ -154,8 +154,8 @@ public class Tower extends Sprite{
 				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
 				if(distance < this.rangeAOE){ 
 					double damageFactor = specialDamage(cres[i]);
-					int thisDamage = (int)(this.aoeDamage*damageFactor);
-					cres[i].health = cres[i].health - thisDamage;
+					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
+					cres[i].health = cres[i].health - randomInt;
 					nbrOfHits++;
 				}
 			}

@@ -95,7 +95,7 @@ public class WaveLoader {
 			            }
 			            else if (tmpCount == 6) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFast = Boolean.getBoolean(tmpStr[1].trim());
+			            	tmpLvl.creatureFast = Boolean.parseBoolean(tmpStr[1].trim());
 			            	// I will put velocity here
 			            	Coords recalc = scaler.scale(30,0);
 			        		if (tmpLvl.creatureFast)
@@ -104,15 +104,15 @@ public class WaveLoader {
 			            }
 			            else if (tmpCount == 7) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFireResistant = Boolean.getBoolean(tmpStr[1].trim());
+			            	tmpLvl.creatureFireResistant = Boolean.parseBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 8) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFrostResistant = Boolean.getBoolean(tmpStr[1].trim());
+			            	tmpLvl.creatureFrostResistant = Boolean.parseBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 9) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creaturePoisonResistant = Boolean.getBoolean(tmpStr[1].trim());
+			            	tmpLvl.creaturePoisonResistant = Boolean.parseBoolean(tmpStr[1].trim());
 			            }
 			            else if (tmpCount == 10) {
 			            	tmpStr = buf.split("::");
