@@ -11,31 +11,31 @@ public class Creature extends Sprite{
 	//Waypoints for this creature
 	private Coords[] wayP; 
     // A creatures health
-    public int health;
+    private int health;
     // The next way point for a given creature
-    public int nextWayPoint;
+    private int nextWayPoint;
     // SPRITE DEAD RESOURCE
     private int mDeadResourceId;
     // SPRITE DEAD 
 	private int mDeadTextureName;
     // The speed of the creature
-    public float velocity;
+    private float velocity;
     // The different directions for a creature
-    public static final int LEFT = 0;
-    public static final int RIGHT = 1;
-    public static final int UP = 2;
-    public static final int DOWN = 3;
+    private static final int LEFT = 0;
+    private static final int RIGHT = 1;
+    private static final int UP = 2;
+    private static final int DOWN = 3;
     // The current direction of the creature
-    public int direction;
+    private int direction;
     // Delay before spawning the creature to the map
-    public long spawndelay;
+    private long spawndelay;
     // How much gold this creature gives when it's killed.
-    public int goldValue;
+    private int goldValue;
     // Creature special abilty
-    public boolean creatureFast;
-    public boolean creatureFrostResistant;
-    public boolean creatureFireResistant;
-    public boolean creaturePoisonResistant;
+    private boolean creatureFast;
+    private boolean creatureFrostResistant;
+    private boolean creatureFireResistant;
+    private boolean creaturePoisonResistant;
     // Creature affected by some kind of tower
     public float creatureFrozenTime;
     public float creaturePoisonTime;
@@ -45,7 +45,7 @@ public class Creature extends Sprite{
 		super(resourceId);
 		this.draw = false;
 		this.player = player;
-		this.nextWayPoint = 0;
+		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 	}
@@ -57,7 +57,31 @@ public class Creature extends Sprite{
 	}
 
 	public void updateWayPoint (){
-		nextWayPoint++;
+		setNextWayPoint(getNextWayPoint() + 1);
+	}
+
+	public float getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public long getSpawndelay() {
+		return spawndelay;
+	}
+
+	public void setSpawndelay(long spawndelay) {
+		this.spawndelay = spawndelay;
 	}
 
 	public void setDeadResourceId(int mDeadResourceId) {
@@ -76,6 +100,54 @@ public class Creature extends Sprite{
 		return mDeadTextureName;
 	}
 	
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
+	public int getDirection() {
+		return direction;
+	}
+
+	public int getGoldValue() {
+		return goldValue;
+	}
+
+	public void setGoldValue(int goldValue) {
+		this.goldValue = goldValue;
+	}
+
+	public void setCreatureFast(boolean creatureFast) {
+		this.creatureFast = creatureFast;
+	}
+
+	public void setCreatureFrostResistant(boolean creatureFrostResistant) {
+		this.creatureFrostResistant = creatureFrostResistant;
+	}
+
+	public boolean isCreatureFrostResistant() {
+		return creatureFrostResistant;
+	}
+
+	public boolean isCreatureFast() {
+		return creatureFast;
+	}
+
+	public void setCreatureFireResistant(boolean creatureFireResistant) {
+		this.creatureFireResistant = creatureFireResistant;
+	}
+
+	public boolean isCreatureFireResistant() {
+		return creatureFireResistant;
+	}
+
+	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
+		this.creaturePoisonResistant = creaturePoisonResistant;
+	}
+
+	public boolean isCreaturePoisonResistant() {
+		return creaturePoisonResistant;
+	}
+
 	public int move(float timeDeltaSeconds, long time, int gameSpeed){
 		//Time to spawn.
 		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y) {
@@ -83,7 +155,7 @@ public class Creature extends Sprite{
 		}	            	
 		// If the creature is living start movement calculations.
 		if (draw && opacity == 1.0f) {
-    		Coords co = wayP[nextWayPoint];
+    		Coords co = wayP[getNextWayPoint()];
     		// If creature has been shot by an frost tower we will force it to walk slower
     		int slowAffected = 1;
     		if (creatureFrozenTime > 0) {
@@ -93,9 +165,9 @@ public class Creature extends Sprite{
     		// If creature has been shot by a poison tower we slowly reduce creature health
     		if (creaturePoisonTime > 0) {
     			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
-    			health = (int)(health - (timeDeltaSeconds * creaturePoisonDamage));	    		
+    			setHealth((int)(getHealth() - (timeDeltaSeconds * creaturePoisonDamage)));	    		
 		    	// Have the creature died?
-	    		if (health <= 0) {
+	    		if (getHealth() <= 0) {
 	    			creatureDied();
 	    		}
     		}
@@ -103,7 +175,7 @@ public class Creature extends Sprite{
     		
     		// Creature is moving left.
 			if(x > co.x){
-				direction = Creature.LEFT;
+				setDirection(Creature.LEFT);
 				x = x - movement;
 	    		if(!(x > co.x)){
 	    			x = co.x;
@@ -111,7 +183,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving right.
 			else if (x < co.x) {
-				direction = Creature.RIGHT;
+				setDirection(Creature.RIGHT);
 				x = x + movement;
 	    		if(!(x < co.x)){
 	    			x = co.x;
@@ -119,7 +191,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving down.
 			else if(y > co.y){
-				direction = Creature.DOWN;
+				setDirection(Creature.DOWN);
 				y = y - movement;
 	    		if(!(y > co.y)){
 	    			y = co.y;
@@ -127,7 +199,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving up.
 	    	else if (y < co.y) {
-	    		direction = Creature.UP;
+	    		setDirection(Creature.UP);
 	    		y = y + movement;
 	    		if(!(y < co.y)){
 	    			y = co.y;
@@ -138,7 +210,7 @@ public class Creature extends Sprite{
 	    		updateWayPoint();
 	    	}
 	    	// Creature has reached is destination without being killed
-	    	if (nextWayPoint >= wayP.length){
+	    	if (getNextWayPoint() >= wayP.length){
 	    		draw = false;
 	    		player.health --;
 	    		//The creature exited the screen, return 1.
@@ -174,6 +246,14 @@ public class Creature extends Sprite{
 	public void moveToWaypoint(int p){
 		this.x = wayP[p].getX();
 		this.y = wayP[p].getY();
+	}
+
+	public void setNextWayPoint(int nextWayPoint) {
+		this.nextWayPoint = nextWayPoint;
+	}
+
+	public int getNextWayPoint() {
+		return nextWayPoint;
 	}
 }
 

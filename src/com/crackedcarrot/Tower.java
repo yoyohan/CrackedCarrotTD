@@ -73,7 +73,7 @@ public class Tower extends Sprite{
 		}
 		
 		// Target is frost resistant?
-		if (!tmpCreature.creatureFrostResistant && frostDamage) {
+		if (!tmpCreature.isCreatureFrostResistant() && frostDamage) {
 			if (aoeTower)
 				tmpCreature.creatureFrozenTime = 3;
 			else 
@@ -81,11 +81,11 @@ public class Tower extends Sprite{
 		}
 		
 		// Target is fire resistant?
-		if (!tmpCreature.creatureFireResistant && fireDamage)
+		if (!tmpCreature.isCreatureFireResistant() && fireDamage)
 			damageFactor = 0.4;
 		
 		// Target is poison resistant?
-		if (!tmpCreature.creaturePoisonResistant && poisonDamage) {
+		if (!tmpCreature.isCreaturePoisonResistant() && poisonDamage) {
 			// If target is already affected by poison damage we dont want to remove the previous buff
 			float tmpED = 0;
 			int tmpPD = tmpCreature.creaturePoisonDamage;
@@ -116,7 +116,7 @@ public class Tower extends Sprite{
 	public void createProjectileDamage(){
 		double damageFactor = specialDamage(null);
 		int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-		targetCreature.health = targetCreature.health - randomInt;
+		targetCreature.setHealth(targetCreature.getHealth() - randomInt);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class Tower extends Sprite{
 					if(distance < this.rangeAOE){ // Is the creature within tower range?
 						double damageFactor = specialDamage(mCreatures[i]);
 						int thisDamage = (int)(this.aoeDamage*damageFactor);
-						mCreatures[i].health = mCreatures[i].health - thisDamage;
+						mCreatures[i].setHealth(mCreatures[i].getHealth() - thisDamage);
 					}
 				}
 			}
@@ -155,7 +155,7 @@ public class Tower extends Sprite{
 				if(distance < this.rangeAOE){ 
 					double damageFactor = specialDamage(cres[i]);
 					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-					cres[i].health = cres[i].health - randomInt;
+					cres[i].setHealth(cres[i].getHealth() - randomInt);
 					nbrOfHits++;
 				}
 			}

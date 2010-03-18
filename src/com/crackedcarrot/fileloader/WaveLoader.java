@@ -90,33 +90,33 @@ public class WaveLoader {
 			            }
 			            else if (tmpCount == 5) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.health = Integer.parseInt(tmpStr[1].trim());
-			            	tmpLvl.health = (int)(tmpLvl.health * gameDifficulty);
+			            	tmpLvl.setHealth(Integer.parseInt(tmpStr[1].trim()));
+			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
 			            }
 			            else if (tmpCount == 6) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFast = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpLvl.setCreatureFast(Boolean.parseBoolean(tmpStr[1].trim()));
 			            	// I will put velocity here
 			            	Coords recalc = scaler.scale(30,0);
-			        		if (tmpLvl.creatureFast)
-				            	tmpLvl.velocity = recalc.getX()* 2;
-			        		else tmpLvl.velocity = recalc.getX();
+			        		if (tmpLvl.isCreatureFast())
+				            	tmpLvl.setVelocity(recalc.getX()* 2);
+			        		else tmpLvl.setVelocity(recalc.getX());
 			            }
 			            else if (tmpCount == 7) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFireResistant = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpLvl.setCreatureFireResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 			            }
 			            else if (tmpCount == 8) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creatureFrostResistant = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpLvl.setCreatureFrostResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 			            }
 			            else if (tmpCount == 9) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.creaturePoisonResistant = Boolean.parseBoolean(tmpStr[1].trim());
+			            	tmpLvl.setCreaturePoisonResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 			            }
 			            else if (tmpCount == 10) {
 			            	tmpStr = buf.split("::");
-			            	tmpLvl.goldValue = Integer.parseInt(tmpStr[1].trim());
+			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
 			            }
 			            else if (tmpCount == 11) {
 			            	tmpStr = buf.split("::");

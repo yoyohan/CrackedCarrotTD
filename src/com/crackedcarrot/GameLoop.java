@@ -152,33 +152,33 @@ public class GameLoop implements Runnable {
 			mCreatures[z].setTextureName(mLvl[lvlNbr].getTextureName());
 			mCreatures[z].setDeadTextureName(mLvl[lvlNbr].getDeadTextureName());
 			
-			mCreatures[z].creatureFast = mLvl[lvlNbr].creatureFast;
-			mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
-			mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
-			mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
+			mCreatures[z].setCreatureFast(mLvl[lvlNbr].isCreatureFast());
+			mCreatures[z].setCreatureFireResistant(mLvl[lvlNbr].isCreatureFireResistant());
+			mCreatures[z].setCreatureFrostResistant(mLvl[lvlNbr].isCreatureFrostResistant());
+			mCreatures[z].setCreaturePoisonResistant(mLvl[lvlNbr].isCreaturePoisonResistant());
     		
 			mCreatures[z].moveToWaypoint(0);
     		
-    		mCreatures[z].health = mLvl[lvlNbr].health;
-    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
-    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
+    		mCreatures[z].setHealth(mLvl[lvlNbr].getHealth());
+    		mCreatures[z].setNextWayPoint(mLvl[lvlNbr].getNextWayPoint());
+    		mCreatures[z].setVelocity(mLvl[lvlNbr].getVelocity());
     		
     		mCreatures[z].width = mLvl[lvlNbr].width;
     		mCreatures[z].height = mLvl[lvlNbr].height;
     		
-    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
+    		mCreatures[z].setGoldValue(mLvl[lvlNbr].getGoldValue());
     		
-    		mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
-    		mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
-    		mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
+    		mCreatures[z].setCreatureFireResistant(mLvl[lvlNbr].isCreatureFireResistant());
+    		mCreatures[z].setCreatureFrostResistant(mLvl[lvlNbr].isCreatureFrostResistant());
+    		mCreatures[z].setCreaturePoisonResistant(mLvl[lvlNbr].isCreaturePoisonResistant());
     		
     		mCreatures[z].draw = false;
     		mCreatures[z].opacity = 1;
     		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
 			int special = 1;
-    		if (mCreatures[z].creatureFast)
+    		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].spawndelay = (long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed);
+    		mCreatures[z].setSpawndelay((long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed));
 		}
 		try {
 			
@@ -335,7 +335,7 @@ public class GameLoop implements Runnable {
 		    		if (towerObject.towerType == towerObject.PROJECTILEAOE){
 				    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
 		    		}
-		    		if (targetCreature.health <= 0) {
+		    		if (targetCreature.getHealth() <= 0) {
 		    			targetCreature.creatureDied();
 		    		}
     			}
