@@ -6,6 +6,9 @@ import java.util.Random;
 * Class defining a tower in the game
 */
 public class Tower extends Sprite{
+	private SoundManager soundManager;
+	private Creature[] mCreatures;
+	
 	//different towertypes
 	public final int PROJECTILE = 0;
 	public final int PROJECTILEAOE = 1;
@@ -58,6 +61,15 @@ public class Tower extends Sprite{
     public Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
+    
+   
+	public Tower(int resourceId, Creature[] mCreatures, SoundManager soundManager){
+		super(resourceId);
+		this.soundManager = soundManager;
+		this.mCreatures = mCreatures;
+		rand = new Random();
+	}
+    
     
 	public Tower(int resourceId){
 		super(resourceId);
@@ -131,7 +143,7 @@ public class Tower extends Sprite{
 	 * depending on the upgrade level and a random integer
 	 * so the damage wont be predictable during game play
 	 */
-	public void createProjectileAOEDamage(Creature[] mCreatures,int nbrCreatures) {
+	public void createProjectileAOEDamage(int nbrCreatures) {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if (mCreatures[i] != targetCreature) {
 
@@ -154,15 +166,15 @@ public class Tower extends Sprite{
 	 * This method is only used by towers with direct aoe damage.
 	 * Not to be confused with towers that have projectiledamage
 	 */
-	public boolean createPureAOEDamage(Creature[] cres, int nbrCreatures){
+	public boolean createPureAOEDamage(int nbrCreatures){
 		int nbrOfHits = 0;
 		for(int i = 0;i < nbrCreatures; i++ ){
-			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
-				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
+			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
+				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
 				if(distance < this.range){ 
-					double damageFactor = specialDamage(cres[i]);
+					double damageFactor = specialDamage(mCreatures[i]);
 					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-					cres[i].setHealth(cres[i].getHealth() - randomInt);
+					mCreatures[i].setHealth(mCreatures[i].getHealth() - randomInt);
 					nbrOfHits++;
 				}
 			}
@@ -176,18 +188,18 @@ public class Tower extends Sprite{
 	 * the first creature in the list that is within the range of the tower 
 	 * @param null 
 	 */
-	public void trackEnemy(Creature[] cres, int nbrCreatures){
+	public void trackEnemy(int nbrCreatures){
 		targetCreature = null;
 		double lastCreatureDistance = Double.MAX_VALUE;
 		
 		for(int i = 0;i < nbrCreatures; i++ ){
-			if(cres[i].draw == true && cres[i].opacity == 1.0f){ // Is the creature still alive?
-				double distance = Math.sqrt(Math.pow((this.x - cres[i].x),2) + Math.pow((this.y - cres[i].y),2));
+			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
+				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
-						targetCreature = cres[i];
+						targetCreature = mCreatures[i];
 					else if (lastCreatureDistance > distance) {
-						targetCreature = cres[i];
+						targetCreature = mCreatures[i];
 						lastCreatureDistance = distance;
 					}
 				}
@@ -198,6 +210,106 @@ public class Tower extends Sprite{
 	public void resetShotCordinates() {
 		relatedShot.x = x + width/2;
 		relatedShot.y = y + height/2;	
+	}
+	
+	public void cloneTower(Tower clone) {
+		//Use the textureNames that we preloaded into the towerTypes at startup
+		this.setTextureName(clone.getTextureName());
+		this.relatedShot.setTextureName(clone.relatedShot.getTextureName());
+		this.setResourceId(clone.getResourceId());
+		this.coolDown = clone.coolDown;
+		this.height = clone.height;
+		this.width = clone.width;
+		this.level = clone.level;
+		this.maxDamage = clone.maxDamage;
+		this.minDamage = clone.minDamage;
+		this.price = clone.price;
+		this.range = clone.range;
+		this.resellPrice = clone.resellPrice;
+		this.hasFireDamage = clone.hasFireDamage;
+		this.hasFrostDamage = clone.hasFrostDamage;
+		this.frostTime = clone.frostTime;
+		this.hasPoisonDamage = clone.hasPoisonDamage;
+		this.poisonDamage = clone.poisonDamage;
+		this.poisonTime = clone.poisonTime;
+		this.title = clone.title;
+		this.upgrade1 = clone.upgrade1;
+		this.upgrade2 = clone.upgrade2;
+		this.velocity = clone.velocity;
+		this.rangeAOE = clone.rangeAOE;
+		this.aoeDamage = clone.aoeDamage;
+		this.towerType = clone.towerType;
+		this.draw = true; //Tower drawable
+		this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
+		this.relatedShot.height = clone.relatedShot.height;
+		this.relatedShot.width = clone.relatedShot.width;
+		this.relatedShot.draw = false;
+	}
+
+	public void towerKillCreature(float timeDeltaSeconds, int gameSpeed, int nbrCreatures) {
+		// Decrease the coolDown variable and check if it has reached zero
+		this.tmpCoolDown = this.tmpCoolDown - (timeDeltaSeconds * gameSpeed);
+
+		// This code is used to display the AOE for a pure AOE shot. This is for testing.
+		if (this.towerType == this.PUREAOE) {
+			
+			if (this.tmpCoolDown <= this.coolDown/2)
+				this.relatedShot.draw = false;
+			
+			if (this.tmpCoolDown <= 0) {
+				if (this.createPureAOEDamage(nbrCreatures)) {
+					soundManager.playSound(0);
+					this.tmpCoolDown = this.coolDown;
+					this.relatedShot.draw = true;
+		    		this.relatedShot.x = this.x + this.width/2 - this.relatedShot.width/2;
+		    		this.relatedShot.y = this.y + this.height/2 - this.relatedShot.height/2;
+				}
+			}
+		}
+		// This code is for towers that use projectile damage.
+		else {
+			if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
+    			// If the tower/shot is existing start calculations.
+    			this.trackEnemy(nbrCreatures);
+    			if (this.targetCreature != null) {
+    					// play shot1.mp3
+    					soundManager.playSound(0);
+    					this.tmpCoolDown = this.coolDown;
+    					this.relatedShot.draw = true;
+    			}
+			}
+    		// if the creature is still alive or have not reached the goal
+    		if (this.towerType != this.PUREAOE && this.relatedShot.draw && this.targetCreature.draw && this.targetCreature.opacity == 1.0) {
+    			Creature targetCreature = this.targetCreature;
+
+    			float yDistance = (targetCreature.y+(targetCreature.height/2)) - this.relatedShot.y;
+    			float xDistance = (targetCreature.x+(targetCreature.width/2)) - this.relatedShot.x;
+    			double xyMovement = (this.velocity * timeDeltaSeconds * gameSpeed);
+    			
+    			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
+		    		this.relatedShot.draw = false;
+		    		this.resetShotCordinates();
+		    		//More advanced way of implementing damage
+		    		this.createProjectileDamage();
+		    		//IF A CANNONTOWER FIRES A SHOT we also have to damage surrounding creatures
+		    		if (this.towerType == this.PROJECTILEAOE){
+				    	this.createProjectileAOEDamage(nbrCreatures);
+		    		}
+		    		if (targetCreature.getHealth() <= 0) {
+		    			targetCreature.creatureDied();
+		    		}
+    			}
+    			else {
+        			double radian = Math.atan2(yDistance, xDistance);
+        			this.relatedShot.x += Math.cos(radian) * xyMovement;
+        			this.relatedShot.y += Math.sin(radian) * xyMovement;
+    			}
+			}
+    		else if (this.towerType != this.PUREAOE) {
+    			this.relatedShot.draw = false;
+	    		this.resetShotCordinates();
+    		}
+		}
 	}
 
 

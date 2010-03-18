@@ -11,7 +11,7 @@ public class Creature extends Sprite{
 	//Waypoints for this creature
 	private Coords[] wayP; 
     // A creatures health
-    public int health;
+    private int health;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -60,6 +60,25 @@ public class Creature extends Sprite{
 		setNextWayPoint(getNextWayPoint() + 1);
 	}
 
+	public void cloneCreature(Creature clone) {
+		this.setResourceId(clone.getResourceId());
+		this.mDeadResourceId = clone.mDeadResourceId;
+		this.mDeadTextureName = clone.mDeadTextureName;
+		this.creatureFast = clone.creatureFast;
+		this.creatureFireResistant = clone.creatureFireResistant;
+		this.creatureFrostResistant = clone.creatureFrostResistant;
+		this.creaturePoisonResistant = clone.creaturePoisonResistant;
+		this.moveToWaypoint(0);
+		this.health = clone.health;
+		this.nextWayPoint = clone.getNextWayPoint();
+		this.velocity = clone.getVelocity();
+		this.width = clone.width;
+		this.height = clone.height;
+		this.goldValue =clone.getGoldValue();
+		this.draw = false;
+		this.opacity = 1;
+	}
+	
 	public float getVelocity() {
 		return velocity;
 	}
@@ -76,10 +95,10 @@ public class Creature extends Sprite{
 		return health;
 	}
 
-	public long getSpawndelay() {
-		return spawndelay;
+	public int getDirection() {
+		return direction;
 	}
-
+	
 	public void setSpawndelay(long spawndelay) {
 		this.spawndelay = spawndelay;
 	}
@@ -94,18 +113,6 @@ public class Creature extends Sprite{
 
 	public void setDeadTextureName(int mDeadTextureName) {
 		this.mDeadTextureName = mDeadTextureName;
-	}
-
-	public int getDeadTextureName() {
-		return mDeadTextureName;
-	}
-	
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-
-	public int getDirection() {
-		return direction;
 	}
 
 	public int getGoldValue() {
@@ -124,10 +131,6 @@ public class Creature extends Sprite{
 		this.creatureFrostResistant = creatureFrostResistant;
 	}
 
-	public boolean isCreatureFrostResistant() {
-		return creatureFrostResistant;
-	}
-
 	public boolean isCreatureFast() {
 		return creatureFast;
 	}
@@ -136,16 +139,8 @@ public class Creature extends Sprite{
 		this.creatureFireResistant = creatureFireResistant;
 	}
 
-	public boolean isCreatureFireResistant() {
-		return creatureFireResistant;
-	}
-
 	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
 		this.creaturePoisonResistant = creaturePoisonResistant;
-	}
-
-	public boolean isCreaturePoisonResistant() {
-		return creaturePoisonResistant;
 	}
 
 	public int move(float timeDeltaSeconds, long time, int gameSpeed){
@@ -165,17 +160,19 @@ public class Creature extends Sprite{
     		// If creature has been shot by a poison tower we slowly reduce creature health
     		if (creaturePoisonTime > 0) {
     			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
-    			setHealth((int)(getHealth() - (timeDeltaSeconds * creaturePoisonDamage)));	    		
+    			health = ((int)(this.health - (timeDeltaSeconds * creaturePoisonDamage)));	    		
 		    	// Have the creature died?
-	    		if (getHealth() <= 0) {
-	    			creatureDied();
-	    		}
     		}
+    		
+    		if (this.health <= 0) {
+    			creatureDied();
+    		}
+    		
     		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
     		
     		// Creature is moving left.
 			if(x > co.x){
-				setDirection(Creature.LEFT);
+				this.direction = Creature.LEFT;
 				x = x - movement;
 	    		if(!(x > co.x)){
 	    			x = co.x;
@@ -183,7 +180,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving right.
 			else if (x < co.x) {
-				setDirection(Creature.RIGHT);
+				this.direction = Creature.RIGHT;
 				x = x + movement;
 	    		if(!(x < co.x)){
 	    			x = co.x;
@@ -191,7 +188,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving down.
 			else if(y > co.y){
-				setDirection(Creature.DOWN);
+				this.direction =  Creature.DOWN;
 				y = y - movement;
 	    		if(!(y > co.y)){
 	    			y = co.y;
@@ -199,7 +196,7 @@ public class Creature extends Sprite{
 	    	}
     		// Creature is moving up.
 	    	else if (y < co.y) {
-	    		setDirection(Creature.UP);
+	    		this.direction = Creature.UP;
 	    		y = y + movement;
 	    		if(!(y < co.y)){
 	    			y = co.y;
@@ -232,7 +229,7 @@ public class Creature extends Sprite{
 	}
 	
 	public void creatureDied() {
-		setTextureName(getDeadTextureName());
+		setTextureName(this.mDeadTextureName);
 		opacity = opacity - 0.1f;
 		player.money = player.money + goldValue;
 		// play died1.mp3
