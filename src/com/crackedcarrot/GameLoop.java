@@ -1,8 +1,11 @@
 package com.crackedcarrot;
 
-import android.os.Handler;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.os.Handler;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -144,9 +147,10 @@ public class GameLoop implements Runnable {
 			e1.printStackTrace();
 		}
     	final long starttime = SystemClock.uptimeMillis();
-		
+    	
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	startNrCreatures = remainingCreatures;
     	//Need to reverse the list for to draw correctly.
     	int reverse = remainingCreatures; 
 		for (int z = 0; z < remainingCreatures; z++) {
@@ -201,13 +205,24 @@ public class GameLoop implements Runnable {
 
     public void run() {
     	
+    	Looper.prepare();
+    	
 	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
 	    Log.d("GAMELOOP","INIT GAMELOOP");
-<<<<<<< HEAD
-    	while(run){
+
+	    while(run){
+	    	// Tries to create a test tower
+	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
+	    	createTower(tmp,0);
+	    	tmp = mScaler.getPosFromGrid(4, 6);
+	    	createTower(tmp,0);
+	    	
+	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
+    		//OR they will be infinitely small.
     		initializeLvl();
+    		
     		// Initialize the status, displaying how many creatures still alive
     		updateCreatureHandler.post(new Runnable(){
 				public void run(){
@@ -219,38 +234,7 @@ public class GameLoop implements Runnable {
 					HealthProgressBar.proChangeListener.progressUpdate(100);
 				}
 			});
-    		try {
-				renderHandle.rendererReady.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			//Will try to create towers of type 0  
-	        if (lvlNbr == 0) {
-				for (int i = 5; i < 8; i++) {
-		        	for (int z = 6; z < 11; z++) {
-		        		Coords tmp = mScaler.getPosFromGrid(i,z);
-		        		tmp.y = tmp.y+10; 
-		        		createTower(tmp, 0);
-		        	}
-		        }
-	        }
-			
-=======
-
-	    while(run){
-	    	// Tries to create a test tower
-	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
-	    	createTower(tmp,0);
-	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	createTower(tmp,1);
-	    	
-	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
-    		//OR they will be infinitely small.
-    		initializeLvl();
     		
->>>>>>> ee99a8ad86b43dfd42c7d716bbad684d688027d0
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
 
@@ -299,64 +283,6 @@ public class GameLoop implements Runnable {
     	Log.d("GAMETHREAD", "dead thread");
     }
 
-<<<<<<< HEAD
-    
-	private void initializeLvl() {
-    	final long starttime = SystemClock.uptimeMillis();
-		
-		//The following line contains the code for initiating every level
-		/////////////////////////////////////////////////////////////////
-		renderHandle.freeSprites();
-		renderHandle.freeAllTextures();
-
-    	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-    	startNrCreatures = remainingCreatures;
-    	mCreatures = new Creature[remainingCreatures];
-    	int reverse = remainingCreatures; 
-		
-		for (int z = 0; z < mCreatures.length; z++) {
-			reverse--;
-			// The following line is used to add the following wave of creatures to the list of creatures.
-    		mCreatures[z] = new Creature(mLvl[lvlNbr].mResourceId);
-			// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-    		mCreatures[z].x = wayP[0].x;
-    		mCreatures[z].y = wayP[0].y;
-    		
-    		mCreatures[z].health = mLvl[lvlNbr].health;
-    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
-    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
-    		mCreatures[z].width = mLvl[lvlNbr].width;
-    		mCreatures[z].height = mLvl[lvlNbr].height;
-    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
-    		mCreatures[z].specialAbility = mLvl[lvlNbr].goldValue;
-    		
-    		mCreatures[z].draw = false;
-    		mCreatures[z].opacity = 1;
-    		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
-		}
-
-		// Sends an array with sprites to the renderer
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
-
-		//TODO: OPTIMIZESD?
-		for (int i = 0; i < mTTypes.length; i++) {
-			renderHandle.loadTexture(mTTypes[i].mResourceId);
-			renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
-		}
-		renderHandle.finalizeSprites();
-
-        // Now's a good time to run the GC.  Since we won't do any explicit
-        // allocation during the test, the GC should stay dormant and not
-        // influence our results.
-		Runtime r = Runtime.getRuntime();
-        r.gc();
-	}
-
-=======
->>>>>>> ee99a8ad86b43dfd42c7d716bbad684d688027d0
 	/**
 	 * Will go through all of the creatures from this level and
 	 * calculate the movement. 
@@ -373,84 +299,7 @@ public class GameLoop implements Runnable {
     		return;
     	}
     	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-<<<<<<< HEAD
-    		Creature object = mCreatures[x];
-    		// Check to see if a not existing creature is supposed to spawn on to the map
-			if (time > object.spawndelay && wayP[0].x == object.x && wayP[0].y == object.y) {
-				object.draw = true;
-			}	            	
-			// If the creature is living start movement calculations.
-			if (object.draw && object.opacity == 1.0f) {
-	    		Coords co = wayP[object.nextWayPoint];
-	    		// Creature is moving left.
-				if(object.x > co.x){
-		    		object.direction = Creature.LEFT;
-		    		object.x = object.x - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x > co.x)){
-		    			object.x = co.x;
-		    		}
-		    	}
-	    		// Creature is moving right.
-				else if (object.x < co.x) {
-		    		object.direction = Creature.RIGHT;
-		    		object.x = object.x + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x < co.x)){
-		    			object.x = co.x;
-		    		}
-		    	}
-	    		// Creature is moving down.
-				else if(object.y > co.y){
-		    		object.direction = Creature.DOWN;
-		    		object.y = object.y - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y > co.y)){
-		    			object.y = co.y;
-		    		}
-		    	}
-	    		// Creature is moving up.
-		    	else if (object.y < co.y) {
-		    		object.direction = Creature.UP;
-		    		object.y = object.y + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y < co.y)){
-		    			object.y = co.y;
-		    		}
-		    	}
-				// Creature has reached a WayPoint. Update
-		    	if (object.y == co.y && object.x == co.x){
-		    		object.updateWayPoint();
-		    	}
-		    	// Creature has reached is destination without being killed
-		    	if (object.nextWayPoint >= wayP.length){
-		    		object.draw = false;
-		    		player.health --;
-		    		remainingCreatures --;
-		    	}
-		    	
-		    	// Creature is dead and fading...
-			} else if (object.draw && object.opacity > 0.0f) {
-				
-					// If we divide by 10 the creature stays on the screen a while longer...
-				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
-				if (object.opacity <= 0.0f) {
-					object.draw = false;
-					remainingCreatures --;
-					// Update the status, displaying how many creatures that are still alive
-	    			updateCreatureHandler.post(new Runnable(){
-	    				public void run(){
-	    					NrCreTextView.listener.creatureUpdate(remainingCreatures);
-	    				}
-	    			});
-	    			percentageCreatures = ((100*remainingCreatures)/startNrCreatures);
-	    			// Update the status, displaying total health of all creatures
-					updateHealthHandler.post(new Runnable(){
-	    				public void run(){
-	    					HealthProgressBar.proChangeListener.progressUpdate(percentageCreatures);
-	    				}
-	    			});
-				}
-			}
-=======
     		this.remainingCreatures -= mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
->>>>>>> ee99a8ad86b43dfd42c7d716bbad684d688027d0
     	}
     }
 
@@ -520,6 +369,19 @@ public class GameLoop implements Runnable {
 			    		}
 			    		if (targetCreature.health <= 0) {
 			    			targetCreature.creatureDied();
+			    			// Update the status, displaying how many creatures that are still alive
+			    			updateCreatureHandler.post(new Runnable(){
+			    				public void run(){
+			    					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+			    				}
+			    			});
+			    			percentageCreatures = ((100*remainingCreatures)/startNrCreatures);
+			    			// Update the status, displaying total health of all creatures
+							updateHealthHandler.post(new Runnable(){
+			    				public void run(){
+			    					HealthProgressBar.proChangeListener.progressUpdate(percentageCreatures);
+			    				}
+			    			});
 			    		}
 	    			}
 	    			else {
@@ -552,8 +414,7 @@ public class GameLoop implements Runnable {
 				//Use the textureNames that we preloaded into the towerTypes at startup
 				mTower[totalNumberOfTowers].setTextureName(mTTypes[towerType].getTextureName());
 				mTower[totalNumberOfTowers].relatedShot.setTextureName(mTTypes[towerType].relatedShot.getTextureName());
-				mTower[totalNumberOfTowers].setResourceId(mTTypes[towerType].getResourceId())
-				;
+				mTower[totalNumberOfTowers].setResourceId(mTTypes[towerType].getResourceId());
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
@@ -591,6 +452,18 @@ public class GameLoop implements Runnable {
 				totalNumberOfTowers++;
 				mTowerGrid[tmpx][tmpy].empty = false;
 				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
+				
+				try {
+					
+					//Finally send of the sprites to the render to be allocated
+					//And after that drawn.
+					renderHandle.finalizeSprites();
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 	    		return true;
 			}
 		}
@@ -600,4 +473,5 @@ public class GameLoop implements Runnable {
     public void stopGameLoop(){
     	run = false;
     }
+    
 }
