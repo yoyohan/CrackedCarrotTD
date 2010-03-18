@@ -1,51 +1,49 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::3
-//Tower arrow
-texture::skate2
-title::Arrow tower lvl 1
+Total number of towers::2
+////////////////////////////////////
+// Cannon tower with frost damage
+////////////////////////////////////
+texture::tower1
+title::Cannon tower FROST
 size::60
 price::10
 resell value::8
-minDamage::10
-maxDamage::15
+minDamage::20
+maxDamage::50
 velocity::250
 cooldown::2
-specialAbility::0
+frostDamage::true
+fireDamage::false
+poisonDamage::false
+0proj,1projaoe,2aoe::1
 upgradelink1::1
 upgradelink2::-1
 range::150
-Shot texture::skate3
-Shot size::16
-//Tower arrow Lvl 2
-texture::skate2
-title::Arrow tower lvl 2
+aoe range:: 30
+aoe damage::10 
+Shot texture::cannonball
+Shot size::8
+////////////////////////////////////
+// AOE tower
+////////////////////////////////////
+texture::tower1
+title::AOE tower FIRE
 size::60
 price::100
 resell value::75
-minDamage::100
-maxDamage::150
-velocity::250
-cooldown::2
-specialAbility::0
-upgradelink1::2
+minDamage::50
+maxDamage::100
+velocity::500
+cooldown::3
+frostDamage::false
+fireDamage::false
+poisonDamage::false
+0proj,1projaoe,2aoe::2
+upgradelink1::1
 upgradelink2::-1
-range::150
-Shot texture::skate3
-Shot size::16
-//Tower arrow Lvl 3
-texture::skate2
-title::Arrow tower lvl 3
-size::60
-price::1000
-resell value::75
-minDamage::1000
-maxDamage::1500
-velocity::250
-cooldown::2
-specialAbility::0
-upgradelink1::-1
-upgradelink2::-1
-range::150
-Shot texture::skate3
+range::100
+aoe range:: 100
+aoe damage::20 
+Shot texture::cannonball
 Shot size::16
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

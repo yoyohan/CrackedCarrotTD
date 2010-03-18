@@ -10,6 +10,8 @@ public class Creature extends Sprite{
     public int nextWayPoint;
     // SPRITE DEAD RESOURCE
     public int mDeadResourceId;
+    // SPRITE DEAD 
+	public int mDeadTextureName;
     // The speed of the creature
     public float velocity;
     // The different directions for a creature
@@ -23,8 +25,15 @@ public class Creature extends Sprite{
     public long spawndelay;
     // How much gold this creature gives when it's killed.
     public int goldValue;
-    // Creature special ability
-    public int specialAbility;
+    // Creature special abilty
+    public boolean creatureFast;
+    public boolean creatureFrostResistant;
+    public boolean creatureFireResistant;
+    public boolean creaturePoisonResistant;
+    // Creature affected by some kind of tower
+    public float creatureFrozenTime;
+    public float creaturePoisonTime;
+    public int creaturePoisonDamage;
     
 	public Creature(int resourceId){
 		super(resourceId);

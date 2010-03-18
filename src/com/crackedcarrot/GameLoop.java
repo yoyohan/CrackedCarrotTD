@@ -60,15 +60,16 @@ public class GameLoop implements Runnable {
 
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-	    	mTower[i] = new Tower(R.drawable.skate3);
-	    	mShots[i] = new Shot(R.drawable.skate3, mTower[i]);
+	    	mTower[i] = new Tower(R.drawable.tower1);
+	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
 	    	mTower[i].relatedShot = mShots[i];
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
+
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.skate1);
+	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive);
 	    	mCreatures[i].draw = false;
 	    } 
 		
@@ -80,7 +81,7 @@ public class GameLoop implements Runnable {
 			renderHandle.freeAllTextures();		
 			
 			//Load textures for towers.
-			
+
 			for (int i = 0; i < mTTypes.length; i++) {
 				renderHandle.loadTexture(mTTypes[i].mResourceId);
 				renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
@@ -88,7 +89,6 @@ public class GameLoop implements Runnable {
 
 			//Load textures for all creature types.
 			for(int i = 0; i < mLvl.length; i++){
-
 				renderHandle.loadTexture(mLvl[i].mDeadResourceId);
 				renderHandle.loadTexture(mLvl[i].mResourceId);
 			}
@@ -106,6 +106,7 @@ public class GameLoop implements Runnable {
 			
 			for(int i = 0; i < mLvl.length; i++){
 				mLvl[i].mTextureName = renderHandle.getTextureName(mLvl[i].mResourceId);
+				mLvl[i].mDeadTextureName = renderHandle.getTextureName(mLvl[i].mDeadResourceId);
 			}
 						
 		} catch (InterruptedException e) {
@@ -144,28 +145,33 @@ public class GameLoop implements Runnable {
 		for (int z = 0; z < remainingCreatures; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
-			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
 			mCreatures[z].mResourceId = mLvl[lvlNbr].mResourceId;
 			mCreatures[z].mDeadResourceId = mLvl[lvlNbr].mDeadResourceId;
-			
+			mCreatures[z].mDeadTextureName = mLvl[lvlNbr].mDeadTextureName;
+			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
+			mCreatures[z].mDeadTextureName = mLvl[lvlNbr].mDeadTextureName;
+			mCreatures[z].creatureFast = mLvl[lvlNbr].creatureFast;
+			mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
+			mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
+			mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
     		mCreatures[z].x = wayP[0].x;
     		mCreatures[z].y = wayP[0].y;
-    		
     		mCreatures[z].health = mLvl[lvlNbr].health;
     		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
     		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
-    		
     		mCreatures[z].width = mLvl[lvlNbr].width;
     		mCreatures[z].height = mLvl[lvlNbr].height;
-    		
     		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
-    		mCreatures[z].specialAbility = mLvl[lvlNbr].goldValue;
-    		
+    		mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
+    		mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
+    		mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
     		mCreatures[z].draw = false;
     		mCreatures[z].opacity = 1;
-
     		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-    		mCreatures[z].spawndelay = (long)(starttime + (reverse * mCreatures[z].velocity * gameSpeed * mCreatures[z].height/4));
+			int special = 1;
+    		if (mCreatures[z].creatureFast)
+    			special = 2;
+    		mCreatures[z].spawndelay = (long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed);
 		}
 		try {
 			
@@ -185,22 +191,16 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
-	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
-	    
-    	while(run){
-    		
-			//Will try to create towers of type 0  
-    		if (lvlNbr == 0) {
-				for (int i = 0; i < 8; i++) {
-		        	for (int z = 0; z < 11; z++) {
-		        		Coords tmp = mScaler.getPosFromGrid(i,z);
-		        		tmp.y = tmp.y+10; 
-		        		createTower(tmp, 0);
-		        	}
-		        }
-	        }
-    		//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
+
+	    while(run){
+	    	// Tries to create a test tower
+	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
+	    	createTower(tmp,0);
+	    	tmp = mScaler.getPosFromGrid(4, 6);
+	    	createTower(tmp,1);
+	    	
+	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
     		
@@ -216,6 +216,9 @@ public class GameLoop implements Runnable {
 	                mLastTime > 0.0f ? timeDelta / 1000.0f : 0.0f;
 	            mLastTime = time;
 	            
+	            // Shows how long it is left until next level
+	            player.timeUntilNextLevel = (int)(player.timeUntilNextLevel - mLastTime);	            
+
 	            //Calls the method that moves the creature.
 	            moveCreature(timeDeltaSeconds,time);
 	            //Calls the method that handles the monsterkilling.
@@ -239,7 +242,7 @@ public class GameLoop implements Runnable {
         		//If you have survied the entire wave without dying. Proceed to next next level.
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
-        		if (lvlNbr > mLvl.length) {
+        		if (lvlNbr >= mLvl.length) {
         			// You have completed this map
                 	Log.d("GAMETHREAD", "You have completed this map");
         			run = false;
@@ -265,69 +268,95 @@ public class GameLoop implements Runnable {
     		return;
     	}
     	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-    		Creature object = mCreatures[x];
+    		Creature currentCreature = mCreatures[x];
     		// Check to see if a not existing creature is supposed to spawn on to the map
-			if (time > object.spawndelay && wayP[0].x == object.x && wayP[0].y == object.y) {
-				object.draw = true;
+
+    		if (time > currentCreature.spawndelay && wayP[0].x == currentCreature.x && wayP[0].y == currentCreature.y) {
+				currentCreature.draw = true;
 			}	            	
 			// If the creature is living start movement calculations.
-			if (object.draw && object.opacity == 1.0f) {
-	    		Coords co = wayP[object.nextWayPoint];
+			if (currentCreature.draw && currentCreature.opacity == 1.0f) {
+	    		Coords co = wayP[currentCreature.nextWayPoint];
+	    		// If creature has been shot by an frost tower we will force it to walk slower
+	    		int slowAffected = 1;
+	    		if (currentCreature.creatureFrozenTime > 0) {
+		    		slowAffected = 2;
+		    		currentCreature.creatureFrozenTime = currentCreature.creatureFrozenTime - timeDeltaSeconds;
+	    		}
+	    		// If creature has been shot by a poison tower we slowly reduce creature health
+	    		if (currentCreature.creaturePoisonTime > 0) {
+	    			currentCreature.creaturePoisonTime = currentCreature.creaturePoisonTime - timeDeltaSeconds;
+	    			currentCreature.health = (int)(currentCreature.health - (timeDeltaSeconds * currentCreature.creaturePoisonDamage));	    		
+			    	// Have the creature died?
+		    		if (currentCreature.health <= 0) {
+		    			creatureDied(currentCreature);
+		    		}
+	    		}
+	    		float movement = (currentCreature.velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
+	    		
 	    		// Creature is moving left.
-				if(object.x > co.x){
-		    		object.direction = Creature.LEFT;
-		    		object.x = object.x - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x > co.x)){
-		    			object.x = co.x;
+				if(currentCreature.x > co.x){
+					currentCreature.direction = Creature.LEFT;
+					currentCreature.x = currentCreature.x - movement;
+		    		if(!(currentCreature.x > co.x)){
+		    			currentCreature.x = co.x;
 		    		}
 		    	}
 	    		// Creature is moving right.
-				else if (object.x < co.x) {
-		    		object.direction = Creature.RIGHT;
-		    		object.x = object.x + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.x < co.x)){
-		    			object.x = co.x;
+				else if (currentCreature.x < co.x) {
+					currentCreature.direction = Creature.RIGHT;
+					currentCreature.x = currentCreature.x + movement;
+		    		if(!(currentCreature.x < co.x)){
+		    			currentCreature.x = co.x;
 		    		}
 		    	}
 	    		// Creature is moving down.
-				else if(object.y > co.y){
-		    		object.direction = Creature.DOWN;
-		    		object.y = object.y - (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y > co.y)){
-		    			object.y = co.y;
+				else if(currentCreature.y > co.y){
+					currentCreature.direction = Creature.DOWN;
+					currentCreature.y = currentCreature.y - movement;
+		    		if(!(currentCreature.y > co.y)){
+		    			currentCreature.y = co.y;
 		    		}
 		    	}
 	    		// Creature is moving up.
-		    	else if (object.y < co.y) {
-		    		object.direction = Creature.UP;
-		    		object.y = object.y + (object.velocity * timeDeltaSeconds * gameSpeed);
-		    		if(!(object.y < co.y)){
-		    			object.y = co.y;
+		    	else if (currentCreature.y < co.y) {
+		    		currentCreature.direction = Creature.UP;
+		    		currentCreature.y = currentCreature.y + movement;
+		    		if(!(currentCreature.y < co.y)){
+		    			currentCreature.y = co.y;
 		    		}
 		    	}
 				// Creature has reached a WayPoint. Update
-		    	if (object.y == co.y && object.x == co.x){
-		    		object.updateWayPoint();
+		    	if (currentCreature.y == co.y && currentCreature.x == co.x){
+		    		currentCreature.updateWayPoint();
 		    	}
 		    	// Creature has reached is destination without being killed
-		    	if (object.nextWayPoint >= wayP.length){
-		    		object.draw = false;
+		    	if (currentCreature.nextWayPoint >= wayP.length){
+		    		currentCreature.draw = false;
 		    		player.health --;
 		    		remainingCreatures --;
 		    	}
 		    	
 		    	// Creature is dead and fading...
-			} else if (object.draw && object.opacity > 0.0f) {
+			} else if (currentCreature.draw && currentCreature.opacity > 0.0f) {
 					// If we divide by 10 the creature stays on the screen a while longer...
-				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
-				if (object.opacity <= 0.0f) {
-					object.draw = false;
+				currentCreature.opacity = currentCreature.opacity - (timeDeltaSeconds/10 * gameSpeed);
+				if (currentCreature.opacity <= 0.0f) {
+					currentCreature.draw = false;
 	    			remainingCreatures --;
 				}
 			}
     	}
     }
     
+	private void creatureDied(Creature currentCreature) {
+		currentCreature.mTextureName = currentCreature.mDeadTextureName;
+		currentCreature.opacity = currentCreature.opacity - 0.1f;
+		player.money = player.money + currentCreature.goldValue;
+		// play died1.mp3
+		soundManager.playSound(10);
+	}
+
 	/**
 	 * Will go through all of the towews and try to find targets
 	 * <p>
@@ -342,23 +371,33 @@ public class GameLoop implements Runnable {
     		return;
     	}
     	
-    	for (int x = 0; x < mTower.length; x++) {
+    	for (int x = 0; x <= totalNumberOfTowers; x++) {
     		
     		Tower towerObject = mTower[x];
     		// Decrease the coolDown variable and check if it has reached zero
     		towerObject.tmpCoolDown = towerObject.tmpCoolDown - (timeDeltaSeconds * gameSpeed);
     		if (!towerObject.relatedShot.draw && (towerObject.tmpCoolDown <= 0)) {
-    			// If the tower/shot is existing start calculations.
-    			towerObject.trackEnemy(mCreatures,mLvl[lvlNbr].nbrCreatures);
-    			if (towerObject.targetCreature != null) {
-    					// play shot1.mp3
+
+    			// Depending of which kind of tower we have. We must do different calculations
+    			if (towerObject.towerType == towerObject.PUREAOE) {
+    				if (towerObject.createPureAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures)) {
     					soundManager.playSound(0);
     					towerObject.tmpCoolDown = towerObject.coolDown;
-    					towerObject.relatedShot.draw = true;
+    				}
+    			}
+    			else  {
+	    			// If the tower/shot is existing start calculations.
+	    			towerObject.trackEnemy(mCreatures,mLvl[lvlNbr].nbrCreatures);
+	    			if (towerObject.targetCreature != null) {
+	    					// play shot1.mp3
+	    					soundManager.playSound(0);
+	    					towerObject.tmpCoolDown = towerObject.coolDown;
+	    					towerObject.relatedShot.draw = true;
+	    			}
     			}
     		}
     		// if the creature is still alive or have not reached the goal
-    		if (towerObject.relatedShot.draw && towerObject.targetCreature.draw && towerObject.targetCreature.opacity == 1.0) {
+    		if (towerObject.towerType != towerObject.PUREAOE && towerObject.relatedShot.draw && towerObject.targetCreature.draw && towerObject.targetCreature.opacity == 1.0) {
     			Creature targetCreature = towerObject.targetCreature;
 
     			float yDistance = (targetCreature.y+(targetCreature.height/2)) - towerObject.relatedShot.y;
@@ -368,17 +407,14 @@ public class GameLoop implements Runnable {
     			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
 		    		towerObject.relatedShot.draw = false;
 		    		towerObject.resetShotCordinates();
-		    		//Basic way of implementing damage
-		    		targetCreature.health = targetCreature.health - towerObject.createDamage();
+		    		//More advanced way of implementing damage
+		    		towerObject.createProjectileDamage();
+		    		//IF A CANNONTOWER FIRES A SHOT we also have to damage surrounding creatures
+		    		if (towerObject.towerType == towerObject.PROJECTILEAOE){
+				    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
+		    		}
 		    		if (targetCreature.health <= 0) {
-		    			//Set new texture
-		    			//targetCreature.mTextureName = renderHandle.getTextureName(targetCreature.mDeadResourceId);
-
-		    			//object.cre.draw = false;
-		    			targetCreature.opacity = targetCreature.opacity - 0.1f;
-		    			player.money = player.money + targetCreature.goldValue;
-		    			// play died1.mp3
-		    			soundManager.playSound(10);
+		    			creatureDied(targetCreature);
 		    		}
     			}
     			else {
@@ -387,7 +423,7 @@ public class GameLoop implements Runnable {
         			towerObject.relatedShot.y += Math.sin(radian) * xyMovement;
     			}
 			}
-    		else {
+    		else if (towerObject.towerType != towerObject.PUREAOE) {
     			towerObject.relatedShot.draw = false;
 	    		towerObject.resetShotCordinates();
     		}
@@ -407,7 +443,11 @@ public class GameLoop implements Runnable {
 			
 			if (mTowerGrid[tmpx][tmpy].empty) {
 				
+				//Use the textureNames that we preloaded into the towerTypes at startup
 				mTower[totalNumberOfTowers].mTextureName = mTTypes[towerType].mTextureName;
+				mTower[totalNumberOfTowers].relatedShot.mTextureName = mTTypes[towerType].relatedShot.mTextureName;
+				
+				mTower[totalNumberOfTowers].mResourceId = mTTypes[towerType].mResourceId;
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
@@ -417,18 +457,18 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].price = mTTypes[towerType].price;
 				mTower[totalNumberOfTowers].range = mTTypes[towerType].range;
 				mTower[totalNumberOfTowers].resellPrice = mTTypes[towerType].resellPrice;
-				mTower[totalNumberOfTowers].specialAbility = mTTypes[towerType].specialAbility;
+				mTower[totalNumberOfTowers].fireDamage = mTTypes[towerType].fireDamage;
+				mTower[totalNumberOfTowers].frostDamage = mTTypes[towerType].frostDamage;
+				mTower[totalNumberOfTowers].poisonDamage = mTTypes[towerType].poisonDamage;
 				mTower[totalNumberOfTowers].title = mTTypes[towerType].title;
 				mTower[totalNumberOfTowers].upgrade1 = mTTypes[towerType].upgrade1;
 				mTower[totalNumberOfTowers].upgrade2 = mTTypes[towerType].upgrade2;
 				mTower[totalNumberOfTowers].velocity = mTTypes[towerType].velocity;
+				mTower[totalNumberOfTowers].rangeAOE = mTTypes[towerType].rangeAOE;
+				mTower[totalNumberOfTowers].aoeDamage = mTTypes[towerType].aoeDamage;
+				mTower[totalNumberOfTowers].towerType = mTTypes[towerType].towerType;
 				mTower[totalNumberOfTowers].draw = true; //Tower drawable
-
-				//mTower[totalNumberOfTowers].relatedShot.mTextureName = 
-				//	renderHandle.getTextureName(mTTypes[towerType].relatedShot.mResourceId);
-				mTower[totalNumberOfTowers].relatedShot.mTextureName = mTTypes[towerType].relatedShot.mTextureName;
-
-				
+				mTower[totalNumberOfTowers].relatedShot.mResourceId = mTTypes[towerType].relatedShot.mResourceId;
 				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].relatedShot.height;
 				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].relatedShot.width;
 				mTower[totalNumberOfTowers].relatedShot.draw = false;

@@ -27,7 +27,6 @@ package com.crackedcarrot;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.util.Log;
 
 import com.crackedcarrot.menu.R;
 
@@ -81,7 +80,7 @@ public class SoundManager {
 		
 	    int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 	    if (mSoundPool.play(mSoundArray[index], streamVolume, streamVolume, 1, 0, mSoundPitch[index]) == 0) {
-	    	Log.d("SOUNDMANAGER", "Failed to play " + index);
+	    	//Log.d("SOUNDMANAGER", "Failed to play " + index);
 	    }
 	}
 
