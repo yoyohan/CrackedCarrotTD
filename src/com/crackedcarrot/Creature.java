@@ -11,7 +11,7 @@ public class Creature extends Sprite{
 	//Waypoints for this creature
 	private Coords[] wayP; 
     // A creatures health
-    private int health;
+    public int health;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -32,10 +32,10 @@ public class Creature extends Sprite{
     // How much gold this creature gives when it's killed.
     private int goldValue;
     // Creature special abilty
-    private boolean creatureFast;
-    private boolean creatureFrostResistant;
-    private boolean creatureFireResistant;
-    private boolean creaturePoisonResistant;
+    public boolean creatureFast;
+    public boolean creatureFrostResistant;
+    public boolean creatureFireResistant;
+    public boolean creaturePoisonResistant;
     // Creature affected by some kind of tower
     public float creatureFrozenTime;
     public float creaturePoisonTime;

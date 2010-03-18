@@ -344,7 +344,7 @@ public class GameLoop implements Runnable {
 					    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
 			    		}
 			    		if (targetCreature.health <= 0) {
-			    			creatureDied(targetCreature);
+			    			targetCreature.creatureDied();
 			    		}
 	    			}
 	    			else {
