@@ -173,7 +173,7 @@ public class GameInit extends Activity {
     }
     
     protected void onStop() {
-    	simulationRuntime.run = false;
+    	simulationRuntime.stopGameLoop();
     	super.onStop();
     }
 }

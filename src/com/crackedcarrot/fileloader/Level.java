@@ -10,4 +10,5 @@ public class Level extends Creature {
     public Level(int resourceId){
 		super(resourceId);
 	}
+    
 }

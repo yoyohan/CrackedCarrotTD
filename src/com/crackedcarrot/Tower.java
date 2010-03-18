@@ -123,7 +123,7 @@ public class Tower extends Sprite{
 	public void createProjectileDamage(){
 		double damageFactor = specialDamage(null);
 		int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-		targetCreature.health = targetCreature.health - randomInt;
+		targetCreature.setHealth(targetCreature.getHealth() - randomInt);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class Tower extends Sprite{
 					if(distance < this.rangeAOE){ // Is the creature within tower range?
 						double damageFactor = specialDamage(mCreatures[i]);
 						int thisDamage = (int)(this.aoeDamage*damageFactor);
-						mCreatures[i].health = mCreatures[i].health - thisDamage;
+						mCreatures[i].setHealth(mCreatures[i].getHealth() - thisDamage);
 					}
 				}
 			}
@@ -162,7 +162,7 @@ public class Tower extends Sprite{
 				if(distance < this.range){ 
 					double damageFactor = specialDamage(cres[i]);
 					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-					cres[i].health = cres[i].health - randomInt;
+					cres[i].setHealth(cres[i].getHealth() - randomInt);
 					nbrOfHits++;
 				}
 			}

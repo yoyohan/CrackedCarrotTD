@@ -22,7 +22,6 @@ public class GameLoop implements Runnable {
 
     private Level[] mLvl;
     private int lvlNbr;
-    private Coords[] wayP;
     
     private Tower[] mTower;
     private TowerGrid[][] mTowerGrid;
@@ -31,9 +30,9 @@ public class GameLoop implements Runnable {
     private Shot[] mShots;
     
     private long mLastTime;
-    public volatile boolean run = true;
+    private boolean run = true;
 
-    private long gameSpeed;
+    private int gameSpeed;
     
     private SoundManager soundManager;
     private Scaler mScaler;
@@ -43,7 +42,6 @@ public class GameLoop implements Runnable {
 			Player p, SoundManager sm){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
-		this.wayP = gameMap.getWaypoints().getCoords();
    		this.mTowerGrid = gameMap.getTowerGrid();
    		this.mScaler = gameMap.getScaler();
 		this.mTTypes = tTypes;
@@ -66,10 +64,10 @@ public class GameLoop implements Runnable {
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
-	    
+
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive);
+	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords());
 	    	mCreatures[i].draw = false;
 	    } 
 		
@@ -81,15 +79,16 @@ public class GameLoop implements Runnable {
 			renderHandle.freeAllTextures();		
 			
 			//Load textures for towers.
+
 			for (int i = 0; i < mTTypes.length; i++) {
-				renderHandle.loadTexture(mTTypes[i].mResourceId);
-				renderHandle.loadTexture(mTTypes[i].relatedShot.mResourceId);
+				renderHandle.loadTexture(mTTypes[i].getResourceId());
+				renderHandle.loadTexture(mTTypes[i].relatedShot.getResourceId());
 			}
 
 			//Load textures for all creature types.
 			for(int i = 0; i < mLvl.length; i++){
-				renderHandle.loadTexture(mLvl[i].mDeadResourceId);
-				renderHandle.loadTexture(mLvl[i].mResourceId);
+				renderHandle.loadTexture(mLvl[i].getResourceId());
+				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
 			}
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
@@ -98,13 +97,17 @@ public class GameLoop implements Runnable {
 			//Towers shots and creatures.
 			
 			for(int i = 0; i < mTTypes.length; i++){
-				mTTypes[i].mTextureName = renderHandle.getTextureName(mTTypes[i].mResourceId);
-				mTTypes[i].relatedShot.mTextureName = renderHandle.getTextureName(mTTypes[i].relatedShot.mResourceId);
+				mTTypes[i].setTextureName(
+						renderHandle.getTextureName(mTTypes[i].getResourceId()));
+				
+				mTTypes[i].relatedShot.setTextureName(
+						renderHandle.getTextureName(mTTypes[i].relatedShot.getResourceId()));
 				
 			}
 			
 			for(int i = 0; i < mLvl.length; i++){
-				mLvl[i].mTextureName = renderHandle.getTextureName(mLvl[i].mResourceId);
+				mLvl[i].setTextureName(renderHandle.getTextureName(mLvl[i].getResourceId()));
+				mLvl[i].setDeadTextureName(renderHandle.getTextureName(mLvl[i].getDeadResourceId()));
 			}
 						
 		} catch (InterruptedException e) {
@@ -143,33 +146,39 @@ public class GameLoop implements Runnable {
 		for (int z = 0; z < remainingCreatures; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
-			mCreatures[z].mResourceId = mLvl[lvlNbr].mResourceId;
-			mCreatures[z].mDeadResourceId = mLvl[lvlNbr].mDeadResourceId;
-			mCreatures[z].mDeadTextureName = mLvl[lvlNbr].mDeadTextureName;
-			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
-			mCreatures[z].mDeadTextureName = mLvl[lvlNbr].mDeadTextureName;
-			mCreatures[z].creatureFast = mLvl[lvlNbr].creatureFast;
-			mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
-			mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
-			mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
-    		mCreatures[z].x = wayP[0].x;
-    		mCreatures[z].y = wayP[0].y;
-    		mCreatures[z].health = mLvl[lvlNbr].health;
-    		mCreatures[z].nextWayPoint = mLvl[lvlNbr].nextWayPoint;
-    		mCreatures[z].velocity = mLvl[lvlNbr].velocity;
+			mCreatures[z].setResourceId(mLvl[lvlNbr].getResourceId());
+			mCreatures[z].setDeadResourceId(mLvl[lvlNbr].getDeadResourceId());
+			mCreatures[z].setDeadTextureName(mLvl[lvlNbr].getDeadTextureName());
+			mCreatures[z].setTextureName(mLvl[lvlNbr].getTextureName());
+			mCreatures[z].setDeadTextureName(mLvl[lvlNbr].getDeadTextureName());
+			
+			mCreatures[z].setCreatureFast(mLvl[lvlNbr].isCreatureFast());
+			mCreatures[z].setCreatureFireResistant(mLvl[lvlNbr].isCreatureFireResistant());
+			mCreatures[z].setCreatureFrostResistant(mLvl[lvlNbr].isCreatureFrostResistant());
+			mCreatures[z].setCreaturePoisonResistant(mLvl[lvlNbr].isCreaturePoisonResistant());
+    		
+			mCreatures[z].moveToWaypoint(0);
+    		
+    		mCreatures[z].setHealth(mLvl[lvlNbr].getHealth());
+    		mCreatures[z].setNextWayPoint(mLvl[lvlNbr].getNextWayPoint());
+    		mCreatures[z].setVelocity(mLvl[lvlNbr].getVelocity());
+    		
     		mCreatures[z].width = mLvl[lvlNbr].width;
     		mCreatures[z].height = mLvl[lvlNbr].height;
-    		mCreatures[z].goldValue = mLvl[lvlNbr].goldValue;
-    		mCreatures[z].creatureFireResistant = mLvl[lvlNbr].creatureFireResistant;
-    		mCreatures[z].creatureFrostResistant = mLvl[lvlNbr].creatureFrostResistant;
-    		mCreatures[z].creaturePoisonResistant = mLvl[lvlNbr].creaturePoisonResistant;
+    		
+    		mCreatures[z].setGoldValue(mLvl[lvlNbr].getGoldValue());
+    		
+    		mCreatures[z].setCreatureFireResistant(mLvl[lvlNbr].isCreatureFireResistant());
+    		mCreatures[z].setCreatureFrostResistant(mLvl[lvlNbr].isCreatureFrostResistant());
+    		mCreatures[z].setCreaturePoisonResistant(mLvl[lvlNbr].isCreaturePoisonResistant());
+    		
     		mCreatures[z].draw = false;
     		mCreatures[z].opacity = 1;
     		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
 			int special = 1;
-    		if (mCreatures[z].creatureFast)
+    		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].spawndelay = (long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed);
+    		mCreatures[z].setSpawndelay((long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed));
 		}
 		try {
 			
@@ -218,7 +227,7 @@ public class GameLoop implements Runnable {
 	            player.timeUntilNextLevel = (int)(player.timeUntilNextLevel - mLastTime);	            
 
 	            //Calls the method that moves the creature.
-	            moveCreature(timeDeltaSeconds,time);
+	            moveCreatures(timeDeltaSeconds,time);
 	            //Calls the method that handles the monsterkilling.
 	            killCreature(timeDeltaSeconds);
 	            
@@ -260,104 +269,15 @@ public class GameLoop implements Runnable {
 	 * @param  time	 				Time since this level started
 	 * @return      				void
 	 */
-    public void moveCreature(float timeDeltaSeconds, long time) {
+    public void moveCreatures(float timeDeltaSeconds, long time) {
     	// If the list of creatures is empty we will end this method
     	if (mCreatures == null) {
     		return;
     	}
     	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-    		Creature currentCreature = mCreatures[x];
-    		// Check to see if a not existing creature is supposed to spawn on to the map
-
-    		if (time > currentCreature.spawndelay && wayP[0].x == currentCreature.x && wayP[0].y == currentCreature.y) {
-				currentCreature.draw = true;
-			}	            	
-			// If the creature is living start movement calculations.
-			if (currentCreature.draw && currentCreature.opacity == 1.0f) {
-	    		Coords co = wayP[currentCreature.nextWayPoint];
-	    		// If creature has been shot by an frost tower we will force it to walk slower
-	    		int slowAffected = 1;
-	    		if (currentCreature.creatureFrozenTime > 0) {
-		    		slowAffected = 2;
-		    		currentCreature.creatureFrozenTime = currentCreature.creatureFrozenTime - timeDeltaSeconds;
-	    		}
-	    		// If creature has been shot by a poison tower we slowly reduce creature health
-	    		if (currentCreature.creaturePoisonTime > 0) {
-	    			currentCreature.creaturePoisonTime = currentCreature.creaturePoisonTime - timeDeltaSeconds;
-	    			currentCreature.health = (int)(currentCreature.health - (timeDeltaSeconds * currentCreature.creaturePoisonDamage));	    		
-			    	// Have the creature died?
-		    		if (currentCreature.health <= 0) {
-		    			creatureDied(currentCreature);
-		    		}
-	    		}
-	    		float movement = (currentCreature.velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
-	    		
-	    		// Creature is moving left.
-				if(currentCreature.x > co.x){
-					currentCreature.direction = Creature.LEFT;
-					currentCreature.x = currentCreature.x - movement;
-		    		if(!(currentCreature.x > co.x)){
-		    			currentCreature.x = co.x;
-		    		}
-		    	}
-	    		// Creature is moving right.
-				else if (currentCreature.x < co.x) {
-					currentCreature.direction = Creature.RIGHT;
-					currentCreature.x = currentCreature.x + movement;
-		    		if(!(currentCreature.x < co.x)){
-		    			currentCreature.x = co.x;
-		    		}
-		    	}
-	    		// Creature is moving down.
-				else if(currentCreature.y > co.y){
-					currentCreature.direction = Creature.DOWN;
-					currentCreature.y = currentCreature.y - movement;
-		    		if(!(currentCreature.y > co.y)){
-		    			currentCreature.y = co.y;
-		    		}
-		    	}
-	    		// Creature is moving up.
-		    	else if (currentCreature.y < co.y) {
-		    		currentCreature.direction = Creature.UP;
-		    		currentCreature.y = currentCreature.y + movement;
-		    		if(!(currentCreature.y < co.y)){
-		    			currentCreature.y = co.y;
-		    		}
-		    	}
-				// Creature has reached a WayPoint. Update
-		    	if (currentCreature.y == co.y && currentCreature.x == co.x){
-		    		currentCreature.updateWayPoint();
-		    	}
-		    	// Creature has reached is destination without being killed
-		    	if (currentCreature.nextWayPoint >= wayP.length){
-		    		currentCreature.draw = false;
-		    		player.health --;
-		    		remainingCreatures --;
-		    	}
-		    	
-		    	// Creature is dead and fading...
-			} else if (currentCreature.draw && currentCreature.opacity > 0.0f) {
-					// If we divide by 10 the creature stays on the screen a while longer...
-				currentCreature.opacity = currentCreature.opacity - (timeDeltaSeconds/10 * gameSpeed);
-				if (currentCreature.opacity <= 0.0f) {
-					currentCreature.draw = false;
-	    			remainingCreatures --;
-				}
-			}
+    		this.remainingCreatures -= mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
     	}
     }
-    
-	private void creatureDied(Creature currentCreature) {
-		try {
-			currentCreature.mTextureName = renderHandle.getTextureName(currentCreature.mDeadResourceId);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		currentCreature.opacity = currentCreature.opacity - 0.1f;
-		player.money = player.money + currentCreature.goldValue;
-		// play died1.mp3
-		soundManager.playSound(10);
-	}
 
 	/**
 	 * Will go through all of the towews and try to find targets
@@ -453,15 +373,12 @@ public class GameLoop implements Runnable {
 			int tmpy = tmpC.y;
 			
 			if (mTowerGrid[tmpx][tmpy].empty) {
-				try {
-					mTower[totalNumberOfTowers].mTextureName = 
-						renderHandle.getTextureName(mTTypes[towerType].mResourceId);
-					mTower[totalNumberOfTowers].relatedShot.mTextureName = 
-						renderHandle.getTextureName(mTTypes[towerType].relatedShot.mResourceId);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				mTower[totalNumberOfTowers].mResourceId = mTTypes[towerType].mResourceId;
+				
+				//Use the textureNames that we preloaded into the towerTypes at startup
+				mTower[totalNumberOfTowers].setTextureName(mTTypes[towerType].getTextureName());
+				mTower[totalNumberOfTowers].relatedShot.setTextureName(mTTypes[towerType].relatedShot.getTextureName());
+				mTower[totalNumberOfTowers].setResourceId(mTTypes[towerType].getResourceId())
+				;
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
@@ -485,7 +402,7 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].aoeDamage = mTTypes[towerType].aoeDamage;
 				mTower[totalNumberOfTowers].towerType = mTTypes[towerType].towerType;
 				mTower[totalNumberOfTowers].draw = true; //Tower drawable
-				mTower[totalNumberOfTowers].relatedShot.mResourceId = mTTypes[towerType].relatedShot.mResourceId;
+				mTower[totalNumberOfTowers].relatedShot.setResourceId(mTTypes[towerType].relatedShot.getResourceId());
 				mTower[totalNumberOfTowers].relatedShot.height = mTTypes[towerType].relatedShot.height;
 				mTower[totalNumberOfTowers].relatedShot.width = mTTypes[towerType].relatedShot.width;
 				mTower[totalNumberOfTowers].relatedShot.draw = false;
@@ -504,5 +421,8 @@ public class GameLoop implements Runnable {
 		}
 		return false;
     }
-
+    
+    public void stopGameLoop(){
+    	run = false;
+    }
 }
