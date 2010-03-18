@@ -1,51 +1,55 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::3
-//Tower arrow
-texture::skate2
-title::Arrow tower lvl 1
+Total number of towers::2
+////////////////////////////////////
+// Cannon tower with frost damage
+////////////////////////////////////
+texture::tower1
+title::Cannon tower FROST
 size::60
 price::10
 resell value::8
-minDamage::10
-maxDamage::15
-velocity::250
-cooldown::2
-specialAbility::0
+minDamage::20
+maxDamage::50
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::true
+frostTime(sec)::6
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::5
+poisonTime(sec)::4
+0-projectile,1-projectileAOE,2-AOE::1
 upgradelink1::1
 upgradelink2::-1
 range::150
-Shot texture::skate3
-Shot size::16
-//Tower arrow Lvl 2
-texture::skate2
-title::Arrow tower lvl 2
+aoe range:: 30
+aoe damage::10 
+Shot texture::cannonball
+Shot size::8
+////////////////////////////////////
+// AOE tower
+////////////////////////////////////
+texture::tower1
+title::Cannon tower FROST
 size::60
-price::100
-resell value::75
-minDamage::100
-maxDamage::150
-velocity::250
-cooldown::2
-specialAbility::0
-upgradelink1::2
+price::10
+resell value::8
+minDamage::20
+maxDamage::50
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::false
+frostTime(sec)::0
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+0-projectile,1-projectileAOE,2-AOE::2
+upgradelink1::1
 upgradelink2::-1
 range::150
-Shot texture::skate3
-Shot size::16
-//Tower arrow Lvl 3
-texture::skate2
-title::Arrow tower lvl 3
-size::60
-price::1000
-resell value::75
-minDamage::1000
-maxDamage::1500
-velocity::250
-cooldown::2
-specialAbility::0
-upgradelink1::-1
-upgradelink2::-1
-range::150
-Shot texture::skate3
-Shot size::16
+aoe range:: 0
+aoe damage::0 
+Shot texture::cannonball
+Shot size::150
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

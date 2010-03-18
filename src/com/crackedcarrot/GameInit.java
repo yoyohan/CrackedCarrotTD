@@ -177,14 +177,20 @@ public class GameInit extends Activity {
 
         //Define player specific variables depending on difficulty.
         Player p = new Player();
-        p.difficulty = difficulty +1;
-        if (difficulty == 2)
+        p.difficulty = difficulty;
+        if (difficulty == 2) {
+        	p.health = 50;
+        	p.timeBetweenLevels = 1000;
+        }
+        if (difficulty == 1) {
         	p.health = 40;
-        if (difficulty == 1)
-        	p.health = 20;
-        else
+        	p.timeBetweenLevels = 1000;
+        }
+        else {
         	p.health = 60;
-        p.money      = 100;
+        	p.timeBetweenLevels = 1000;
+        }
+       	p.money      = 100;
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this,res);
@@ -206,7 +212,7 @@ public class GameInit extends Activity {
     }
     
     protected void onStop() {
-    	simulationRuntime.run = false;
+    	simulationRuntime.stopGameLoop();
     	super.onStop();
     }
 }
