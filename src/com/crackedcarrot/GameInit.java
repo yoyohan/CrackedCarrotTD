@@ -8,15 +8,13 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import android.view.MotionEvent;
-import android.view.SubMenu;
-
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
+import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
+import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -31,6 +29,9 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
+    private HealthProgressBar healthProgressBar;
+    private int healthProgress = 100;
+    private NrCreTextView nrCreText;    
     
     private int highlightIcon = R.drawable.map_choose;
 
@@ -68,6 +69,27 @@ public class GameInit extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        
+        /** Create the progress bar, showing the enemies total health*/
+        healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
+        healthProgressBar.setMax(healthProgress);
+        healthProgressBar.setProgress(healthProgress);
+        healthProgressBar.setProgressChangeListener(new ProgressChangeListener(){
+        	@Override
+        	public void progressUpdate(int health){
+        		healthProgressBar.setProgress(health);
+        	}
+        });
+        
+        /** Create the TextView showing number of enemies left and add a listener to it */
+        nrCreText = (NrCreTextView) findViewById(R.id.nrEnemyLeft);
+        nrCreText.setCreatureUpdateListener(new CreatureUpdateListener() {
+        	@Override
+        	public void creatureUpdate(int number){
+        		nrCreText.setText("" + number);
+        	}
+        });
+        
         
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);

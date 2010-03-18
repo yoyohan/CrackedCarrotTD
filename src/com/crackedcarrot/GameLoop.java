@@ -1,5 +1,6 @@
 package com.crackedcarrot;
 
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -19,6 +20,8 @@ public class GameLoop implements Runnable {
 
     private Creature[] mCreatures;
     private int remainingCreatures;
+    private int startNrCreatures;
+    private int percentageCreatures = 100;
 
     private Level[] mLvl;
     private int lvlNbr;
@@ -38,6 +41,9 @@ public class GameLoop implements Runnable {
     private SoundManager soundManager;
     private Scaler mScaler;
     private NativeRender renderHandle;
+    
+    private Handler updateCreatureHandler = new Handler();
+    private Handler updateHealthHandler = new Handler();
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, SoundManager sm){
@@ -70,6 +76,17 @@ public class GameLoop implements Runnable {
 	    Log.d("GAMELOOP","INIT GAMELOOP");
     	while(run){
     		initializeLvl();
+    		// Initialize the status, displaying how many creatures still alive
+    		updateCreatureHandler.post(new Runnable(){
+				public void run(){
+					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+				}
+			});
+    		updateHealthHandler.post(new Runnable(){
+				public void run(){
+					HealthProgressBar.proChangeListener.progressUpdate(100);
+				}
+			});
     		try {
 				renderHandle.rendererReady.acquire();
 			} catch (InterruptedException e) {
@@ -79,8 +96,8 @@ public class GameLoop implements Runnable {
 
 			//Will try to create towers of type 0  
 	        if (lvlNbr == 0) {
-				for (int i = 0; i < 8; i++) {
-		        	for (int z = 0; z < 11; z++) {
+				for (int i = 5; i < 8; i++) {
+		        	for (int z = 6; z < 11; z++) {
 		        		Coords tmp = mScaler.getPosFromGrid(i,z);
 		        		tmp.y = tmp.y+10; 
 		        		createTower(tmp, 0);
@@ -143,6 +160,7 @@ public class GameLoop implements Runnable {
 		renderHandle.freeAllTextures();
 
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	startNrCreatures = remainingCreatures;
     	mCreatures = new Creature[remainingCreatures];
     	int reverse = remainingCreatures; 
 		
@@ -256,11 +274,25 @@ public class GameLoop implements Runnable {
 		    	
 		    	// Creature is dead and fading...
 			} else if (object.draw && object.opacity > 0.0f) {
+				
 					// If we divide by 10 the creature stays on the screen a while longer...
 				object.opacity = object.opacity - (timeDeltaSeconds/10 * gameSpeed);
 				if (object.opacity <= 0.0f) {
 					object.draw = false;
-	    			remainingCreatures --;
+					remainingCreatures --;
+					// Update the status, displaying how many creatures that are still alive
+	    			updateCreatureHandler.post(new Runnable(){
+	    				public void run(){
+	    					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+	    				}
+	    			});
+	    			percentageCreatures = ((100*remainingCreatures)/startNrCreatures);
+	    			// Update the status, displaying total health of all creatures
+					updateHealthHandler.post(new Runnable(){
+	    				public void run(){
+	    					HealthProgressBar.proChangeListener.progressUpdate(percentageCreatures);
+	    				}
+	    			});
 				}
 			}
     	}
