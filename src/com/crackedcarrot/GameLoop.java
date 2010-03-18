@@ -79,11 +79,12 @@ public class GameLoop implements Runnable {
     	
     	lvlNbr = 0;
 	    gameSpeed = 1;
-
 	    initializeDataStructures();
-	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
-    	while(run){
+
+	    while(run){
+			//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
+    		//OR they will be infinitely small.
     		initializeLvl();
 
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
@@ -160,8 +161,8 @@ public class GameLoop implements Runnable {
 			//Towers shots and creatures.
 			
 			for(int i = 0; i < mTTypes.length; i++){
-				mTTypes[i].mTextureName = renderHandle.getTextureName(mTTypes[i].mResourceId);
-				mTTypes[i].relatedShot.mTextureName = renderHandle.getTextureName(mTTypes[i].relatedShot.mResourceId);
+				//mTTypes[i].mTextureName = renderHandle.getTextureName(mTTypes[i].mResourceId);
+				//mTTypes[i].relatedShot.mTextureName = renderHandle.getTextureName(mTTypes[i].relatedShot.mResourceId);
 				
 			}
 			
@@ -188,8 +189,6 @@ public class GameLoop implements Runnable {
 	}
     
 	private void initializeLvl() {
-<<<<<<< HEAD
-		
 		try {
 			renderHandle.freeSprites();
 		} catch (InterruptedException e1) {
@@ -203,7 +202,6 @@ public class GameLoop implements Runnable {
     	player.timeUntilNextLevel = (int)player.timeBetweenLevels / 1000;
     	int reverse = remainingCreatures;
     	
-=======
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -212,14 +210,12 @@ public class GameLoop implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-    	final long starttime = SystemClock.uptimeMillis();
 		
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
     	//Need to reverse the list for to draw correctly.
-    	int reverse = remainingCreatures; 
->>>>>>> def288129bca538a16c05f1732c7b179f2a20fa3
-		for (int z = 0; z < remainingCreatures; z++) {
+
+    	for (int z = 0; z < remainingCreatures; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mCreatures[z].mTextureName = mLvl[lvlNbr].mTextureName;
@@ -259,75 +255,6 @@ public class GameLoop implements Runnable {
 		}
 		
 	}
-
-    public void run() {
-    	
-	    initializeDataStructures();
-    	lvlNbr = 0;
-	    gameSpeed = 1;
-	    
-	    Log.d("GAMELOOP","INIT GAMELOOP");
-	    
-    	while(run){
-    		
-			//Will try to create towers of type 0  
-    		if (lvlNbr == 0) {
-				for (int i = 0; i < 8; i++) {
-		        	for (int z = 0; z < 11; z++) {
-		        		Coords tmp = mScaler.getPosFromGrid(i,z);
-		        		tmp.y = tmp.y+10; 
-		        		createTower(tmp, 0);
-		        	}
-		        }
-	        }
-    		//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
-    		//OR they will be infinitely small.
-    		initializeLvl();
-    		
-            // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
-    		while(remainingCreatures > 0 && run){
-
-    			//Systemclock. Used to help determine speed of the game. 
-				final long time = SystemClock.uptimeMillis();
-				
-	            // Used to calculate creature movement.
-				final long timeDelta = time - mLastTime;
-	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? timeDelta / 1000.0f : 0.0f;
-	            mLastTime = time;
-	            
-	            //Calls the method that moves the creature.
-	            moveCreature(timeDeltaSeconds,time);
-	            //Calls the method that handles the monsterkilling.
-	            killCreature(timeDeltaSeconds);
-	            
-	            // Check if the GameLoop are to run the level loop one more time.
-	            if (player.health < 1) {
-            		//If you have lost all your lives then the game ends.
-	            	run = false;
-            	}
-	        }
-    		player.calculateInterest();
-
-    		// Check if the GameLoop are to run the level loop one more time.
-            if (player.health < 1) {
-        		//If you have lost all your lives then the game ends.
-            	Log.d("GAMETHREAD", "You are dead");
-            	run = false;
-        	} 
-        	else if (remainingCreatures < 1) {
-        		//If you have survied the entire wave without dying. Proceed to next next level.
-            	Log.d("GAMETHREAD", "Wave complete");
-        		lvlNbr++;
-        		if (lvlNbr > mLvl.length) {
-        			// You have completed this map
-                	Log.d("GAMETHREAD", "You have completed this map");
-        			run = false;
-        		}
-        	}
-	    }
-    	Log.d("GAMETHREAD", "dead thread");
-    }
 
 	/**
 	 * Will go through all of the creatures from this level and
