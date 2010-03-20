@@ -21,6 +21,7 @@ typedef struct {
     jfieldID x, y, z;
 	jfieldID draw;
     jfieldID textureName;
+	jfieldID opacity;
 	
 	
 	GLsizeiptr vertBufSize;

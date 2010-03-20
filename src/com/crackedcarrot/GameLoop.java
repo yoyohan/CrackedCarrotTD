@@ -16,6 +16,7 @@ import com.crackedcarrot.menu.R;
 public class GameLoop implements Runnable {
     private Player player;
     private Map mGameMap;
+    private Sprite[] mGrid;
 
     private Creature[] mCreatures;
     private int remainingCreatures;
@@ -55,7 +56,9 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-
+		this.mGrid = new Grid[1]; 
+		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
+		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.tower1);
@@ -69,8 +72,8 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mCreatures.length; i++) {
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords());
 	    	mCreatures[i].draw = false;
-	    } 
-		
+	    }
+	    //Set grid attributes.
 	    //Free all allocated data in the render
 	    //Not needed really.. but now we know for sure that
 	    //we don't have any garbage anywhere.
@@ -90,6 +93,7 @@ public class GameLoop implements Runnable {
 				renderHandle.loadTexture(mLvl[i].getResourceId());
 				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
 			}
+			renderHandle.loadTexture(mGrid[0].getResourceId());
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
@@ -109,6 +113,7 @@ public class GameLoop implements Runnable {
 				mLvl[i].setTextureName(renderHandle.getTextureName(mLvl[i].getResourceId()));
 				mLvl[i].setDeadTextureName(renderHandle.getTextureName(mLvl[i].getDeadResourceId()));
 			}
+			
 						
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -119,6 +124,7 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
