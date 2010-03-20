@@ -30,6 +30,7 @@ public class MapOp extends Activity {
 	private static final int LEVEL1_MENU_ITEM = Menu.FIRST;
 	private static final int LEVEL2_MENU_ITEM = LEVEL1_MENU_ITEM + 1;
 	private static final int LEVEL3_MENU_ITEM = LEVEL2_MENU_ITEM + 1;
+	
 	/** References to our images */
     private Integer[] mmaps = {
             R.drawable.map_choose, R.drawable.map_choose2,
@@ -44,7 +45,7 @@ public class MapOp extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapop);
-        
+
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         

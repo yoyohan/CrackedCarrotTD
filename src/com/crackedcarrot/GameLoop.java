@@ -1,7 +1,11 @@
 package com.crackedcarrot;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.os.Handler;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -20,6 +24,8 @@ public class GameLoop implements Runnable {
 
     private Creature[] mCreatures;
     private int remainingCreatures;
+    private int startNrCreatures;
+    private int percentageCreatures = 100;
 
     private Level[] mLvl;
     private int lvlNbr;
@@ -38,6 +44,9 @@ public class GameLoop implements Runnable {
     private SoundManager soundManager;
     private Scaler mScaler;
     private NativeRender renderHandle;
+    
+    private Handler updateCreatureHandler = new Handler();
+    private Handler updateHealthHandler = new Handler();
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, SoundManager sm){
@@ -144,9 +153,10 @@ public class GameLoop implements Runnable {
 			e1.printStackTrace();
 		}
     	final long starttime = SystemClock.uptimeMillis();
-		
+    	
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	startNrCreatures = remainingCreatures;
     	//Need to reverse the list for to draw correctly.
     	int reverse = remainingCreatures; 
 		for (int z = 0; z < remainingCreatures; z++) {
@@ -201,6 +211,8 @@ public class GameLoop implements Runnable {
 
     public void run() {
     	
+    	Looper.prepare();
+    	
 	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
@@ -211,11 +223,23 @@ public class GameLoop implements Runnable {
 	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
 	    	createTower(tmp,0);
 	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	createTower(tmp,1);
+	    	createTower(tmp,0);
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
+    		
+    		// Initialize the status, displaying how many creatures still alive
+    		updateCreatureHandler.post(new Runnable(){
+				public void run(){
+					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+				}
+			});
+    		updateHealthHandler.post(new Runnable(){
+				public void run(){
+					HealthProgressBar.proChangeListener.progressUpdate(100);
+				}
+			});
     		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
@@ -351,6 +375,19 @@ public class GameLoop implements Runnable {
 			    		}
 			    		if (targetCreature.health <= 0) {
 			    			targetCreature.creatureDied();
+			    			// Update the status, displaying how many creatures that are still alive
+			    			updateCreatureHandler.post(new Runnable(){
+			    				public void run(){
+			    					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+			    				}
+			    			});
+			    			percentageCreatures = ((100*remainingCreatures)/startNrCreatures);
+			    			// Update the status, displaying total health of all creatures
+							updateHealthHandler.post(new Runnable(){
+			    				public void run(){
+			    					HealthProgressBar.proChangeListener.progressUpdate(percentageCreatures);
+			    				}
+			    			});
 			    		}
 	    			}
 	    			else {
@@ -383,8 +420,7 @@ public class GameLoop implements Runnable {
 				//Use the textureNames that we preloaded into the towerTypes at startup
 				mTower[totalNumberOfTowers].setTextureName(mTTypes[towerType].getTextureName());
 				mTower[totalNumberOfTowers].relatedShot.setTextureName(mTTypes[towerType].relatedShot.getTextureName());
-				mTower[totalNumberOfTowers].setResourceId(mTTypes[towerType].getResourceId())
-				;
+				mTower[totalNumberOfTowers].setResourceId(mTTypes[towerType].getResourceId());
 				mTower[totalNumberOfTowers].coolDown = mTTypes[towerType].coolDown;
 				mTower[totalNumberOfTowers].height = mTTypes[towerType].height;
 				mTower[totalNumberOfTowers].width = mTTypes[towerType].width;
@@ -422,6 +458,18 @@ public class GameLoop implements Runnable {
 				totalNumberOfTowers++;
 				mTowerGrid[tmpx][tmpy].empty = false;
 				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
+				
+				try {
+					
+					//Finally send of the sprites to the render to be allocated
+					//And after that drawn.
+					renderHandle.finalizeSprites();
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 	    		return true;
 			}
 		}
@@ -431,4 +479,5 @@ public class GameLoop implements Runnable {
     public void stopGameLoop(){
     	run = false;
     }
+    
 }
