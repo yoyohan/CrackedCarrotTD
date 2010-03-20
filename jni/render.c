@@ -14,12 +14,11 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glOrthof(0.0f, w, 0.0f, h, 0.0f, 10.0f);
 	
 	glShadeModel(GL_FLAT);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
-	
+
 	glEnable(GL_BLEND);
-	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);	
 	
 	/*
 	 * By default, OpenGL enables features that improve quality but reduce
@@ -58,18 +57,13 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	for (i = 0; i < noOfSprites; i++) {		
 		if((*env)->GetBooleanField(env,renderSprites[i].object, renderSprites[i].draw)){
 			currSprt = &renderSprites[i];
-			bufferName = currSprt->bufferName;
-			
-/*			vertBuffer = renderSprites[i].vertBuffer;
-			texCoordBuffer = renderSprites[i].textureCoordBuffer;
-			indexBuffer = renderSprites[i].indexBuffer;
-			indexCount = renderSprites[i].indexCount;
-*/			
+			bufferName = currSprt->bufferName;			
 			
 			currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 			if(currTexture == 0){
 				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
 			}
+			
 			if(currTexture != prevTexture){ 
 			    glBindTexture(GL_TEXTURE_2D, currTexture);
 				prevTexture = currTexture;
@@ -77,7 +71,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		
 			glPushMatrix();
 			glLoadIdentity();
-			glColor4f(1, 1, 1, 0.2);
+			glColor4f(1, 1, 1, (*env)->GetFloatField(env, currSprt->object, currSprt->opacity));
 			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
 						(*env)->GetFloatField(env, currSprt->object, currSprt->y),
 						(*env)->GetFloatField(env, currSprt->object, currSprt->z));
