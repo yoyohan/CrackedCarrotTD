@@ -31,6 +31,8 @@ public class Creature extends Sprite{
     private long spawndelay;
     // How much gold this creature gives when it's killed.
     private int goldValue;
+    //Ref to gameloop that runs this creature.
+    private GameLoop GL;
     // Creature special abilty
     public boolean creatureFast;
     public boolean creatureFrostResistant;
@@ -41,13 +43,14 @@ public class Creature extends Sprite{
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
     
-	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP){
+	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
 		super(resourceId);
 		this.draw = false;
 		this.player = player;
 		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
+		this.GL = loop;
 	}
 	
 	//This is only used by the level constructor.
@@ -148,7 +151,7 @@ public class Creature extends Sprite{
 		return creaturePoisonResistant;
 	}
 
-	public int move(float timeDeltaSeconds, long time, int gameSpeed){
+	public void move(float timeDeltaSeconds, long time, int gameSpeed){
 		//Time to spawn.
 		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y) {
 			draw = true;
@@ -168,7 +171,7 @@ public class Creature extends Sprite{
     			setHealth((int)(getHealth() - (timeDeltaSeconds * creaturePoisonDamage)));	    		
 		    	// Have the creature died?
 	    		if (getHealth() <= 0) {
-	    			creatureDied();
+	    			die();
 	    		}
     		}
     		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
@@ -211,35 +214,38 @@ public class Creature extends Sprite{
 	    	}
 	    	// Creature has reached is destination without being killed
 	    	if (getNextWayPoint() >= wayP.length){
-	    		draw = false;
-	    		player.health --;
-	    		//The creature exited the screen, return 1.
-	    		return 1;
+	    		score();
 	    	}
 	    	
 	    	// Creature is dead and fading...
 		} else if (draw && opacity > 0.0f) {
-				// If we divide by 10 the creature stays on the screen a while longer...
-			opacity = opacity - (timeDeltaSeconds/10 * gameSpeed);
-			if (opacity <= 0.0f) {
-				draw = false;
-	    		//The creature died, return 1.
-				return 1;
-			}
+			fade(timeDeltaSeconds/10 * gameSpeed);
 		}
-		//Still alive and on the screen.
-		return 0;
 	}
 	
-	public void creatureDied() {
+	public void die() {
 		setTextureName(getDeadTextureName());
-		opacity = opacity - 0.1f;
-		player.money = player.money + goldValue;
+		this.opacity -= 0.1f;
+		player.addMoney(this.goldValue);
+		GL.subtractCreature(1);
 		// play died1.mp3
 		soundManager.playSound(10);
 	}
 	
-	public void SetWayPoint(Coords[] waypoints){
+	private void fade(float reduceOpacity){
+		this.opacity -= reduceOpacity;
+		if (opacity <= 0.0f) {
+			draw = false;
+		}
+	}
+	
+	private void score(){
+		draw = false;
+		player.damage(1);
+		GL.subtractCreature(1);
+	}
+	
+	public void SetWayPoints(Coords[] waypoints){
 		this.wayP = waypoints;
 	}
 	

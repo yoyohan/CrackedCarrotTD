@@ -1,7 +1,7 @@
 package com.crackedcarrot;
 
-import android.app.AlertDialog;
-import android.content.Context;
+//import android.app.AlertDialog;
+//import android.content.Context;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
@@ -25,7 +25,6 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private int remainingCreatures;
     private int startNrCreatures;
-    private int percentageCreatures = 100;
 
     private Level[] mLvl;
     private int lvlNbr;
@@ -79,7 +78,7 @@ public class GameLoop implements Runnable {
 
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords());
+	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords(), this);
 	    	mCreatures[i].draw = false;
 	    }
 	    //Set grid attributes.
@@ -194,7 +193,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((long)(starttime + (player.timeBetweenLevels + (reverse * (500/special)))/gameSpeed));
+    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (500/special)))/gameSpeed));
 		}
 		try {
 			
@@ -254,7 +253,7 @@ public class GameLoop implements Runnable {
 	            mLastTime = time;
 	            
 	            // Shows how long it is left until next level
-	            player.timeUntilNextLevel = (int)(player.timeUntilNextLevel - mLastTime);	            
+	            player.setTimeUntilNextLevel((int)(player.getTimeUntilNextLevel() - mLastTime));	            
 
 	            //Calls the method that moves the creature.
 	            moveCreatures(timeDeltaSeconds,time);
@@ -262,7 +261,7 @@ public class GameLoop implements Runnable {
 	            killCreature(timeDeltaSeconds);
 	            
 	            // Check if the GameLoop are to run the level loop one more time.
-	            if (player.health < 1) {
+	            if (player.getHealth() < 1) {
             		//If you have lost all your lives then the game ends.
 	            	run = false;
             	}
@@ -270,7 +269,7 @@ public class GameLoop implements Runnable {
     		player.calculateInterest();
 
     		// Check if the GameLoop are to run the level loop one more time.
-            if (player.health < 1) {
+            if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
             	run = false;
@@ -305,7 +304,7 @@ public class GameLoop implements Runnable {
     		return;
     	}
     	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-    		this.remainingCreatures -= mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
+    		mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
     	}
     }
 
@@ -374,20 +373,7 @@ public class GameLoop implements Runnable {
 					    	towerObject.createProjectileAOEDamage(mCreatures,mLvl[lvlNbr].nbrCreatures);
 			    		}
 			    		if (targetCreature.health <= 0) {
-			    			targetCreature.creatureDied();
-			    			// Update the status, displaying how many creatures that are still alive
-			    			updateCreatureHandler.post(new Runnable(){
-			    				public void run(){
-			    					NrCreTextView.listener.creatureUpdate(remainingCreatures);
-			    				}
-			    			});
-			    			percentageCreatures = ((100*remainingCreatures)/startNrCreatures);
-			    			// Update the status, displaying total health of all creatures
-							updateHealthHandler.post(new Runnable(){
-			    				public void run(){
-			    					HealthProgressBar.proChangeListener.progressUpdate(percentageCreatures);
-			    				}
-			    			});
+			    			targetCreature.die();
 			    		}
 	    			}
 	    			else {
@@ -474,6 +460,23 @@ public class GameLoop implements Runnable {
 			}
 		}
 		return false;
+    }
+    
+    public void subtractCreature(int n){
+    	this.remainingCreatures -= n;
+		// Update the status, displaying how many creatures that are still alive
+		updateCreatureHandler.post(new Runnable(){
+			public void run(){
+				NrCreTextView.listener.creatureUpdate(remainingCreatures);
+			}
+		});
+		
+		// Update the status, displaying total health of all creatures
+		updateHealthHandler.post(new Runnable(){
+			public void run(){
+				HealthProgressBar.proChangeListener.progressUpdate(((100*remainingCreatures)/startNrCreatures));
+			}
+		});
     }
     
     public void stopGameLoop(){
