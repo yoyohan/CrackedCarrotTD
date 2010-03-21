@@ -51,5 +51,5 @@ range::150
 aoe range:: 0
 aoe damage::0 
 Shot texture::cannonball
-Shot size::150
+Shot size::300
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
