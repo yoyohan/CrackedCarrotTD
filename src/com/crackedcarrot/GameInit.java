@@ -11,7 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
+import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
+import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -26,6 +29,11 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
+    private HealthProgressBar healthProgressBar;
+    private int healthProgress = 100;
+    private NrCreTextView nrCreText;    
+    
+    private int highlightIcon = R.drawable.map_choose;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,6 +70,27 @@ public class GameInit extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
+        /** Create the progress bar, showing the enemies total health*/
+        healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
+        healthProgressBar.setMax(healthProgress);
+        healthProgressBar.setProgress(healthProgress);
+        healthProgressBar.setProgressChangeListener(new ProgressChangeListener(){
+        	@Override
+        	public void progressUpdate(int health){
+        		healthProgressBar.setProgress(health);
+        	}
+        });
+        
+        /** Create the TextView showing number of enemies left and add a listener to it */
+        nrCreText = (NrCreTextView) findViewById(R.id.nrEnemyLeft);
+        nrCreText.setCreatureUpdateListener(new CreatureUpdateListener() {
+        	@Override
+        	public void creatureUpdate(int number){
+        		nrCreText.setText("" + number);
+        	}
+        });
+        
+        
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
         
@@ -76,11 +105,21 @@ public class GameInit extends Activity {
         		expandMenu.switchMenu();
         	}
         });
-        Button inMenu2 = (Button)findViewById(R.id.inmenu2);
+        /**final OnTouchListener o = new View.OnTouchListener() {
+			
+			public boolean onTouch(View v1, MotionEvent event){
+				v1.setBackgroundResource(R.drawable.inmenu2_button);
+				o = null;
+				return true;
+			}
+		}; */
+        final Button inMenu2 = (Button)findViewById(R.id.inmenu2);
         inMenu2.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
+        		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
+        		v.setOnTouchListener(o); */
         	}
         });
         Button inMenu3 = (Button)findViewById(R.id.inmenu3);

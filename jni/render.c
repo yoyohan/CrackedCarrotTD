@@ -14,12 +14,11 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glOrthof(0.0f, w, 0.0f, h, 0.0f, 10.0f);
 	
 	glShadeModel(GL_FLAT);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);
-	
+
 	glEnable(GL_BLEND);
-	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4x(0x10000, 0x10000, 0x10000, 0x10000);	
 	
 	/*
 	 * By default, OpenGL enables features that improve quality but reduce
@@ -31,7 +30,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glDisable(GL_LIGHTING);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	
-	glClearColor(0.5f, 0.5f, 0.5f, 1);
+	glClearColor(1, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -44,6 +43,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
     GLuint* bufferName;
     GLint currTexture = -1;
     GLint prevTexture = -2;
+	GLSprite* currSprt = NULL;
     
 	/*GLfloat* vertBuffer;
 	GLfloat* texCoordBuffer;
@@ -56,19 +56,14 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	
 	for (i = 0; i < noOfSprites; i++) {		
 		if((*env)->GetBooleanField(env,renderSprites[i].object, renderSprites[i].draw)){
+			currSprt = &renderSprites[i];
+			bufferName = currSprt->bufferName;			
 			
-			bufferName = renderSprites[i].bufferName;
-			
-/*			vertBuffer = renderSprites[i].vertBuffer;
-			texCoordBuffer = renderSprites[i].textureCoordBuffer;
-			indexBuffer = renderSprites[i].indexBuffer;
-			indexCount = renderSprites[i].indexCount;
-*/			
-			
-			currTexture = (*env)->GetIntField(env,renderSprites[i].object, renderSprites[i].textureName);
+			currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 			if(currTexture == 0){
 				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
 			}
+			
 			if(currTexture != prevTexture){ 
 			    glBindTexture(GL_TEXTURE_2D, currTexture);
 				prevTexture = currTexture;
@@ -76,9 +71,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		
 			glPushMatrix();
 			glLoadIdentity();
-			glTranslatef((*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].x),
-						(*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].y),
-						(*env)->GetFloatField(env, renderSprites[i].object, renderSprites[i].z));
+			glColor4f(1, 1, 1, (*env)->GetFloatField(env, currSprt->object, currSprt->opacity));
+			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
+						(*env)->GetFloatField(env, currSprt->object, currSprt->y),
+						(*env)->GetFloatField(env, currSprt->object, currSprt->z));
 		
 			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 			glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -104,7 +100,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "IndexCount: %u", indexCount);
 */			
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
-			glDrawElements(GL_TRIANGLES, renderSprites[i].indexCount, GL_UNSIGNED_SHORT, 0);
+			glDrawElements(GL_TRIANGLES, currSprt->indexCount, GL_UNSIGNED_SHORT, 0);
 /*			
 			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "DrawElements returned error: %d ", glGetError());
 */			

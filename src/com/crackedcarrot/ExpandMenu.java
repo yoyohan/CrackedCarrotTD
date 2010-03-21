@@ -34,7 +34,7 @@ public class ExpandMenu extends LinearLayout {
 	}
 	
 	/**
-	 * This method checks whether the expanded manu is activated ur not,
+	 * This method checks whether the expanded menu is activated or not,
 	 * and makes the appropriate switch.
 	 */
 	public void switchMenu() {

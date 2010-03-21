@@ -1,7 +1,11 @@
 package com.crackedcarrot;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.os.Handler;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -16,9 +20,12 @@ import com.crackedcarrot.menu.R;
 public class GameLoop implements Runnable {
     private Player player;
     private Map mGameMap;
+    private Sprite[] mGrid;
 
     private Creature[] mCreatures;
     private int remainingCreatures;
+    private int startNrCreatures;
+    private int percentageCreatures = 100;
 
     private Level[] mLvl;
     private int lvlNbr;
@@ -38,6 +45,9 @@ public class GameLoop implements Runnable {
     private Scaler mScaler;
     private NativeRender renderHandle;
     
+    private Handler updateCreatureHandler = new Handler();
+    private Handler updateHealthHandler = new Handler();
+    
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, SoundManager sm){
     	this.renderHandle = renderHandle;
@@ -55,7 +65,9 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-
+		this.mGrid = new Grid[1]; 
+		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
+		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager);
@@ -69,8 +81,8 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mCreatures.length; i++) {
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords());
 	    	mCreatures[i].draw = false;
-	    } 
-		
+	    }
+	    //Set grid attributes.
 	    //Free all allocated data in the render
 	    //Not needed really.. but now we know for sure that
 	    //we don't have any garbage anywhere.
@@ -90,6 +102,7 @@ public class GameLoop implements Runnable {
 				renderHandle.loadTexture(mLvl[i].getResourceId());
 				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
 			}
+			renderHandle.loadTexture(mGrid[0].getResourceId());
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
@@ -109,6 +122,7 @@ public class GameLoop implements Runnable {
 				mLvl[i].setTextureName(renderHandle.getTextureName(mLvl[i].getResourceId()));
 				mLvl[i].setDeadTextureName(renderHandle.getTextureName(mLvl[i].getDeadResourceId()));
 			}
+			
 						
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -119,6 +133,7 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
@@ -138,9 +153,10 @@ public class GameLoop implements Runnable {
 			e1.printStackTrace();
 		}
     	final long starttime = SystemClock.uptimeMillis();
-		
+    	
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	startNrCreatures = remainingCreatures;
     	//Need to reverse the list for to draw correctly.
     	int reverse = remainingCreatures; 
 		for (int z = 0; z < remainingCreatures; z++) {
@@ -168,6 +184,8 @@ public class GameLoop implements Runnable {
 
     public void run() {
     	
+    	Looper.prepare();
+    	
 	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
@@ -178,11 +196,23 @@ public class GameLoop implements Runnable {
 	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
 	    	createTower(tmp,0);
 	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	createTower(tmp,1);
+	    	createTower(tmp,0);
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
+    		
+    		// Initialize the status, displaying how many creatures still alive
+    		updateCreatureHandler.post(new Runnable(){
+				public void run(){
+					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+				}
+			});
+    		updateHealthHandler.post(new Runnable(){
+				public void run(){
+					HealthProgressBar.proChangeListener.progressUpdate(100);
+				}
+			});
     		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreatures > 0 && run){
@@ -298,4 +328,5 @@ public class GameLoop implements Runnable {
     public void stopGameLoop(){
     	run = false;
     }
+    
 }

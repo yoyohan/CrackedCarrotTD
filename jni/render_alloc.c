@@ -48,6 +48,10 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	
 	id = (*env)->GetFieldID(env, class, "draw", "Z");
 	thisSprite->draw = id;
+	
+	id = (*env)->GetFieldID(env, class, "opacity", "F");
+	thisSprite->opacity = id;
+	
 		//cache TextureName
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	thisSprite->textureName = id;
