@@ -228,7 +228,7 @@ public class GameLoop implements Runnable {
 
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-	        		mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
+	        		mCreatures[x].update(timeDeltaSeconds, time, gameSpeed);
 	        	}
 	            //Calls the method that handles the monsterkilling.
 	        	for (int x = 0; x <= totalNumberOfTowers; x++) {

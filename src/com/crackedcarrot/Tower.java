@@ -79,7 +79,7 @@ public class Tower extends Sprite{
 	/**
 	 * Calculates special damage
 	 */
-	public double specialDamage(Creature tmpCreature) {
+	private double specialDamage(Creature tmpCreature) {
 		// if this is not the first tower that is hit. we dont 
 		// want to make maximum damage
 		boolean aoeTower = false;
@@ -132,10 +132,10 @@ public class Tower extends Sprite{
 	 * depending on the upgrade level and a random integer
 	 * so the damage wont be predictable during game play
 	 */
-	public void createProjectileDamage(){
+	private void createProjectileDamage(){
 		double damageFactor = specialDamage(null);
 		int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-		targetCreature.setHealth(targetCreature.getHealth() - randomInt);
+		targetCreature.damage(randomInt);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class Tower extends Sprite{
 	 * depending on the upgrade level and a random integer
 	 * so the damage wont be predictable during game play
 	 */
-	public void createProjectileAOEDamage(int nbrCreatures) {
+	private void createProjectileAOEDamage(int nbrCreatures) {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if (mCreatures[i] != targetCreature) {
 
@@ -152,7 +152,7 @@ public class Tower extends Sprite{
 					if(distance < this.rangeAOE){ // Is the creature within tower range?
 						double damageFactor = specialDamage(mCreatures[i]);
 						int thisDamage = (int)(this.aoeDamage*damageFactor);
-						mCreatures[i].setHealth(mCreatures[i].getHealth() - thisDamage);
+						mCreatures[i].damage(thisDamage);
 					}
 				}
 			}
@@ -166,7 +166,7 @@ public class Tower extends Sprite{
 	 * This method is only used by towers with direct aoe damage.
 	 * Not to be confused with towers that have projectiledamage
 	 */
-	public boolean createPureAOEDamage(int nbrCreatures){
+	private boolean createPureAOEDamage(int nbrCreatures){
 		int nbrOfHits = 0;
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
@@ -174,7 +174,7 @@ public class Tower extends Sprite{
 				if(distance < this.range){ 
 					double damageFactor = specialDamage(mCreatures[i]);
 					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
-					mCreatures[i].setHealth(mCreatures[i].getHealth() - randomInt);
+					mCreatures[i].damage(randomInt);
 					nbrOfHits++;
 				}
 			}
@@ -188,7 +188,7 @@ public class Tower extends Sprite{
 	 * the first creature in the list that is within the range of the tower 
 	 * @param null 
 	 */
-	public void trackEnemy(int nbrCreatures){
+	private void trackEnemy(int nbrCreatures){
 		targetCreature = null;
 		double lastCreatureDistance = Double.MAX_VALUE;
 		
@@ -295,9 +295,9 @@ public class Tower extends Sprite{
 		    		if (this.towerType == this.PROJECTILEAOE){
 				    	this.createProjectileAOEDamage(nbrCreatures);
 		    		}
-		    		if (targetCreature.getHealth() <= 0) {
+/*		    		if (targetCreature.getHealth() <= 0) {
 		    			targetCreature.die();
-		    		}
+		    		}*/
     			}
     			else {
         			double radian = Math.atan2(yDistance, xDistance);

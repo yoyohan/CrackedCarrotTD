@@ -10,5 +10,36 @@ public class Level extends Creature {
     public Level(int resourceId){
 		super(resourceId);
 	}
+    public int getHealth() {
+		return health;
+	}
+	
+	public void setHealth(int health){
+		this.health = health;
+	}
+	
+	public void setVelocity(int velocity){
+		this.velocity = velocity;
+	}
+	
+	public void setGoldValue(int goldValue) {
+		this.goldValue = goldValue;
+	}
+
+	public void setCreatureFast(boolean creatureFast) {
+		this.creatureFast = creatureFast;
+	}
+
+	public void setCreatureFrostResistant(boolean creatureFrostResistant) {
+		this.creatureFrostResistant = creatureFrostResistant;
+	}
+	
+	public void setCreatureFireResistant(boolean creatureFireResistant) {
+		this.creatureFireResistant = creatureFireResistant;
+	}
+
+	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
+		this.creaturePoisonResistant = creaturePoisonResistant;
+	}
     
 }

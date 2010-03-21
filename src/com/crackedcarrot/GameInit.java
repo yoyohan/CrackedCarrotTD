@@ -169,10 +169,6 @@ public class GameInit extends Activity {
         else
         	gameMap = mapLoad.readLevel("level3");
 
-        //Load the creature waves and apply the correct difficulty
-        WaveLoader waveLoad = new WaveLoader(this,res);
-        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
-
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 2) {
@@ -184,6 +180,10 @@ public class GameInit extends Activity {
         else {
         	p = new Player(difficulty, 60, 100, 1000);
         }
+        
+      //Load the creature waves and apply the correct difficulty
+        WaveLoader waveLoad = new WaveLoader(this,res);
+        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this,res);
