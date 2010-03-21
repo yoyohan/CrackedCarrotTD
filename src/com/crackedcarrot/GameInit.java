@@ -75,7 +75,7 @@ public class GameInit extends Activity {
         healthProgressBar.setMax(healthProgress);
         healthProgressBar.setProgress(healthProgress);
         healthProgressBar.setProgressChangeListener(new ProgressChangeListener(){
-        	@Override
+        	//@Override
         	public void progressUpdate(int health){
         		healthProgressBar.setProgress(health);
         	}
@@ -84,7 +84,7 @@ public class GameInit extends Activity {
         /** Create the TextView showing number of enemies left and add a listener to it */
         nrCreText = (NrCreTextView) findViewById(R.id.nrEnemyLeft);
         nrCreText.setCreatureUpdateListener(new CreatureUpdateListener() {
-        	@Override
+        	//@Override
         	public void creatureUpdate(int number){
         		nrCreText.setText("" + number);
         	}

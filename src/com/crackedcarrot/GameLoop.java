@@ -1,11 +1,9 @@
 package com.crackedcarrot;
 
-import android.app.AlertDialog;
-import android.content.Context;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
-import android.os.Handler;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -230,10 +228,13 @@ public class GameLoop implements Runnable {
 	            player.timeUntilNextLevel = (int)(player.timeUntilNextLevel - mLastTime);	            
 
 	            //Calls the method that moves the creature.
-	            moveCreatures(timeDeltaSeconds,time);
+	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
+	        		this.remainingCreatures -= mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
+	        	}
 	            //Calls the method that handles the monsterkilling.
-	            killCreature(timeDeltaSeconds);
-	            
+	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
+	        		mTower[x].towerKillCreature(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);
+	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.health < 1) {
             		//If you have lost all your lives then the game ends.
@@ -261,44 +262,6 @@ public class GameLoop implements Runnable {
 	    }
     	Log.d("GAMETHREAD", "dead thread");
     }
-
-	/**
-	 * Will go through all of the creatures from this level and
-	 * calculate the movement. 
-	 * <p>
-	 * This method runs every loop the gameLoop takes. 
-	 *
-	 * @param  timeDeltaSeconds  	Time since last GameLoop lap 
-	 * @param  time	 				Time since this level started
-	 * @return      				void
-	 */
-    public void moveCreatures(float timeDeltaSeconds, long time) {
-    	// If the list of creatures is empty we will end this method
-    	//if (mCreatures == null) {
-    	//	return;
-    	//}
-    	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-    		this.remainingCreatures -= mCreatures[x].move(timeDeltaSeconds, time, gameSpeed);
-    	}
-    }
-
-	/**
-	 * Will go through all of the towews and try to find targets
-	 * <p>
-	 * This method runs every loop the gameLoop takes. 
-	 *
-	 * @param  timeDeltaSeconds  	Time since last GameLoop lap 
-	 * @return      				void
-	 */
-    public void killCreature(float timeDeltaSeconds) {
-    	// If the list of shots is empty we will end this method
-    	//if (mTower == null) {
-    	//	return;
-    	//}
-    	for (int x = 0; x <= totalNumberOfTowers; x++) {
-    		mTower[x].towerKillCreature(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);
-    	}
-	}
 
     public boolean createTower(Coords TowerPos, int towerType) {
 		if (mTTypes.length > towerType && totalNumberOfTowers < mTower.length) {
