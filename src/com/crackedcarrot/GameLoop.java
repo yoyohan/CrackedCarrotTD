@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
-import com.crackedcarrot.fileloader.TowerGrid;
 import com.crackedcarrot.menu.R;
 
 /**
@@ -28,7 +27,7 @@ public class GameLoop implements Runnable {
     private int lvlNbr;
     
     private Tower[] mTower;
-    private TowerGrid[][] mTowerGrid;
+    private Tower[][] mTowerGrid;
     private Tower[] mTTypes;
     private int totalNumberOfTowers = 0;
     private Shot[] mShots;
@@ -191,9 +190,14 @@ public class GameLoop implements Runnable {
 	    while(run){
 	    	// Tries to create a test tower
 	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
-	    	createTower(tmp,0);
+	    	boolean tt = createTower(tmp,0);
+	    	
 	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	createTower(tmp,1);
+	    	boolean ty = createTower(tmp,1);
+	    	
+	    	Log.d("TEST",""+tt);
+	    	Log.d("TESTA",""+ty);
+	    	
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
@@ -272,11 +276,10 @@ public class GameLoop implements Runnable {
 			int tmpx = tmpC.x;
 			int tmpy = tmpC.y;
 			
-			if (mTowerGrid[tmpx][tmpy].empty) {
+			if (mTowerGrid[tmpx][tmpy] != null && !mTowerGrid[tmpx][tmpy].draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
 				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement);
-				mTowerGrid[tmpx][tmpy].empty = false;
-				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
+				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				totalNumberOfTowers++;
 				return true;
 			}

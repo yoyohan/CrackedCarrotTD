@@ -8,7 +8,9 @@ import android.content.Context;
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
+import com.crackedcarrot.Tower;
 import com.crackedcarrot.Waypoints;
+import com.crackedcarrot.menu.R;
 
 
 /**
@@ -21,7 +23,7 @@ public class MapLoader {
 	private Scaler s;
 	private Waypoints wps;
 	private Sprite[] bckgrd;
-	private TowerGrid[][] twg;
+	private Tower[][] twg;
 
 	/**
 	 * Constructor 
@@ -32,10 +34,11 @@ public class MapLoader {
 	public MapLoader(Context context, Scaler s){
 		this.context = context;
 		this.s = s;
-		twg = new TowerGrid[8][11];
+		twg = new Tower[8][11];
 		for (int x = 0; x < twg.length; x++) {
 			for (int y = 0; y < twg[0].length; y++) {
-				twg[x][y] = new TowerGrid();
+				twg[x][y] = new Tower(R.drawable.tower1);
+				twg[x][y].draw = false;
 			}
 		}
 	}
@@ -112,7 +115,7 @@ public class MapLoader {
 						    	else if (cp.y < tmpgridy) {
 						    		cp.y = cp.y + 1;
 						    	}
-								twg[cp.x][cp.y].empty = false;
+								twg[cp.x][cp.y] = null;
 							}
 						}
 					}
