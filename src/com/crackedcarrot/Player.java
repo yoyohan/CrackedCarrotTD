@@ -43,4 +43,9 @@ public class Player {
 	public int getHealth() {
 		return health;
 	}
+
+	public int getDifficulty() {
+		return difficulty;
+	}
+
 }

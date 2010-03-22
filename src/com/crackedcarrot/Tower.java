@@ -10,72 +10,66 @@ public class Tower extends Sprite{
 	private Creature[] mCreatures;
 	
 	//different towertypes
-	public final int PROJECTILE = 0;
-	public final int PROJECTILEAOE = 1;
-	public final int PUREAOE = 2;
+	private final int PROJECTILEAOE = 1;
+	private final int PUREAOE = 2;
 	//towertype
-	public int towerType;
-	// The current level of a tower
-	public int level;
+	private int towerType;
 	// The current range of a tower
-	public float range;
+	private float range;
 	// The current AOE range of a tower
-	public float rangeAOE;
+	private float rangeAOE;
 	// Tower title
-	public String title;
+	private String title;
 	// Price for the tower
-	public int price;
+	private int price;
 	// Resell value if the tower is sold
-	public int resellPrice;
+	private int resellPrice;
 	// Minimum damage that this tower can inflict
-	public int minDamage;
+	private int minDamage;
 	// Maximum damage that this tower can inflict
-	public int maxDamage;
+	private int maxDamage;
 	// AOE damage
-	public int aoeDamage;
+	private int aoeDamage;
 	// Speed of the shots
-	public int velocity;
+	private int velocity;
 	// If the tower have frost damage
-	public boolean hasFrostDamage;
+	private boolean hasFrostDamage;
 	// If the tower have frost damage. How long?
-	public int frostTime;
+	private int frostTime;
 	// If the tower have fire damage
-	public boolean hasFireDamage;
+	private boolean hasFireDamage;
 	// If the tower have poison damage
-	public boolean hasPoisonDamage;
+	private boolean hasPoisonDamage;
 	// If the tower have poison damage, how mutch?
-	public int poisonDamage;
+	private int poisonDamage;
 	// If the tower have poison damage, how long?
-	public int poisonTime;
+	private int poisonTime;
 	// The first linked update for this tower
-	public int upgrade1;
+	private int upgrade1;
 	// The second linked update for this tower
-	public int upgrade2;
+	private int upgrade2;
 	// The type of shot related to this tower
 	public Shot relatedShot;
     // The time existing between each fired shot
-    public float coolDown;
+    private float coolDown;
     // The temporary variable representing the time existing between each fired shot
-    public float tmpCoolDown;
+    private float tmpCoolDown;
     // The current target creature
-    public Creature targetCreature;
+    private Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
     
-   
 	public Tower(int resourceId, Creature[] mCreatures, SoundManager soundManager){
 		super(resourceId);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		rand = new Random();
 	}
-    
-    
 	public Tower(int resourceId){
 		super(resourceId);
 		rand = new Random();
 	}
-
+	
 	/**
 	 * Calculates special damage
 	 */
@@ -93,8 +87,8 @@ public class Tower extends Sprite{
 		// Target is frost resistant?
 		if (!tmpCreature.creatureFrostResistant && this.hasFrostDamage) {
 			if (aoeTower)
-				tmpCreature.creatureFrozenTime = this.frostTime/2;
-			else 
+				tmpCreature.creatureFrozenTime = (this.frostTime/2);
+			else
 				tmpCreature.creatureFrozenTime = this.frostTime;
 		}
 		
@@ -113,7 +107,7 @@ public class Tower extends Sprite{
 			if (aoeTower) {
 				if (tmpPD > 0 && tmpPT > 0)
 					tmpED = (tmpPD * tmpPT) / (this.poisonTime/2);
-				tmpCreature.creaturePoisonTime = this.poisonTime/2;
+				tmpCreature.creaturePoisonTime = (this.poisonTime/2);
 				tmpCreature.creaturePoisonDamage = (int)(this.poisonDamage + tmpED);
 			} else {
 				if (tmpPD > 0 && tmpPT > 0)
@@ -206,43 +200,111 @@ public class Tower extends Sprite{
 			}
 		}
 	}
-	
+
+	/**
+	 * Method that places the tower related shot back to 
+	 * the start position
+	 */
 	public void resetShotCordinates() {
 		relatedShot.x = x + getWidth()/2;
 		relatedShot.y = y + getHeight()/2;	
 	}
-	
-	public void cloneTower(Tower clone) {
+
+	/**
+	 * Given all variable this method will create a exaxt copy of
+	 * another tower
+	 */
+	public void cloneTower(	
+				int resourceId,
+				int towerType,
+				float range,
+				float rangeAOE,
+				String title,
+				int price,
+				int resellPrice,
+				int minDamage,
+				int maxDamage,
+				int aoeDamage,
+				int velocity,
+				boolean hasFrostDamage,
+				int frostTime,
+				boolean hasFireDamage,
+				boolean hasPoisonDamage,
+				int poisonDamage,
+				int poisonTime,
+				int upgrade1,
+				int upgrade2,
+				float coolDown,
+				float width,
+				float height,
+				float relatedShotWidth,
+				float relatedShotHeight
+				){
+
+			this.setResourceId(resourceId);
+			this.towerType = towerType;
+			this.range = range;
+			this.rangeAOE = rangeAOE;
+			this.title = title;
+			this.price = price;
+			this.resellPrice = resellPrice;
+			this.minDamage = minDamage;
+			this.maxDamage = maxDamage;
+			this.aoeDamage = aoeDamage;
+			this.velocity = velocity;
+			this.hasFrostDamage = hasFrostDamage;
+			this.frostTime = frostTime;
+			this.hasFireDamage = hasFireDamage;
+			this.hasPoisonDamage = hasPoisonDamage;
+			this.poisonDamage = poisonDamage;
+			this.poisonTime = poisonTime;
+			this.upgrade1 = upgrade1;
+			this.upgrade2 = upgrade2;
+			this.coolDown = coolDown;
+			this.setWidth(width);
+			this.setHeight(height);
+			this.relatedShot.setWidth(relatedShotWidth);
+			this.relatedShot.setHeight(relatedShotHeight);
+
+	}
+
+	/**
+	 * Given a tower this method will create a new tower with the same
+	 * variables as the given one
+	 */
+	public void createTower(Tower clone, Coords towerPlacement) {
 		//Use the textureNames that we preloaded into the towerTypes at startup
-		this.setTextureName(clone.getTextureName());
-		this.relatedShot.setTextureName(clone.relatedShot.getTextureName());
-		this.setResourceId(clone.getResourceId());
-		this.coolDown = clone.coolDown;
-		this.setHeight(clone.getHeight());
-		this.setWidth(clone.getWidth());
-		this.level = clone.level;
-		this.maxDamage = clone.maxDamage;
-		this.minDamage = clone.minDamage;
-		this.price = clone.price;
-		this.range = clone.range;
-		this.resellPrice = clone.resellPrice;
-		this.hasFireDamage = clone.hasFireDamage;
-		this.hasFrostDamage = clone.hasFrostDamage;
-		this.frostTime = clone.frostTime;
-		this.hasPoisonDamage = clone.hasPoisonDamage;
-		this.poisonDamage = clone.poisonDamage;
-		this.poisonTime = clone.poisonTime;
-		this.title = clone.title;
-		this.upgrade1 = clone.upgrade1;
-		this.upgrade2 = clone.upgrade2;
-		this.velocity = clone.velocity;
-		this.rangeAOE = clone.rangeAOE;
-		this.aoeDamage = clone.aoeDamage;
-		this.towerType = clone.towerType;
-		this.draw = true; //Tower drawable
-		this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
-		this.relatedShot.setHeight(clone.relatedShot.getHeight());
-		this.relatedShot.setWidth(clone.relatedShot.getWidth());
+		this.cloneTower(
+				clone.getResourceId(),
+				clone.towerType,
+				clone.range,
+				clone.rangeAOE,
+				clone.title,
+				clone.price,
+				clone.resellPrice,
+				clone.minDamage,
+				clone.maxDamage,
+				clone.aoeDamage,
+				clone.velocity,
+				clone.hasFrostDamage,
+				clone.frostTime,
+				clone.hasFireDamage,
+				clone.hasPoisonDamage,
+				clone.poisonDamage,
+				clone.poisonTime,
+				clone.upgrade1,
+				clone.upgrade2,
+				clone.coolDown,
+				clone.getWidth(),
+				clone.getHeight(),
+		    	clone.relatedShot.getWidth(),
+		    	clone.relatedShot.getHeight()
+			);
+		
+		this.draw = true;
+		this.x = towerPlacement.x;
+		this.y = towerPlacement.y;
+		this.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
 	}
 
@@ -253,8 +315,12 @@ public class Tower extends Sprite{
 		// This code is used to display the AOE for a pure AOE shot. This is for testing.
 		if (this.towerType == this.PUREAOE) {
 			
-			if (this.tmpCoolDown <= this.coolDown/2)
+			if (this.tmpCoolDown <= this.coolDown/2) {
 				this.relatedShot.draw = false;
+			}
+			else {
+				this.relatedShot.scale = (coolDown/2)/tmpCoolDown;
+			}
 			
 			if (this.tmpCoolDown <= 0) {
 				if (this.createPureAOEDamage(nbrCreatures)) {
@@ -278,7 +344,7 @@ public class Tower extends Sprite{
     					this.relatedShot.draw = true;
     			}
 			}
-    		// if the creature is still alive or have not reached the goal
+			// if the creature is still alive or have not reached the goal
     		if (this.towerType != this.PUREAOE && this.relatedShot.draw && this.targetCreature.draw && this.targetCreature.opacity == 1.0) {
     			Creature targetCreature = this.targetCreature;
 
@@ -311,6 +377,4 @@ public class Tower extends Sprite{
     		}
 		}
 	}
-
-
 }

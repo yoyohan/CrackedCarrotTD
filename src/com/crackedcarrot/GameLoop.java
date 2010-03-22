@@ -164,7 +164,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (500/special)))/gameSpeed));
+    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (1000/special)))/gameSpeed));
 		}
 		try {
 			
@@ -193,7 +193,7 @@ public class GameLoop implements Runnable {
 	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
 	    	createTower(tmp,0);
 	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	createTower(tmp,0);
+	    	createTower(tmp,1);
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
@@ -273,11 +273,8 @@ public class GameLoop implements Runnable {
 			int tmpy = tmpC.y;
 			
 			if (mTowerGrid[tmpx][tmpy].empty) {
-				mTower[totalNumberOfTowers].cloneTower(mTTypes[towerType]);
-				Coords tmp = mScaler.getPosFromGrid(tmpx, tmpy);
-				mTower[totalNumberOfTowers].x = tmp.x;
-				mTower[totalNumberOfTowers].y = tmp.y;
-				mTower[totalNumberOfTowers].resetShotCordinates();//Same location of Shot as midpoint of Tower
+				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
+				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement);
 				mTowerGrid[tmpx][tmpy].empty = false;
 				mTowerGrid[tmpx][tmpy].tower = totalNumberOfTowers;
 				totalNumberOfTowers++;

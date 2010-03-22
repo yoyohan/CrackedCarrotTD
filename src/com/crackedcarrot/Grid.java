@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import com.crackedcarrot.menu.R;
-
 public class Grid extends Sprite {
 	public Grid(int resourceId, Scaler s){
 		super(resourceId);

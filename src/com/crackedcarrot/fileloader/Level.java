@@ -10,7 +10,7 @@ public class Level extends Creature {
     public Level(int resourceId){
 		super(resourceId);
 	}
-    public int getHealth() {
+    public float getHealth() {
 		return health;
 	}
 	
@@ -32,20 +32,22 @@ public class Level extends Creature {
 
 	public void cloneCreature(Creature clone) {
 		clone.setResourceId(this.getResourceId());
-		clone.setDeadResourceId(this.mDeadResourceId);
-		clone.setDeadTextureName(this.mDeadTextureName);
+		clone.setDeadResourceId(this.getDeadResourceId());
+		clone.setDeadTextureName(this.getDeadTextureName());
 		clone.creatureFast = this.creatureFast;
 		clone.creatureFireResistant = this.creatureFireResistant;
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
 		clone.moveToWaypoint(0);
 		clone.setHealth(this.health);
-		clone.setNextWayPoint(this.getNextWayPoint());
+		clone.setNextWayPoint(1);
 		clone.setVelocity(this.velocity);
-		clone.setWidth(this.width);
-		clone.setHeight(this.height);
+		clone.setWidth(this.getWidth());
+		clone.setHeight(this.getHeight());
 		clone.setGoldValue(this.goldValue);
 		clone.draw = false;
 		clone.opacity = 1;
+		clone.creatureFrozenTime = 0;
+		clone.creaturePoisonTime = 0;
 	}	
 }
