@@ -15,18 +15,11 @@ public class Creature extends Sprite{
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
-    private int mDeadResourceId;
+    protected int mDeadResourceId;
     // SPRITE DEAD 
-	private int mDeadTextureName;
+	protected int mDeadTextureName;
     // The speed of the creature
     protected float velocity;
-    // The different directions for a creature
-    private static final int LEFT = 0;
-    private static final int RIGHT = 1;
-    private static final int UP = 2;
-    private static final int DOWN = 3;
-    // The current direction of the creature
-    private int direction;
     // Delay before spawning the creature to the map
     private long spawndelay;
     // How much gold this creature gives when it's killed.
@@ -63,30 +56,15 @@ public class Creature extends Sprite{
 		setNextWayPoint(getNextWayPoint() + 1);
 	}
 
-	public void cloneCreature(Creature clone) {
-		this.setResourceId(clone.getResourceId());
-		this.mDeadResourceId = clone.mDeadResourceId;
-		this.mDeadTextureName = clone.mDeadTextureName;
-		this.creatureFast = clone.creatureFast;
-		this.creatureFireResistant = clone.creatureFireResistant;
-		this.creatureFrostResistant = clone.creatureFrostResistant;
-		this.creaturePoisonResistant = clone.creaturePoisonResistant;
-		this.moveToWaypoint(0);
-		this.health = clone.health;
-		this.nextWayPoint = clone.getNextWayPoint();
-		this.velocity = clone.velocity;
-		this.width = clone.width;
-		this.height = clone.height;
-		this.goldValue = clone.goldValue;
-		this.draw = false;
-		this.opacity = 1;
-	}
-
 	public void damage(int dmg){
 		health -= dmg;
 		if(health <= 0){
 			die();
 		}
+	}
+	
+	public void setHealth(int health){
+		this.health = health;
 	}
 	
 	public void setSpawndelay(long spawndelay) {
@@ -101,6 +79,14 @@ public class Creature extends Sprite{
 		return mDeadResourceId;
 	}
 
+	public void setGoldValue(int goldValue) {
+		this.goldValue = goldValue;
+	}
+
+	public void setVelocity(float velocity){
+		this.velocity = velocity;
+	}
+	
 	public void setDeadTextureName(int mDeadTextureName) {
 		this.mDeadTextureName = mDeadTextureName;
 	}
@@ -143,42 +129,18 @@ public class Creature extends Sprite{
 	private void move(float movement){
 		Coords co = wayP[getNextWayPoint()];
 		
-		// Creature is moving left.
-		if(x > co.x){
-			this.direction = Creature.LEFT;
-			x -= movement;
-    		if(!(x > co.x)){
-    			x = co.x;
-    		}
-    	}
-		// Creature is moving right.
-		else if (x < co.x) {
-			this.direction = Creature.RIGHT;
-			x += movement;
-    		if(!(x < co.x)){
-    			x = co.x;
-    		}
-    	}
-		// Creature is moving down.
-		else if(y > co.y){
-			this.direction =  Creature.DOWN;
-			y -= movement;
-    		if(!(y > co.y)){
-    			y = co.y;
-    		}
-    	}
-		// Creature is moving up.
-    	else if (y < co.y) {
-    		this.direction = Creature.UP;
-    		y += movement;
-    		if(!(y < co.y)){
-    			y = co.y;
-    		}
-    	}
-		// Creature has reached a WayPoint. Update
-    	if (y == co.y && x == co.x){
+		float yDistance = co.y - this.y;
+		float xDistance = co.x - this.x;
+			
+		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
+			// We have reached our destination!!!
     		updateWayPoint();
-    	}
+		}
+		else {
+    		double radian = Math.atan2(yDistance, xDistance);
+    		this.x += Math.cos(radian) * movement;
+    		this.y += Math.sin(radian) * movement;
+		}
     	// Creature has reached is destination without being killed
     	if (getNextWayPoint() >= wayP.length){
     		score();

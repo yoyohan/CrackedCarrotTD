@@ -14,18 +14,6 @@ public class Level extends Creature {
 		return health;
 	}
 	
-	public void setHealth(int health){
-		this.health = health;
-	}
-	
-	public void setVelocity(int velocity){
-		this.velocity = velocity;
-	}
-	
-	public void setGoldValue(int goldValue) {
-		this.goldValue = goldValue;
-	}
-
 	public void setCreatureFast(boolean creatureFast) {
 		this.creatureFast = creatureFast;
 	}
@@ -41,5 +29,23 @@ public class Level extends Creature {
 	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
 		this.creaturePoisonResistant = creaturePoisonResistant;
 	}
-    
+
+	public void cloneCreature(Creature clone) {
+		clone.setResourceId(this.getResourceId());
+		clone.setDeadResourceId(this.mDeadResourceId);
+		clone.setDeadTextureName(this.mDeadTextureName);
+		clone.creatureFast = this.creatureFast;
+		clone.creatureFireResistant = this.creatureFireResistant;
+		clone.creatureFrostResistant = this.creatureFrostResistant;
+		clone.creaturePoisonResistant = this.creaturePoisonResistant;
+		clone.moveToWaypoint(0);
+		clone.setHealth(this.health);
+		clone.setNextWayPoint(this.getNextWayPoint());
+		clone.setVelocity(this.velocity);
+		clone.width = this.width;
+		clone.height = this.height;
+		clone.setGoldValue(this.goldValue);
+		clone.draw = false;
+		clone.opacity = 1;
+	}	
 }
