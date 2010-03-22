@@ -42,8 +42,8 @@ public class Level extends Creature {
 		clone.setHealth(this.health);
 		clone.setNextWayPoint(this.getNextWayPoint());
 		clone.setVelocity(this.velocity);
-		clone.width = this.width;
-		clone.height = this.height;
+		clone.setWidth(this.width);
+		clone.setHeight(this.height);
 		clone.setGoldValue(this.goldValue);
 		clone.draw = false;
 		clone.opacity = 1;

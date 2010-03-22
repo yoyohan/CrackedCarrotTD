@@ -30,15 +30,21 @@ public class Sprite {
     public float z;
     // Is the sprite going to be draw'd or not?
     public boolean draw = true;
-    // Opacity for this sprite.
+    // color and opacity and for this sprite.
+    public float r = 1.0f;
+    public float g = 1.0f;
+    public float b = 1.0f;
     public float opacity = 1.0f;
     // Size.
-    public float width;
-    public float height;
+    protected float width;
+    protected float height;
+    //Scale.
+    public float scale = 1.0f;
     // The OpenGL ES texture handle to draw.
     private int mTextureName;
     // The id of the original resource that mTextureName is based on.
     private int mResourceId;
+    //this field tracks the index of this sprite in the renders internal structures.
     
     public Sprite() {
     }
@@ -61,6 +67,22 @@ public class Sprite {
 
 	public int getTextureName() {
 		return mTextureName;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
+	public float getHeight() {
+		return height;
 	}
     
 }

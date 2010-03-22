@@ -44,7 +44,8 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
     GLint currTexture = -1;
     GLint prevTexture = -2;
 	GLSprite* currSprt = NULL;
-    
+	GLfloat r, g, b, a;
+	GLfloat scale;
 	/*GLfloat* vertBuffer;
 	GLfloat* texCoordBuffer;
 	GLushort* indexBuffer;
@@ -58,6 +59,12 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		if((*env)->GetBooleanField(env,renderSprites[i].object, renderSprites[i].draw)){
 			currSprt = &renderSprites[i];
 			bufferName = currSprt->bufferName;			
+			r = (*env)->GetFloatField(env, currSprt->object, currSprt->r);
+			g = (*env)->GetFloatField(env, currSprt->object, currSprt->g);
+			b = (*env)->GetFloatField(env, currSprt->object, currSprt->b);
+			a = (*env)->GetFloatField(env, currSprt->object, currSprt->opacity);
+			
+			scale = (*env)->GetFloatField(env, currSprt->object, currSprt->scale);
 			
 			currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 			if(currTexture == 0){
@@ -71,7 +78,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		
 			glPushMatrix();
 			glLoadIdentity();
-			glColor4f(1, 1, 1, (*env)->GetFloatField(env, currSprt->object, currSprt->opacity));
+			
+			glColor4f(r, g, b, a);
+			glScalef(scale,scale,1);
 			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
 						(*env)->GetFloatField(env, currSprt->object, currSprt->y),
 						(*env)->GetFloatField(env, currSprt->object, currSprt->z));
@@ -116,9 +125,5 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
-	
-}
-
-void Java_com_crackedcarrot_NativeRender_nativeUpdateSprite(JNIEnv* env, jobject thiz, jint spriteNo){
 	
 }

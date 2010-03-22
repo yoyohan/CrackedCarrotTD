@@ -45,10 +45,18 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->width = id;
 	id = (*env)->GetFieldID(env, class, "height", "F");
 	thisSprite->height = id;
+	id = (*env)->GetFieldID(env, class, "scale", "F");
+	thisSprite->scale = id;
 	
 	id = (*env)->GetFieldID(env, class, "draw", "Z");
 	thisSprite->draw = id;
 	
+	id = (*env)->GetFieldID(env, class, "r", "F");
+	thisSprite->r = id;
+	id = (*env)->GetFieldID(env, class, "g", "F");
+	thisSprite->g = id;
+	id = (*env)->GetFieldID(env, class, "b", "F");
+	thisSprite->b = id;
 	id = (*env)->GetFieldID(env, class, "opacity", "F");
 	thisSprite->opacity = id;
 	
