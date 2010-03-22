@@ -36,8 +36,8 @@ public class Sprite {
     public float b = 1.0f;
     public float opacity = 1.0f;
     // Size.
-    private float width;
-    private float height;
+    protected float width;
+    protected float height;
     //Scale.
     public float scale = 1.0f;
     // The OpenGL ES texture handle to draw.

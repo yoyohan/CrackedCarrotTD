@@ -159,7 +159,7 @@ public class GameLoop implements Runnable {
 		for (int z = 0; z < remainingCreatures; z++) {
 			reverse--;
 			// The following line is used to add the following wave of creatures to the list of creatures.
-			mCreatures[z].cloneCreature(mLvl[lvlNbr]);
+			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
     		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
