@@ -58,6 +58,7 @@ public class Creature extends Sprite{
 
 	public void damage(int dmg){
 		health -= dmg;
+		GL.updateCreatureProgress(dmg);
 		if(health <= 0){
 			die();
 		}
@@ -121,9 +122,10 @@ public class Creature extends Sprite{
 		setTextureName(this.mDeadTextureName);
 		this.opacity -= 0.1f;
 		player.addMoney(this.goldValue);
-		GL.subtractCreature(1);
 		// play died1.mp3
 		soundManager.playSound(10);
+		//we dont remove the creature from the gameloop just yet
+		//that is done when it has faded completely, see the fade method.
 	}
 	
 	private void move(float movement){
@@ -175,6 +177,8 @@ public class Creature extends Sprite{
 		this.opacity -= reduceOpacity;
 		if (opacity <= 0.0f) {
 			draw = false;
+			//The creature is now completely gone from the map, tell the loop.
+			GL.subtractCreature(1);
 		}
 	}
 	

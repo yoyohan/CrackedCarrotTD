@@ -23,7 +23,7 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private int remainingCreatures;
     private int startNrCreatures;
-
+    private int totalCreatureHealth;
     private Level[] mLvl;
     private int lvlNbr;
     
@@ -153,6 +153,7 @@ public class GameLoop implements Runnable {
     	
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
+    	totalCreatureHealth = mLvl[lvlNbr].health * remainingCreatures;
     	startNrCreatures = remainingCreatures;
     	//Need to reverse the list for to draw correctly.
     	int reverse = remainingCreatures; 
@@ -295,11 +296,14 @@ public class GameLoop implements Runnable {
 				NrCreTextView.listener.creatureUpdate(remainingCreatures);
 			}
 		});
-		
-		// Update the status, displaying total health of all creatures
+    }
+    
+    public void updateCreatureProgress(int dmg){
+    	// Update the status, displaying total health of all creatures
+    	this.totalCreatureHealth -= dmg;
 		updateHealthHandler.post(new Runnable(){
 			public void run(){
-				HealthProgressBar.proChangeListener.progressUpdate(((100*remainingCreatures)/startNrCreatures));
+				HealthProgressBar.proChangeListener.progressUpdate((100 * totalCreatureHealth) / (mLvl[lvlNbr].getHealth() * startNrCreatures));
 			}
 		});
     }

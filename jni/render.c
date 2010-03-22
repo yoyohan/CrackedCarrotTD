@@ -82,8 +82,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			glColor4f(r, g, b, a);
 			glScalef(scale,scale,1);
 			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
-						(*env)->GetFloatField(env, currSprt->object, currSprt->y),
-						(*env)->GetFloatField(env, currSprt->object, currSprt->z));
+						(*env)->GetFloatField(env, currSprt->object, currSprt->y), 1);
 		
 			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 			glVertexPointer(3, GL_FLOAT, 0, 0);
