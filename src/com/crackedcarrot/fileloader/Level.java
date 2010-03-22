@@ -41,5 +41,17 @@ public class Level extends Creature {
 	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
 		this.creaturePoisonResistant = creaturePoisonResistant;
 	}
+	
+	public void setDeadResourceId(int mDeadResourceId) {
+		this.mDeadResourceId = mDeadResourceId;
+	}
+    
+	public int getDeadResourceId() {
+		return mDeadResourceId;
+	}
+	
+	public void setDeadTextureName(int mDeadTextureName) {
+		this.mDeadTextureName = mDeadTextureName;
+	}
     
 }

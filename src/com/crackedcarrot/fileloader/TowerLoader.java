@@ -89,8 +89,8 @@ public class TowerLoader {
 			            	// Tower size
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
-			            	tmpTwr.width = recalc.getX();
-			            	tmpTwr.height = recalc.getX();
+			            	tmpTwr.setWidth(recalc.getX());
+			            	tmpTwr.setHeight(recalc.getX());
 			            }			            
 			            else if (tmpCount == 7) {
 			            	// Tower price
@@ -195,8 +195,8 @@ public class TowerLoader {
 			            	// Shot size
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
-			            	tmpTwr.relatedShot.width = recalc.getX();
-			            	tmpTwr.relatedShot.height = recalc.getX();
+			            	tmpTwr.relatedShot.setWidth(recalc.getX());
+			            	tmpTwr.relatedShot.setHeight(recalc.getX());
 			            	towerList[twrNbr] = tmpTwr;
 			            	twrNbr++;
 			            	tmpCount = 0;

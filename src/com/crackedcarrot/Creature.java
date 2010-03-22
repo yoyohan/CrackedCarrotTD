@@ -15,9 +15,9 @@ public class Creature extends Sprite{
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
-    private int mDeadResourceId;
+    protected int mDeadResourceId;
     // SPRITE DEAD 
-	private int mDeadTextureName;
+	protected int mDeadTextureName;
     // The speed of the creature
     protected float velocity;
     // The different directions for a creature
@@ -75,8 +75,8 @@ public class Creature extends Sprite{
 		this.health = clone.health;
 		this.nextWayPoint = clone.getNextWayPoint();
 		this.velocity = clone.velocity;
-		this.width = clone.width;
-		this.height = clone.height;
+		this.setWidth(clone.getWidth());
+		this.setHeight(clone.getHeight());
 		this.goldValue = clone.goldValue;
 		this.draw = false;
 		this.opacity = 1;
@@ -91,18 +91,6 @@ public class Creature extends Sprite{
 	
 	public void setSpawndelay(long spawndelay) {
 		this.spawndelay = spawndelay;
-	}
-	
-	public void setDeadResourceId(int mDeadResourceId) {
-		this.mDeadResourceId = mDeadResourceId;
-	}
-    
-	public int getDeadResourceId() {
-		return mDeadResourceId;
-	}
-
-	public void setDeadTextureName(int mDeadTextureName) {
-		this.mDeadTextureName = mDeadTextureName;
 	}
 
 	public boolean isCreatureFast() {

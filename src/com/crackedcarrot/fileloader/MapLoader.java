@@ -77,8 +77,8 @@ public class MapLoader {
 						Sprite background = new Sprite(resID);
 						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
 				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
-				        background.width = s.getScreenResolutionX();
-				        background.height = s.getScreenResolutionY();
+				        background.setWidth(s.getScreenResolutionX());
+				        background.setHeight(s.getScreenResolutionY());
 				        bckgrd = new Sprite[1];
 				        bckgrd[0] = background;
 					}

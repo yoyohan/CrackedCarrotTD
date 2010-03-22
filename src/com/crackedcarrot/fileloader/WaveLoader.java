@@ -85,8 +85,8 @@ public class WaveLoader {
 			            else if (tmpCount == 4) {
 			            	tmpStr = buf.split("::");
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
-			            	tmpLvl.width = recalc.getX();
-			            	tmpLvl.height = recalc.getX();
+			            	tmpLvl.setWidth(recalc.getX());
+			            	tmpLvl.setHeight(recalc.getX());
 			            }
 			            else if (tmpCount == 5) {
 			            	tmpStr = buf.split("::");

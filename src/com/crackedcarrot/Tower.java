@@ -208,8 +208,8 @@ public class Tower extends Sprite{
 	}
 	
 	public void resetShotCordinates() {
-		relatedShot.x = x + width/2;
-		relatedShot.y = y + height/2;	
+		relatedShot.x = x + getWidth()/2;
+		relatedShot.y = y + getHeight()/2;	
 	}
 	
 	public void cloneTower(Tower clone) {
@@ -218,8 +218,8 @@ public class Tower extends Sprite{
 		this.relatedShot.setTextureName(clone.relatedShot.getTextureName());
 		this.setResourceId(clone.getResourceId());
 		this.coolDown = clone.coolDown;
-		this.height = clone.height;
-		this.width = clone.width;
+		this.setHeight(clone.getHeight());
+		this.setWidth(clone.getWidth());
 		this.level = clone.level;
 		this.maxDamage = clone.maxDamage;
 		this.minDamage = clone.minDamage;
@@ -241,8 +241,8 @@ public class Tower extends Sprite{
 		this.towerType = clone.towerType;
 		this.draw = true; //Tower drawable
 		this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
-		this.relatedShot.height = clone.relatedShot.height;
-		this.relatedShot.width = clone.relatedShot.width;
+		this.relatedShot.setHeight(clone.relatedShot.getHeight());
+		this.relatedShot.setWidth(clone.relatedShot.getWidth());
 		this.relatedShot.draw = false;
 	}
 
@@ -261,8 +261,8 @@ public class Tower extends Sprite{
 					soundManager.playSound(0);
 					this.tmpCoolDown = this.coolDown;
 					this.relatedShot.draw = true;
-		    		this.relatedShot.x = this.x + this.width/2 - this.relatedShot.width/2;
-		    		this.relatedShot.y = this.y + this.height/2 - this.relatedShot.height/2;
+		    		this.relatedShot.x = this.x + this.getWidth()/2 - this.relatedShot.getWidth()/2;
+		    		this.relatedShot.y = this.y + this.getHeight()/2 - this.relatedShot.getHeight()/2;
 				}
 			}
 		}
@@ -282,8 +282,8 @@ public class Tower extends Sprite{
     		if (this.towerType != this.PUREAOE && this.relatedShot.draw && this.targetCreature.draw && this.targetCreature.opacity == 1.0) {
     			Creature targetCreature = this.targetCreature;
 
-    			float yDistance = (targetCreature.y+(targetCreature.height/2)) - this.relatedShot.y;
-    			float xDistance = (targetCreature.x+(targetCreature.width/2)) - this.relatedShot.x;
+    			float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y;
+    			float xDistance = (targetCreature.x+(targetCreature.getWidth()/2)) - this.relatedShot.x;
     			double xyMovement = (this.velocity * timeDeltaSeconds * gameSpeed);
     			
     			if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
