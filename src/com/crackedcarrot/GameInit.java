@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ProgressBar;
-
 import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
 import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.fileloader.Level;
@@ -33,7 +31,7 @@ public class GameInit extends Activity {
     private int healthProgress = 100;
     private NrCreTextView nrCreText;    
     
-    private int highlightIcon = R.drawable.map_choose;
+    //private int highlightIcon = R.drawable.map_choose;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -171,26 +169,21 @@ public class GameInit extends Activity {
         else
         	gameMap = mapLoad.readLevel("level3");
 
-        //Load the creature waves and apply the correct difficulty
-        WaveLoader waveLoad = new WaveLoader(this,res);
-        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
-
         //Define player specific variables depending on difficulty.
-        Player p = new Player();
-        p.difficulty = difficulty;
+        Player p;
         if (difficulty == 2) {
-        	p.health = 50;
-        	p.timeBetweenLevels = 1000;
+        	p = new Player(difficulty, 50, 100, 1000);
         }
-        if (difficulty == 1) {
-        	p.health = 40;
-        	p.timeBetweenLevels = 1000;
+        else if (difficulty == 1) {
+        	p = new Player(difficulty, 40, 100, 1000);
         }
         else {
-        	p.health = 60;
-        	p.timeBetweenLevels = 1000;
+        	p = new Player(difficulty, 60, 100, 1000);
         }
-       	p.money      = 100;
+        
+      //Load the creature waves and apply the correct difficulty
+        WaveLoader waveLoad = new WaveLoader(this,res);
+        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this,res);

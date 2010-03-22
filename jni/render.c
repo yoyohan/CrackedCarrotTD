@@ -115,6 +115,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATE", "The surface has been created.");
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
+	
+}
+
+void Java_com_crackedcarrot_NativeRender_nativeUpdateSprite(JNIEnv* env, jobject thiz, jint spriteNo){
 	
 }

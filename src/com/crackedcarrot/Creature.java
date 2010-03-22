@@ -11,7 +11,7 @@ public class Creature extends Sprite{
 	//Waypoints for this creature
 	private Coords[] wayP; 
     // A creatures health
-    private int health;
+    protected int health;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -19,7 +19,7 @@ public class Creature extends Sprite{
     // SPRITE DEAD 
 	private int mDeadTextureName;
     // The speed of the creature
-    private float velocity;
+    protected float velocity;
     // The different directions for a creature
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
@@ -30,7 +30,9 @@ public class Creature extends Sprite{
     // Delay before spawning the creature to the map
     private long spawndelay;
     // How much gold this creature gives when it's killed.
-    private int goldValue;
+    protected int goldValue;
+    //Ref to gameloop that runs this creature.
+    private GameLoop GL;
     // Creature special abilty
     public boolean creatureFast;
     public boolean creatureFrostResistant;
@@ -41,13 +43,14 @@ public class Creature extends Sprite{
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
     
-	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP){
+	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
 		super(resourceId);
 		this.draw = false;
 		this.player = player;
 		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
+		this.GL = loop;
 	}
 	
 	//This is only used by the level constructor.
@@ -71,42 +74,29 @@ public class Creature extends Sprite{
 		this.moveToWaypoint(0);
 		this.health = clone.health;
 		this.nextWayPoint = clone.getNextWayPoint();
-		this.velocity = clone.getVelocity();
+		this.velocity = clone.velocity;
 		this.width = clone.width;
 		this.height = clone.height;
-		this.goldValue =clone.getGoldValue();
+		this.goldValue = clone.goldValue;
 		this.draw = false;
 		this.opacity = 1;
 	}
-	
-	public float getVelocity() {
-		return velocity;
-	}
 
-	public void setVelocity(float velocity) {
-		this.velocity = velocity;
-	}
-
-	public void setHealth(int health) {
-		this.health = health;
-	}
-
-	public int getHealth() {
-		return health;
-	}
-
-	public int getDirection() {
-		return direction;
+	public void damage(int dmg){
+		health -= dmg;
+		if(health <= 0){
+			die();
+		}
 	}
 	
 	public void setSpawndelay(long spawndelay) {
 		this.spawndelay = spawndelay;
 	}
-
+	
 	public void setDeadResourceId(int mDeadResourceId) {
 		this.mDeadResourceId = mDeadResourceId;
 	}
-
+    
 	public int getDeadResourceId() {
 		return mDeadResourceId;
 	}
@@ -115,128 +105,124 @@ public class Creature extends Sprite{
 		this.mDeadTextureName = mDeadTextureName;
 	}
 
-	public int getGoldValue() {
-		return goldValue;
-	}
-
-	public void setGoldValue(int goldValue) {
-		this.goldValue = goldValue;
-	}
-
-	public void setCreatureFast(boolean creatureFast) {
-		this.creatureFast = creatureFast;
-	}
-
-	public void setCreatureFrostResistant(boolean creatureFrostResistant) {
-		this.creatureFrostResistant = creatureFrostResistant;
-	}
-
 	public boolean isCreatureFast() {
 		return creatureFast;
 	}
 
-	public void setCreatureFireResistant(boolean creatureFireResistant) {
-		this.creatureFireResistant = creatureFireResistant;
-	}
-
-	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
-		this.creaturePoisonResistant = creaturePoisonResistant;
-	}
-
-	public int move(float timeDeltaSeconds, long time, int gameSpeed){
+	public void update(float timeDeltaSeconds, long time, int gameSpeed){
+	
 		//Time to spawn.
-		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y) {
+		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y)
 			draw = true;
-		}	            	
-		// If the creature is living start movement calculations.
-		if (draw && opacity == 1.0f) {
-    		Coords co = wayP[getNextWayPoint()];
-    		// If creature has been shot by an frost tower we will force it to walk slower
-    		int slowAffected = 1;
-    		if (creatureFrozenTime > 0) {
-	    		slowAffected = 2;
-	    		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
-    		}
-    		// If creature has been shot by a poison tower we slowly reduce creature health
-    		if (creaturePoisonTime > 0) {
-    			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
-    			health = ((int)(this.health - (timeDeltaSeconds * creaturePoisonDamage)));	    		
-		    	// Have the creature died?
-    		}
-    		
-    		if (this.health <= 0) {
-    			creatureDied();
-    		}
-    		
-    		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
-    		
-    		// Creature is moving left.
-			if(x > co.x){
-				this.direction = Creature.LEFT;
-				x = x - movement;
-	    		if(!(x > co.x)){
-	    			x = co.x;
-	    		}
-	    	}
-    		// Creature is moving right.
-			else if (x < co.x) {
-				this.direction = Creature.RIGHT;
-				x = x + movement;
-	    		if(!(x < co.x)){
-	    			x = co.x;
-	    		}
-	    	}
-    		// Creature is moving down.
-			else if(y > co.y){
-				this.direction =  Creature.DOWN;
-				y = y - movement;
-	    		if(!(y > co.y)){
-	    			y = co.y;
-	    		}
-	    	}
-    		// Creature is moving up.
-	    	else if (y < co.y) {
-	    		this.direction = Creature.UP;
-	    		y = y + movement;
-	    		if(!(y < co.y)){
-	    			y = co.y;
-	    		}
-	    	}
-			// Creature has reached a WayPoint. Update
-	    	if (y == co.y && x == co.x){
-	    		updateWayPoint();
-	    	}
-	    	// Creature has reached is destination without being killed
-	    	if (getNextWayPoint() >= wayP.length){
-	    		draw = false;
-	    		player.health --;
-	    		//The creature exited the screen, return 1.
-	    		return 1;
-	    	}
-	    	
-	    	// Creature is dead and fading...
-		} else if (draw && opacity > 0.0f) {
-				// If we divide by 10 the creature stays on the screen a while longer...
-			opacity = opacity - (timeDeltaSeconds/10 * gameSpeed);
-			if (opacity <= 0.0f) {
-				draw = false;
-	    		//The creature died, return 1.
-				return 1;
-			}
+		
+		//If still alive move the creature.
+		float movement = 0;
+		if (draw && health > 0) {
+			// If the creature is living calculate tower effects.
+			movement = applyEffects(timeDeltaSeconds, gameSpeed);
 		}
-		//Still alive and on the screen.
-		return 0;
+		
+		if(health > 0){
+			move(movement);
+		}
+	    // Creature is dead and fading...
+		else if (draw && health <= 0) {
+			fade(timeDeltaSeconds/10 * gameSpeed);
+		}
 	}
 	
-	public void creatureDied() {
+	private void die() {
 		setTextureName(this.mDeadTextureName);
-		opacity = opacity - 0.1f;
-		player.money = player.money + goldValue;
+		this.opacity -= 0.1f;
+		player.addMoney(this.goldValue);
+		GL.subtractCreature(1);
 		// play died1.mp3
 		soundManager.playSound(10);
 	}
 	
-	public void SetWayPoint(Coords[] waypoints){
+	private void move(float movement){
+		Coords co = wayP[getNextWayPoint()];
+		
+		// Creature is moving left.
+		if(x > co.x){
+			this.direction = Creature.LEFT;
+			x -= movement;
+    		if(!(x > co.x)){
+    			x = co.x;
+    		}
+    	}
+		// Creature is moving right.
+		else if (x < co.x) {
+			this.direction = Creature.RIGHT;
+			x += movement;
+    		if(!(x < co.x)){
+    			x = co.x;
+    		}
+    	}
+		// Creature is moving down.
+		else if(y > co.y){
+			this.direction =  Creature.DOWN;
+			y -= movement;
+    		if(!(y > co.y)){
+    			y = co.y;
+    		}
+    	}
+		// Creature is moving up.
+    	else if (y < co.y) {
+    		this.direction = Creature.UP;
+    		y += movement;
+    		if(!(y < co.y)){
+    			y = co.y;
+    		}
+    	}
+		// Creature has reached a WayPoint. Update
+    	if (y == co.y && x == co.x){
+    		updateWayPoint();
+    	}
+    	// Creature has reached is destination without being killed
+    	if (getNextWayPoint() >= wayP.length){
+    		score();
+    	}
+	}
+	
+	private float applyEffects(float timeDeltaSeconds, float gameSpeed){
+		int slowAffected = 1;
+		if (creatureFrozenTime > 0) {
+    		slowAffected = 2;
+    		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
+		}
+		// If creature has been shot by a poison tower we slowly reduce creature health
+		if (creaturePoisonTime > 0) {
+			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
+			health = ((int)(this.health - (timeDeltaSeconds * creaturePoisonDamage)));	    		
+	    	// Have the creature died?
+		}
+  
+		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
+		
+		if (health <= 0) {
+   			die();
+   			movement = 0;
+   		}
+		
+		return movement;
+		
+	}
+	
+	private void fade(float reduceOpacity){
+		this.opacity -= reduceOpacity;
+		if (opacity <= 0.0f) {
+			draw = false;
+		}
+	}
+	
+	private void score(){
+		draw = false;
+		player.damage(1);
+		GL.subtractCreature(1);
+	}
+	
+	public void SetWayPoints(Coords[] waypoints){
 		this.wayP = waypoints;
 	}
 	
