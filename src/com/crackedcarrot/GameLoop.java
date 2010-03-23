@@ -365,10 +365,6 @@ public class GameLoop implements Runnable {
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-    	Log.d("LOGGA","1::"+currentCreatureHealth);
-    	Log.d("LOGGA","2::"+startCreatureHealth);
-    	Log.d("LOGGA","3::"+(currentCreatureHealth/startCreatureHealth));
-    	Log.d("LOGGA","4::"+(dmg));
     	updateHealthHandler.post(new Runnable(){
 			public void run(){
 				HealthProgressBar.proChangeListener.progressUpdate((int)(100*(currentCreatureHealth/startCreatureHealth)));

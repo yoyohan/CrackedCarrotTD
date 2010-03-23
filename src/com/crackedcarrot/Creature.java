@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
 
 /**
 * Class defining creature in the game
@@ -61,15 +60,9 @@ public class Creature extends Sprite{
 	}
 
 	public void damage(float dmg){
-
 		dmg = health >= dmg ? dmg : health; 
 		health -= dmg;
-		
-		Log.d("LOGGA", "###############");
-		Log.d("LOGGA", "11::"+dmg);
-		Log.d("LOGGA", "22::"+dmg);
 		GL.updateCreatureProgress(dmg);
-
 		if(health <= 0){
 			die();
 		} 
