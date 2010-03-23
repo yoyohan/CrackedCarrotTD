@@ -21,9 +21,10 @@ import android.util.Log;
 public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public	static final int BACKGROUND = 0;
-	public 	static final int CREATURE	= 1;
-	public	static final int TOWER		= 2;
-	public 	static final int SHOT		= 3;
+	public 	static final int SHOT		= 1;
+	public 	static final int CREATURE	= 2;
+	public  static final int GRID		= 3;
+	public	static final int TOWER		= 4;
 
 	private static native void nativeAlloc(int n, Sprite s);
 	private static native void nativeDataPoolSize(int size);
@@ -36,7 +37,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private Semaphore lock1 = new Semaphore(0);
     private Semaphore lock2 = new Semaphore(0);
     
-	private Sprite[][] sprites = new Sprite[4][];
+	private Sprite[][] sprites = new Sprite[5][];
 	private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;
@@ -282,7 +283,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
 
-            gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_REPLACE);
+            gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
 
             InputStream is = context.getResources().openRawResource(resourceId);
             Bitmap bitmap;
@@ -297,14 +298,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
             }
 
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-
             mCropWorkspace[0] = 0;
             mCropWorkspace[1] = bitmap.getHeight();
             mCropWorkspace[2] = bitmap.getWidth();
             mCropWorkspace[3] = -bitmap.getHeight();
-            
             bitmap.recycle();
-
             ((GL11) gl).glTexParameteriv(GL10.GL_TEXTURE_2D, 
                     GL11Ext.GL_TEXTURE_CROP_RECT_OES, mCropWorkspace, 0);
 

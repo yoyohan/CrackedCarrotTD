@@ -17,10 +17,11 @@ typedef struct {
 	enum spriteType type;
 	
     jobject object;
-    jfieldID width, height;
+    jfieldID width, height, scale;
     jfieldID x, y, z;
 	jfieldID draw;
     jfieldID textureName;
+	jfieldID r, g, b, opacity;
 	
 	
 	GLsizeiptr vertBufSize;
@@ -57,3 +58,4 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env, jobject
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, jobject thiz, jint spriteNO, jobject sprite);
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env);
 void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName);
+void Java_com_crackedcarrot_NativeRender_nativeUpdateSprite(JNIEnv* env, jobject thiz, jint spriteNo);

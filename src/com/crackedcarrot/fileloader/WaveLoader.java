@@ -68,63 +68,58 @@ public class WaveLoader {
 						levelList = new Level[Integer.parseInt(tmpStr[1].trim())];
 					}
 					else{
-			            tmpCount++;
-			            if (tmpCount == 1) {
+						tmpCount++;
+		            	if (tmpCount != 1)
+		            			tmpStr = buf.split("::");
+		            			
+						switch (tmpCount) {
+						case 1:
 				        	// Do nothing. This line contains wave info
-				        }
-			            else if (tmpCount == 2) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 2:
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	tmpLvl = new Level(resID);
-			            }
-			            else if (tmpCount == 3) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 3:
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	tmpLvl.setDeadResourceId(resID);
-			            }
-			            else if (tmpCount == 4) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 4:
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
-			            	tmpLvl.width = recalc.getX();
-			            	tmpLvl.height = recalc.getX();
-			            }
-			            else if (tmpCount == 5) {
-			            	tmpStr = buf.split("::");
+			            	tmpLvl.setWidth(recalc.getX());
+			            	tmpLvl.setHeight(recalc.getX());
+							break;
+						case 5:
 			            	tmpLvl.setHealth(Integer.parseInt(tmpStr[1].trim()));
 			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
-			            }
-			            else if (tmpCount == 6) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 6:
 			            	tmpLvl.setCreatureFast(Boolean.parseBoolean(tmpStr[1].trim()));
 			            	// I will put velocity here
-			            	Coords recalc = scaler.scale(30,0);
+			            	recalc = scaler.scale(30,0);
 			        		if (tmpLvl.isCreatureFast())
 				            	tmpLvl.setVelocity(recalc.getX()* 2);
 			        		else tmpLvl.setVelocity(recalc.getX());
-			            }
-			            else if (tmpCount == 7) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 7:
 			            	tmpLvl.setCreatureFireResistant(Boolean.parseBoolean(tmpStr[1].trim()));
-			            }
-			            else if (tmpCount == 8) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 8:
 			            	tmpLvl.setCreatureFrostResistant(Boolean.parseBoolean(tmpStr[1].trim()));
-			            }
-			            else if (tmpCount == 9) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 9:
 			            	tmpLvl.setCreaturePoisonResistant(Boolean.parseBoolean(tmpStr[1].trim()));
-			            }
-			            else if (tmpCount == 10) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 10:
 			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
-			            }
-			            else if (tmpCount == 11) {
-			            	tmpStr = buf.split("::");
+							break;
+						case 11:
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;
 			            	tmpCount = 0;
-			            }
+							break;
+						}
 					}
 					buf = "";
 				}
