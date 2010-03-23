@@ -13,11 +13,11 @@ maxDamage::50
 Shot-velocity::250
 cooldown between shots::2
 hasFrostDamage::true
-frostTime(sec)::6
+frostTime(sec)::5
 hasFireDamage::false
 hasPoisonDamage::false
-poisonDamage(per sec)::5
-poisonTime(sec)::4
+poisonDamage(per sec)::0
+poisonTime(sec)::0
 0-projectile,1-projectileAOE,2-AOE::1
 upgradelink1::1
 upgradelink2::-1
@@ -30,26 +30,26 @@ Shot size::8
 // AOE tower
 ////////////////////////////////////
 texture::tower1
-title::Cannon tower FROST
+title::AOE tower POSION
 size::60
 price::10
 resell value::8
-minDamage::20
-maxDamage::50
+minDamage::1
+maxDamage::5
 Shot-velocity::250
-cooldown between shots::2
+cooldown between shots::5
 hasFrostDamage::false
 frostTime(sec)::0
 hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
+hasPoisonDamage::true
+poisonDamage(per sec)::5
+poisonTime(sec)::5
 0-projectile,1-projectileAOE,2-AOE::2
 upgradelink1::1
 upgradelink2::-1
-range::150
+range::100
 aoe range:: 0
 aoe damage::0 
 Shot texture::cannonball
-Shot size::300
+Shot size::200
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

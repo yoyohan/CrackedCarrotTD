@@ -2,6 +2,7 @@ package com.crackedcarrot.fileloader;
 
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
+import com.crackedcarrot.Tower;
 import com.crackedcarrot.Waypoints;
 
 /**
@@ -10,7 +11,7 @@ import com.crackedcarrot.Waypoints;
 public class Map {
 	private Waypoints points;
 	private Sprite[] bkg;
-	private TowerGrid[][] twg;
+	private Tower[][] twg;
 	private Scaler mapScaler;
 	//public int gridSizeX;
 	//public int gridSizeY;
@@ -21,7 +22,7 @@ public class Map {
 	 * @param  Waypoints 	waypoints that will be used by the Map.
 	 * @param  Sprite[]		the background sprite that the Map uses.
 	 */
-	public Map(Waypoints p, Sprite[] bkg, TowerGrid[][] twg, Scaler mapScaler){
+	public Map(Waypoints p, Sprite[] bkg, Tower[][] twg, Scaler mapScaler){
 		points = p;
 		this.bkg = bkg;
 		this.twg = twg;
@@ -53,7 +54,7 @@ public class Map {
 	 *
  	 * @return Sprite[]
 	 */
-	public TowerGrid[][] getTowerGrid() {
+	public Tower[][] getTowerGrid() {
 		return twg;
 	}
 	

@@ -11,13 +11,13 @@ public class Creature extends Sprite{
 	//Waypoints for this creature
 	private Coords[] wayP; 
     // A creatures health
-    protected int health;
+    protected float health;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
-    protected int mDeadResourceId;
+    private int mDeadResourceId;
     // SPRITE DEAD 
-	protected int mDeadTextureName;
+	private int mDeadTextureName;
     // The speed of the creature
     protected float velocity;
     // Delay before spawning the creature to the map
@@ -64,7 +64,7 @@ public class Creature extends Sprite{
 		}
 	}
 	
-	public void setHealth(int health){
+	public void setHealth(float health){
 		this.health = health;
 	}
 	
@@ -104,14 +104,12 @@ public class Creature extends Sprite{
 		
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0) {
+		if (draw && health > 0 && nextWayPoint < wayP.length) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds, gameSpeed);
-		}
-		
-		if(health > 0){
 			move(movement);
 		}
+		
 	    // Creature is dead and fading...
 		else if (draw && health <= 0) {
 			fade(timeDeltaSeconds/10 * gameSpeed);
@@ -150,16 +148,26 @@ public class Creature extends Sprite{
 	}
 	
 	private float applyEffects(float timeDeltaSeconds, float gameSpeed){
+		this.r = 1;
+		this.g = 1;
+		this.b = 1;
+		float tmpRGB = 1;
+		
 		int slowAffected = 1;
 		if (creatureFrozenTime > 0) {
-    		slowAffected = 2;
+			slowAffected = 2;
     		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
+    		tmpRGB = creatureFrozenTime <= 0.5f ? 1-creatureFrozenTime : 0.5f;
+    		this.r = tmpRGB;
+    		this.g = tmpRGB;
 		}
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
-			health = ((int)(this.health - (timeDeltaSeconds * creaturePoisonDamage)));	    		
-	    	// Have the creature died?
+			this.health = this.health - (timeDeltaSeconds * creaturePoisonDamage);	    		
+    		tmpRGB = creaturePoisonTime <= 0.5f ? 1-creaturePoisonTime : 0.5f;
+			this.r = tmpRGB;
+			this.b = tmpRGB;
 		}
   
 		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
@@ -183,9 +191,12 @@ public class Creature extends Sprite{
 	}
 	
 	private void score(){
-		draw = false;
+		//draw = false;
 		player.damage(1);
-		GL.subtractCreature(1);
+		//GL.subtractCreature(1);
+		// Testar hur spelet blir om en creature som inte har dött börjar om längst upp
+		moveToWaypoint(0);
+		nextWayPoint = 1;
 	}
 	
 	public void SetWayPoints(Coords[] waypoints){
@@ -204,5 +215,8 @@ public class Creature extends Sprite{
 	public int getNextWayPoint() {
 		return nextWayPoint;
 	}
-}
 
+	public int getDeadTextureName() {
+		return mDeadTextureName;
+	}
+}
