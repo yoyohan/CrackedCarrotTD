@@ -50,12 +50,23 @@ public class GameInit extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
-    	sound.setIcon(R.drawable.sound_key_button);
-        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart2");
-        restart.setIcon(R.drawable.restart_key_button);
+    	sound.setIcon(R.drawable.button_sound_on);
+        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart");
+        restart.setIcon(R.drawable.button_restart);
         MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
-        quit.setIcon(R.drawable.quit_key_button);
+        quit.setIcon(R.drawable.button_quit);
         return true;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	MenuItem sound = menu.getItem(0);
+		if (simulationRuntime.soundManager.playSound)
+	    	sound.setIcon(R.drawable.button_sound_off);
+		else
+	    	sound.setIcon(R.drawable.button_sound_on);
+    	
+    	return true;
     }
 
     @Override
