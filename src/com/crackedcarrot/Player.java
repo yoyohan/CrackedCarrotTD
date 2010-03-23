@@ -4,7 +4,7 @@ public class Player {
 
 	private int difficulty;
 	private int health;
-	private int money = 0;
+	private int money;
 	private int timeUntilNextLevel;
 	private double timeBetweenLevels;
 	
@@ -24,8 +24,16 @@ public class Player {
 		health -= dmg;
 	}
 	
-	public void addMoney(int amount){
-		money += amount;
+	public void moneyFunction(int value) {
+		// Should be fine for negative values as well.
+		money = money + value;
+		
+		if (money < 0)
+			money = 0;
+	}
+	
+	public int getMoney() {
+		return money;
 	}
 
 	public double getTimeBetweenLevels() {

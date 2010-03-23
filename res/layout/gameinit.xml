@@ -7,11 +7,11 @@
 	android:background="#00000000"
 	xmlns:android="http://schemas.android.com/apk/res/android"> 
 	
-	<android.opengl.GLSurfaceView
+	<com.crackedcarrot.SurfaceView
 		android:id="@+id/surface_view"
 		android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content">
-	</android.opengl.GLSurfaceView>
+	</com.crackedcarrot.SurfaceView>
 	
 	<com.crackedcarrot.ExpandMenu
     	android:id="@+id/expand_menu"

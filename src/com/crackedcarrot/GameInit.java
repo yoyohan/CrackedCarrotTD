@@ -1,16 +1,27 @@
 package com.crackedcarrot;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
 import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.fileloader.Level;
@@ -22,20 +33,25 @@ import com.crackedcarrot.menu.R;
 
 public class GameInit extends Activity {
 
-    public GLSurfaceView mGLSurfaceView;
+    public SurfaceView mGLSurfaceView;
     private GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
     private HealthProgressBar healthProgressBar;
     private int healthProgress = 100;
-    private NrCreTextView nrCreText;    
+    private NrCreTextView nrCreText;
+    private int nextLevel_creature;
+    private int nextLevel_creatures = 0;
+
     
     //private int highlightIcon = R.drawable.map_choose;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart");
+    	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
+    	sound.setIcon(R.drawable.sound_key_button);
+        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart2");
         restart.setIcon(R.drawable.restart_key_button);
         MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
         quit.setIcon(R.drawable.quit_key_button);
@@ -44,9 +60,133 @@ public class GameInit extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	
+    	Log.d("GAMEINIT", "MenuItem: " + item.getTitle());
+    	
+    	if (item.getTitle().toString().startsWith("Sound")) {
+    		if (simulationRuntime.soundManager.playSound)
+    			simulationRuntime.soundManager.playSound = false;
+    		else
+    			simulationRuntime.soundManager.playSound = true;
+    	}
 
         return false;
     }
+
+    
+    
+    static final int DIALOG_NEXTLEVEL_ID = 1;
+    static final int DIALOG_WON_ID       = 2;
+    static final int DIALOG_LOST_ID      = 3;
+    
+	/*
+	 * Creates our NextLevel-dialog.
+	 */
+	protected Dialog onCreateDialog(int id) {
+	    Dialog dialog = null;
+    	
+	    AlertDialog alertDialog;
+    	AlertDialog.Builder builder;
+    	Context mContext;
+    	LayoutInflater inflater;
+    	View layout;
+    	TextView text;
+    	ImageView image;
+    	
+	    switch(id) {
+	    case DIALOG_NEXTLEVEL_ID:
+	    	mContext = this;
+	    	inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+	    	layout = inflater.inflate(R.layout.nextlevel,
+	    	                               (ViewGroup) findViewById(R.id.layout_root));
+
+	    		// Text for next level goes here.
+	    	text = (TextView) layout.findViewById(R.id.NextLevelText);
+	    	text.setText("blahblahblah" + nextLevel_creatures);
+	    		// And an icon.
+	    	image = (ImageView) layout.findViewById(R.id.NextLevelImage);
+	    	image.setImageResource(R.drawable.bjoern);
+
+	    	builder = new AlertDialog.Builder(mContext);
+	    	builder.setView(layout)
+	    	       .setCancelable(true)
+	    	       .setPositiveButton("Next Wave!", new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	                simulationRuntime.nextLevelClick();
+	    	           }
+	    	       });
+	    	alertDialog = builder.create();
+
+	    	dialog = alertDialog;
+	    	dialog.setOwnerActivity(this);
+	    	break;
+	    case DIALOG_WON_ID:
+	    	mContext = this;
+	    	inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+	    	layout = inflater.inflate(R.layout.levelwon,
+	    	                               (ViewGroup) findViewById(R.id.layout_root));
+
+	    	builder = new AlertDialog.Builder(mContext);
+	    	builder.setView(layout)
+	    	       .setCancelable(true)
+	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	                dialog.cancel();
+	    	           }
+	    	       });
+	    	alertDialog = builder.create();
+
+	    	dialog = alertDialog;
+	    	dialog.setOwnerActivity(this);
+	    	break;
+	    case DIALOG_LOST_ID:
+	    	mContext = this;
+	    	inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+	    	layout = inflater.inflate(R.layout.levellost,
+	    	                               (ViewGroup) findViewById(R.id.layout_root));
+
+	    	builder = new AlertDialog.Builder(mContext);
+	    	builder.setView(layout)
+	    	       .setCancelable(true)
+	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	                dialog.cancel();
+	    	           }
+	    	       });
+	    	alertDialog = builder.create();
+
+	    	dialog = alertDialog;
+	    	dialog.setOwnerActivity(this);
+	    	break;
+	    default:
+	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id!");
+	        dialog = null;
+	    }
+	    return dialog;
+	}
+
+	/*
+	 * Creates our NextLevel-dialog.
+	 */
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+	    switch(id) {
+	    case DIALOG_NEXTLEVEL_ID:
+	    		// Text for next level goes here.
+	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
+	    	text.setText("Way to go! Next level has " + nextLevel_creatures + " creatures.");
+	    		// And an icon.
+	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
+	    	image.setImageResource(nextLevel_creature);
+
+	    	break;
+	    default:
+	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id!");
+	        dialog = null;
+	    }
+	}
+	
+	
     
     /** Called when the activity is first created. */
     @Override
@@ -62,7 +202,7 @@ public class GameInit extends Activity {
     	/** Create objects of GLSurfaceView, NativeRender and the two objects
     	 *  that are used for define the pixel resolution of current display;
     	 *  DisplayMetrics & Scaler */
-        mGLSurfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
+        mGLSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
         NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -178,7 +318,7 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 1000);
         }
         else {
-        	p = new Player(difficulty, 60, 100, 1000);
+        	p = new Player(difficulty, 1, 100, 1000);
         }
         
       //Load the creature waves and apply the correct difficulty
@@ -190,11 +330,12 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,new SoundManager(getBaseContext()));
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,nextLevelHandler,new SoundManager(getBaseContext()));
         RenderThread = new Thread(simulationRuntime);
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
-        registerForContextMenu(mGLSurfaceView);
+        
+        mGLSurfaceView.setSimulationRuntime(simulationRuntime);
 
         // Start GameLoop
         RenderThread.start();
@@ -208,4 +349,29 @@ public class GameInit extends Activity {
     	simulationRuntime.stopGameLoop();
     	super.onStop();
     }
+
+    	// This is used to handle calls from the GameLoop to show
+    	// our dialogs.
+    private Handler nextLevelHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+            	 case DIALOG_NEXTLEVEL_ID:
+            		 nextLevel_creature  = msg.arg2;
+            		 nextLevel_creatures = msg.arg1;
+                     showDialog(1);
+            		 break;
+            	 case DIALOG_WON_ID:
+            		 showDialog(2);
+            	 case DIALOG_LOST_ID:
+            		 showDialog(3);
+            	 default:
+                     Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
+                     break;
+            }
+        }
+    }; 
+
 }
