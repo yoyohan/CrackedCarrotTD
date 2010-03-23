@@ -79,7 +79,11 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
+	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
+	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
+	    	mTower[i].relatedShot.setHeight(this.mTTypes[0].relatedShot.getHeight());
+	    	mTower[i].relatedShot.setWidth(this.mTTypes[0].relatedShot.getWidth());
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
@@ -331,16 +335,6 @@ public class GameLoop implements Runnable {
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
 				totalNumberOfTowers++;
-
-				
-					// TODO: THIS IS A UGLY HACK TO HAVE CREATETOWER WORK!
-				try {
-					renderHandle.finalizeSprites();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 				return true;
 			}
 		}
