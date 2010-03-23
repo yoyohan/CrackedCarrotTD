@@ -1,5 +1,5 @@
 // Name: waweSet1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::2
+Total number of levels::4
 // level 1
 Texture alive::bunny_pink_alive
 Texture dead::bunny_pink_dead
@@ -12,14 +12,36 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 // level 2
-Texture alive::cat
-Texture dead::cat
+Texture alive::mrcat
+Texture dead::mrcatdead
 size::60
-health::6000
+health::100
 fast level::true
-fire resistant::true
-frost resistant::true
-poison resistant::true
+fire resistant::false
+frost resistant::false
+poison resistant::false
 goldValue::1
-nbrOfCreaturs::1
+nbrOfCreaturs::20
+// level 3
+Texture alive::mrlion
+Texture dead::mrliondead
+size::60
+health::150
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+// level 4
+Texture alive::mrbear
+Texture dead::mrbeardead
+size::60
+health::200
+fast level::false
+fire resistant::true
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

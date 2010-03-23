@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.Random;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -73,10 +75,14 @@ public class GameLoop implements Runnable {
 	    	mShots[i].draw = false;
 	    } 
 
+	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords(), this);
 	    	mCreatures[i].draw = false;
+	    	int tmpOffset = rand.nextInt(10) - 5;
+	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
+	    	mCreatures[i].setOffset(tmpCoord.getX());
 	    }
 	    //Set grid attributes.
 	    //Free all allocated data in the render
@@ -185,20 +191,21 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
     	lvlNbr = 0;
 	    gameSpeed = 1;
+
+    	// Tries to create a test tower
+    	Coords tmp = mScaler.getPosFromGrid(2, 9);
+    	boolean tt = createTower(tmp,0);
+    	
+    	tmp = mScaler.getPosFromGrid(4, 6);
+    	boolean ty = createTower(tmp,1);
+    	
+    	Log.d("TEST",""+tt);
+    	Log.d("TESTA",""+ty);
+	    
+	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
-	    	// Tries to create a test tower
-	    	Coords tmp = mScaler.getPosFromGrid(2, 9);
-	    	boolean tt = createTower(tmp,0);
-	    	
-	    	tmp = mScaler.getPosFromGrid(4, 6);
-	    	boolean ty = createTower(tmp,1);
-	    	
-	    	Log.d("TEST",""+tt);
-	    	Log.d("TESTA",""+ty);
-	    	
-	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();

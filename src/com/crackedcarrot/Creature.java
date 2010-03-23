@@ -9,7 +9,9 @@ public class Creature extends Sprite{
 	//SoundManager ref
 	private SoundManager soundManager;
 	//Waypoints for this creature
-	private Coords[] wayP; 
+	private Coords[] wayP;
+	//Variable keeping all creatures from going in a straight line
+	private int offset;
     // A creatures health
     protected float health;
     // The next way point for a given creature
@@ -128,7 +130,7 @@ public class Creature extends Sprite{
 		Coords co = wayP[getNextWayPoint()];
 		
 		float yDistance = co.y - this.y;
-		float xDistance = co.x - this.x;
+		float xDistance = co.x - this.x+offset;
 			
 		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
 			// We have reached our destination!!!
@@ -155,7 +157,7 @@ public class Creature extends Sprite{
 		if (creatureFrozenTime > 0) {
 			slowAffected = 2;
     		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
-    		tmpRGB = creatureFrozenTime <= 0.5f ? 1-creatureFrozenTime : 0.5f;
+    		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
     		this.r = tmpRGB;
     		this.g = tmpRGB;
 		}
@@ -163,11 +165,16 @@ public class Creature extends Sprite{
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
 			this.health = this.health - (timeDeltaSeconds * creaturePoisonDamage);	    		
-    		tmpRGB = creaturePoisonTime <= 0.5f ? 1-creaturePoisonTime : 0.5f;
+	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
 			this.r = tmpRGB;
 			this.b = tmpRGB;
 		}
   
+		if (creatureFrozenTime > 0 && creaturePoisonTime > 0) {
+			this.r = 0;
+		}
+
+		
 		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
 		
 		if (health <= 0) {
@@ -215,4 +222,9 @@ public class Creature extends Sprite{
 	public int getDeadTextureName() {
 		return mDeadTextureName;
 	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
 }
