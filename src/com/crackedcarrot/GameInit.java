@@ -318,7 +318,7 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 1000);
         }
         else {
-        	p = new Player(difficulty, 1, 100, 1000);
+        	p = new Player(difficulty, 60, 100, 1000);
         }
         
       //Load the creature waves and apply the correct difficulty

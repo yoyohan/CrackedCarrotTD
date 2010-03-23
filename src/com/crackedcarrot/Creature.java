@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 /**
 * Class defining creature in the game
 */
@@ -58,12 +60,19 @@ public class Creature extends Sprite{
 		setNextWayPoint(getNextWayPoint() + 1);
 	}
 
-	public void damage(int dmg){
+	public void damage(float dmg){
+
+		dmg = health >= dmg ? dmg : health; 
 		health -= dmg;
+		
+		Log.d("LOGGA", "###############");
+		Log.d("LOGGA", "11::"+dmg);
+		Log.d("LOGGA", "22::"+dmg);
 		GL.updateCreatureProgress(dmg);
+
 		if(health <= 0){
 			die();
-		}
+		} 
 	}
 	
 	public void setHealth(float health){
@@ -126,6 +135,7 @@ public class Creature extends Sprite{
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
+		GL.creaturDiesOnMap(1);
 	}
 	
 	private void move(float movement){
@@ -166,7 +176,7 @@ public class Creature extends Sprite{
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
-			this.health = this.health - (timeDeltaSeconds * creaturePoisonDamage);	    		
+			damage(timeDeltaSeconds * creaturePoisonDamage);
 	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
 			this.r = tmpRGB;
 			this.b = tmpRGB;
@@ -185,7 +195,6 @@ public class Creature extends Sprite{
    		}
 		
 		return movement;
-		
 	}
 	
 	private void fade(float reduceOpacity){
@@ -193,7 +202,7 @@ public class Creature extends Sprite{
 		if (opacity <= 0.0f) {
 			draw = false;
 			//The creature is now completely gone from the map, tell the loop.
-			GL.subtractCreature(1);
+			GL.creatureLeavesMAP(1);
 		}
 	}
 	
