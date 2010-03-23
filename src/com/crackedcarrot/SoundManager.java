@@ -27,6 +27,8 @@ package com.crackedcarrot;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.crackedcarrot.menu.R;
 
@@ -34,20 +36,23 @@ import com.crackedcarrot.menu.R;
 public class SoundManager {
 
 	private  SoundPool     mSoundPool;
-	private  int[]         mSoundArray = new int[32];   // max # of sounds.
-													    // set to 32 for no reason.
-	private  float[]       mSoundPitch = new float[32];
+	private  int[]         mSoundArray     = new int[32];   // max # of sounds.
+											     		    // set to 32 for no reason.
+	private  float[]       mSoundPitch     = new float[32];
+	private  long[]        mSoundDelay     = new long[32];
+	private  long[]        mSoundDelayLast = new long[32];
 	private  AudioManager  mAudioManager;
 	private  Context       mContext;
 
+    private  boolean       playSound = false; // play sounds? TODO: off by default.
 
 	public SoundManager(Context baseContext) {
         this.initSounds(baseContext);
         // Here goes the mp3/wav/ogg-files we want to use.
         // These need to be added to the res/raw/NameOfSound.mp3 folder,
         // WITH the extension on the file.
-        this.addSound( 0, 1.0f, R.raw.shot1);
-        this.addSound(10, 1.0f, R.raw.died1);
+        this.addSound( 0, 1.0f, 250, R.raw.shot1);
+        this.addSound(10, 1.0f, 1000, R.raw.died1);
         //this.addSound(20, 1.0f, R.raw.creaturehappy);
         //this.addSound(30, 1.0f, R.raw.victory);
         //this.addSound(31, 1.0f, R.raw.defeat);
@@ -70,18 +75,24 @@ public class SoundManager {
 	 * @param  soundId		Location of the R.raw.soundfile.mp3 resource.
 	 * @return     			void
 	 */ 
-	public void addSound(int index, float pitch, int soundId) {
+	public void addSound(int index, float pitch, long delay, int soundId) {
 		mSoundArray[index] = mSoundPool.load(mContext, soundId, 1);
 		mSoundPitch[index] = pitch;
+		mSoundDelay[index] = delay;
 	}
 
 	public void playSound(int index) {
 		//Log.d("SOUNDMANAGER", "Playing sound " + index);
 		
-	    int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-	    if (mSoundPool.play(mSoundArray[index], streamVolume, streamVolume, 1, 0, mSoundPitch[index]) == 0) {
-	    	//Log.d("SOUNDMANAGER", "Failed to play " + index);
-	    }
+		final long time = SystemClock.uptimeMillis();
+		
+		if (playSound && mSoundDelay[index] + mSoundDelayLast[index] < time) {
+			mSoundDelayLast[index] = time;
+			int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+			if (mSoundPool.play(mSoundArray[index], streamVolume, streamVolume, 1, 0, mSoundPitch[index]) == 0) {
+				Log.d("SOUNDMANAGER", "Failed to play " + index);
+			}
+		}
 	}
 
 	public void playLoopedSound(int index) {

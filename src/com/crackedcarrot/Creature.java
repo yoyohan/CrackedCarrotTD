@@ -120,8 +120,8 @@ public class Creature extends Sprite{
 	
 	private void die() {
 		setTextureName(this.mDeadTextureName);
-		this.opacity -= 0.1f;
-		player.addMoney(this.goldValue);
+		this.opacity -= 0.5;
+		player.moneyFunction(this.goldValue);
 		// play died1.mp3
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet

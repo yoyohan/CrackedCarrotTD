@@ -1,9 +1,11 @@
 package com.crackedcarrot;
 
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -39,15 +41,19 @@ public class GameLoop implements Runnable {
 
     private int gameSpeed;
     
-    private SoundManager soundManager;
+    	// We need to reach this to be able to turn off sound.
+    public  SoundManager soundManager;
     private Scaler mScaler;
     private NativeRender renderHandle;
     
     private Handler updateCreatureHandler = new Handler();
     private Handler updateHealthHandler = new Handler();
+    private Handler nextLevelHandler;
+    
+    private Semaphore nextLevelSemaphore = new Semaphore(1);
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
-			Player p, SoundManager sm){
+			Player p, Handler nlh, SoundManager sm){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
    		this.mTowerGrid = gameMap.getTowerGrid();
@@ -56,6 +62,7 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
+    	this.nextLevelHandler = nlh;
     }
     
 	private void initializeDataStructures() {
@@ -154,23 +161,15 @@ public class GameLoop implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-    	final long starttime = SystemClock.uptimeMillis();
     	
     	//Set the creatures texture size and other atributes.
     	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
     	totalCreatureHealth = mLvl[lvlNbr].health * remainingCreatures;
     	startNrCreatures = remainingCreatures;
     	//Need to reverse the list for to draw correctly.
-    	int reverse = remainingCreatures; 
-		for (int z = 0; z < remainingCreatures; z++) {
-			reverse--;
+    	for (int z = 0; z < remainingCreatures; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
-    		// In some way we have to determine when to spawn the creature. Since we dont want to spawn them all at once.
-			int special = 1;
-    		if (mCreatures[z].isCreatureFast())
-    			special = 2;
-    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (1000/special)))/gameSpeed));
 		}
 		try {
 			
@@ -181,6 +180,39 @@ public class GameLoop implements Runnable {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		// Show the NextLevel-dialog and waits for user to click ok
+		// via the semaphore.
+    	try {
+			nextLevelSemaphore.acquire();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Message msg = new Message();
+		msg.what = 1; // 1 means to show NextLevel-box.
+		msg.arg1 = mLvl[lvlNbr].nbrCreatures;
+		msg.arg2 = mLvl[lvlNbr].getResourceId();
+    	nextLevelHandler.sendMessage(msg);
+
+		// Code to wait for the user to click ok on NextLevel-dialog.
+		try {
+			nextLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		nextLevelSemaphore.release();
+
+    	final long starttime = SystemClock.uptimeMillis();
+    	int reverse = remainingCreatures; 
+		for (int z = 0; z < remainingCreatures; z++) {
+			reverse--;
+			int special = 1;
+    		if (mCreatures[z].isCreatureFast())
+    			special = 2;
+    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (1000/special)))/gameSpeed));
 		}
 		
 	}
@@ -198,7 +230,7 @@ public class GameLoop implements Runnable {
     	boolean tt = createTower(tmp,0);
     	
     	tmp = mScaler.getPosFromGrid(4, 6);
-    	boolean ty = createTower(tmp,1);
+    	boolean ty = createTower(tmp,0);
     	
     	Log.d("TEST",""+tt);
     	Log.d("TESTA",""+ty);
@@ -258,6 +290,12 @@ public class GameLoop implements Runnable {
             if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
+
+            		// Show the You Lost-dialog.
+        		Message msg = new Message();
+        		msg.what = 3; // YouLost-box.
+            	nextLevelHandler.sendMessage(msg);
+            	
             	run = false;
         	} 
         	else if (remainingCreatures < 1) {
@@ -267,6 +305,12 @@ public class GameLoop implements Runnable {
         		if (lvlNbr >= mLvl.length) {
         			// You have completed this map
                 	Log.d("GAMETHREAD", "You have completed this map");
+                	
+            		// Show the You Won-dialog.
+            		Message msg = new Message();
+            		msg.what = 2; // YouWon
+                	nextLevelHandler.sendMessage(msg);
+                	
         			run = false;
         		}
         	}
@@ -280,6 +324,10 @@ public class GameLoop implements Runnable {
 				//You are trying to place a tower on a spot outside the grid
 				return false;
 			}
+			if (player.getMoney() < mTower[totalNumberOfTowers].getPrice()) {
+				// Not enough money to build this tower.
+				return false;
+			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
 			int tmpx = tmpC.x;
 			int tmpy = tmpC.y;
@@ -288,7 +336,18 @@ public class GameLoop implements Runnable {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
 				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement);
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
+				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
 				totalNumberOfTowers++;
+
+				
+					// TODO: THIS IS A UGLY HACK TO HAVE CREATETOWER WORK!
+				try {
+					renderHandle.finalizeSprites();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				return true;
 			}
 		}
@@ -317,6 +376,10 @@ public class GameLoop implements Runnable {
     
     public void stopGameLoop(){
     	run = false;
+    }
+    
+    public void nextLevelClick() {
+    	nextLevelSemaphore.release();
     }
     
 }

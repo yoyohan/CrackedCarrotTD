@@ -5,7 +5,7 @@ import java.util.Random;
 /**
 * Class defining a tower in the game
 */
-public class Tower extends Sprite{
+public class Tower extends Sprite {
 	private SoundManager soundManager;
 	private Creature[] mCreatures;
 	
@@ -377,4 +377,9 @@ public class Tower extends Sprite{
     		}
 		}
 	}
+	
+	public int getPrice() {
+		return price;
+	}
+	
 }
