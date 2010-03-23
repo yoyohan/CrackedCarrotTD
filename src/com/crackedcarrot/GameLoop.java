@@ -24,7 +24,7 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private int remainingCreatures;
     private int startNrCreatures;
-    private int totalCreatureHealth;
+    private float totalCreatureHealth;
     private Level[] mLvl;
     private int lvlNbr;
     
@@ -310,7 +310,7 @@ public class GameLoop implements Runnable {
     	this.totalCreatureHealth -= dmg;
 		updateHealthHandler.post(new Runnable(){
 			public void run(){
-				HealthProgressBar.proChangeListener.progressUpdate((100 * totalCreatureHealth) / (mLvl[lvlNbr].getHealth() * startNrCreatures));
+				HealthProgressBar.proChangeListener.progressUpdate((int)((100 * totalCreatureHealth) / (mLvl[lvlNbr].getHealth() * startNrCreatures)));
 			}
 		});
     }
