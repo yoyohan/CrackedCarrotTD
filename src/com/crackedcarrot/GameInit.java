@@ -75,9 +75,9 @@ public class GameInit extends Activity {
 
     
     
-    static final int DIALOG_NEXTLEVEL_ID = 1;
-    static final int DIALOG_WON_ID       = 2;
-    static final int DIALOG_LOST_ID      = 3;
+    final int DIALOG_NEXTLEVEL_ID = 1;
+    final int DIALOG_WON_ID       = 2;
+    final int DIALOG_LOST_ID      = 3;
     
 	/*
 	 * Creates our NextLevel-dialog.
@@ -159,7 +159,7 @@ public class GameInit extends Activity {
 	    	dialog.setOwnerActivity(this);
 	    	break;
 	    default:
-	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id!");
+	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	    return dialog;
@@ -181,7 +181,7 @@ public class GameInit extends Activity {
 
 	    	break;
 	    default:
-	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id!");
+	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	}
@@ -318,7 +318,7 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 1000);
         }
         else {
-        	p = new Player(difficulty, 1, 100, 1000);
+        	p = new Player(difficulty, 60, 100, 1000);
         }
         
       //Load the creature waves and apply the correct difficulty
@@ -365,8 +365,10 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_WON_ID:
             		 showDialog(2);
+            		 break;
             	 case DIALOG_LOST_ID:
             		 showDialog(3);
+            		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
                      break;

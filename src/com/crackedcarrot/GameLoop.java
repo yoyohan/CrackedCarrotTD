@@ -341,6 +341,7 @@ public class GameLoop implements Runnable {
 
 				
 					// TODO: THIS IS A UGLY HACK TO HAVE CREATETOWER WORK!
+					// SEEMS YOU CAN ONLY BUILD ~10 TOWERS RIGHT NOW...
 				try {
 					renderHandle.finalizeSprites();
 				} catch (InterruptedException e) {
