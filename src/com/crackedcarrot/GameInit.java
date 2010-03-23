@@ -49,7 +49,9 @@ public class GameInit extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart");
+    	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
+    	sound.setIcon(R.drawable.sound_key_button);
+        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart2");
         restart.setIcon(R.drawable.restart_key_button);
         MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
         quit.setIcon(R.drawable.quit_key_button);
@@ -58,6 +60,16 @@ public class GameInit extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	
+    	Log.d("GAMEINIT", "MenuItem: " + item.getTitle());
+    	
+    	if (item.getTitle().toString().startsWith("Sound")) {
+    		if (simulationRuntime.soundManager.playSound)
+    			simulationRuntime.soundManager.playSound = false;
+    		else
+    			simulationRuntime.soundManager.playSound = true;
+    	}
+
         return false;
     }
 

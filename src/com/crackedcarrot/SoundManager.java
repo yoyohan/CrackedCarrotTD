@@ -44,7 +44,7 @@ public class SoundManager {
 	private  AudioManager  mAudioManager;
 	private  Context       mContext;
 
-    private  boolean       playSound = false; // play sounds? TODO: off by default.
+    public   boolean       playSound = false; // play sounds? TODO: off by default.
 
 	public SoundManager(Context baseContext) {
         this.initSounds(baseContext);
