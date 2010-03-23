@@ -24,9 +24,11 @@ public class GameLoop implements Runnable {
     private Sprite[] mGrid;
 
     private Creature[] mCreatures;
-    private int remainingCreatures;
-    private int startNrCreatures;
-    private float totalCreatureHealth;
+    private int remainingCreaturesALIVE;
+    private int remainingCreaturesALL;
+    
+    private float startCreatureHealth;
+    float currentCreatureHealth;
     private Level[] mLvl;
     private int lvlNbr;
     
@@ -77,7 +79,11 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mTower.length; i++) {
 	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
+	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
+	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
+	    	mTower[i].relatedShot.setHeight(this.mTTypes[0].relatedShot.getHeight());
+	    	mTower[i].relatedShot.setWidth(this.mTTypes[0].relatedShot.getWidth());
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
 	    } 
@@ -163,11 +169,13 @@ public class GameLoop implements Runnable {
 		}
     	
     	//Set the creatures texture size and other atributes.
-    	remainingCreatures = mLvl[lvlNbr].nbrCreatures;
-    	totalCreatureHealth = mLvl[lvlNbr].health * remainingCreatures;
-    	startNrCreatures = remainingCreatures;
+    	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
+    	remainingCreaturesALIVE = mLvl[lvlNbr].nbrCreatures;
+    	currentCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
+    	startCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
+    	
     	//Need to reverse the list for to draw correctly.
-    	for (int z = 0; z < remainingCreatures; z++) {
+    	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
 		}
@@ -206,8 +214,8 @@ public class GameLoop implements Runnable {
 		nextLevelSemaphore.release();
 
     	final long starttime = SystemClock.uptimeMillis();
-    	int reverse = remainingCreatures; 
-		for (int z = 0; z < remainingCreatures; z++) {
+    	int reverse = remainingCreaturesALL; 
+		for (int z = 0; z < remainingCreaturesALL; z++) {
 			reverse--;
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
@@ -225,17 +233,6 @@ public class GameLoop implements Runnable {
     	lvlNbr = 0;
 	    gameSpeed = 1;
 
-    	// Tries to create a test tower
-    	Coords tmp = mScaler.getPosFromGrid(2, 9);
-    	boolean tt = createTower(tmp,0);
-    	
-    	tmp = mScaler.getPosFromGrid(4, 6);
-    	boolean ty = createTower(tmp,0);
-    	
-    	Log.d("TEST",""+tt);
-    	Log.d("TESTA",""+ty);
-	    
-	    
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
@@ -246,7 +243,7 @@ public class GameLoop implements Runnable {
     		// Initialize the status, displaying how many creatures still alive
     		updateCreatureHandler.post(new Runnable(){
 				public void run(){
-					NrCreTextView.listener.creatureUpdate(remainingCreatures);
+					NrCreTextView.listener.creatureUpdate(remainingCreaturesALL);
 				}
 			});
     		updateHealthHandler.post(new Runnable(){
@@ -256,7 +253,7 @@ public class GameLoop implements Runnable {
 			});
     		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
-    		while(remainingCreatures > 0 && run){
+    		while(remainingCreaturesALL > 0 && run){
 
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
@@ -298,7 +295,7 @@ public class GameLoop implements Runnable {
             	
             	run = false;
         	} 
-        	else if (remainingCreatures < 1) {
+        	else if (remainingCreaturesALL < 1) {
         		//If you have survied the entire wave without dying. Proceed to next next level.
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
@@ -338,39 +335,33 @@ public class GameLoop implements Runnable {
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
 				totalNumberOfTowers++;
-
-				
-					// TODO: THIS IS A UGLY HACK TO HAVE CREATETOWER WORK!
-					// SEEMS YOU CAN ONLY BUILD ~10 TOWERS RIGHT NOW...
-				try {
-					renderHandle.finalizeSprites();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 				return true;
 			}
 		}
 		return false;
     }
     
-    public void subtractCreature(int n){
-    	this.remainingCreatures -= n;
+    // When a creature is dead and have faded away we will remove it from the gameloop
+    public void creatureLeavesMAP(int n){
+    	this.remainingCreaturesALL -= n;
+    }
+    // When a creature is dead we will notify the statusbar
+    public void creaturDiesOnMap(int n){
+    	this.remainingCreaturesALIVE -= n;
 		// Update the status, displaying how many creatures that are still alive
 		updateCreatureHandler.post(new Runnable(){
 			public void run(){
-				NrCreTextView.listener.creatureUpdate(remainingCreatures);
+				NrCreTextView.listener.creatureUpdate(remainingCreaturesALIVE);
 			}
 		});
     }
     
-    public void updateCreatureProgress(int dmg){
+    public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
-    	this.totalCreatureHealth -= dmg;
-		updateHealthHandler.post(new Runnable(){
+    	this.currentCreatureHealth -= dmg;
+    	updateHealthHandler.post(new Runnable(){
 			public void run(){
-				HealthProgressBar.proChangeListener.progressUpdate((int)((100 * totalCreatureHealth) / (mLvl[lvlNbr].getHealth() * startNrCreatures)));
+				HealthProgressBar.proChangeListener.progressUpdate((int)(100*(currentCreatureHealth/startCreatureHealth)));
 			}
 		});
     }

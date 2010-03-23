@@ -73,11 +73,11 @@ public class Tower extends Sprite {
 	/**
 	 * Calculates special damage
 	 */
-	private double specialDamage(Creature tmpCreature) {
+	private float specialDamage(Creature tmpCreature) {
 		// if this is not the first tower that is hit. we dont 
 		// want to make maximum damage
 		boolean aoeTower = false;
-		double damageFactor = 1;
+		float damageFactor = 1;
 		
 		if (tmpCreature == null) {
 			tmpCreature = targetCreature;
@@ -94,7 +94,7 @@ public class Tower extends Sprite {
 		
 		// Target is fire resistant?
 		if (tmpCreature.creatureFireResistant && this.hasFireDamage)
-			damageFactor = 0.4;
+			damageFactor = 0.4f;
 		else damageFactor = 1;
 		
 		// Target is poison resistant?
@@ -127,8 +127,8 @@ public class Tower extends Sprite {
 	 * so the damage wont be predictable during game play
 	 */
 	private void createProjectileDamage(){
-		double damageFactor = specialDamage(null);
-		int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
+		float damageFactor = specialDamage(null);
+		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 		targetCreature.damage(randomInt);
 	}
 
@@ -144,9 +144,8 @@ public class Tower extends Sprite {
 				if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
 					double distance = Math.sqrt(Math.pow((targetCreature.x - mCreatures[i].x),2) + Math.pow((targetCreature.y - mCreatures[i].y),2));
 					if(distance < this.rangeAOE){ // Is the creature within tower range?
-						double damageFactor = specialDamage(mCreatures[i]);
-						int thisDamage = (int)(this.aoeDamage*damageFactor);
-						mCreatures[i].damage(thisDamage);
+						float damageFactor = specialDamage(mCreatures[i]);
+						mCreatures[i].damage(this.aoeDamage*damageFactor);
 					}
 				}
 			}
@@ -166,8 +165,8 @@ public class Tower extends Sprite {
 			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
 				if(distance < this.range){ 
-					double damageFactor = specialDamage(mCreatures[i]);
-					int randomInt = (int)((rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor);
+					float damageFactor = specialDamage(mCreatures[i]);
+					float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 					mCreatures[i].damage(randomInt);
 					nbrOfHits++;
 				}
