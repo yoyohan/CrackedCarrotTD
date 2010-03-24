@@ -51,8 +51,22 @@ public class GameLoop implements Runnable {
     private Handler updateCreatureHandler = new Handler();
     private Handler updateHealthHandler = new Handler();
     private Handler nextLevelHandler;
+    private CreatureUpdate cUpdate = new CreatureUpdate();
+    private ProgressUpdate pUpdate = new ProgressUpdate();
     
     private Semaphore nextLevelSemaphore = new Semaphore(1);
+    
+    private class CreatureUpdate implements Runnable{
+		public void run(){
+			NrCreTextView.listener.creatureUpdate(remainingCreaturesALIVE);
+		}
+	}
+    
+    private class ProgressUpdate implements Runnable{
+    	public void run(){
+			HealthProgressBar.proChangeListener.progressUpdate((int)(100*(currentCreatureHealth/startCreatureHealth)));
+		}
+    }
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, Handler nlh, SoundManager sm){
@@ -349,21 +363,13 @@ public class GameLoop implements Runnable {
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
 		// Update the status, displaying how many creatures that are still alive
-		updateCreatureHandler.post(new Runnable(){
-			public void run(){
-				NrCreTextView.listener.creatureUpdate(remainingCreaturesALIVE);
-			}
-		});
+		updateCreatureHandler.post(cUpdate);
     }
     
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-    	updateHealthHandler.post(new Runnable(){
-			public void run(){
-				HealthProgressBar.proChangeListener.progressUpdate((int)(100*(currentCreatureHealth/startCreatureHealth)));
-			}
-		});
+    	updateHealthHandler.post(pUpdate);
     }
     
     public void stopGameLoop(){
@@ -373,5 +379,4 @@ public class GameLoop implements Runnable {
     public void nextLevelClick() {
     	nextLevelSemaphore.release();
     }
-    
 }
