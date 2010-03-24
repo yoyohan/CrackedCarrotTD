@@ -22,11 +22,12 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public	static final int BACKGROUND = 0;
 	public 	static final int SHOT		= 1;
-	public 	static final int CREATURE	= 2;
-	public  static final int GRID		= 3;
-	public	static final int TOWER		= 4;
+	public  static final int ANIMATION	= 2;
+	public 	static final int CREATURE	= 3;
+	public  static final int GRID		= 4;
+	public	static final int TOWER		= 5;
 
-	private static native void nativeAlloc(int n, Sprite s);
+	private static native void nativeAlloc(int type, int n, Sprite s);
 	private static native void nativeDataPoolSize(int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
@@ -37,7 +38,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private Semaphore lock1 = new Semaphore(0);
     private Semaphore lock2 = new Semaphore(0);
     
-	private Sprite[][] sprites = new Sprite[5][];
+	private Sprite[][] sprites = new Sprite[6][];
 	private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;

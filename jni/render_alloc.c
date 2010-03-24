@@ -4,10 +4,10 @@
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
-															jint size){
+															jint type, jint size){
                                                                   
     noOfSprites = size;
-    renderSprites = malloc(sizeof(GLSprite) * noOfSprites);
+    renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
 	
@@ -19,12 +19,13 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
 													 jobject thiz, 
-													 jint spriteNO, 
+													 jint type, jint spriteNO, 
 													 jobject sprite){
 	
 	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
 	//					"Loading Texture for SpriteNo %d \n", spriteNO);
-	GLSprite* thisSprite = &renderSprites[spriteNO];			
+	GLSprite* thisSprite = &renderSprites[type][spriteNO];
+	thisSprite->type = type;			
 	
 	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
 	

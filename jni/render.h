@@ -8,8 +8,10 @@
 enum spriteType {
 	BACKGROUND,
 	SHOT,
-	MONSTER,
-	TOWER
+	ANIMATION,
+	CREATURE,
+	GRID,
+	TOWER,
 };
 
 typedef struct {
@@ -39,7 +41,7 @@ typedef struct {
 //The number of idividual sprites.
 int noOfSprites;
 //Array with pointers to GLSprites.
-GLSprite* renderSprites;
+GLSprite** renderSprites[6];
 //GLuint* textureNameWorkspace;
 //GLuint* cropWorkspace;
 
