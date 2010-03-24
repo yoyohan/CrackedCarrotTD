@@ -1,9 +1,36 @@
-Figure out why the levels higher then 0 is broken.
+Grab something from this list by writing your name under the description in capital letters.
+And add more todos as you come up with them.
 
-JNI onload funktion in render. -- This will make shit nicer.
-Dealloc code in render. -- memleeks are evil.
-Texture loading code in native code instead, for consistency.
+HIGH PRIORITY:
 
-Implement support for dontDraw flag in sprites.
+Dead Creatures need to stay fully visible for some time. They fade to fast at the moment
+I suggest we start the fade out when the level ends.. Creating a impressive string of
+corpses during the level. 
+-- Anyone
 
-Possibly new redesign, the current code may not be flexible enough for future needs.
+
+We need a currency display. ATM the player cant tell how much money he has.
+-- Anyone
+
+Tower upgrade ui is super important
+--Albin
+
+Tower range indicator is missing.
+--Albin
+
+The game never really ends, no highscore nothing.
+--Anyone
+
+Towers class still needs cleaning/refactoring badly
+--Anyone
+
+MEDIUM PRIORITY:
+
+Support for animated sprites, explosions etc..
+--Albin
+
+Possibly support for texture blending for frost/fire effects on the creatures.
+--Albin
+
+Multiplayer support.
+--Anyone
