@@ -1,9 +1,9 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::2
+Total number of towers::4
 ////////////////////////////////////
 // Cannon tower with frost damage
 ////////////////////////////////////
-texture::tower1
+texture::t1
 title::Cannon tower FROST
 size::60
 price::10
@@ -27,29 +27,81 @@ aoe damage::10
 Shot texture::cannonball
 Shot size::8
 ////////////////////////////////////
-// AOE tower
+// Cannon tower with frost damage
 ////////////////////////////////////
-texture::tower1
-title::AOE tower POSION
+texture::t2
+title::Cannon tower FROST
 size::60
 price::10
 resell value::8
-minDamage::1
-maxDamage::5
+minDamage::20
+maxDamage::50
 Shot-velocity::250
-cooldown between shots::5
-hasFrostDamage::false
-frostTime(sec)::0
+cooldown between shots::2
+hasFrostDamage::true
+frostTime(sec)::5
 hasFireDamage::false
-hasPoisonDamage::true
-poisonDamage(per sec)::5
-poisonTime(sec)::5
-0-projectile,1-projectileAOE,2-AOE::2
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+0-projectile,1-projectileAOE,2-AOE::1
 upgradelink1::1
 upgradelink2::-1
-range::100
-aoe range:: 0
-aoe damage::0 
+range::150
+aoe range:: 30
+aoe damage::10 
 Shot texture::cannonball
-Shot size::200
+Shot size::8
+////////////////////////////////////
+// Cannon tower with frost damage
+////////////////////////////////////
+texture::t3
+title::Cannon tower FROST
+size::60
+price::10
+resell value::8
+minDamage::20
+maxDamage::50
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::true
+frostTime(sec)::5
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+0-projectile,1-projectileAOE,2-AOE::1
+upgradelink1::1
+upgradelink2::-1
+range::150
+aoe range:: 30
+aoe damage::10 
+Shot texture::cannonball
+Shot size::8
+////////////////////////////////////
+// Cannon tower with frost damage
+////////////////////////////////////
+texture::t4
+title::Cannon tower FROST
+size::60
+price::10
+resell value::8
+minDamage::20
+maxDamage::50
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::true
+frostTime(sec)::5
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+0-projectile,1-projectileAOE,2-AOE::1
+upgradelink1::1
+upgradelink2::-1
+range::150
+aoe range:: 30
+aoe damage::10 
+Shot texture::cannonball
+Shot size::8
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

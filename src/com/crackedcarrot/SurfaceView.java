@@ -40,5 +40,10 @@ public class SurfaceView extends GLSurfaceView {
 	public void setSimulationRuntime(GameLoop simulationRuntime) {
 		this.gameLoop = simulationRuntime;
 	}
+	
+	public void setTowerType(int i) {
+		Log.d("SURFACEVIEW", "setTowerType: " + i);
+		this.towerType = i;
+	}
 
 }

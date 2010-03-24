@@ -300,6 +300,10 @@ public class Tower extends Sprite {
 		    	clone.relatedShot.getHeight()
 			);
 		
+			// TODO: This cannot be in the cloneTower function because
+			// then it breaks with TowerLoader.java
+		this.setTextureName(clone.getTextureName());
+		
 		this.draw = true;
 		this.x = towerPlacement.x;
 		this.y = towerPlacement.y;
