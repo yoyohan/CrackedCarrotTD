@@ -116,7 +116,7 @@ public class GameInit extends Activity {
 	    	text.setText("blahblahblah" + nextLevel_creatures);
 	    		// And an icon.
 	    	image = (ImageView) layout.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(R.drawable.bjoern);
+	    	image.setImageResource(R.drawable.bunny_pink_alive);
 
 	    	builder = new AlertDialog.Builder(mContext);
 	    	builder.setView(layout)
