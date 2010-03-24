@@ -1,9 +1,56 @@
-Figure out why the levels higher then 0 is broken.
+Grab something from this list by writing your name under the description in capital letters.
+And add more todos as you come up with them.
 
-JNI onload funktion in render. -- This will make shit nicer.
-Dealloc code in render. -- memleeks are evil.
-Texture loading code in native code instead, for consistency.
+HIGH PRIORITY:
 
-Implement support for dontDraw flag in sprites.
+Dead Creatures need to stay fully visible for some time. They fade to fast at the moment
+I suggest we start the fade out when the level ends.. Creating a impressive string of
+corpses during the level. 
+-- Henrik
 
-Possibly new redesign, the current code may not be flexible enough for future needs.
+We need a currency display. ATM the player cant tell how much money he has.
+-- JOHAN
+
+We need a player health display. ATM the player cant tell how much health he has.
+Maybe a cute heart next to the number of lifes.
+--Anyone
+
+Tower upgrade ui is super important
+--Albin
+
+Tower range indicator is missing.
+--Albin
+
+The game never really ends, no highscore nothing.
+--Anyone
+
+Towers class still needs cleaning/refactoring badly
+--Henrik
+
+MEDIUM PRIORITY:
+
+Support for animated sprites, explosions etc..
+--Albin
+
+Possibly support for texture blending for frost/fire effects on the creatures.
+--Albin
+
+Multiplayer support.
+--JOHAN
+
+Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
+It would be really nice if the timer is shown instead of progress bar until lvl begins
+--Anyone
+
+Balancing of the game. Create more levels balance towers etc.
+--Henrik
+
+More detailed information between levels. The player have to know what kind of creatures he will be facing
+before next level starts
+--Henrik
+
+Main menu -> Options menu. We need to have possible sound settings before game starts.
+--Anyone
+
+Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
+--Anyone

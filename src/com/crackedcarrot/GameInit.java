@@ -50,12 +50,23 @@ public class GameInit extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
-    	sound.setIcon(R.drawable.sound_key_button);
-        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart2");
-        restart.setIcon(R.drawable.restart_key_button);
+    	sound.setIcon(R.drawable.button_sound_on);
+        MenuItem restart = menu.add(0, Menu.NONE, 0, "Restart");
+        restart.setIcon(R.drawable.button_restart);
         MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
-        quit.setIcon(R.drawable.quit_key_button);
+        quit.setIcon(R.drawable.button_quit);
         return true;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	MenuItem sound = menu.getItem(0);
+		if (simulationRuntime.soundManager.playSound)
+	    	sound.setIcon(R.drawable.button_sound_off);
+		else
+	    	sound.setIcon(R.drawable.button_sound_on);
+    	
+    	return true;
     }
 
     @Override
@@ -75,9 +86,9 @@ public class GameInit extends Activity {
 
     
     
-    static final int DIALOG_NEXTLEVEL_ID = 1;
-    static final int DIALOG_WON_ID       = 2;
-    static final int DIALOG_LOST_ID      = 3;
+    final int DIALOG_NEXTLEVEL_ID = 1;
+    final int DIALOG_WON_ID       = 2;
+    final int DIALOG_LOST_ID      = 3;
     
 	/*
 	 * Creates our NextLevel-dialog.
@@ -105,7 +116,7 @@ public class GameInit extends Activity {
 	    	text.setText("blahblahblah" + nextLevel_creatures);
 	    		// And an icon.
 	    	image = (ImageView) layout.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(R.drawable.bjoern);
+	    	image.setImageResource(R.drawable.bunny_pink_alive);
 
 	    	builder = new AlertDialog.Builder(mContext);
 	    	builder.setView(layout)
@@ -159,7 +170,7 @@ public class GameInit extends Activity {
 	    	dialog.setOwnerActivity(this);
 	    	break;
 	    default:
-	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id!");
+	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	    return dialog;
@@ -181,7 +192,7 @@ public class GameInit extends Activity {
 
 	    	break;
 	    default:
-	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id!");
+	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	}
@@ -365,8 +376,10 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_WON_ID:
             		 showDialog(2);
+            		 break;
             	 case DIALOG_LOST_ID:
             		 showDialog(3);
+            		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
                      break;
