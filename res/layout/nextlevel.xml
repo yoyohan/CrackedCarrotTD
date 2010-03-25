@@ -2,36 +2,43 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/layout_root"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
               android:padding="10dp"
-              android:orientation="vertical" android:minHeight="160px" android:minWidth="240px">
+              android:orientation="vertical" 
+              android:minHeight="400dp" 
+              android:minWidth="260dp" 
+              android:layout_width="260dp" android:layout_height="400dp">
 
-    <TextView android:id="@+id/NextLevelTitle"
-              android:layout_width="wrap_content"
-              android:layout_height="fill_parent"
-              android:textColor="#FFF"
-              android:text="Next Level Title!" android:textStyle="bold"/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:padding="10dp" 
+			android:layout_height="wrap_content">
 
-			  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:padding="10dp"
-                            >
+    	<TextView android:id="@+id/NextLevelTitle"
+				android:layout_width="wrap_content"
+				android:textColor="#000"
+				android:typeface="serif"
+				android:textSize="20dip"
+				android:text="Next Level Title!" 
+				android:layout_height="wrap_content"/>
+ 	
+		<ImageView android:id="@+id/NextLevelImage"
+				android:layout_width="wrap_content"
+				android:src="@drawable/bunny_pink_alive" 
+				android:layout_height="wrap_content" android:layout_gravity="right"/>
+		
+	</LinearLayout>
+	<TextView android:id="@+id/NextLevelText"
+		android:layout_width="fill_parent"
+		android:textColor="#000"
+		android:typeface="serif"
+		android:textSize="16dip"
+		android:text="Next level information goes here." android:layout_height="wrap_content"/>                  
 
-				  <ImageView android:id="@+id/NextLevelImage"
-    	                     android:layout_width="wrap_content"
-        	                 android:layout_height="fill_parent"
-            	             android:layout_marginRight="10dp"
-                	         android:src="@drawable/bunny_pink_alive"/>
+    <Button	android:id="@+id/NextLevelButton"
+		android:layout_width="wrap_content"
+		android:background="@drawable/startgame_button" 
+		android:layout_height="wrap_content" android:layout_gravity="bottom|right">
+	</Button>
 
-			      <TextView android:id="@+id/NextLevelText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="fill_parent"
-                            android:textColor="#FFF"
-                            android:text="Next level information goes here."/>
-              
-              </LinearLayout>
-              
 </LinearLayout>

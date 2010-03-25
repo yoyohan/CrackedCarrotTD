@@ -5,6 +5,9 @@ public class Player {
 	private int difficulty;
 	private int health;
 	private int money;
+	private int interestGainedLatestLvl;
+	private int interestGainedEntireGame;
+	private int healthLost;
 	private int timeUntilNextLevel;
 	private double timeBetweenLevels;
 	
@@ -17,10 +20,23 @@ public class Player {
 	
 	public void calculateInterest() {
 		// Formula for calculating interest.
+		interestGainedLatestLvl = (int)(money * 0.05);
+		interestGainedEntireGame+=interestGainedLatestLvl;
 		money = (int)(money * 1.05);
 	}
 	
+	public int getInterestGainedThisLvl() {
+		return interestGainedLatestLvl;
+	}
+	
+	public int getHealthLostThisLvl() {
+		int tmp = healthLost;
+		healthLost = 0;
+		return tmp;
+	}	
+	
 	public void damage(int dmg){
+		healthLost++;
 		health -= dmg;
 	}
 	
