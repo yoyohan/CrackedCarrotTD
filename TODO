@@ -13,7 +13,7 @@ We need a currency display. ATM the player cant tell how much money he has.
 
 We need a player health display. ATM the player cant tell how much health he has.
 Maybe a cute heart next to the number of lifes.
---Anyone
+--FREDRIK
 
 Tower upgrade ui is super important
 --Albin
@@ -22,7 +22,7 @@ Tower range indicator is missing.
 --Albin
 
 The game never really ends, no highscore nothing.
---Anyone
+--FREDRIK
 
 Towers class still needs cleaning/refactoring badly
 --Henrik
@@ -53,7 +53,7 @@ before next level starts
 --Henrik
 
 Main menu -> Options menu. We need to have possible sound settings before game starts.
---Anyone
+--FREDRIK
 
 Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
 --Anyone
