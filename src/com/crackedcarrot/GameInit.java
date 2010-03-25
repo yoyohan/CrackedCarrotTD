@@ -205,7 +205,7 @@ public class GameInit extends Activity {
 	    	Player currPlayer = simulationRuntime.getPlayerData();
 	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
 	    	lvlText += 		"<b>Bounty:</b> " + currLvl.goldValue + "g/creep<br>";
-	    	lvlText += 		"<b>Health:</b> " + currLvl.getHealth() + "hp/creep<br>";
+	    	lvlText += 		"<b>Health:</b> " + (int)currLvl.getHealth() + "hp/creep<br>";
 	    	lvlText += 		"<br>";
 	    	lvlText += 		"<b>Special abillites:</b><br>";
 	    	int tmpAbil = 0;
