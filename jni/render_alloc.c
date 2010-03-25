@@ -6,8 +6,8 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
 															jint type, jint size){
                                                                   
-    noOfSprites = size;
-    renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites);
+    noOfSprites[type] = size;
+    renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
 	
@@ -65,17 +65,40 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	thisSprite->textureName = id;
 	
-	thisSprite->vertBufSize = sizeof(GLfloat) * 4 * 3;
-	thisSprite->textCoordBufSize = sizeof(GLfloat) * 4 * 2;
-	thisSprite->indexBufSize = sizeof(GLuint) * 6;
+	thisSprite->bufferName[0] = 0; 
+	thisSprite->bufferName[1] = 0;
+	thisSprite->bufferName[2] = 0;
 	
-	thisSprite->vertBuffer = malloc(thisSprite->vertBufSize);
-	thisSprite->textureCoordBuffer = malloc(thisSprite->textCoordBufSize);
-	thisSprite->indexBuffer = malloc(thisSprite->indexBufSize);
-	thisSprite->indexCount = 6;
 	
-	GLushort* indexBuffer = thisSprite->indexBuffer;
+	//Init of our quad is done.
+	if(spriteNO != 0 && thisSprite.type != ANIMATION){
+		thisSprite->bufferName[0] = renderSprites[type][spriteNO-1].bufferName[0]; 
+		thisSprite->bufferName[1] = renderSprites[type][spriteNO-1].bufferName[1];
+		thisSprite->bufferName[2] = renderSprites[type][spriteNO-1].bufferName[2];
+	}
+	else{
+		initHwBuffers(env, thisSprite, type);
+	}	
+	//spritesReady = 1;	
+}
+
+void initHwBuffers(JNIEnv* env, GLSprite* sprite, jint type){
 	
+	GLsizeiptr vertBufSize;
+	GLfloat* vertBuffer;
+	GLsizeiptr textCoordBufSize;
+	GLfloat* textureCoordBuffer;
+	GLsizeiptr indexBufSize;
+	GLushort* indexBuffer;
+	
+	vertBufSize = sizeof(GLfloat) * 4 * 3;
+	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
+	indexBufSize = sizeof(GLuint) * 6;
+	
+	vertBuffer = malloc(vertBufSize);
+	textureCoordBuffer = malloc(textCoordBufSize);
+	indexBuffer = malloc(indexBufSize);
+	sprite->indexCount = 6;	
 	
 	//This be the vertex order for our quad, its totaly square man.
 	indexBuffer[0] = 0;
@@ -84,9 +107,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	indexBuffer[3] = 1;
 	indexBuffer[4] = 2;
 	indexBuffer[5] = 3;
-	
-	GLfloat* vertBuffer = thisSprite->vertBuffer;
-	
+		
 	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
 	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
 		
@@ -108,32 +129,17 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	vertBuffer[11] = 0.0;
 	//WOOO I CAN HAS QUAD!
 	
-	
-	GLfloat* textureCoordBuffer = thisSprite->textureCoordBuffer;
 	//Texture Coords
+	
 	textureCoordBuffer[0] = 0.0; textureCoordBuffer[1] = 1.0;
 	textureCoordBuffer[2] = 1.0; textureCoordBuffer[3] = 1.0;
 	textureCoordBuffer[4] = 0.0; textureCoordBuffer[5] = 0.0;
 	textureCoordBuffer[6] = 1.0; textureCoordBuffer[7] = 0.0;
 	
-	thisSprite->bufferName[0] = 0; 
-	thisSprite->bufferName[1] = 0;
-	thisSprite->bufferName[2] = 0;
 	
-	
-	//Init of our quad is done.
-	
-	initHwBuffers(env, thisSprite);
-	
-	//spritesReady = 1;	
-}
-
-void initHwBuffers(JNIEnv* env, GLSprite* sprite){
-	
-	
-	float w = (*env)->GetFloatField(env, sprite->object, sprite->width);
+	/*float w = (*env)->GetFloatField(env, sprite->object, sprite->width);
 	float h = (*env)->GetFloatField(env, sprite->object, sprite->height);
-	/*__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "sprite has width: %f and hegiht %f", w,h);
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "sprite has width: %f and hegiht %f", w,h);
 	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "init HW buffers useing data:");
 	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Indices : %d %d %d %d %d %d",
 						sprite->indexBuffer[0], sprite->indexBuffer[1], sprite->indexBuffer[2],
@@ -146,15 +152,15 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	glGenBuffers(3, sprite->bufferName);
 	//__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "GenBuffer retured error: %d", glGetError());
 	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[VERT_OBJECT]);
-	glBufferData(GL_ARRAY_BUFFER, sprite->vertBufSize, sprite->vertBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertBufSize, vertBuffer, GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[TEX_OBJECT]);
-	glBufferData(GL_ARRAY_BUFFER, sprite->textCoordBufSize, sprite->textureCoordBuffer,GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sprite->indexBufSize, sprite->indexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	

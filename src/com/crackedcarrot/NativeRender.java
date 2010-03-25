@@ -28,7 +28,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public	static final int TOWER		= 5;
 
 	private static native void nativeAlloc(int type, int n, Sprite s);
-	private static native void nativeDataPoolSize(int size);
+	private static native void nativeDataPoolSize(int type, int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
     private static native void nativeSurfaceCreated();

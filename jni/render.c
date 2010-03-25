@@ -38,7 +38,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	
-    int i;
+    int i,j;
     
     GLuint* bufferName;
     GLint currTexture = -1;
@@ -55,71 +55,54 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	for (i = 0; i < noOfSprites; i++) {		
-		if((*env)->GetBooleanField(env,renderSprites[i].object, renderSprites[i].draw)){
-			currSprt = &renderSprites[i];
-			bufferName = currSprt->bufferName;			
-			r = (*env)->GetFloatField(env, currSprt->object, currSprt->r);
-			g = (*env)->GetFloatField(env, currSprt->object, currSprt->g);
-			b = (*env)->GetFloatField(env, currSprt->object, currSprt->b);
-			a = (*env)->GetFloatField(env, currSprt->object, currSprt->opacity);
+	for(j = 0; j < 6; j++){
+		for (i = 0; i < noOfSprites[j]; i++) {
+			if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw)){
+				currSprt = &renderSprites[j][i];
+				bufferName = currSprt->bufferName;			
+				r = (*env)->GetFloatField(env, currSprt->object, currSprt->r);
+				g = (*env)->GetFloatField(env, currSprt->object, currSprt->g);
+				b = (*env)->GetFloatField(env, currSprt->object, currSprt->b);
+				a = (*env)->GetFloatField(env, currSprt->object, currSprt->opacity);
 			
-			scale = (*env)->GetFloatField(env, currSprt->object, currSprt->scale);
+				scale = (*env)->GetFloatField(env, currSprt->object, currSprt->scale);
 			
-			currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
-			if(currTexture == 0){
-				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
-			}
+				currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
+				if(currTexture == 0){
+					__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
+				}
 			
-			if(currTexture != prevTexture){ 
-			    glBindTexture(GL_TEXTURE_2D, currTexture);
-				prevTexture = currTexture;
-			}
+				if(currTexture != prevTexture){ 
+				    glBindTexture(GL_TEXTURE_2D, currTexture);
+					prevTexture = currTexture;
+				}
 		
-			glPushMatrix();
-			glLoadIdentity();
+				glPushMatrix();
+				glLoadIdentity();
 			
-			glColor4f(r, g, b, a);
-			glScalef(scale,scale,1);
-			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
-						(*env)->GetFloatField(env, currSprt->object, currSprt->y), 1);
+				glColor4f(r, g, b, a);
+				glScalef(scale,scale,1);
+				glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
+							(*env)->GetFloatField(env, currSprt->object, currSprt->y), 1);
 		
-			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
-			glVertexPointer(3, GL_FLOAT, 0, 0);
+				glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
+				glVertexPointer(3, GL_FLOAT, 0, 0);
 			
-			glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
-			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+				glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
+				glTexCoordPointer(2, GL_FLOAT, 0, 0);
+		
+	            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
+				glDrawElements(GL_TRIANGLES, currSprt->indexCount, GL_UNSIGNED_SHORT, 0);
 			
-/*			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Texture:%d", currTexture);
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"RENDER USEING DATA:");
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG,"Verts: { %f,%f,%f} { %f,%f,%f} { %f,%f,%f} { %f,%f,%f}",
-								vertBuffer[0],vertBuffer[1],vertBuffer[2],vertBuffer[3],
-								vertBuffer[4],vertBuffer[5],vertBuffer[6],vertBuffer[7],
-								vertBuffer[8],vertBuffer[9],vertBuffer[10],vertBuffer[11]);
-											
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "TextCoords: {%f,%f} {%f,%f} {%f,%f} {%f,%f}",
-								texCoordBuffer[0],texCoordBuffer[1],texCoordBuffer[2],texCoordBuffer[3],
-								texCoordBuffer[4],texCoordBuffer[5],texCoordBuffer[6],texCoordBuffer[7]);
-								
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "Indices: {%u,%u,%u,%u,%u,%u}",
-								indexBuffer[0],indexBuffer[1],indexBuffer[2],indexBuffer[3],
-								indexBuffer[4],indexBuffer[5]);
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "IndexCount: %u", indexCount);
-*/			
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
-			glDrawElements(GL_TRIANGLES, currSprt->indexCount, GL_UNSIGNED_SHORT, 0);
-/*			
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "DrawElements returned error: %d ", glGetError());
-*/			
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			
-			glPopMatrix();
-		}
-    }
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				glPopMatrix();
+			}
+	    }
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
