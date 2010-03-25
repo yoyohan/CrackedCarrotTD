@@ -56,7 +56,7 @@
         		android:layout_height="wrap_content"
         		android:layout_marginRight="7dp"
         		android:layout_marginLeft="7dp"
-        		android:background="@drawable/inmenu2_button" />
+        		android:background="@drawable/t1" />
         		
         <Button
         		android:id="@+id/inmenu3"
@@ -64,7 +64,7 @@
         		android:layout_height="wrap_content"
         		android:layout_marginRight="7dp"
         		android:layout_marginLeft="7dp"
-        		android:background="@drawable/inmenu3_button" />
+        		android:background="@drawable/t2" />
         		
         <Button
         		android:id="@+id/inmenu4"
@@ -72,7 +72,7 @@
         		android:layout_height="wrap_content"
         		android:layout_marginRight="7dp"
         		android:layout_marginLeft="7dp"
-        		android:background="@drawable/inmenu4_button" />
+        		android:background="@drawable/t3" />
         		
         <Button
         		android:id="@+id/inmenu5"
@@ -80,7 +80,7 @@
         		android:layout_height="wrap_content"
         		android:layout_marginRight="7dp"
         		android:layout_marginLeft="7dp"
-        		android:background="@drawable/inmenu5_button" />
+        		android:background="@drawable/t4" />
         		
     </LinearLayout>
     
