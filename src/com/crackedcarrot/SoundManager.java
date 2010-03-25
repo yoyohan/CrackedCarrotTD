@@ -53,6 +53,7 @@ public class SoundManager {
         // WITH the extension on the file.
         this.addSound( 0, 1.0f, 250, R.raw.shot1);
         this.addSound(10, 1.0f, 1000, R.raw.died1);
+        this.addSound(20, 1.0f, 1000, R.raw.build1);
         //this.addSound(20, 1.0f, R.raw.creaturehappy);
         //this.addSound(30, 1.0f, R.raw.victory);
         //this.addSound(31, 1.0f, R.raw.defeat);

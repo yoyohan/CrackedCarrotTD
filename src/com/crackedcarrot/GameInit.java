@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -89,6 +90,7 @@ public class GameInit extends Activity {
     final int DIALOG_NEXTLEVEL_ID = 1;
     final int DIALOG_WON_ID       = 2;
     final int DIALOG_LOST_ID      = 3;
+    final int DIALOG_UPGRADE_ID   = 4;
     
 	/*
 	 * Creates our NextLevel-dialog.
@@ -168,9 +170,52 @@ public class GameInit extends Activity {
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
-
 	    	dialog = alertDialog;
-	    	dialog.setOwnerActivity(this);
+	    	
+	    	break;
+	    case DIALOG_UPGRADE_ID:
+	    	mContext = this;
+	    	inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+	    	layout = inflater.inflate(R.layout.upgradetower,
+	    	                               (ViewGroup) findViewById(R.id.layout_root));
+
+	    	builder = new AlertDialog.Builder(mContext);
+	    	builder.setView(layout)
+	    	       .setCancelable(true)
+	    	       ;
+
+	    	/*
+	        Button upgradeButton1 = (Button) findViewById(R.id.UpgradeTower1);
+	        upgradeButton1.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		Log.d("TEST", "test");
+	        	}
+	        });
+
+	        Button upgradeButton2 = (Button) findViewById(R.id.UpgradeTower2);
+	        upgradeButton2.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		simulationRuntime.upgradeTower(1);
+	        	}
+	        });
+	        
+	        Button upgradeButton3 = (Button) findViewById(R.id.UpgradeTower3);
+	        upgradeButton3.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		//dialog.cancel();
+	        	}
+	        });
+	        */
+	    	
+	    	alertDialog = builder.create();
+	    	dialog = alertDialog;
+
+	    		// This will remove the fading effect of the dialog.
+	    		// It's not suitable for upgrading towers to dim the screen...
+	    	WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+	    	dialog.getWindow().setAttributes(lp); // sets the updated windows attributes
+	    	dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+	    	
 	    	break;
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
@@ -318,6 +363,7 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
+        		mGLSurfaceView.setTowerType(0);
         		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
         		v.setOnTouchListener(o); */
         	}
@@ -327,6 +373,7 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		// A tower of type 2 has been chosen, where to put it?
+        		mGLSurfaceView.setTowerType(1);
         	}
         });
         Button inMenu4 = (Button)findViewById(R.id.inmenu4);
@@ -334,6 +381,7 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		// A tower of type 3 has been chosen, where to put it?
+        		mGLSurfaceView.setTowerType(2);
         	}
         });
         Button inMenu5 = (Button)findViewById(R.id.inmenu5);
@@ -341,6 +389,7 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		// A tower of type 4 has been chosen, where to put it?
+        		mGLSurfaceView.setTowerType(3);
         	}
         });
         Button inMenu6 = (Button)findViewById(R.id.inmenu6);
@@ -428,6 +477,9 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_LOST_ID:
             		 showDialog(3);
+            		 break;
+            	 case DIALOG_UPGRADE_ID:
+            		 showDialog(4);
             		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);

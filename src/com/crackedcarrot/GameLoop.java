@@ -349,7 +349,15 @@ public class GameLoop implements Runnable {
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
 				totalNumberOfTowers++;
+				
+				soundManager.playSound(20);
+				
 				return true;
+			} else {
+			/*	// User clicked on an existing tower. Show upgrade window.
+				Message msg = new Message();
+				msg.what = 4;
+				nextLevelHandler.sendMessage(msg);*/
 			}
 		}
 		return false;
@@ -380,6 +388,7 @@ public class GameLoop implements Runnable {
     	nextLevelSemaphore.release();
     }
     
+<<<<<<< HEAD
     public Level getLevelData() {
     	return mLvl[lvlNbr];
     }
@@ -389,5 +398,10 @@ public class GameLoop implements Runnable {
     public int getLvlNumber() {
     	return lvlNbr;
     }    
+=======
+    public void upgradeTower(int i) {
+    	Log.d("GAMELOOP", "upgradeTower: " + i);
+    }
+>>>>>>> e69970939a37b67fb980a3ae57d0c25cc2c0250f
     
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/UpgradeTower"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:padding="10dp"
+              android:orientation="vertical" android:minWidth="240px">
+
+    <TextView android:id="@+id/UpgradeTowerTitle"
+              android:layout_width="wrap_content"
+              android:layout_height="fill_parent"
+              android:textColor="#FFF"
+              android:text="Upgrade Tower [not working!]" android:textStyle="bold"/>
+
+			  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:padding="10dp"
+                            >
+
+					        <Button
+								android:id="@+id/UpgradeTower1"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/button_arrow_up_orange"/>
+
+					        <Button
+								android:id="@+id/UpgradeTower2"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/button_arrow_down_orange"/>
+
+					        <Button
+								android:id="@+id/UpgradeTower3"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/button_arrow_cancel"/>
+              
+              </LinearLayout>
+              
+</LinearLayout>
