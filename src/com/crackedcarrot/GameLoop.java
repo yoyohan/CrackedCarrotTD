@@ -354,10 +354,10 @@ public class GameLoop implements Runnable {
 				
 				return true;
 			} else {
-				// User clicked on an existing tower. Show upgrade window.
+			/*	// User clicked on an existing tower. Show upgrade window.
 				Message msg = new Message();
 				msg.what = 4;
-				nextLevelHandler.sendMessage(msg);
+				nextLevelHandler.sendMessage(msg);*/
 			}
 		}
 		return false;
