@@ -43,7 +43,7 @@ public class GameInit extends Activity {
     private HealthProgressBar healthProgressBar;
     private int healthProgress = 100;
     private NrCreTextView nrCreText;
-    private int nextLevel_creatures = 0;
+    //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
     
     //private int highlightIcon = R.drawable.map_choose;
@@ -103,8 +103,8 @@ public class GameInit extends Activity {
     	Context mContext;
     	LayoutInflater inflater;
     	View layout;
-    	TextView text;
-    	ImageView image;
+    	//TextView text;
+    	//ImageView image;
     	
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
@@ -128,13 +128,6 @@ public class GameInit extends Activity {
 							simulationRuntime.nextLevelClick();
 						}
 	    			});
-	    	
-	    	// Text for next level goes here.
-	    	text = (TextView) dialog.findViewById(R.id.NextLevelText);
-	    	text.setText("blahblahblah" + nextLevel_creatures);
-	    	// And an icon.
-	    	image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(R.drawable.bunny_pink_alive);
 	    	break;
 	    case DIALOG_WON_ID:
 	    	mContext = this;
