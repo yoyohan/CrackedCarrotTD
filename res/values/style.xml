@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Base application theme is the dialog theme. -->
+  <style name="NextlevelTheme" parent="@android:style/Theme.Dialog">
+	<item name="android:windowNoTitle">true</item>
+	<item name="android:windowBackground">@drawable/test</item>
+	<item name="android:backgroundDimEnabled">true</item>
+	<item name="android:layout_width">200dp</item> 
+  </style>
+
+</resources>

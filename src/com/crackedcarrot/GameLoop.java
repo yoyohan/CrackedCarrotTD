@@ -388,8 +388,16 @@ public class GameLoop implements Runnable {
     	nextLevelSemaphore.release();
     }
     
+    public Level getLevelData() {
+    	return mLvl[lvlNbr];
+    }
+    public Player getPlayerData() {
+    	return player;
+    }
+    public int getLvlNumber() {
+    	return lvlNbr;
+    }    
     public void upgradeTower(int i) {
     	Log.d("GAMELOOP", "upgradeTower: " + i);
     }
-    
 }

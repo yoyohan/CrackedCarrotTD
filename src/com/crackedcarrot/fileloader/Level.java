@@ -5,6 +5,7 @@ import com.crackedcarrot.Creature;
 // Class contains level information. Number of creatures creature type etc.
 public class Level extends Creature {
 	public int nbrCreatures;
+	public String creepTitle;
 	
 	//Constructor
     public Level(int resourceId){
