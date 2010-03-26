@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,9 +43,8 @@ public class GameInit extends Activity {
     private HealthProgressBar healthProgressBar;
     private int healthProgress = 100;
     private NrCreTextView nrCreText;
-    private int nextLevel_creature;
-    private int nextLevel_creatures = 0;
-
+    //private int nextLevel_creatures = 0;
+    private Dialog dialog = null;
     
     //private int highlightIcon = R.drawable.map_choose;
 
@@ -96,41 +96,38 @@ public class GameInit extends Activity {
 	 * Creates our NextLevel-dialog.
 	 */
 	protected Dialog onCreateDialog(int id) {
-	    Dialog dialog = null;
+
     	
 	    AlertDialog alertDialog;
     	AlertDialog.Builder builder;
     	Context mContext;
     	LayoutInflater inflater;
     	View layout;
-    	TextView text;
-    	ImageView image;
+    	//TextView text;
+    	//ImageView image;
     	
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
-	    	mContext = this;
-	    	inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-	    	layout = inflater.inflate(R.layout.nextlevel,
-	    	                               (ViewGroup) findViewById(R.id.layout_root));
+	    	dialog = new Dialog(this,R.style.NextlevelTheme);
+	        dialog.setContentView(R.layout.nextlevel);
+	    	dialog.setOwnerActivity(this);	    	
+	    	
+	    	// A button	    	
+	    	Button butt= (Button) dialog.findViewById(R.id.NextLevelButton);
+	    	butt.setOnClickListener(
+	    			new View.OnClickListener() {
+	    				public void onClick(View v) {
+	    					dialog.dismiss();
 
-	    		// Text for next level goes here.
-	    	text = (TextView) layout.findViewById(R.id.NextLevelText);
-	    	text.setText("blahblahblah" + nextLevel_creatures);
-	    		// And an icon.
-	    	image = (ImageView) layout.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(R.drawable.bunny_pink_alive);
-
-	    	builder = new AlertDialog.Builder(mContext);
-	    	builder.setView(layout)
-	    	       .setCancelable(true)
-	    	       .setPositiveButton("Next Wave!", new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	                simulationRuntime.nextLevelClick();
-	    	           }
-	    	       });
-	    	alertDialog = builder.create();
-	    	dialog = alertDialog;
-
+				    }
+				});
+	    	
+	    	dialog.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							simulationRuntime.nextLevelClick();
+						}
+	    			});
 	    	break;
 	    case DIALOG_WON_ID:
 	    	mContext = this;
@@ -147,8 +144,9 @@ public class GameInit extends Activity {
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
+
 	    	dialog = alertDialog;
-	    	
+	    	dialog.setOwnerActivity(this);
 	    	break;
 	    case DIALOG_LOST_ID:
 	    	mContext = this;
@@ -226,13 +224,61 @@ public class GameInit extends Activity {
 	protected void onPrepareDialog(int id, Dialog dialog) {
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
-	    		// Text for next level goes here.
-	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
-	    	text.setText("Way to go! Next level has " + nextLevel_creatures + " creatures.");
-	    		// And an icon.
-	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(nextLevel_creature);
 
+	    	int currLvlnbr = simulationRuntime.getLvlNumber() +1;
+	    	Level currLvl = simulationRuntime.getLevelData();
+
+	    	// Title:
+	    	TextView title = (TextView) dialog.findViewById(R.id.NextLevelTitle);
+	    	String titleText ="<b>Level " + currLvlnbr + "</b><br>" + currLvl.creepTitle +"<br>";
+		    CharSequence styledText = Html.fromHtml(titleText);
+	    	title.setText(styledText);
+
+    		// And an icon.
+	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
+	    	image.setImageResource(currLvl.getResourceId());
+	    	
+	    	// Text for next level goes here.
+	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
+	    	Player currPlayer = simulationRuntime.getPlayerData();
+	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
+	    	lvlText += 		"<b>Bounty:</b> " + currLvl.goldValue + "g/creep<br>";
+	    	lvlText += 		"<b>Health:</b> " + (int)currLvl.getHealth() + "hp/creep<br>";
+	    	lvlText += 		"<br>";
+	    	lvlText += 		"<b>Special abillites:</b><br>";
+	    	int tmpAbil = 0;
+	    	if (currLvl.creatureFast) {
+		    	lvlText += 		"<font color=yellow>Fast level</font><br>";
+		    	tmpAbil++;
+	    	}
+		    if (currLvl.creatureFireResistant) {
+		    	lvlText += 		"<font color=red>Fire resistant</font><br>";
+		    	tmpAbil++;
+		    }
+		    if (currLvl.creatureFrostResistant) {
+		    	lvlText += 		"<font color=blue>Frost resistant</font><br>";
+		    	tmpAbil++;
+		    }
+		    if (currLvl.creaturePoisonResistant) {
+		    	lvlText += 		"<font color=green>Posion resistant</font><br>";
+		    	tmpAbil++;
+		    }
+		    if (tmpAbil == 0)
+		    	lvlText += 		"No special abbilities";
+
+		    if (currLvl.creaturePoisonResistant) {
+		    	lvlText += 		"<font color=green>Posion resistant</font><br>";
+		    	tmpAbil++;
+		    }
+		    
+		    if (currLvlnbr > 1) {
+		    	lvlText += 		"<br><b>Previous level:</b><br>";
+		    	lvlText += 		"Interest gained:" + currPlayer.getInterestGainedThisLvl() + "<br>";
+		    	lvlText += 		"Health lost:" + currPlayer.getHealthLostThisLvl();		    	
+		    	
+		    }
+		    styledText = Html.fromHtml(lvlText);
+		    text.setText(styledText);
 	    	break;
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
@@ -417,8 +463,6 @@ public class GameInit extends Activity {
 
             switch (msg.what) {
             	 case DIALOG_NEXTLEVEL_ID:
-            		 nextLevel_creature  = msg.arg2;
-            		 nextLevel_creatures = msg.arg1;
                      showDialog(1);
             		 break;
             	 case DIALOG_WON_ID:

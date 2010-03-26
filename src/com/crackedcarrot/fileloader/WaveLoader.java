@@ -85,15 +85,18 @@ public class WaveLoader {
 			            	tmpLvl.setDeadResourceId(resID);
 							break;
 						case 4:
+							tmpLvl.creepTitle = tmpStr[1].trim();
+							break;
+						case 5:
 			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	tmpLvl.setWidth(recalc.getX());
 			            	tmpLvl.setHeight(recalc.getX());
-							break;
-						case 5:
+							break;							
+						case 6:
 			            	tmpLvl.setHealth(Integer.parseInt(tmpStr[1].trim()));
 			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
 							break;
-						case 6:
+						case 7:
 			            	tmpLvl.setCreatureFast(Boolean.parseBoolean(tmpStr[1].trim()));
 			            	// I will put velocity here
 			            	recalc = scaler.scale(30,0);
@@ -101,19 +104,19 @@ public class WaveLoader {
 				            	tmpLvl.setVelocity(recalc.getX()* 2);
 			        		else tmpLvl.setVelocity(recalc.getX());
 							break;
-						case 7:
+						case 8:
 			            	tmpLvl.setCreatureFireResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
-						case 8:
+						case 9:
 			            	tmpLvl.setCreatureFrostResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
-						case 9:
+						case 10:
 			            	tmpLvl.setCreaturePoisonResistant(Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
-						case 10:
+						case 11:
 			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
 							break;
-						case 11:
+						case 12:
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;
