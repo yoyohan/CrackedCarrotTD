@@ -53,7 +53,7 @@ public class MapOp extends Activity {
          *  these are the ones that will be set. */
         final ImageView im = (ImageView) findViewById(R.id.image_choose);
         final TextView tv = (TextView) this.findViewById(R.id.maptext);
-        final ImageView im2 = (ImageView) findViewById(R.id.lev_choose);
+        final ImageView im2 = (ImageView) findViewById(R.id.lev_choose1);
         
         /** Register the ImageView for a contextMenu */
         registerForContextMenu(im2);
