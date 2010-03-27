@@ -2,7 +2,9 @@
 #define LOG_TAG "NATIVE_RENDER"
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
-		
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
+	
 	glViewport(0, 0, w, h);
 	/*
 	 * Set our projection matrix. This doesn't have to be done each time we
