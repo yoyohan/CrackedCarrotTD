@@ -283,8 +283,14 @@ public class GameLoop implements Runnable {
 
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
+		        	// If the level is done and we want to fade away all creatures
+		        	if (remainingCreaturesALIVE <= 0) {
+	        			mCreatures[x].setAllDead(true);
+		        	}
 	        		mCreatures[x].update(timeDeltaSeconds, time, gameSpeed);
 	        	}
+	        	
+	        	
 	            //Calls the method that handles the monsterkilling.
 	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
 	        		mTower[x].towerKillCreature(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);

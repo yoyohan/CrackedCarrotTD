@@ -141,7 +141,7 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if (mCreatures[i] != targetCreature) {
 
-				if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
+				if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 					double distance = Math.sqrt(Math.pow((targetCreature.x - mCreatures[i].x),2) + Math.pow((targetCreature.y - mCreatures[i].y),2));
 					if(distance < this.rangeAOE){ // Is the creature within tower range?
 						float damageFactor = specialDamage(mCreatures[i]);
@@ -162,7 +162,7 @@ public class Tower extends Sprite {
 	private boolean createPureAOEDamage(int nbrCreatures){
 		int nbrOfHits = 0;
 		for(int i = 0;i < nbrCreatures; i++ ){
-			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
+			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
 				if(distance < this.range){ 
 					float damageFactor = specialDamage(mCreatures[i]);
@@ -186,7 +186,7 @@ public class Tower extends Sprite {
 		double lastCreatureDistance = Double.MAX_VALUE;
 		
 		for(int i = 0;i < nbrCreatures; i++ ){
-			if(mCreatures[i].draw == true && mCreatures[i].opacity == 1.0f){ // Is the creature still alive?
+			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
@@ -348,7 +348,7 @@ public class Tower extends Sprite {
     			}
 			}
 			// if the creature is still alive or have not reached the goal
-    		if (this.towerType != this.PUREAOE && this.relatedShot.draw && this.targetCreature.draw && this.targetCreature.opacity == 1.0) {
+    		if (this.towerType != this.PUREAOE && this.relatedShot.draw && this.targetCreature.draw && this.targetCreature.health > 0) {
     			Creature targetCreature = this.targetCreature;
 
     			float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y;

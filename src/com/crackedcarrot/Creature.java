@@ -29,6 +29,8 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
+    // All creatures are dead:
+    private boolean allDead = false;
     // Creature special abilty
     public boolean creatureFast;
     public boolean creatureFrostResistant;
@@ -113,16 +115,14 @@ public class Creature extends Sprite{
 			movement = applyEffects(timeDeltaSeconds, gameSpeed);
 			move(movement);
 		}
-		
 	    // Creature is dead and fading...
-		else if (draw && health <= 0) {
+		else if (allDead) {
 			fade(timeDeltaSeconds/10 * gameSpeed);
 		}
 	}
 	
 	private void die() {
 		setTextureName(this.mDeadTextureName);
-		this.opacity -= 0.5;
 		player.moneyFunction(this.goldValue);
 		// play died1.mp3
 		soundManager.playSound(10);
@@ -231,6 +231,10 @@ public class Creature extends Sprite{
 
 	public void setOffset(int offset) {
 		this.offset = offset;
+	}
+
+	public void setAllDead(boolean allDead) {
+		this.allDead = allDead;
 	}
 
 }

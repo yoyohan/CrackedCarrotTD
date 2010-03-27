@@ -50,5 +50,6 @@ public class Level extends Creature {
 		clone.opacity = 1;
 		clone.creatureFrozenTime = 0;
 		clone.creaturePoisonTime = 0;
+		clone.setAllDead(false);
 	}	
 }
