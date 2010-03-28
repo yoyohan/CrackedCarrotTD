@@ -322,6 +322,10 @@ public class GameLoop implements Runnable {
             		msg.what = 2; // YouWon
                 	nextLevelHandler.sendMessage(msg);
                 	
+                	msg = new Message();
+                	msg.what = 5;
+                	nextLevelHandler.sendMessage(msg);
+                	
         			run = false;
         		}
         	}

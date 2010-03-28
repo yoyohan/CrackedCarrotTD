@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 
@@ -45,6 +47,9 @@ public class GameInit extends Activity {
     private NrCreTextView nrCreText;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
+    
+    private ScoreNinjaAdapter scoreNinjaAdapter;
+
     
     //private int highlightIcon = R.drawable.map_choose;
 
@@ -436,9 +441,21 @@ public class GameInit extends Activity {
         
         mGLSurfaceView.setSimulationRuntime(simulationRuntime);
 
+        	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(
+                this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
+        
         // Start GameLoop
         RenderThread.start();
     }
+    
+    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      scoreNinjaAdapter.onActivityResult(
+          requestCode, resultCode, data);
+    }
+
     
     public void onConfigurationChanged(Configuration newConfig) {
     	super.onConfigurationChanged(newConfig);
@@ -468,6 +485,9 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_UPGRADE_ID:
             		 showDialog(4);
+            		 break;
+            	 case 5:
+            		 scoreNinjaAdapter.show(0);
             		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
