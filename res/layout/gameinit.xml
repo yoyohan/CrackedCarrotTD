@@ -46,40 +46,30 @@
         		android:id="@+id/inmenu1"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="7dp"
-        		android:layout_marginLeft="7dp"
         		android:background="@drawable/inmenu1_button" />
         		
         <Button
         		android:id="@+id/inmenu2"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="7dp"
-        		android:layout_marginLeft="7dp"
         		android:background="@drawable/t1" />
         		
         <Button
         		android:id="@+id/inmenu3"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="7dp"
-        		android:layout_marginLeft="7dp"
         		android:background="@drawable/t2" />
         		
         <Button
         		android:id="@+id/inmenu4"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="7dp"
-        		android:layout_marginLeft="7dp"
         		android:background="@drawable/t3" />
         		
         <Button
         		android:id="@+id/inmenu5"
         		android:layout_width="wrap_content"
         		android:layout_height="wrap_content"
-        		android:layout_marginRight="7dp"
-        		android:layout_marginLeft="7dp"
         		android:background="@drawable/t4" />
         		
     </LinearLayout>
