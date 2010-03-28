@@ -124,6 +124,7 @@ public class Creature extends Sprite{
 		setTextureName(this.mDeadTextureName);
 		this.opacity -= 0.5;
 		player.moneyFunction(this.goldValue);
+		GL.updateCurrency(player.getMoney());
 		// play died1.mp3
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
@@ -202,6 +203,7 @@ public class Creature extends Sprite{
 	private void score(){
 		//draw = false;
 		player.damage(1);
+		GL.updatePlayerHealth();
 		//GL.subtractCreature(1);
 		// Testar hur spelet blir om en creature som inte har dött börjar om längst upp
 		moveToWaypoint(0);

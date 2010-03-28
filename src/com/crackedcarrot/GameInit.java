@@ -24,8 +24,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
+import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
 import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
+import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
+import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -40,9 +44,13 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
+    private PlayerHealthView playerHealthView;
+    private CurrencyView currencyView;
     private HealthProgressBar healthProgressBar;
     private int healthProgress = 100;
     private NrCreTextView nrCreText;
+    private EnemyImageView enImView;
+    private LevelInstrView levelInstrView;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
     
@@ -308,6 +316,24 @@ public class GameInit extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
+        /** Create the text view showing the amount of currency */
+        currencyView = (CurrencyView)findViewById(R.id.currency);
+        currencyView.setCurrencyUpdateListener(new CurrencyUpdateListener(){
+        	//@Override
+        	public void currencyUpdate(int currency){
+        		currencyView.setText("" + currency);
+        	}
+        });
+        
+        /** Create the text view showing a players health */
+        playerHealthView = (PlayerHealthView)findViewById(R.id.playerHealth);
+        playerHealthView.setPlayerHealthUpdateListener(new PlayerHealthUpdateListener(){
+        	//@Override
+        	public void playerHealthUpdate(int health){
+        		playerHealthView.setText("" + health);
+        	}
+        });
+        
         /** Create the progress bar, showing the enemies total health*/
         healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
@@ -316,6 +342,15 @@ public class GameInit extends Activity {
         	//@Override
         	public void progressUpdate(int health){
         		healthProgressBar.setProgress(health);
+        	}
+        });
+        
+        /** Create the ImageView showing current creature */
+        enImView = (EnemyImageView)findViewById(R.id.enemyImVi);
+        enImView.setEnemyUpdateListener(new EnemyUpdateListener() {
+        	//@Override
+        	public void enemyUpdate(int imageId){
+        		enImView.setImageResource(imageId);
         	}
         });
         
@@ -328,6 +363,14 @@ public class GameInit extends Activity {
         	}
         });
         
+        /** Create the ScrollView showing the level instructions */
+        levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
+        levelInstrView.setLevelInstrUpdateListener(new LevelInstrUpdateListener() {
+        	@Override
+        	public void levelInstrUpdate(String s){
+        		levelInstrView.setText(s);
+        	}
+        });
         
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
