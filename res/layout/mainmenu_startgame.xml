@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/background">
+
+	<TableLayout
+		android:layout_centerHorizontal="true"
+		android:layout_height="wrap_content"
+		android:layout_width="300dp"
+		android:paddingTop="40dp">
+		
+	    <TableRow>
+			<TableLayout>
+				<TableRow>
+					<Button
+						android:id="@+id/leftbutton"
+						android:gravity="center"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		        		android:layout_weight="1"
+		        		android:layout_gravity="center"
+						android:background="@drawable/button_left" />
+		      
+		      		<ImageView
+		        		android:id="@+id/image_choose"
+		        		android:gravity="center"
+		        		android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:layout_marginRight="20dp"
+		        		android:layout_marginLeft="20dp"
+		        		android:layout_weight="1"
+		        		android:src="@drawable/map_choose" />
+		      
+		      		<Button
+						android:id="@+id/rightbutton"
+						android:gravity="center"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		        		android:layout_weight="1"
+		        		android:layout_gravity="center"
+						android:background="@drawable/button_right"/>
+				</TableRow>
+	  		</TableLayout>
+	    </TableRow>
+	
+		<TableRow>
+			<View android:layout_height="20dip" />
+		</TableRow>
+	
+	    <TableRow>
+	        <TextView android:text="Map 1: The field of grass."
+				android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:textStyle="bold"
+				android:textSize="15sp"
+	            android:textColor="#000000"
+				android:id="@+id/maptext" ></TextView>
+	    </TableRow>
+	    <TableRow>
+			<View android:layout_height="30dip" />
+		</TableRow>
+		
+	    <TableRow>
+	        <TextView android:text="How brave are you?"
+				android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:textStyle="bold"
+				android:textSize="20sp"
+	            android:textColor="#000000"
+				android:id="@+id/difficultyText" />
+	    </TableRow>
+	    <TableRow>
+			<View android:layout_height="10dip" />
+		</TableRow>
+		
+		<TableRow>
+	    	<TableLayout>
+	    		<TableRow android:gravity="center">
+					<ImageView
+	    	    		android:id="@+id/lev_choose1"
+						android:gravity="center"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		        		android:layout_weight="1"
+		        		android:src="@drawable/level_easy" />
+	
+			        <ImageView
+	    	    		android:id="@+id/lev_choose2"
+	        			android:gravity="center"
+	        			android:layout_width="wrap_content"
+	    	    		android:layout_height="wrap_content"
+		        		android:layout_weight="1"
+		        		android:src="@drawable/level_normal" />
+	        		
+	        		<ImageView
+		        		android:id="@+id/lev_choose3"
+						android:gravity="center"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+	        			android:layout_weight="1"
+	        			android:src="@drawable/level_hard" />
+	        	</TableRow>
+	        	
+	    		<TableRow android:gravity="center">
+					<TextView
+						android:text="Easy"
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:layout_gravity="center"
+						android:gravity="center" />
+	
+					<TextView
+						android:text="Normal"
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:layout_gravity="center"
+						android:gravity="center"
+						android:layout_marginLeft="27dp"
+						android:layout_marginRight="27dp"/>
+	        		
+					<TextView
+						android:text="Hard"
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:layout_gravity="center"
+						android:gravity="center" />
+	        	</TableRow>
+			</TableLayout>
+		</TableRow>
+	
+	</TableLayout>
+
+</RelativeLayout>
