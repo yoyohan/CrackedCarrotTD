@@ -82,5 +82,9 @@ public class Scaler {
 		return true;
 	}
 	
+	public int getGridWidth() {
+		return tmpGridSize.x;
+		
+	}
 	
 }

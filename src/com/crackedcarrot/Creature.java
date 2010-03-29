@@ -41,6 +41,10 @@ public class Creature extends Sprite{
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
     
+    // Used by tracker
+	public int gridIndex;
+	public int lastGridLocation;
+    
 	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
 		super(resourceId);
 		this.draw = false;

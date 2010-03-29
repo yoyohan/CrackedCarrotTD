@@ -3,11 +3,6 @@ And add more todos as you come up with them.
 
 HIGH PRIORITY:
 
-Dead Creatures need to stay fully visible for some time. They fade to fast at the moment
-I suggest we start the fade out when the level ends.. Creating a impressive string of
-corpses during the level. 
--- Henrik
-
 We need a currency display. ATM the player cant tell how much money he has.
 -- JOHAN
 
@@ -37,6 +32,7 @@ new "DOOM style" difficulty settings on the start game screen.
 --Fredrik (Half Done).
 
 Support for pause. (During Incommeing phonecalls och SMS).
+--Anyone
 
 Options menyn: highscore settings/Sound etc.
 --Anyone (fredrik ?)
