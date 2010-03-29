@@ -21,7 +21,7 @@ import com.crackedcarrot.menu.R;
 public class GameLoop implements Runnable {
     private Player player;
     private Map mGameMap;
-    private Sprite[] mGrid;
+   // private Sprite[] mGrid;
 
     private Creature[] mCreatures;
     private int remainingCreaturesALIVE;
@@ -119,8 +119,8 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-		this.mGrid = new Grid[1]; 
-		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
+		//this.mGrid = new Grid[1]; 
+		//mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
@@ -164,7 +164,7 @@ public class GameLoop implements Runnable {
 				renderHandle.loadTexture(mLvl[i].getResourceId());
 				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
 			}
-			renderHandle.loadTexture(mGrid[0].getResourceId());
+			//renderHandle.loadTexture(mGrid[0].getResourceId());
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
@@ -195,7 +195,7 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
-		renderHandle.setSprites(mGrid, NativeRender.GRID);
+		//renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
