@@ -44,6 +44,7 @@ public class GameLoop implements Runnable {
     private int gameSpeed;
     
     public boolean resume;
+    private String resumeTowers;
     
     	// We need to reach this to be able to turn off sound.
     public  SoundManager soundManager;
@@ -256,8 +257,18 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
 	    	// if we're resuming a saved game we dont need this.
 	    	// TODO: set this to 0 when initalized instead?
-	    if (!resume)
+	    if (!resume) {
 	    	lvlNbr = 0;
+	    } else {
+	    	String[] towers = resumeTowers.split("-");
+	    	
+	    	for (int i = 0; i < towers.length; i ++) {
+	    		String[] tower = towers[i].split(",");
+	    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
+	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
+	    		createTower(c, Integer.parseInt(tower[0]));
+	    	}
+	    }
 	    gameSpeed = 1;
 
 	    Log.d("GAMELOOP","INIT GAMELOOP");
@@ -434,6 +445,23 @@ public class GameLoop implements Runnable {
     
     public void setLevelNumber(int i) {
     	this.lvlNbr = i;
+    }
+
+    	// This is used by the savegame-function to remember all the towers.
+    public String getTowers() {
+    	String s = "";
+    	for (int i = 0; i < totalNumberOfTowers; i++) {
+    		Tower t = mTower[i];
+    		Log.d("GAMELOOP", "Resume getTowers Type: " + t.getTowerType());
+    		s = s + t.getTowerType() + "," + (int) t.x + "," + (int) t.y + "-";
+    	}
+    	
+    	return s;
+    }
+    
+    public void resumeTowers(String s) {
+    	Log.d("GAMELOOP", "ResumeTowers String: " + s);
+    	this.resumeTowers = s;
     }
     
     public void upgradeTower(int i) {

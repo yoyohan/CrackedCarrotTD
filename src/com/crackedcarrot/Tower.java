@@ -2,6 +2,8 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import android.util.Log;
+
 /**
 * Class defining a tower in the game
 */
@@ -309,6 +311,8 @@ public class Tower extends Sprite {
 		this.y = towerPlacement.y;
 		this.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
+		
+		Log.d("TOWER", "CreateTower TowerType: " + this.towerType);
 	}
 
 	public void towerKillCreature(float timeDeltaSeconds, int gameSpeed, int nbrCreatures) {
@@ -383,6 +387,10 @@ public class Tower extends Sprite {
 	
 	public int getPrice() {
 		return price;
+	}
+	
+	public int getTowerType() {
+		return towerType;
 	}
 	
 }

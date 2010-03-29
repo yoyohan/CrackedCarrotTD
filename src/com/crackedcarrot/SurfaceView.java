@@ -23,7 +23,7 @@ public class SurfaceView extends GLSurfaceView {
 			Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
 
 			// We need to do this because Java and our grid counts backwards.
-			// 480 - clickedYValue = the correct Y-value, for example on a 
+			// 480 - clickedYValue = the correct Y-value, for example, on a 
 			// screen with a 480 Y-resolution.
 			boolean test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
 		

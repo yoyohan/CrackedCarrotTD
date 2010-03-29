@@ -409,12 +409,15 @@ public class GameInit extends Activity {
         
         	// Are we resuming an old saved game?
         int resumeLevelNumber = 0;
+        String resumeTowers = "";
         if (levelChoice == 0) {
         	resume = true;
             // Restore preferences
             SharedPreferences settings = getSharedPreferences("Resume", 0);
             resumeLevelNumber = settings.getInt("LevelNumber", 0);
+            resumeTowers = settings.getString("Towers", "");
         }
+        Log.d("GAMEINIT", "resumeTowers: " + resumeTowers);
         
         // Create the map requested by the player
         mapLoad = new MapLoader(this,res);
@@ -453,6 +456,7 @@ public class GameInit extends Activity {
         if (resume) {
         	simulationRuntime.resume = true;
         	simulationRuntime.setLevelNumber(resumeLevelNumber);
+        	simulationRuntime.resumeTowers(resumeTowers);
         }
         
         RenderThread = new Thread(simulationRuntime);
@@ -533,6 +537,7 @@ public class GameInit extends Activity {
     		SharedPreferences.Editor editor = settings.edit();
     		editor.putInt("Resume", 1);
     		editor.putInt("LevelNumber", simulationRuntime.getLevelNumber());
+    		editor.putString("Towers", simulationRuntime.getTowers());
     		editor.commit();
     	} else {
     			// Dont allow resume. Clears the main resume flag!
