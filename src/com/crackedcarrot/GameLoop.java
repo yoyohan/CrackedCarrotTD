@@ -164,6 +164,10 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
 		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
+		//UGLY HACK!!
+		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND);
+		//END UGLY HACK!!
+		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
         // influence our results.

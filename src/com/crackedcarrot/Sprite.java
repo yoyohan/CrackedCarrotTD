@@ -24,6 +24,12 @@ package com.crackedcarrot;
  * using the DrawTexture extension.
  */
 public class Sprite {
+	//Variable used to determine what kind of sprite this is.
+	//And what subtype. This is needed to avoid loading lots of
+	//VBOs needlessly. if two sprites are just the same
+	//they can share the same VBO.
+	private int type;
+	private int subType;
     // Position.
     public float x;
     public float y;
@@ -44,7 +50,6 @@ public class Sprite {
     private int mTextureName;
     // The id of the original resource that mTextureName is based on.
     private int mResourceId;
-    //this field tracks the index of this sprite in the renders internal structures.
     
     public Sprite() {
     }
@@ -85,4 +90,8 @@ public class Sprite {
 		return height;
 	}
     
+	public void setType(int type, int subType){
+		this.type = type;
+		this.subType = subType;
+	}
 }

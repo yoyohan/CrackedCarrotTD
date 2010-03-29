@@ -4,7 +4,8 @@
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
-															jint type, jint size){
+															jint type, 
+															jint size){
                                                                   
     noOfSprites[type] = size;
     renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
@@ -19,19 +20,27 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
 													 jobject thiz, 
-													 jint type, jint spriteNO, 
+													 jint spriteNO, 
 													 jobject sprite){
 	
-	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-	//					"Loading Texture for SpriteNo %d \n", spriteNO);
-	GLSprite* thisSprite = &renderSprites[type][spriteNO];
-	thisSprite->type = type;			
-	
-	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
-	
-		//Get GLSprite class and renderable class.
+													
+	//Get the class and read the type info
 	jclass class = (*env)->GetObjectClass(env, sprite);
-		//jclass super = (*env)->GetSuperclass(env, class);
+	id = (*env)->GetFieldID(env, class, "type", "I");
+	jint type = (*env)->GetIntField(env, sprite, id);
+	
+	//Use type to figure out what element to manipulate
+	GLSprite* thisSprite = &renderSprites[type][spriteNO];
+	//Set a variable, dont cache reference as we do with the rest of the members of the
+	//sprite class, since the type is imutable.
+	thisSprite->type = type;
+	
+	id = (*env)->GetFieldID(env, class, "subType", "I");
+	jint subType = (*env)->GetIntField(env, sprite, id);
+	thisSprite->subType = subType;
+	
+	//Cache reference to this object
+	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
 	
 		//cache the x,y,z pos ID
 	jfieldID id = (*env)->GetFieldID(env, class, "x", "F");
@@ -69,12 +78,16 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->bufferName[1] = 0;
 	thisSprite->bufferName[2] = 0;
 	
-	
-	//Init of our quad is done.
-	if(spriteNO != 0 && thisSprite.type != ANIMATION){
-		thisSprite->bufferName[0] = renderSprites[type][spriteNO-1].bufferName[0]; 
-		thisSprite->bufferName[1] = renderSprites[type][spriteNO-1].bufferName[1];
-		thisSprite->bufferName[2] = renderSprites[type][spriteNO-1].bufferName[2];
+	//If this is not the first sprite of its type and its not an animation
+	//We can just use the same VBOs as the last sprite.
+	GLSprite* last = NULL;
+	if(spriteNO != 0){
+		last = &renderSprites[type][spriteNO-1]
+	}
+	if(last != NULL && last->subType == thisSprite->subType){
+		thisSprite->bufferName[0] = last->bufferName[0]; 
+		thisSprite->bufferName[1] = last->bufferName[1];
+		thisSprite->bufferName[2] = last->bufferName[2];
 	}
 	else{
 		initHwBuffers(env, thisSprite, type);
@@ -85,19 +98,16 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 void initHwBuffers(JNIEnv* env, GLSprite* sprite, jint type){
 	
 	GLsizeiptr vertBufSize;
-	GLfloat* vertBuffer;
 	GLsizeiptr textCoordBufSize;
-	GLfloat* textureCoordBuffer;
 	GLsizeiptr indexBufSize;
-	GLushort* indexBuffer;
 	
 	vertBufSize = sizeof(GLfloat) * 4 * 3;
 	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
 	indexBufSize = sizeof(GLuint) * 6;
 	
-	vertBuffer = malloc(vertBufSize);
-	textureCoordBuffer = malloc(textCoordBufSize);
-	indexBuffer = malloc(indexBufSize);
+	GLfloat vertBuffer[4*3];
+	GLfloat textureCoordBuffer[4*2];
+	GLuint  indexBuffer[6];
 	sprite->indexCount = 6;	
 	
 	//This be the vertex order for our quad, its totaly square man.
@@ -181,7 +191,7 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 	
 	for(i = 0; i < spritesToFree; i++){
 		currentSprite = &freeSprites[i];
-		//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currentSprite->bufferName[INDEX_OBJECT]);
+		__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currentSprite->bufferName[INDEX_OBJECT]);
 		free(currentSprite->vertBuffer);
 		free(currentSprite->textureCoordBuffer);
 		free(currentSprite->indexBuffer);

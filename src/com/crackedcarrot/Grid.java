@@ -8,5 +8,7 @@ public class Grid extends Sprite {
         this.setHeight(s.getScreenResolutionY());
         this.draw = false;
         this.opacity = 0.0f;
+		setType(NativeRender.GRID, 0);
+
 	}
 }

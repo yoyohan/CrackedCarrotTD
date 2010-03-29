@@ -64,10 +64,12 @@ public class Tower extends Sprite {
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		rand = new Random();
+		setType(NativeRender.TOWER, 0);
 	}
 	public Tower(int resourceId){
 		super(resourceId);
 		rand = new Random();
+		setType(NativeRender.TOWER, 0);
 	}
 	
 	/**
