@@ -2,8 +2,11 @@
 #define LOG_TAG "NATIVE_RENDER"
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
-		
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
+	
 	glViewport(0, 0, w, h);
+	
 	/*
 	 * Set our projection matrix. This doesn't have to be done each time we
 	 * draw, but usually a new projection needs to be set when the viewport
@@ -11,7 +14,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0.0f, w, 0.0f, h, 0.0f, 10.0f);
+	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);	
 	
 	glShadeModel(GL_FLAT);
 
@@ -30,10 +33,11 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glDisable(GL_LIGHTING);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	
-	glClearColor(1, 1, 1, 1);
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
+	
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
@@ -69,21 +73,20 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			
 				currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 				if(currTexture == 0){
-					__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
+					__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
 				}
 			
 				if(currTexture != prevTexture){ 
-				    glBindTexture(GL_TEXTURE_2D, currTexture);
+			    	glBindTexture(GL_TEXTURE_2D, currTexture);
 					prevTexture = currTexture;
-				}
-		
+				}		
 				glPushMatrix();
 				glLoadIdentity();
 			
 				glColor4f(r, g, b, a);
 				glScalef(scale,scale,1);
 				glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
-							(*env)->GetFloatField(env, currSprt->object, currSprt->y), 1);
+							(*env)->GetFloatField(env, currSprt->object, currSprt->y), 0);
 		
 				glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 				glVertexPointer(3, GL_FLOAT, 0, 0);

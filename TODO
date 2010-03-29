@@ -13,7 +13,7 @@ We need a currency display. ATM the player cant tell how much money he has.
 
 We need a player health display. ATM the player cant tell how much health he has.
 Maybe a cute heart next to the number of lifes.
---FREDRIK
+--Johan
 
 Tower upgrade ui is super important
 --Albin
@@ -27,10 +27,28 @@ The game never really ends, no highscore nothing.
 Towers class still needs cleaning/refactoring badly
 --Henrik
 
+Level instructions. Under the game menu while playing. Needs to be scrollview
+--Anyone (Johan?)
 
+Highscore ninja
+--Fredrik
 
+new "DOOM style" difficulty settings on the start game screen.
+--Fredrik (Half Done).
+
+Support for pause. (During Incommeing phonecalls och SMS).
+
+Options menyn: highscore settings/Sound etc.
+--Anyone (fredrik ?)
+
+Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
+It would be really nice if the timer is shown instead of progress bar until lvl begins
+--Henrik
 
 MEDIUM PRIORITY:
+
+Ljud Inspelning. Helg hemma hos albin med en mic och ett gäng öl.
+--ALLA
 
 Support for animated sprites, explosions etc..
 --Albin
@@ -40,10 +58,6 @@ Possibly support for texture blending for frost/fire effects on the creatures.
 
 Multiplayer support.
 --JOHAN
-
-Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
-It would be really nice if the timer is shown instead of progress bar until lvl begins
---Anyone
 
 Balancing of the game. Create more levels balance towers etc.
 --Henrik
@@ -56,4 +70,10 @@ Main menu -> Options menu. We need to have possible sound settings before game s
 --FREDRIK
 
 Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
+--Anyone (Henrik?)
+
+Save game info between levels.
 --Anyone
+
+Grid Remake
+--Albin
