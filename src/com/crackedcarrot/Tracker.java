@@ -31,6 +31,13 @@ public class Tracker {
 		//for (int i=0; i < ;i++)
 		int column = towerSpotInAllSpots%gridWidth;
 		int row = towerSpotInAllSpots%gridWidth;
+
+		
+		//Översta raden:
+		int upper_row = row+size;
+		
+		
+		
 		//	size + towerSpotInAllSpots/gridWidth
 		
 		return inRangeCreeps;
