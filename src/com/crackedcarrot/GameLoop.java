@@ -48,13 +48,46 @@ public class GameLoop implements Runnable {
     private Scaler mScaler;
     private NativeRender renderHandle;
     
+    private Handler updateLevelInstrHandler = new Handler();
+    private Handler updateCurrencyHandler = new Handler();
+    private Handler updatePlayerHealthHandler = new Handler();
+    private Handler updateEnemyImageHandler = new Handler();
     private Handler updateCreatureHandler = new Handler();
     private Handler updateHealthHandler = new Handler();
     private Handler nextLevelHandler;
+    private LevelInstrUpdate lIUpdate = new LevelInstrUpdate();
+    private CurrencyUpdate currUpdate = new CurrencyUpdate();
+    private PlayerHealthUpdate pHUpdate = new PlayerHealthUpdate();
+    private CreatureImageUpdate cIUpdate = new CreatureImageUpdate();
     private CreatureUpdate cUpdate = new CreatureUpdate();
     private ProgressUpdate pUpdate = new ProgressUpdate();
     
     private Semaphore nextLevelSemaphore = new Semaphore(1);
+    
+    private class LevelInstrUpdate implements Runnable{
+		public void run(){
+			LevelInstrView.listener.levelInstrUpdate("The instruction string variable for" +
+					"each level here");
+		}
+	}
+    
+    private class CurrencyUpdate implements Runnable{
+		public void run(){
+			CurrencyView.listener.currencyUpdate(player.getMoney());
+		}
+	}
+    
+    private class PlayerHealthUpdate implements Runnable{
+		public void run(){
+			PlayerHealthView.listener.playerHealthUpdate(player.getHealth());
+		}
+	}
+    
+    private class CreatureImageUpdate implements Runnable{
+		public void run(){
+			EnemyImageView.listener.enemyUpdate(mLvl[lvlNbr].getResourceId());
+		}
+	}
     
     private class CreatureUpdate implements Runnable{
 		public void run(){
@@ -253,18 +286,18 @@ public class GameLoop implements Runnable {
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-    		
+    		// Set the instruction text for this level
+    		updateLevelInstrHandler.post(lIUpdate);
+    		// Initialize the status, displaying the amount of currency
+    		updateCurrencyHandler.post(currUpdate);
+    		// Initialize the status, displaying the players health
+    		updatePlayerHealthHandler.post(pHUpdate);
+    		// Initialize the status, displaying the creature image
+    		updateEnemyImageHandler.post(cIUpdate);
     		// Initialize the status, displaying how many creatures still alive
-    		updateCreatureHandler.post(new Runnable(){
-				public void run(){
-					NrCreTextView.listener.creatureUpdate(remainingCreaturesALL);
-				}
-			});
-    		updateHealthHandler.post(new Runnable(){
-				public void run(){
-					HealthProgressBar.proChangeListener.progressUpdate(100);
-				}
-			});
+    		updateCreatureHandler.post(cUpdate);
+    		// Initialize the status, displaying total health of all creatures
+    		updateHealthHandler.post(pUpdate);
     		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -373,7 +406,11 @@ public class GameLoop implements Runnable {
     public void creatureLeavesMAP(int n){
     	this.remainingCreaturesALL -= n;
     }
-    // When a creature is dead we will notify the statusbar
+    // When the player decreases in health, we will notify the status bar
+    public void updatePlayerHealth(){
+    	updatePlayerHealthHandler.post(pHUpdate);
+    }
+    // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
 		// Update the status, displaying how many creatures that are still alive
@@ -384,6 +421,10 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
     	updateHealthHandler.post(pUpdate);
+    }
+    // Update the status when the players money increases
+    public void updateCurrency(int currency){
+    	updateCurrencyHandler.post(currUpdate);
     }
     
     public void stopGameLoop(){

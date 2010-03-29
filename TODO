@@ -1,14 +1,14 @@
-Grab something from this list by writing your name under the description in capital letters.
+﻿Grab something from this list by writing your name under the description in capital letters.
 And add more todos as you come up with them.
 
 HIGH PRIORITY:
 
 We need a currency display. ATM the player cant tell how much money he has.
--- JOHAN
+-- JOHAN - DONE!
 
 We need a player health display. ATM the player cant tell how much health he has.
 Maybe a cute heart next to the number of lifes.
---Johan
+--Johan - DONE!
 
 Tower upgrade ui is super important
 --Albin
@@ -23,7 +23,7 @@ Towers class still needs cleaning/refactoring badly
 --Henrik
 
 Level instructions. Under the game menu while playing. Needs to be scrollview
---Anyone (Johan?)
+--Johan - DONE!
 
 Highscore ninja
 --Fredrik

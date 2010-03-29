@@ -13,6 +13,34 @@
 	    android:layout_height="wrap_content">
 	</com.crackedcarrot.SurfaceView>
 	
+	<ScrollView
+		android:id="@+id/level_instr"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="20dp"
+		android:layout_alignParentBottom="true"
+		android:background="#00000000">
+		
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="bottom"
+			android:background="#00000000"
+        	android:layout_alignParentBottom="true" >
+        
+        	<com.crackedcarrot.LevelInstrView
+        		android:id="@+id/text_instr"
+        		android:textSize="10sp"
+        		android:textColor="#000000"
+				android:text="Here should the level instructions be, they are very interesting bla bla bla"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content">
+			</com.crackedcarrot.LevelInstrView>
+        
+        </LinearLayout>
+		
+	</ScrollView>
+	
 	<com.crackedcarrot.ExpandMenu
     	android:id="@+id/expand_menu"
     	android:orientation="horizontal"
@@ -21,8 +49,6 @@
 		android:background="#66000044"
 		android:visibility="gone"
 		android:layout_alignParentBottom="true">
-		<!--  app:speed="250"
-		app:targetHeight="75px" -->
 		
 		<Button
         	android:id="@+id/inmenu6"
@@ -39,8 +65,8 @@
 		android:layout_height="wrap_content"
 		android:gravity="bottom"
 		android:background="#66000088"
-        android:layout_alignParentBottom="true">
-        
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="20dp">
         
         <Button
         		android:id="@+id/inmenu1"
@@ -92,12 +118,62 @@
 		android:background="#00000000"
         android:layout_alignParentTop="true">
         
+        <ImageView
+        	android:id="@+id/coin"
+			android:paddingTop="5dp"
+			android:paddingLeft="5dp"
+			android:layout_width="25dp" 
+			android:layout_height="25dp"
+			android:src="@drawable/coin" >
+		</ImageView>
+		
+		<com.crackedcarrot.CurrencyView
+			android:textColor="#000000"
+			android:textStyle="bold"
+			android:textSize="15sp"
+			android:id="@+id/currency"
+			android:paddingTop="5dp" 
+			android:paddingRight="5dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" >
+		</com.crackedcarrot.CurrencyView>
+        
+        <ImageView
+        	android:id="@+id/heart"
+			android:paddingTop="5dp"
+			android:paddingLeft="5dp"
+			android:layout_width="25dp" 
+			android:layout_height="25dp"
+			android:src="@drawable/heart" >
+		</ImageView>
+		
+		<com.crackedcarrot.PlayerHealthView
+			android:textColor="#000000"
+			android:textStyle="bold"
+			android:textSize="15sp"
+			android:id="@+id/playerHealth"
+			android:paddingTop="5dp" 
+			android:paddingRight="2dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" >
+		</com.crackedcarrot.PlayerHealthView>
+        
+        <com.crackedcarrot.EnemyImageView
+			android:id="@+id/enemyImVi"
+			android:paddingTop="0dp"
+			android:paddingLeft="2dp"
+			android:layout_width="35dp" 
+			android:layout_height="35dp"
+			android:src="@drawable/bunny_pink_alive" >
+		</com.crackedcarrot.EnemyImageView>
+        
         <com.crackedcarrot.NrCreTextView
 			android:textColor="#000000"
 			android:textStyle="bold"
 			android:textSize="15sp"
 			android:id="@+id/nrEnemyLeft"
 			android:paddingTop="5dp" 
+			android:paddingRight="2dp"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" >
 		</com.crackedcarrot.NrCreTextView>
@@ -109,7 +185,7 @@
         	style="?android:attr/progressBarStyleHorizontal"
         	android:paddingRight="5dp"
         	android:paddingTop="5dp"
-        	android:paddingLeft="5dp" />
+        	android:paddingLeft="2dp" />
 
         
     </LinearLayout>
