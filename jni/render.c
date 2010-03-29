@@ -2,7 +2,9 @@
 #define LOG_TAG "NATIVE_RENDER"
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
-		
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
+	
 	glViewport(0, 0, w, h);
 	/*
 	 * Set our projection matrix. This doesn't have to be done each time we
@@ -68,9 +70,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			
 			currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 			if(currTexture == 0){
-				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD %d", currTexture);
+				__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
 			}
 			
+			//glActiveTexture(GL_TEXTURE0);
 			if(currTexture != prevTexture){ 
 			    glBindTexture(GL_TEXTURE_2D, currTexture);
 				prevTexture = currTexture;
@@ -109,9 +112,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 */			
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
 			glDrawElements(GL_TRIANGLES, currSprt->indexCount, GL_UNSIGNED_SHORT, 0);
-/*			
-			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "DrawElements returned error: %d ", glGetError());
-*/			
+			
+//			__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "DrawElements returned error: %d ", glGetError());
+			
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			
