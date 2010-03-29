@@ -6,7 +6,6 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
 	
 	glViewport(0, 0, w, h);
-	__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "glViewport: %d ", glGetError());
 	
 	/*
 	 * Set our projection matrix. This doesn't have to be done each time we
@@ -15,9 +14,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	 */
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);
-	__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "glOrthof: %d ", glGetError());
-	
+	glOrthof(0.0f, w, 0.0f, h, 0.0f, 1.0f);	
 	
 	glShadeModel(GL_FLAT);
 
@@ -40,7 +37,6 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
-	__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "glMatrixMode: %d ", glGetError());
 	
 }
 
@@ -91,7 +87,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 			glColor4f(r, g, b, a);
 			glScalef(scale,scale,1);
 			glTranslatef((*env)->GetFloatField(env, currSprt->object, currSprt->x),
-						(*env)->GetFloatField(env, currSprt->object, currSprt->y), 1);
+						(*env)->GetFloatField(env, currSprt->object, currSprt->y), 0);
 		
 			glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 			glVertexPointer(3, GL_FLOAT, 0, 0);
