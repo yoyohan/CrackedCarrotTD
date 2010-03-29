@@ -1,6 +1,6 @@
 #include "render.h"
 
-#define emulator
+//#define emulator
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
