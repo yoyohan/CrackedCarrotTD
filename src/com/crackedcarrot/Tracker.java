@@ -28,9 +28,9 @@ public class Tracker {
 	}
 	
 	public Creature[] getCreaturesInRange(int towerSpotInAllSpots, int size) {
-		for (int i=0; i < ;i++)
+		//for (int i=0; i < ;i++)
 		
-			size + towerSpotInAllSpots/gridWidth
+		//	size + towerSpotInAllSpots/gridWidth
 		
 		return inRangeCreeps;
 	}

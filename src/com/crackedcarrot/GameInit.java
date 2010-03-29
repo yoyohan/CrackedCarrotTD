@@ -272,12 +272,7 @@ public class GameInit extends Activity {
 		    	tmpAbil++;
 		    }
 		    if (tmpAbil == 0)
-		    	lvlText += 		"No special abbilities";
-
-		    if (currLvl.creaturePoisonResistant) {
-		    	lvlText += 		"<font color=green>Posion resistant</font><br>";
-		    	tmpAbil++;
-		    }
+		    	lvlText += 		"No special abbilities<br>";
 		    
 		    if (currLvlnbr > 1) {
 		    	lvlText += 		"<br><b>Previous level:</b><br>";
@@ -366,7 +361,7 @@ public class GameInit extends Activity {
         /** Create the ScrollView showing the level instructions */
         levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
         levelInstrView.setLevelInstrUpdateListener(new LevelInstrUpdateListener() {
-        	@Override
+        	//@Override
         	public void levelInstrUpdate(String s){
         		levelInstrView.setText(s);
         	}
