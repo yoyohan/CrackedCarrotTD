@@ -5,17 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crackedcarrot.GameInit;
 
@@ -26,11 +20,6 @@ import com.crackedcarrot.GameInit;
  * loop the game loads the data depending on which level the user has chosen.
  */
 public class MapOp extends Activity {
-	
-	/** The three different menu items */
-	private static final int LEVEL1_MENU_ITEM = Menu.FIRST;
-	private static final int LEVEL2_MENU_ITEM = LEVEL1_MENU_ITEM + 1;
-	private static final int LEVEL3_MENU_ITEM = LEVEL2_MENU_ITEM + 1;
 	
 	/** References to our images */
     private Integer[] mmaps = {
@@ -63,11 +52,7 @@ public class MapOp extends Activity {
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
         final ImageView im = (ImageView) findViewById(R.id.image_choose);
-        final TextView tv = (TextView) this.findViewById(R.id.maptext);
-        final ImageView im2 = (ImageView) findViewById(R.id.lev_choose1);
-        
-        /** Register the ImageView for a contextMenu */
-        registerForContextMenu(im2);
+        final TextView  tv = (TextView) this.findViewById(R.id.maptext);
         
         /** Listener for the left button */
         Button LeftButton = (Button)findViewById(R.id.leftbutton);
@@ -76,6 +61,7 @@ public class MapOp extends Activity {
         	public void onClick(View v) {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps--;
+        			// Additional map-option only if resume available.
         		if (resume == 0) {
         			if(indexMaps < 1) {
         				indexMaps = 3;
@@ -110,7 +96,7 @@ public class MapOp extends Activity {
         	public void onClick(View v) {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps++;
-        		
+        			// Additional map-option only if resume available.
         		if (resume == 0) {
         			if(indexMaps > 3) {
         				indexMaps = 1;
@@ -150,40 +136,5 @@ public class MapOp extends Activity {
         	}
         });
     }
-    
-    @Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case LEVEL1_MENU_ITEM:
-			this.level = 1;
-			showMsg("Level 1");
-			return true;
-		case LEVEL2_MENU_ITEM:
-			this.level = 2;
-			showMsg("Level 2");
-			return true;
-		case LEVEL3_MENU_ITEM:
-			this.level = 3;
-			showMsg("Level 3");
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.setHeaderTitle("Choose level");
-		menu.add(0, LEVEL1_MENU_ITEM, 0, "Level 1");
-		menu.add(0, LEVEL2_MENU_ITEM, 1, "Level 2");
-		menu.add(0, LEVEL3_MENU_ITEM, 2, "Level 3");
-	}
-
-	private void showMsg(String message) {
-		Toast msg = Toast.makeText(MapOp.this, message, Toast.LENGTH_LONG);
-		msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2,
-				msg.getYOffset() / 2);
-		msg.show();
-	}
 
 }

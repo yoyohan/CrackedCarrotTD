@@ -310,7 +310,7 @@ public class GameInit extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
-        mGLSurfaceView.setMagicValue(dm.heightPixels);
+        mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
         /** Create the progress bar, showing the enemies total health*/
         healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
@@ -404,22 +404,32 @@ public class GameInit extends Activity {
         int difficulty = 0;
         if(extras != null) {
         	levelChoice = extras.getInt("com.crackedcarrot.menu.map");
-        	difficulty = extras.getInt("com.crackedcarrot.menu.difficulty");
+        	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         }
         
         	// Are we resuming an old saved game?
         int resumeLevelNumber = 0;
+        int resumePlayerDifficulty = 0;
+        int resumePlayerHealth = 0;
+        int resumePlayerMoney = 0;
         String resumeTowers = "";
         if (levelChoice == 0) {
         	resume = true;
             // Restore preferences
             SharedPreferences settings = getSharedPreferences("Resume", 0);
-            resumeLevelNumber = settings.getInt("LevelNumber", 0);
-            resumeTowers = settings.getString("Towers", "");
+            resumeLevelNumber      = settings.getInt("LevelNumber", 0);
+            resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
+            resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
+            resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
+            resumeTowers           = settings.getString("Towers", "");
         }
-        Log.d("GAMEINIT", "resumeTowers: " + resumeTowers);
+        // TODO:
+        // Är detta nödvändigt?
+        //   difficulty = resumePlayerDIfficulty;
+        // Det används i WaveLoadern?
         
         // Create the map requested by the player
+        // TODO: resume needs to load the correct map aswell.
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
         if (levelChoice == 1) 
@@ -431,17 +441,20 @@ public class GameInit extends Activity {
 
         //Define player specific variables depending on difficulty.
         Player p;
-        if (difficulty == 2) {
+        if (difficulty == 0) {
         	p = new Player(difficulty, 50, 100, 1000);
         }
         else if (difficulty == 1) {
         	p = new Player(difficulty, 40, 100, 1000);
         }
-        else {
-        	p = new Player(difficulty, 60, 100, 1000);
+        else if (difficulty == 2) {
+        	p = new Player(difficulty, 40, 100, 1000);
+        }
+        else { // resume.
+        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1000);
         }
         
-      //Load the creature waves and apply the correct difficulty
+        //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this,res);
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
@@ -454,9 +467,8 @@ public class GameInit extends Activity {
         
         	// Resuming old game. Prepare GameLoop for this...
         if (resume) {
-        	simulationRuntime.resume = true;
-        	simulationRuntime.setLevelNumber(resumeLevelNumber);
-        	simulationRuntime.resumeTowers(resumeTowers);
+        	simulationRuntime.resumeSetLevelNumber(resumeLevelNumber);
+        	simulationRuntime.resumeSetTowers(resumeTowers);
         }
         
         RenderThread = new Thread(simulationRuntime);
@@ -537,7 +549,10 @@ public class GameInit extends Activity {
     		SharedPreferences.Editor editor = settings.edit();
     		editor.putInt("Resume", 1);
     		editor.putInt("LevelNumber", simulationRuntime.getLevelNumber());
-    		editor.putString("Towers", simulationRuntime.getTowers());
+    		editor.putInt("PlayerDifficulty", simulationRuntime.getPlayerData().getDifficulty());
+    		editor.putInt("PlayerHealth", simulationRuntime.getPlayerData().getHealth());
+    		editor.putInt("PlayerMoney", simulationRuntime.getPlayerData().getMoney());
+    		editor.putString("Towers", simulationRuntime.resumeGetTowers());
     		editor.commit();
     	} else {
     			// Dont allow resume. Clears the main resume flag!

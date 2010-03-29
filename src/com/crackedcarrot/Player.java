@@ -21,7 +21,7 @@ public class Player {
 	public void calculateInterest() {
 		// Formula for calculating interest.
 		interestGainedLatestLvl = (int)(money * 0.05);
-		interestGainedEntireGame+=interestGainedLatestLvl;
+		interestGainedEntireGame += interestGainedLatestLvl;
 		money = (int)(money * 1.05);
 	}
 	

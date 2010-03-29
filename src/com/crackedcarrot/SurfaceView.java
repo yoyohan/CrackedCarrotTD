@@ -9,7 +9,8 @@ import android.view.MotionEvent;
 public class SurfaceView extends GLSurfaceView {
 	
 	public GameLoop gameLoop = null;
-	
+
+		// Towertype to build, set by the GUI.
 	public int towerType = 0;
 	
 		// Not very magic, read the comment below for explanation.
@@ -20,8 +21,6 @@ public class SurfaceView extends GLSurfaceView {
 		Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
 		// we build where the user last touched the screen.
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
-
 			// We need to do this because Java and our grid counts backwards.
 			// 480 - clickedYValue = the correct Y-value, for example, on a 
 			// screen with a 480 Y-resolution.
@@ -40,18 +39,17 @@ public class SurfaceView extends GLSurfaceView {
 	public SurfaceView(Context context, AttributeSet attrs){
 		super(context, attrs);
 	}
+
+	public void setScreenHeight(int i) {
+		this.magicValue = i;
+	}
 	
 	public void setSimulationRuntime(GameLoop simulationRuntime) {
 		this.gameLoop = simulationRuntime;
 	}
 	
 	public void setTowerType(int i) {
-		Log.d("SURFACEVIEW", "setTowerType: " + i);
 		this.towerType = i;
-	}
-	
-	public void setMagicValue(int i) {
-		this.magicValue = i;
 	}
 
 }

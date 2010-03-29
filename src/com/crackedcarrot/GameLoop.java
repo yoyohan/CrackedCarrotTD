@@ -30,7 +30,7 @@ public class GameLoop implements Runnable {
     private float startCreatureHealth;
     float currentCreatureHealth;
     private Level[] mLvl;
-    private int lvlNbr;
+    private int lvlNbr = 0;
     
     private Tower[] mTower;
     private Tower[][] mTowerGrid;
@@ -43,8 +43,7 @@ public class GameLoop implements Runnable {
 
     private int gameSpeed;
     
-    public boolean resume;
-    private String resumeTowers;
+    private String resumeTowers = null;
     
     	// We need to reach this to be able to turn off sound.
     public  SoundManager soundManager;
@@ -255,11 +254,9 @@ public class GameLoop implements Runnable {
     	Looper.prepare();
     	
 	    initializeDataStructures();
-	    	// if we're resuming a saved game we dont need this.
-	    	// TODO: set this to 0 when initalized instead?
-	    if (!resume) {
-	    	lvlNbr = 0;
-	    } else {
+
+	    	// Resuming an old game? Rebuild all the old towers.
+	    if (resumeTowers != null) {
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
@@ -269,6 +266,7 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
+	    
 	    gameSpeed = 1;
 
 	    Log.d("GAMELOOP","INIT GAMELOOP");
@@ -443,24 +441,22 @@ public class GameLoop implements Runnable {
     	return lvlNbr;
     }
     
-    public void setLevelNumber(int i) {
+    public void resumeSetLevelNumber(int i) {
     	this.lvlNbr = i;
     }
 
     	// This is used by the savegame-function to remember all the towers.
-    public String getTowers() {
+    public String resumeGetTowers() {
     	String s = "";
     	for (int i = 0; i < totalNumberOfTowers; i++) {
     		Tower t = mTower[i];
-    		Log.d("GAMELOOP", "Resume getTowers Type: " + t.getTowerType());
     		s = s + t.getTowerType() + "," + (int) t.x + "," + (int) t.y + "-";
     	}
     	
     	return s;
     }
     
-    public void resumeTowers(String s) {
-    	Log.d("GAMELOOP", "ResumeTowers String: " + s);
+    public void resumeSetTowers(String s) {
     	this.resumeTowers = s;
     }
     
