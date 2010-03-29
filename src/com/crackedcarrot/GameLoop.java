@@ -43,6 +43,8 @@ public class GameLoop implements Runnable {
 
     private int gameSpeed;
     
+    public boolean resume;
+    
     	// We need to reach this to be able to turn off sound.
     public  SoundManager soundManager;
     private Scaler mScaler;
@@ -217,6 +219,14 @@ public class GameLoop implements Runnable {
 		msg.arg1 = mLvl[lvlNbr].nbrCreatures;
 		msg.arg2 = mLvl[lvlNbr].getResourceId();
     	nextLevelHandler.sendMessage(msg);
+    	
+    	// This is a good time to save the current progress of the game.
+    	msg = new Message();
+    	msg.what = 99; // 99 means save the game.
+    	msg.arg1 = 1;  // 1 means actually save.
+    				   // 2 means clear everything, the level is  D O N E !
+    	               // (and cannot be resumed.)
+    	nextLevelHandler.sendMessage(msg);
 
 		// Code to wait for the user to click ok on NextLevel-dialog.
 		try {
@@ -244,7 +254,10 @@ public class GameLoop implements Runnable {
     	Looper.prepare();
     	
 	    initializeDataStructures();
-    	lvlNbr = 0;
+	    	// if we're resuming a saved game we dont need this.
+	    	// TODO: set this to 0 when initalized instead?
+	    if (!resume)
+	    	lvlNbr = 0;
 	    gameSpeed = 1;
 
 	    Log.d("GAMELOOP","INIT GAMELOOP");
@@ -307,6 +320,14 @@ public class GameLoop implements Runnable {
         		msg.what = 3; // YouLost-box.
             	nextLevelHandler.sendMessage(msg);
             	
+            	// This is a good time clear all savegame data.
+            	msg = new Message();
+            	msg.what = 99; // 99 means save the game.
+            	msg.arg1 = 2;  // 1 means actually save.
+            				   // 2 means clear everything, the level is  D O N E !
+            	               // (and cannot be resumed.)
+            	nextLevelHandler.sendMessage(msg);
+            	
             	run = false;
         	} 
         	else if (remainingCreaturesALL < 1) {
@@ -321,7 +342,16 @@ public class GameLoop implements Runnable {
             		Message msg = new Message();
             		msg.what = 2; // YouWon
                 	nextLevelHandler.sendMessage(msg);
+
+                	// This is a good time clear all savegame data.
+                	msg = new Message();
+                	msg.what = 99; // 99 means save the game.
+                	msg.arg1 = 2;  // 1 means actually save.
+                				   // 2 means clear everything, the level is  D O N E !
+                	               // (and cannot be resumed.)
+                	nextLevelHandler.sendMessage(msg);
                 	
+                	// Show Ninjahighscore-thingie. Not working atm..
                 	msg = new Message();
                 	msg.what = 5;
                 	nextLevelHandler.sendMessage(msg);
@@ -398,10 +428,16 @@ public class GameLoop implements Runnable {
     public Player getPlayerData() {
     	return player;
     }
-    public int getLvlNumber() {
+    public int getLevelNumber() {
     	return lvlNbr;
-    }    
+    }
+    
+    public void setLevelNumber(int i) {
+    	this.lvlNbr = i;
+    }
+    
     public void upgradeTower(int i) {
     	Log.d("GAMELOOP", "upgradeTower: " + i);
     }
+    
 }

@@ -72,8 +72,9 @@ Main menu -> Options menu. We need to have possible sound settings before game s
 Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
 --Anyone (Henrik?)
 
-Save game info between levels.
---Anyone
+Save game info between levels. If the user quits/closes/something the game the game will allow the user
+to resume from the last completed level when the game starts again.
+--Fredrik
 
 Grid Remake
 --Albin

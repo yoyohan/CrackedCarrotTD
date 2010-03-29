@@ -2,6 +2,7 @@ package com.crackedcarrot.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -33,12 +34,16 @@ public class MapOp extends Activity {
 	
 	/** References to our images */
     private Integer[] mmaps = {
-            R.drawable.map_choose, R.drawable.map_choose2,
+    		R.drawable.map_resume,
+            R.drawable.map_choose,
+            R.drawable.map_choose2,
             R.drawable.map_choose3};
     /** The index for our "maps" array */
-    private int indexMaps = 0;
+    private int indexMaps = 1;
     /** Representing the users choice of level */
     private int level = 0;
+    
+    private int resume;
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,6 +53,12 @@ public class MapOp extends Activity {
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    	
+        // See if there's any old game saved that can be resumed.
+        SharedPreferences settings = getSharedPreferences("Resume", 0);
+        resume = settings.getInt("Resume", 0);
+        
         
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
@@ -65,19 +76,28 @@ public class MapOp extends Activity {
         	public void onClick(View v) {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps--;
-        		if(indexMaps < 0){
-        			indexMaps = 2;
+        		if (resume == 0) {
+        			if(indexMaps < 1) {
+        				indexMaps = 3;
+        			}
+        		} else {
+        			if(indexMaps < 0) {
+        				indexMaps = 3;
+        			}
         		}
                 im.setImageResource(mmaps[indexMaps]);
                 //Set the text belonging to the current map  
                 switch(indexMaps){
-                	case 0: 
+                	case 0:
+                		tv.setText("Resume saved game.");
+                		break;
+                	case 1: 
                 		tv.setText("Map 1: The field of grass.");
                 		break;	
-                	case 1: 
+                	case 2: 
                 		tv.setText("Map 2: The field of longer grass.");
                 		break;
-                	case 2: 
+                	case 3: 
                 		tv.setText("Map 3: The field of longest grass.");
                 		break;
                 	}	
@@ -90,19 +110,28 @@ public class MapOp extends Activity {
         	public void onClick(View v) {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps++;
-        		if(indexMaps > 2){
-        			indexMaps = 0;
+        		
+        		if (resume == 0) {
+        			if(indexMaps > 3) {
+        				indexMaps = 1;
+        			}
+        		} else {
+        			if(indexMaps > 3) {
+        				indexMaps = 0;
+        			}
         		}
                 im.setImageResource(mmaps[indexMaps]);
                 //Set the text belonging to the current map  
                 switch(indexMaps){
-                	case 0: 
+                	case 0:
+                		tv.setText("Resume saved game.");
+                	case 1: 
                 		tv.setText("Map 1: The field of grass.");
                 		break;	
-                	case 1: 
+                	case 2: 
                 		tv.setText("Map 2: The field of longer grass.");
                 		break;
-                	case 2: 
+                	case 3: 
                 		tv.setText("Map 3: The field of longest grass.");
                 		break;
                 	}	
@@ -115,8 +144,8 @@ public class MapOp extends Activity {
         	public void onClick(View v) {
         		/** Send the level variable to the game loop and start it */
         		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
-        		StartGame2.putExtra("com.crackedcarrot.menu.levelVal", indexMaps);
-        		StartGame2.putExtra("com.crackedcarrot.menu.dificultVal", level);
+        		StartGame2.putExtra("com.crackedcarrot.menu.map", indexMaps);
+        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", level);
         		startActivity(StartGame2);
         	}
         });

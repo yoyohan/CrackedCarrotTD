@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -47,6 +48,8 @@ public class GameInit extends Activity {
     private NrCreTextView nrCreText;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
+    
+    private boolean resume;
     
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -225,7 +228,7 @@ public class GameInit extends Activity {
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
 
-	    	int currLvlnbr = simulationRuntime.getLvlNumber() +1;
+	    	int currLvlnbr = simulationRuntime.getLevelNumber() + 1;
 	    	Level currLvl = simulationRuntime.getLevelData();
 
 	    	// Title:
@@ -307,6 +310,7 @@ public class GameInit extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        mGLSurfaceView.setMagicValue(dm.heightPixels);
         
         /** Create the progress bar, showing the enemies total health*/
         healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
@@ -399,16 +403,25 @@ public class GameInit extends Activity {
         int levelChoice = 0;
         int difficulty = 0;
         if(extras != null) {
-        	levelChoice = extras.getInt("com.crackedcarrot.menu.levelVal");
-        	difficulty = extras.getInt("com.crackedcarrot.menu.dificultVal");
-        }        
+        	levelChoice = extras.getInt("com.crackedcarrot.menu.map");
+        	difficulty = extras.getInt("com.crackedcarrot.menu.difficulty");
+        }
+        
+        	// Are we resuming an old saved game?
+        int resumeLevelNumber = 0;
+        if (levelChoice == 0) {
+        	resume = true;
+            // Restore preferences
+            SharedPreferences settings = getSharedPreferences("Resume", 0);
+            resumeLevelNumber = settings.getInt("LevelNumber", 0);
+        }
         
         // Create the map requested by the player
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
-        if (levelChoice == 0) 
+        if (levelChoice == 1) 
         	gameMap = mapLoad.readLevel("level1");
-        else if (levelChoice == 1)
+        else if (levelChoice == 2)
         	gameMap = mapLoad.readLevel("level2");
         else
         	gameMap = mapLoad.readLevel("level3");
@@ -435,6 +448,13 @@ public class GameInit extends Activity {
         
     	// Sending data to GAMELOOP
         simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,nextLevelHandler,new SoundManager(getBaseContext()));
+        
+        	// Resuming old game. Prepare GameLoop for this...
+        if (resume) {
+        	simulationRuntime.resume = true;
+        	simulationRuntime.setLevelNumber(resumeLevelNumber);
+        }
+        
         RenderThread = new Thread(simulationRuntime);
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
@@ -489,6 +509,9 @@ public class GameInit extends Activity {
             	 case 5:
             		 scoreNinjaAdapter.show(0);
             		 break;
+            	 case 99: // SAVE THE GAME.
+            		 saveGame(msg.arg1);
+            		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
                      break;
@@ -496,4 +519,28 @@ public class GameInit extends Activity {
         }
     }; 
 
+    public void saveGame(int i) {
+    	
+    	// This uses Android's own internal storage-system to save all
+    	// currently relevent information to restore the game to the
+    	// beginning of the next wave of creatures.
+    	// This is probably (read: only meant to work with) best called
+    	// in between levels when the NextLevel-dialog is shown.
+    	
+    	if (i == 1) {
+    			// Save everything.
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", 1);
+    		editor.putInt("LevelNumber", simulationRuntime.getLevelNumber());
+    		editor.commit();
+    	} else {
+    			// Dont allow resume. Clears the main resume flag!
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", 0);
+    		editor.commit();
+    	}
+    }
+    
 }
