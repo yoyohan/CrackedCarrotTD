@@ -1,5 +1,6 @@
 package com.crackedcarrot;
 
+
 /**
 * Class defining creature in the game
 */
@@ -126,7 +127,7 @@ public class Creature extends Sprite{
 		}
 	    // Creature is dead and fading...
 		else if (allDead) {
-			fade(timeDeltaSeconds/10 * gameSpeed);
+			fade(timeDeltaSeconds/5 * gameSpeed);
 		}
 	}
 	
@@ -195,15 +196,12 @@ public class Creature extends Sprite{
 		if (creatureFrozenTime > 0 && creaturePoisonTime > 0) {
 			this.r = 0;
 		}
-
 		
 		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
-		
 		if (health <= 0) {
    			die();
    			movement = 0;
    		}
-		
 		return movement;
 	}
 	

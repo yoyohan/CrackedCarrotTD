@@ -28,6 +28,7 @@ public class Tracker {
 	
 	// A tower will ask the tracker for all creatures in close range to him
 	public Creature[] getCreaturesInRange(int l_col, int r_col, int u_row, int b_row) {
+		inRangeCreeps.clear();
 		for (int y = b_row; y <= u_row; y++) {
 			for (int x = l_col; x <= r_col; x++) {
 				int tmp = y*gridWidth+x;

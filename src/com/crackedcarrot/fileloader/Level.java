@@ -14,34 +14,39 @@ public class Level extends Creature {
     public float getHealth() {
 		return health;
 	}
-	
-	public void setCreatureFast(boolean creatureFast) {
-		this.creatureFast = creatureFast;
-	}
 
-	// If a creature is frostresistan we also want him to change color
-	public void setCreatureResistant(boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
+	// If a creature is have a special ability we also want him to change color
+	public void setCreatureSpecials(boolean fast, boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
 		this.creatureFrostResistant = frostResistant;
 		this.creatureFireResistant = fireResistant;
 		this.creaturePoisonResistant = poisonResistant;
+		this.creatureFast = fast;
 		
 		this.rDefault = 1;
-		this.bDefault = 1;
 		this.gDefault = 1;
-		
-		if (poisonResistant) {
-			this.rDefault = 0.7f;
-			this.bDefault = 0.7f;
-		}
-		if (frostResistant) {
-			this.rDefault = 0.7f;
-			this.gDefault = 0.7f;
-		}
-		if (fireResistant) {
-			this.gDefault = 0.7f;
-			this.bDefault = 0.7f;
-		}		
+		this.bDefault = 1;
 
+		if (poisonResistant) {
+			this.rDefault = this.rDefault*0.7f;
+			this.bDefault = this.bDefault*0.7f;
+		}
+		else if (frostResistant) {
+			this.rDefault = this.rDefault*0.7f;
+			this.gDefault = this.gDefault*0.7f;
+		}
+		else if (fireResistant) {
+			this.gDefault = this.gDefault*0.7f;
+			this.bDefault = this.bDefault*0.7f;
+		}
+		else if (fast) {
+			this.bDefault = 0f;
+		}
+
+		if (poisonResistant && frostResistant && fireResistant && fast) {
+			this.rDefault = 0.1f;
+			this.gDefault = 0.1f;
+			this.gDefault = 0.1f;
+		}
 	}
 	
 	public void cloneCreature(Creature clone) {
