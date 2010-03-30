@@ -56,7 +56,7 @@ public class GameLoop implements Runnable {
     private CreatureUpdate cUpdate = new CreatureUpdate();
     private ProgressUpdate pUpdate = new ProgressUpdate();
     
-    private Semaphore nextLevelSemaphore = new Semaphore(1);
+    private Semaphore dialogSemaphore = new Semaphore(1);
     
     private class CreatureUpdate implements Runnable{
 		public void run(){
@@ -209,7 +209,7 @@ public class GameLoop implements Runnable {
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
     	try {
-			nextLevelSemaphore.acquire();
+			dialogSemaphore.acquire();
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -230,12 +230,12 @@ public class GameLoop implements Runnable {
 
 		// Code to wait for the user to click ok on NextLevel-dialog.
 		try {
-			nextLevelSemaphore.acquire();
+			dialogSemaphore.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		nextLevelSemaphore.release();
+		dialogSemaphore.release();
 
     	final long starttime = SystemClock.uptimeMillis();
     	int reverse = remainingCreaturesALL; 
@@ -337,6 +337,22 @@ public class GameLoop implements Runnable {
             	               // (and cannot be resumed.)
             	nextLevelHandler.sendMessage(msg);
             	
+        		// Code to wait for the user to click ok on YouLost-dialog.
+        		try {
+        			dialogSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
+
+        		try {
+        			dialogSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
+        		dialogSemaphore.release();
+        		
             	run = false;
         	} 
         	else if (remainingCreaturesALL < 1) {
@@ -361,15 +377,36 @@ public class GameLoop implements Runnable {
                 	nextLevelHandler.sendMessage(msg);
                 	
                 	// Show Ninjahighscore-thingie. Not working atm..
-                	msg = new Message();
-                	msg.what = 5;
-                	nextLevelHandler.sendMessage(msg);
+                	//msg = new Message();
+                	//msg.what = 5;
+                	//nextLevelHandler.sendMessage(msg);
+                	
+            		// Code to wait for the user to click ok on YouWon-dialog.
+            		try {
+            			dialogSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
+
+            		try {
+            			dialogSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
+            		dialogSemaphore.release();
                 	
         			run = false;
         		}
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
+    	
+    	// Close activity/gameview.
+    	Message msg = new Message();
+    	msg.what = 98; // Call to finish() in parent.
+    	nextLevelHandler.sendMessage(msg);
     }
 
     public boolean createTower(Coords TowerPos, int towerType) {
@@ -427,8 +464,8 @@ public class GameLoop implements Runnable {
     	run = false;
     }
     
-    public void nextLevelClick() {
-    	nextLevelSemaphore.release();
+    public void dialogClick() {
+    	dialogSemaphore.release();
     }
     
     public Level getLevelData() {

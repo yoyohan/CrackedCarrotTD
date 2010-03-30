@@ -49,7 +49,7 @@ public class GameInit extends Activity {
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
     
-    private boolean resume;
+    private int resume;
     
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -69,9 +69,9 @@ public class GameInit extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
     	MenuItem sound = menu.getItem(0);
 		if (simulationRuntime.soundManager.playSound)
-	    	sound.setIcon(R.drawable.button_sound_off);
-		else
 	    	sound.setIcon(R.drawable.button_sound_on);
+		else
+	    	sound.setIcon(R.drawable.button_sound_off);
     	
     	return true;
     }
@@ -128,7 +128,7 @@ public class GameInit extends Activity {
 	    	dialog.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
-							simulationRuntime.nextLevelClick();
+							simulationRuntime.dialogClick();
 						}
 	    			});
 	    	break;
@@ -143,7 +143,7 @@ public class GameInit extends Activity {
 	    	       .setCancelable(true)
 	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
 	    	           public void onClick(DialogInterface dialog, int id) {
-	    	                dialog.cancel();
+	    	                simulationRuntime.dialogClick();
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
@@ -162,7 +162,7 @@ public class GameInit extends Activity {
 	    	       .setCancelable(true)
 	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
 	    	           public void onClick(DialogInterface dialog, int id) {
-	    	                dialog.cancel();
+	    	                simulationRuntime.dialogClick();
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
@@ -408,15 +408,16 @@ public class GameInit extends Activity {
         }
         
         	// Are we resuming an old saved game?
+        resume = 0;
         int resumeLevelNumber = 0;
         int resumePlayerDifficulty = 0;
         int resumePlayerHealth = 0;
         int resumePlayerMoney = 0;
         String resumeTowers = "";
         if (levelChoice == 0) {
-        	resume = true;
             // Restore preferences
             SharedPreferences settings = getSharedPreferences("Resume", 0);
+            resume                 = settings.getInt("Resume", 0) + 1;
             resumeLevelNumber      = settings.getInt("LevelNumber", 0);
             resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
             resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
@@ -466,7 +467,7 @@ public class GameInit extends Activity {
         simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,nextLevelHandler,new SoundManager(getBaseContext()));
         
         	// Resuming old game. Prepare GameLoop for this...
-        if (resume) {
+        if (resume > 0) {
         	simulationRuntime.resumeSetLevelNumber(resumeLevelNumber);
         	simulationRuntime.resumeSetTowers(resumeTowers);
         }
@@ -525,6 +526,9 @@ public class GameInit extends Activity {
             	 case 5:
             		 scoreNinjaAdapter.show(0);
             		 break;
+            	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
+            		 finish();
+            		 break;
             	 case 99: // SAVE THE GAME.
             		 saveGame(msg.arg1);
             		 break;
@@ -547,7 +551,7 @@ public class GameInit extends Activity {
     			// Save everything.
     		SharedPreferences settings = getSharedPreferences("Resume", 0);
     		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", 1);
+    		editor.putInt("Resume", resume);
     		editor.putInt("LevelNumber", simulationRuntime.getLevelNumber());
     		editor.putInt("PlayerDifficulty", simulationRuntime.getPlayerData().getDifficulty());
     		editor.putInt("PlayerHealth", simulationRuntime.getPlayerData().getHealth());
@@ -558,7 +562,7 @@ public class GameInit extends Activity {
     			// Dont allow resume. Clears the main resume flag!
     		SharedPreferences settings = getSharedPreferences("Resume", 0);
     		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", 0);
+    		editor.putInt("Resume", -1);
     		editor.commit();
     	}
     }

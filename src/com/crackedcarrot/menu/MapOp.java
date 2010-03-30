@@ -33,6 +33,9 @@ public class MapOp extends Activity {
     private int level = 0;
     
     private int resume;
+    
+    private ImageView im;
+    private TextView  tv;
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,11 +51,10 @@ public class MapOp extends Activity {
         SharedPreferences settings = getSharedPreferences("Resume", 0);
         resume = settings.getInt("Resume", 0);
         
-        
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
-        final ImageView im = (ImageView) findViewById(R.id.image_choose);
-        final TextView  tv = (TextView) this.findViewById(R.id.maptext);
+        im = (ImageView) findViewById(R.id.image_choose);
+        tv = (TextView) this.findViewById(R.id.maptext);
         
         /** Listener for the left button */
         Button LeftButton = (Button)findViewById(R.id.leftbutton);
@@ -62,7 +64,7 @@ public class MapOp extends Activity {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps--;
         			// Additional map-option only if resume available.
-        		if (resume == 0) {
+        		if (resume == -1 || resume > 2) {
         			if(indexMaps < 1) {
         				indexMaps = 3;
         			}
@@ -75,7 +77,7 @@ public class MapOp extends Activity {
                 //Set the text belonging to the current map  
                 switch(indexMaps){
                 	case 0:
-                		tv.setText("Resume saved game.");
+                		tv.setText("You have " + (3 - resume) + " resumes left.");
                 		break;
                 	case 1: 
                 		tv.setText("Map 1: The field of grass.");
@@ -97,7 +99,7 @@ public class MapOp extends Activity {
         		//Set the correct map depending in the index value (0,1,2)
         		indexMaps++;
         			// Additional map-option only if resume available.
-        		if (resume == 0) {
+        		if (resume == -1 || resume > 2) {
         			if(indexMaps > 3) {
         				indexMaps = 1;
         			}
@@ -110,7 +112,8 @@ public class MapOp extends Activity {
                 //Set the text belonging to the current map  
                 switch(indexMaps){
                 	case 0:
-                		tv.setText("Resume saved game.");
+                		tv.setText("You have " + (3 - resume) + " resumes left.");
+                		break;
                 	case 1: 
                 		tv.setText("Map 1: The field of grass.");
                 		break;	
@@ -135,6 +138,28 @@ public class MapOp extends Activity {
         		startActivity(StartGame2);
         	}
         });
+    }
+    
+    	// Called when we get focus again (after a game has ended).
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        
+        // See if there's any old game saved that can be resumed.
+        SharedPreferences settings = getSharedPreferences("Resume", 0);
+        resume = settings.getInt("Resume", 0);
+        
+        	// If we have a possible resume show it directly.
+		if (resume == -1 || resume > 2) {
+        	indexMaps = 1;
+        	tv.setText("Map 1: The field of grass.");
+        } else {
+        	indexMaps = 0;
+        	tv.setText("You have " + (3 - resume) + " resumes left.");
+        }
+        
+        	// and update the Map-Image.
+        im.setImageResource(mmaps[indexMaps]);
     }
 
 }
