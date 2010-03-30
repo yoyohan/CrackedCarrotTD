@@ -309,6 +309,36 @@ public class Tower extends Sprite {
 		this.y = towerPlacement.y;
 		this.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
+		
+		int column = towerSpotInAllSpots%gridWidth;
+		int row = towerSpotInAllSpots%gridWidth;
+		
+		//Översta raden:
+		int upper_row = row+size;
+		if (upper_row > 11)
+			upper_row = 11;
+		
+		//Nedersta raden
+		int bottom_row = row-size;
+		if (bottom_row < 0)
+			bottom_row = 0;
+		
+		//Vänstra
+		int left_column = column - size;
+		if (left_column < 0)
+			left_column = 0;
+		
+		//Högra
+		int right_column = column + size;
+		if (right_column > gridWidth)
+			right_column = gridWidth;
+		
+		
+		//int gridLocation = tmp.x + gridWidth*tmp.y;
+		//if (lastGridLocation != gridLocation) {
+			//allSpots[lastGridLocation].remove(creep,gridIndex);
+			//creep.gridIndex = allSpots[gridLocation].add(creep);
+		//}
 	}
 
 	public void towerKillCreature(float timeDeltaSeconds, int gameSpeed, int nbrCreatures) {

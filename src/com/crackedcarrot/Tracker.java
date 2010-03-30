@@ -1,46 +1,39 @@
 package com.crackedcarrot;
 
+import java.util.Collection;
+
 public class Tracker {
 	private TrackerData[] allSpots;
-	private Scaler mScaler;
 	private int gridWidth;
-	private Creature[] inRangeCreeps;
+	private Collection<Creature> inRangeCreeps;
+	private int maxNbrOfCreatures = 41;
+	private float loadFactor = 0.5f;
 	
-	public Tracker(int nbrOfSpots, int MaxNbrOfCreatures, Scaler mScaler) {
-		this.mScaler = mScaler;
-		gridWidth = mScaler.getGridWidth();
+	
+	// Defines the constructor for the tracker. It requires the number of
+	// gridspots on the map and the width of the map
+	public Tracker(int nbrOfSpots, int gridWidth) {
+		this.gridWidth = gridWidth;
 		allSpots = new TrackerData[nbrOfSpots];
-		inRangeCreeps = new Creature[MaxNbrOfCreatures];
 		for (int x = 0; x <= nbrOfSpots; x++) {
-			allSpots[x] = new TrackerData(MaxNbrOfCreatures);
+			allSpots[x] = new TrackerData(maxNbrOfCreatures,loadFactor);
 		}
-	}
-
-	public int UpdatePosition(Creature creep, int lastGridLocation, int gridIndex) {
-		Coords tmp = mScaler.getGridXandY((int)creep.x,(int)creep.y);
-		int gridLocation = tmp.x + gridWidth*tmp.y;
-		if (lastGridLocation != gridLocation) {
-			allSpots[lastGridLocation].remove(creep,gridIndex);
-			creep.gridIndex = allSpots[gridLocation].add(creep);
-			return gridLocation;
-		}
-		return lastGridLocation;
 	}
 	
-	public Creature[] getCreaturesInRange(int towerSpotInAllSpots, int size) {
-		//for (int i=0; i < ;i++)
-		int column = towerSpotInAllSpots%gridWidth;
-		int row = towerSpotInAllSpots%gridWidth;
-
-		
-		//Översta raden:
-		int upper_row = row+size;
-		
-		
-		
-		//	size + towerSpotInAllSpots/gridWidth
-		
-		return inRangeCreeps;
+	// When a creature enters a new gridspot it will update the tracker.
+	public void UpdatePosition(Creature creep, int creepIndex, int lastGridLocation, int newGridLocation) {
+		allSpots[lastGridLocation].remove(creep,creepIndex);
+		allSpots[newGridLocation].add(creep,creepIndex);		
 	}
-
+	
+	// A tower will ask the tracker for all creatures in close range to him
+	public Creature[] getCreaturesInRange(int l_col, int r_col, int u_row, int b_row) {
+		for (int y = b_row; y <= u_row; y++) {
+			for (int x = l_col; x <= r_col; x++) {
+				int tmp = y*gridWidth+x;
+				inRangeCreeps.addAll(allSpots[tmp].getAll());
+			}
+		}
+		return (Creature[]) inRangeCreeps.toArray();
+	}
 }
