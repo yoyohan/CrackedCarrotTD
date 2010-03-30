@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-
 /**
 * Class defining creature in the game
 */
@@ -40,11 +39,15 @@ public class Creature extends Sprite{
     public float creatureFrozenTime;
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
-    
     // Used by tracker
 	public int gridIndex;
 	public int lastGridLocation;
-    
+	// This is the base rgb colors for this creature
+	protected float rDefault = 1;
+	protected float gDefault = 1;
+	protected float bDefault = 1;
+	
+	
 	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
 		super(resourceId);
 		this.draw = false;
@@ -66,12 +69,14 @@ public class Creature extends Sprite{
 	}
 
 	public void damage(float dmg){
-		dmg = health >= dmg ? dmg : health; 
-		health -= dmg;
-		GL.updateCreatureProgress(dmg);
-		if(health <= 0){
-			die();
-		} 
+		if (health > 0) {
+			dmg = health >= dmg ? dmg : health; 
+			health -= dmg;
+			GL.updateCreatureProgress(dmg);
+			if(health <= 0){
+				die();
+			}
+		}
 	}
 	
 	public void setHealth(float health){
@@ -127,6 +132,7 @@ public class Creature extends Sprite{
 	
 	private void die() {
 		setTextureName(this.mDeadTextureName);
+		resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency(player.getMoney());
 		// play died1.mp3
@@ -136,6 +142,12 @@ public class Creature extends Sprite{
 		GL.creaturDiesOnMap(1);
 	}
 	
+	private void resetRGB() {
+		this.r = this.rDefault;
+		this.g = this.gDefault;
+		this.b = this.bDefault;
+	}
+
 	private void move(float movement){
 		Coords co = wayP[getNextWayPoint()];
 		
@@ -158,9 +170,9 @@ public class Creature extends Sprite{
 	}
 	
 	private float applyEffects(float timeDeltaSeconds, float gameSpeed){
-		this.r = 1;
-		this.g = 1;
-		this.b = 1;
+		this.r = this.rDefault;
+		this.g = this.gDefault;
+		this.b = this.bDefault;
 		float tmpRGB = 1;
 		
 		int slowAffected = 1;
@@ -168,16 +180,16 @@ public class Creature extends Sprite{
 			slowAffected = 2;
     		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
     		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
-    		this.r = tmpRGB;
-    		this.g = tmpRGB;
+    		this.r = this.r*tmpRGB;
+    		this.g = this.g*tmpRGB;
 		}
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
 			damage(timeDeltaSeconds * creaturePoisonDamage);
 	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
-			this.r = tmpRGB;
-			this.b = tmpRGB;
+			this.r = this.r*tmpRGB;
+			this.b = this.b*tmpRGB;
 		}
   
 		if (creatureFrozenTime > 0 && creaturePoisonTime > 0) {
@@ -241,6 +253,28 @@ public class Creature extends Sprite{
 
 	public void setAllDead(boolean allDead) {
 		this.allDead = allDead;
+	}
+
+	public void affectWithFrost(int time) {
+		if (!this.creatureFrostResistant)
+			this.creatureFrozenTime = time;
+	}
+
+	public void affectWithPoison(int poisonTime, int poisonDamage) {
+		if (!this.creaturePoisonResistant) {
+			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
+				this.creaturePoisonDamage = (int)(poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);
+			else
+				this.creaturePoisonDamage = (int)(poisonDamage);
+			this.creaturePoisonTime = poisonTime;
+		}
+	}
+
+	public void setRGB(float rDefault, float gDefault, float bDefault) {
+		this.rDefault = rDefault;
+		this.gDefault = gDefault;
+		this.bDefault = bDefault;
+	
 	}
 
 }

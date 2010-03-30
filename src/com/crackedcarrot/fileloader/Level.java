@@ -19,18 +19,31 @@ public class Level extends Creature {
 		this.creatureFast = creatureFast;
 	}
 
-	public void setCreatureFrostResistant(boolean creatureFrostResistant) {
-		this.creatureFrostResistant = creatureFrostResistant;
+	// If a creature is frostresistan we also want him to change color
+	public void setCreatureResistant(boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
+		this.creatureFrostResistant = frostResistant;
+		this.creatureFireResistant = fireResistant;
+		this.creaturePoisonResistant = poisonResistant;
+		
+		this.rDefault = 1;
+		this.bDefault = 1;
+		this.gDefault = 1;
+		
+		if (poisonResistant) {
+			this.rDefault = 0.7f;
+			this.bDefault = 0.7f;
+		}
+		if (frostResistant) {
+			this.rDefault = 0.7f;
+			this.gDefault = 0.7f;
+		}
+		if (fireResistant) {
+			this.gDefault = 0.7f;
+			this.bDefault = 0.7f;
+		}		
+
 	}
 	
-	public void setCreatureFireResistant(boolean creatureFireResistant) {
-		this.creatureFireResistant = creatureFireResistant;
-	}
-
-	public void setCreaturePoisonResistant(boolean creaturePoisonResistant) {
-		this.creaturePoisonResistant = creaturePoisonResistant;
-	}
-
 	public void cloneCreature(Creature clone) {
 		clone.setResourceId(this.getResourceId());
 		clone.setDeadResourceId(this.getDeadResourceId());
@@ -50,6 +63,7 @@ public class Level extends Creature {
 		clone.opacity = 1;
 		clone.creatureFrozenTime = 0;
 		clone.creaturePoisonTime = 0;
+		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
 		clone.setAllDead(false);
 	}	
 }

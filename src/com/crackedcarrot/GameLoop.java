@@ -21,7 +21,7 @@ import com.crackedcarrot.menu.R;
 public class GameLoop implements Runnable {
     private Player player;
     private Map mGameMap;
-   // private Sprite[] mGrid;
+    private Sprite[] mGrid;
 
     private Creature[] mCreatures;
     private int remainingCreaturesALIVE;
@@ -119,8 +119,8 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-		//this.mGrid = new Grid[1]; 
-		//mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
+		this.mGrid = new Grid[1]; 
+		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
@@ -195,7 +195,7 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
-		//renderHandle.setSprites(mGrid, NativeRender.GRID);
+		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
@@ -316,17 +316,11 @@ public class GameLoop implements Runnable {
 
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-		        	// If the level is done and we want to fade away all creatures
-		        	if (remainingCreaturesALIVE <= 0) {
-	        			mCreatures[x].setAllDead(true);
-		        	}
 	        		mCreatures[x].update(timeDeltaSeconds, time, gameSpeed);
 	        	}
-	        	
-	        	
 	            //Calls the method that handles the monsterkilling.
 	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
-	        		mTower[x].towerKillCreature(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);
+	        		mTower[x].attackCreatures(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -413,9 +407,12 @@ public class GameLoop implements Runnable {
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
+    	if (remainingCreaturesALIVE <= 0) 
+    		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
+    			mCreatures[x].setAllDead(true);
 		// Update the status, displaying how many creatures that are still alive
 		updateCreatureHandler.post(cUpdate);
-    }
+	}
     
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
