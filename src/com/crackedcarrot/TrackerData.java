@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-import java.util.Collection;
 import java.util.Hashtable;
 
 public class TrackerData {
@@ -21,7 +20,7 @@ public class TrackerData {
 	}
 	
 	// return all creatures in this grid position
-	public Collection<Creature> getAll() {
-		return mCreeps.values();
+	public Hashtable<Integer, Creature> getAll() {
+		return mCreeps;
 	}
 }
