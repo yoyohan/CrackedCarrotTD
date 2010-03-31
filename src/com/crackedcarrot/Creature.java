@@ -39,22 +39,20 @@ public class Creature extends Sprite{
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
     
-	public Creature(int resourceId, int type, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
-		super(resourceId);
+	public Creature(int resourceId, int type, int frames, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
+		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
 		this.player = player;
 		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 		this.GL = loop;
-		setType(NativeRender.CREATURE, type);
 	}
 	
 	//This is only used by the level constructor.
-	public Creature(int resourceId, int type){
-		super(resourceId);
+	public Creature(int resourceId, int type , int frames){
+		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
-		setType(NativeRender.CREATURE, type);
 
 	}
 

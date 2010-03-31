@@ -45,6 +45,8 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
     int i,j;
     
     GLuint* bufferName;
+	GLuint* texBufNames;
+	int nFrames;
     GLint currTexture = -1;
     GLint prevTexture = -2;
 	GLSprite* currSprt = NULL;
@@ -63,14 +65,16 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		for (i = 0; i < noOfSprites[j]; i++) {
 			if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw)){
 				currSprt = &renderSprites[j][i];
-				bufferName = currSprt->bufferName;			
+				bufferName = currSprt->bufferName;
+				texBufNames = currSprt->textureBufferNames;
+				
 				r = (*env)->GetFloatField(env, currSprt->object, currSprt->r);
 				g = (*env)->GetFloatField(env, currSprt->object, currSprt->g);
 				b = (*env)->GetFloatField(env, currSprt->object, currSprt->b);
 				a = (*env)->GetFloatField(env, currSprt->object, currSprt->opacity);
 			
 				scale = (*env)->GetFloatField(env, currSprt->object, currSprt->scale);
-			
+				nFrames = (*env)->GetIntField(env, currSprt->object, currSprt->nFrames);
 				currTexture = (*env)->GetIntField(env,currSprt->object, currSprt->textureName);
 				if(currTexture == 0){
 					__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
@@ -90,8 +94,11 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 		
 				glBindBuffer(GL_ARRAY_BUFFER, bufferName[VERT_OBJECT]);
 				glVertexPointer(3, GL_FLOAT, 0, 0);
-			
-				glBindBuffer(GL_ARRAY_BUFFER, bufferName[TEX_OBJECT]);
+				if(nFrames > 1){
+					glBindBuffer(GL_ARRAY_BUFFER, texBufNames[(*env)->GetIntField(env, currSprt->object, currSprt->cFrame)]);
+				}else{
+					glBindBuffer(GL_ARRAY_BUFFER, texBufNames[0]);
+				}
 				glTexCoordPointer(2, GL_FLOAT, 0, 0);
 		
 	            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);

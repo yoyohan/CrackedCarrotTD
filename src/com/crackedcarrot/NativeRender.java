@@ -22,12 +22,12 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public	static final int BACKGROUND = 0;
 	public 	static final int SHOT		= 1;
-	public  static final int ANIMATION	= 2;
+	public  static final int EFFECT		= 2;
 	public 	static final int CREATURE	= 3;
 	public  static final int GRID		= 4;
 	public	static final int TOWER		= 5;
 
-	private static native void nativeAlloc(int type, int n, Sprite s);
+	private static native void nativeAlloc(int n, Sprite s);
 	private static native void nativeDataPoolSize(int type, int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
@@ -126,21 +126,29 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-				nativeDataPoolSize(renderList.length);
+				for(int i = 0; i < sprites.length; i++){
+					if(sprites[i] != null)
+						nativeDataPoolSize(i,sprites[i].length);
+				}
 				int lastTextureId = -1;
-				for(int i = 0; i < renderList.length; i++){
-					// TODO Auto-generated method stub
-					nativeAlloc(i, renderList[i]);
-					//Try to load textures
-					int resource = renderList[i].getResourceId();
-					if(resource == 0){
-						Log.d("FIN SPRITES", "Error Invalid resource ID");
+				for(int j = 0; j < sprites.length; j++){
+					if(sprites[j] == null)
+						continue;
+					
+					for(int i = 0; i < sprites[j].length; i++){
+						// TODO Auto-generated method stub
+						nativeAlloc(i, sprites[j][i]);
+						//Try to load textures
+						int resource = sprites[j][i].getResourceId();
+						if(resource == 0){
+							Log.d("FIN SPRITES", "Error Invalid resource ID");
+						}
+						if (!textureMap.containsKey(resource)) {
+							lastTextureId = loadBitmap(mContext, glContext, resource);
+							textureMap.put(resource, lastTextureId);
+						}
+						sprites[j][i].setTextureName(textureMap.get(resource));
 					}
-					if (!textureMap.containsKey(resource)) {
-						lastTextureId = loadBitmap(mContext, glContext, resource);
-						textureMap.put(resource, lastTextureId);
-					}
-					renderList[i].setTextureName(textureMap.get(resource));
 				}
 				lock2.release();
 			}

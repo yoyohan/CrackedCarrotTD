@@ -6,17 +6,18 @@
 #include <GLES/glext.h>
 
 enum spriteType {
-	BACKGROUND,
-	SHOT,
-	ANIMATION,
-	CREATURE,
-	GRID,
-	TOWER,
+	BACKGROUND = 0,
+	SHOT = 1,
+	EFFECT = 2,
+	CREATURE = 3,
+	GRID = 4,
+	TOWER = 5
 };
 
 typedef struct {
 	
 	enum spriteType type;
+	int subType;
 	
     jobject object;
     jfieldID width, height, scale;
@@ -42,8 +43,7 @@ GLSprite* renderSprites[6];
 
 enum bufferTag {
 	INDEX_OBJECT = 0,
-	VERT_OBJECT = 1,
-	TEX_OBJECT	= 2
+	VERT_OBJECT = 1
 };
 
 void initHwBuffers(JNIEnv* env, GLSprite* sprite);

@@ -9,7 +9,8 @@ public class Level extends Creature {
 	
 	//Constructor
     public Level(int resourceId){
-		super(resourceId);
+    	//Change subtype and numer of frames during load
+		super(resourceId, 0,1);
 	}
     public float getHealth() {
 		return health;

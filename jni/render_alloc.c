@@ -14,8 +14,8 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 	
     __android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
-						"Allocating memory pool for Sprites of size %d ", 
-						noOfSprites);
+						"Allocating memory pool for Sprites, Type %d of size %d ", 
+						type, noOfSprites[type]);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
@@ -26,7 +26,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 													
 	//Get the class and read the type info
 	jclass class = (*env)->GetObjectClass(env, sprite);
-	id = (*env)->GetFieldID(env, class, "type", "I");
+	jfieldID id = (*env)->GetFieldID(env, class, "type", "I");
 	jint type = (*env)->GetIntField(env, sprite, id);
 	
 	//Use type to figure out what element to manipulate
@@ -43,7 +43,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
 	
 		//cache the x,y,z pos ID
-	jfieldID id = (*env)->GetFieldID(env, class, "x", "F");
+	id = (*env)->GetFieldID(env, class, "x", "F");
 	thisSprite->x = id;
 	id = (*env)->GetFieldID(env, class, "y", "F");
 	thisSprite->y = id;
@@ -70,33 +70,37 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "opacity", "F");
 	thisSprite->opacity = id;
 	
+	id = (*env)->GetFieldID(env, class, "nFrames", "I");
+	thisSprite->nFrames = id;
+	id = (*env)->GetFieldID(env, class, "cFrame", "I");
+	thisSprite->cFrame = id;
+	
 		//cache TextureName
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	thisSprite->textureName = id;
 	
 	thisSprite->bufferName[0] = 0; 
 	thisSprite->bufferName[1] = 0;
-	thisSprite->bufferName[2] = 0;
+	thisSprite->textureBufferNames = NULL;
 	
 	//If this is not the first sprite of its type and its not an animation
 	//We can just use the same VBOs as the last sprite.
 	GLSprite* last = NULL;
 	if(spriteNO != 0){
-		last = &renderSprites[type][spriteNO-1]
+		last = &renderSprites[type][spriteNO-1];
 	}
 	if(last != NULL && last->subType == thisSprite->subType){
 		thisSprite->bufferName[0] = last->bufferName[0]; 
 		thisSprite->bufferName[1] = last->bufferName[1];
-		thisSprite->bufferName[2] = last->bufferName[2];
+		thisSprite->textureBufferNames = last->textureBufferNames;
 	}
 	else{
-		initHwBuffers(env, thisSprite, type);
+		initHwBuffers(env, thisSprite);
 	}	
 	//spritesReady = 1;	
 }
 
-void initHwBuffers(JNIEnv* env, GLSprite* sprite, jint type){
-	
+void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	GLsizeiptr vertBufSize;
 	GLsizeiptr textCoordBufSize;
 	GLsizeiptr indexBufSize;
@@ -118,8 +122,8 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite, jint type){
 	indexBuffer[4] = 2;
 	indexBuffer[5] = 3;
 		
-	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
-	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
+	GLfloat width = (*env)->GetFloatField(env, sprite->object, sprite->width);
+	GLfloat height = (*env)->GetFloatField(env, sprite->object, sprite->height);
 		
 	//VERT1
 	vertBuffer[0] = 0.0;
@@ -139,71 +143,65 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite, jint type){
 	vertBuffer[11] = 0.0;
 	//WOOO I CAN HAS QUAD!
 	
-	//Texture Coords
-	
-	textureCoordBuffer[0] = 0.0; textureCoordBuffer[1] = 1.0;
-	textureCoordBuffer[2] = 1.0; textureCoordBuffer[3] = 1.0;
-	textureCoordBuffer[4] = 0.0; textureCoordBuffer[5] = 0.0;
-	textureCoordBuffer[6] = 1.0; textureCoordBuffer[7] = 0.0;
-	
-	
-	/*float w = (*env)->GetFloatField(env, sprite->object, sprite->width);
-	float h = (*env)->GetFloatField(env, sprite->object, sprite->height);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "sprite has width: %f and hegiht %f", w,h);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "init HW buffers useing data:");
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Indices : %d %d %d %d %d %d",
-						sprite->indexBuffer[0], sprite->indexBuffer[1], sprite->indexBuffer[2],
-						sprite->indexBuffer[3],sprite->indexBuffer[4],sprite->indexBuffer[5]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 0: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[1],sprite->vertBuffer[2]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 1: %f,%f,%f", sprite->vertBuffer[3],sprite->vertBuffer[4],sprite->vertBuffer[5]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 3: %f,%f,%f", sprite->vertBuffer[6],sprite->vertBuffer[7],sprite->vertBuffer[8]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 4: %f,%f,%f", sprite->vertBuffer[9],sprite->vertBuffer[10],sprite->vertBuffer[11]);
-	*/
-	glGenBuffers(3, sprite->bufferName);
+	glGenBuffers(2, sprite->bufferName);
 	//__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "GenBuffer retured error: %d", glGetError());
 	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[VERT_OBJECT]);
 	glBufferData(GL_ARRAY_BUFFER, vertBufSize, vertBuffer, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[TEX_OBJECT]);
-	glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
 	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	
-	/*__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "IndexObject %d", sprite->bufferName[INDEX_OBJECT]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "VertObject  %d", sprite->bufferName[VERT_OBJECT]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "TextureObject %d", sprite->bufferName[TEX_OBJECT]);
-	*/
+	//Texture Coords
+	
+	int frames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
+	sprite->textureBufferNames = malloc(frames * sizeof(GLuint));
+	glGenBuffers(frames, sprite->textureBufferNames);
+	float texFraction = 1.0 / frames;
+	float startFraction = 0.0;
+	float endFraction;
+	int i;
+	int offset;
+	for(i = 0; i < frames; i++){
+		endFraction = startFraction + texFraction;
+		textureCoordBuffer[0] = startFraction; 	textureCoordBuffer[1] = 1.0;
+		textureCoordBuffer[2] = endFraction; 	textureCoordBuffer[3] = 1.0;
+		textureCoordBuffer[4] = startFraction; 	textureCoordBuffer[5] = 0.0;
+		textureCoordBuffer[6] = endFraction; 	textureCoordBuffer[7] = 0.0;
+		glBindBuffer(GL_ARRAY_BUFFER, sprite->textureBufferNames[i]);
+		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		startFraction = endFraction;
+	}
+	
+
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
-	GLSprite* freeSprites = renderSprites;
-	GLSprite* currentSprite;
-	int spritesToFree = noOfSprites;
+	GLSprite* currSprt;
+	int spritesToFree;
 	int i;
+	int j;
 	
-	noOfSprites = 0;
-	renderSprites = NULL;
-	
-	for(i = 0; i < spritesToFree; i++){
-		currentSprite = &freeSprites[i];
-		__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currentSprite->bufferName[INDEX_OBJECT]);
-		free(currentSprite->vertBuffer);
-		free(currentSprite->textureCoordBuffer);
-		free(currentSprite->indexBuffer);
+	for(j = 0; j < 6; j++){
+		spritesToFree = noOfSprites[j];
+		for(i = 0; i < spritesToFree; i++){
+			currSprt = &renderSprites[j][i];
+			__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currSprt->bufferName[INDEX_OBJECT]);
 		
-		#ifndef emulator
-		glDeleteBuffers(3, currentSprite->bufferName);
-		#endif
-		(*env)->DeleteGlobalRef(env, currentSprite->object);
-	}
+			#ifndef emulator
+			glDeleteBuffers(2, currSprt->bufferName);
+			glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
+			 				currSprt->textureBufferNames);
+			#endif
+			(*env)->DeleteGlobalRef(env, currSprt->object);
+		}
 	
-	free(freeSprites);
-	freeSprites = NULL;
+		free(renderSprites[j]);
+		noOfSprites[j] = 0;
+	}
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName){

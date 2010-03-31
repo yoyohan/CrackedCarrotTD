@@ -91,8 +91,8 @@ public class GameLoop implements Runnable {
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager);
-	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
+	    	mTower[i] = new Tower(R.drawable.tower1, 0,1, mCreatures, soundManager);
+	    	mShots[i] = new Shot(R.drawable.cannonball,0,1, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
@@ -105,7 +105,7 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords(), this);
+	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 0,1,player, soundManager, mGameMap.getWaypoints().getCoords(), this);
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
@@ -165,7 +165,7 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
 		//UGLY HACK!!
-		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND);
+		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
 		//END UGLY HACK!!
 		
         // Now's a good time to run the GC.  Since we won't do any explicit

@@ -59,17 +59,15 @@ public class Tower extends Sprite {
 	// Random used to calculate damage
     private Random rand;
     
-	public Tower(int resourceId, Creature[] mCreatures, SoundManager soundManager){
-		super(resourceId);
+	public Tower(int resourceId, int type, int frames, Creature[] mCreatures, SoundManager soundManager){
+		super(resourceId, NativeRender.TOWER, type, frames);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		rand = new Random();
-		setType(NativeRender.TOWER, 0);
 	}
-	public Tower(int resourceId){
-		super(resourceId);
+	public Tower(int resourceId, int type , int frames){
+		super(resourceId,NativeRender.TOWER, type, frames);
 		rand = new Random();
-		setType(NativeRender.TOWER, 0);
 	}
 	
 	/**
