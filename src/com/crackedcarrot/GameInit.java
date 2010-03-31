@@ -24,9 +24,9 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -42,7 +42,7 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
-    private HealthProgressBar healthProgressBar;
+    private ProgressBar healthProgressBar;
     private int healthProgress = 100;
     private TextView nrCreText;
     //private int nextLevel_creatures = 0;
@@ -312,15 +312,9 @@ public class GameInit extends Activity {
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
         /** Create the progress bar, showing the enemies total health*/
-        healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
+        healthProgressBar = (ProgressBar) findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
         healthProgressBar.setProgress(healthProgress);
-        healthProgressBar.setProgressChangeListener(new ProgressChangeListener(){
-        	//@Override
-        	public void progressUpdate(int health){
-        		healthProgressBar.setProgress(health);
-        	}
-        });
         
         /** Create the TextView showing number of enemies left */
         nrCreText = (TextView) findViewById(R.id.nrEnemyLeft);
@@ -523,6 +517,9 @@ public class GameInit extends Activity {
             		 break;
             	 case 20: // update number of creatures still alive on GUI.
             		 nrCreText.setText("" + msg.arg1);
+            		 break;
+            	 case 21: // update progressbar with creatures health.
+            		 healthProgressBar.setProgress(msg.arg1);
             		 break;
             	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
             		 finish();

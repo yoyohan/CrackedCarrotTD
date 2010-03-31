@@ -28,7 +28,7 @@ public class GameLoop implements Runnable {
     private int remainingCreaturesALL;
     
     private float startCreatureHealth;
-    float currentCreatureHealth;
+    private float currentCreatureHealth;
     private Level[] mLvl;
     private int lvlNbr = 0;
     
@@ -50,17 +50,9 @@ public class GameLoop implements Runnable {
     private Scaler mScaler;
     private NativeRender renderHandle;
     
-    private Handler updateHealthHandler = new Handler();
     private Handler guiHandler;
-    private ProgressUpdate pUpdate = new ProgressUpdate();
-    
     private Semaphore dialogSemaphore = new Semaphore(1);
-    
-    private class ProgressUpdate implements Runnable{
-    	public void run(){
-			HealthProgressBar.proChangeListener.progressUpdate((int)(100*(currentCreatureHealth/startCreatureHealth)));
-		}
-    }
+
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, Handler gh, SoundManager sm){
@@ -274,11 +266,11 @@ public class GameLoop implements Runnable {
     		msg.arg1 = remainingCreaturesALL;
     		guiHandler.sendMessage(msg);
     		
-    		updateHealthHandler.post(new Runnable(){
-				public void run(){
-					HealthProgressBar.proChangeListener.progressUpdate(100);
-				}
-			});
+    		// And set the progressbar with creature health to full again.
+    		msg = new Message();
+    		msg.what = 21;
+    		msg.arg1 = 100;
+    		guiHandler.sendMessage(msg);
     		
             // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -452,7 +444,11 @@ public class GameLoop implements Runnable {
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-    	updateHealthHandler.post(pUpdate);
+    	
+    	Message msg = new Message();
+    	msg.what = 21;
+    	msg.arg1 = (int)(100*(currentCreatureHealth/startCreatureHealth));
+    	guiHandler.sendMessage(msg);
     }
     
     public void stopGameLoop(){
