@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
-import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -45,7 +44,7 @@ public class GameInit extends Activity {
     private ExpandMenu expandMenu = null;
     private HealthProgressBar healthProgressBar;
     private int healthProgress = 100;
-    private NrCreTextView nrCreText;
+    private TextView nrCreText;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
     
@@ -323,14 +322,8 @@ public class GameInit extends Activity {
         	}
         });
         
-        /** Create the TextView showing number of enemies left and add a listener to it */
-        nrCreText = (NrCreTextView) findViewById(R.id.nrEnemyLeft);
-        nrCreText.setCreatureUpdateListener(new CreatureUpdateListener() {
-        	//@Override
-        	public void creatureUpdate(int number){
-        		nrCreText.setText("" + number);
-        	}
-        });
+        /** Create the TextView showing number of enemies left */
+        nrCreText = (TextView) findViewById(R.id.nrEnemyLeft);
         
         
         /** Create the expandable menu */
@@ -464,7 +457,7 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,nextLevelHandler,new SoundManager(getBaseContext()));
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,guiHandler,new SoundManager(getBaseContext()));
         
         	// Resuming old game. Prepare GameLoop for this...
         if (resume > 0) {
@@ -505,7 +498,9 @@ public class GameInit extends Activity {
 
     	// This is used to handle calls from the GameLoop to show
     	// our dialogs.
-    private Handler nextLevelHandler = new Handler() {
+    	// TODO: all the cases need different (and sane) ID-declarations.
+    	//       havent done it yet since I dont know how many/which are needed...
+    private Handler guiHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
@@ -525,6 +520,9 @@ public class GameInit extends Activity {
             		 break;
             	 case 5:
             		 scoreNinjaAdapter.show(0);
+            		 break;
+            	 case 20: // update number of creatures still alive on GUI.
+            		 nrCreText.setText("" + msg.arg1);
             		 break;
             	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
             		 finish();

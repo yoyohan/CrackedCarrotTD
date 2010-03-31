@@ -50,19 +50,11 @@ public class GameLoop implements Runnable {
     private Scaler mScaler;
     private NativeRender renderHandle;
     
-    private Handler updateCreatureHandler = new Handler();
     private Handler updateHealthHandler = new Handler();
-    private Handler nextLevelHandler;
-    private CreatureUpdate cUpdate = new CreatureUpdate();
+    private Handler guiHandler;
     private ProgressUpdate pUpdate = new ProgressUpdate();
     
     private Semaphore dialogSemaphore = new Semaphore(1);
-    
-    private class CreatureUpdate implements Runnable{
-		public void run(){
-			NrCreTextView.listener.creatureUpdate(remainingCreaturesALIVE);
-		}
-	}
     
     private class ProgressUpdate implements Runnable{
     	public void run(){
@@ -71,7 +63,7 @@ public class GameLoop implements Runnable {
     }
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
-			Player p, Handler nlh, SoundManager sm){
+			Player p, Handler gh, SoundManager sm){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
    		this.mTowerGrid = gameMap.getTowerGrid();
@@ -80,7 +72,7 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
-    	this.nextLevelHandler = nlh;
+    	this.guiHandler = gh;
     }
     
 	private void initializeDataStructures() {
@@ -218,7 +210,7 @@ public class GameLoop implements Runnable {
 		msg.what = 1; // 1 means to show NextLevel-box.
 		msg.arg1 = mLvl[lvlNbr].nbrCreatures;
 		msg.arg2 = mLvl[lvlNbr].getResourceId();
-    	nextLevelHandler.sendMessage(msg);
+    	guiHandler.sendMessage(msg);
     	
     	// This is a good time to save the current progress of the game.
     	msg = new Message();
@@ -226,7 +218,7 @@ public class GameLoop implements Runnable {
     	msg.arg1 = 1;  // 1 means actually save.
     				   // 2 means clear everything, the level is  D O N E !
     	               // (and cannot be resumed.)
-    	nextLevelHandler.sendMessage(msg);
+    	guiHandler.sendMessage(msg);
 
 		// Code to wait for the user to click ok on NextLevel-dialog.
 		try {
@@ -277,11 +269,11 @@ public class GameLoop implements Runnable {
     		initializeLvl();
     		
     		// Initialize the status, displaying how many creatures still alive
-    		updateCreatureHandler.post(new Runnable(){
-				public void run(){
-					NrCreTextView.listener.creatureUpdate(remainingCreaturesALL);
-				}
-			});
+    		Message msg = new Message();
+    		msg.what = 20;
+    		msg.arg1 = remainingCreaturesALL;
+    		guiHandler.sendMessage(msg);
+    		
     		updateHealthHandler.post(new Runnable(){
 				public void run(){
 					HealthProgressBar.proChangeListener.progressUpdate(100);
@@ -325,9 +317,9 @@ public class GameLoop implements Runnable {
             	Log.d("GAMETHREAD", "You are dead");
 
             		// Show the You Lost-dialog.
-        		Message msg = new Message();
+        		msg = new Message();
         		msg.what = 3; // YouLost-box.
-            	nextLevelHandler.sendMessage(msg);
+            	guiHandler.sendMessage(msg);
             	
             	// This is a good time clear all savegame data.
             	msg = new Message();
@@ -335,7 +327,7 @@ public class GameLoop implements Runnable {
             	msg.arg1 = 2;  // 1 means actually save.
             				   // 2 means clear everything, the level is  D O N E !
             	               // (and cannot be resumed.)
-            	nextLevelHandler.sendMessage(msg);
+            	guiHandler.sendMessage(msg);
             	
         		// Code to wait for the user to click ok on YouLost-dialog.
         		try {
@@ -364,9 +356,9 @@ public class GameLoop implements Runnable {
                 	Log.d("GAMETHREAD", "You have completed this map");
                 	
             		// Show the You Won-dialog.
-            		Message msg = new Message();
+            		msg = new Message();
             		msg.what = 2; // YouWon
-                	nextLevelHandler.sendMessage(msg);
+                	guiHandler.sendMessage(msg);
 
                 	// This is a good time clear all savegame data.
                 	msg = new Message();
@@ -374,7 +366,7 @@ public class GameLoop implements Runnable {
                 	msg.arg1 = 2;  // 1 means actually save.
                 				   // 2 means clear everything, the level is  D O N E !
                 	               // (and cannot be resumed.)
-                	nextLevelHandler.sendMessage(msg);
+                	guiHandler.sendMessage(msg);
                 	
                 	// Show Ninjahighscore-thingie. Not working atm..
                 	//msg = new Message();
@@ -406,7 +398,7 @@ public class GameLoop implements Runnable {
     	// Close activity/gameview.
     	Message msg = new Message();
     	msg.what = 98; // Call to finish() in parent.
-    	nextLevelHandler.sendMessage(msg);
+    	guiHandler.sendMessage(msg);
     }
 
     public boolean createTower(Coords TowerPos, int towerType) {
@@ -451,7 +443,10 @@ public class GameLoop implements Runnable {
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
 		// Update the status, displaying how many creatures that are still alive
-		updateCreatureHandler.post(cUpdate);
+		Message msg = new Message();
+		msg.what = 20;
+		msg.arg1 = remainingCreaturesALIVE;
+		guiHandler.sendMessage(msg);
     }
     
     public void updateCreatureProgress(float dmg){
