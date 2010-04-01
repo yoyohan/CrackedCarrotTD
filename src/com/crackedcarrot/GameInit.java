@@ -418,13 +418,44 @@ public class GameInit extends Activity {
         		mGLSurfaceView.setTowerType(3);
         	}
         });
-        Button inMenu6 = (Button)findViewById(R.id.inmenu6);
-        inMenu6.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		expandMenu.switchMenu();
-        	}
-        });
+
+        
+	    ////////////////////////////////////////////////////////////////
+	    // First button in Expand Menu
+	    ////////////////////////////////////////////////////////////////
+	    
+	    Button removeExpand = (Button)findViewById(R.id.removeExpand);
+	    removeExpand.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+	    
+	    // Second set normal gameSpeed
+	    Button normalSpeed = (Button)findViewById(R.id.normalSpeed);
+	    normalSpeed.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		simulationRuntime.setGameSpeed(1);
+	    		// And den remove menu
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+
+	    // Third set fast gameSpeed
+	    Button fastSpeed = (Button)findViewById(R.id.fastSpeed);
+	    fastSpeed.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		simulationRuntime.setGameSpeed(4);
+	    		//And then remove menu
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+        
+        
+             
         
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
@@ -449,13 +480,13 @@ public class GameInit extends Activity {
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 2) {
-        	p = new Player(difficulty, 50, 100, 1000);
+        	p = new Player(difficulty, 50, 100, 1);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 40, 100, 1000);
+        	p = new Player(difficulty, 40, 100, 1);
         }
         else {
-        	p = new Player(difficulty, 60, 100, 1000);
+        	p = new Player(difficulty, 60, 100, 1);
         }
         
       //Load the creature waves and apply the correct difficulty
