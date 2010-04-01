@@ -247,17 +247,19 @@ public class Tower extends Sprite {
 		if (this.tmpCoolDown <= this.coolDown/2) {
 			this.relatedShot.draw = false;
 		}
-		else {
-			// Resize shot!!
-			this.relatedShot.scale = (coolDown/2)/tmpCoolDown;
+		else if (this.relatedShot.draw && this.tmpCoolDown-this.coolDown/2 <= 1f) {
+	    	this.relatedShot.opacity = this.tmpCoolDown-this.coolDown/2;
 		}
 		if (this.tmpCoolDown <= 0) {
 			if (trackAllNearbyEnemies(nbrCreatures,this.x,this.y,true) > 0) {
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-	    		this.relatedShot.x = this.x + this.getWidth()/2 - this.relatedShot.getWidth()/2;
-	    		this.relatedShot.y = this.y + this.getHeight()/2 - this.relatedShot.getHeight()/2;
+				this.relatedShot.scale = (this.range*2)/this.relatedShot.getWidth();
+	    		this.relatedShot.x = this.x + this.getWidth()/2 - this.range;
+	    		this.relatedShot.y = this.y + this.getHeight()/2 - this.range;
+				this.relatedShot.x = this.relatedShot.x/this.relatedShot.scale;
+				this.relatedShot.y = this.relatedShot.y/this.relatedShot.scale;				
 			}
 		}
 	}	
@@ -332,7 +334,8 @@ public class Tower extends Sprite {
 				float width,
 				float height,
 				float relatedShotWidth,
-				float relatedShotHeight
+				float relatedShotHeight,
+				int shotResourceId
 				){
 
 			this.setResourceId(resourceId);
@@ -359,6 +362,7 @@ public class Tower extends Sprite {
 			this.setHeight(height);
 			this.relatedShot.setWidth(relatedShotWidth);
 			this.relatedShot.setHeight(relatedShotHeight);
+			this.relatedShot.setResourceId(shotResourceId);
 
 	}
 
@@ -392,12 +396,14 @@ public class Tower extends Sprite {
 				clone.getWidth(),
 				clone.getHeight(),
 		    	clone.relatedShot.getWidth(),
-		    	clone.relatedShot.getHeight()
+		    	clone.relatedShot.getHeight(),
+		    	clone.relatedShot.getResourceId()
 			);
 		
 		// This cannot be in the cloneTower function because
 		// then it breaks with TowerLoader.java
 		this.setTextureName(clone.getTextureName());
+		this.relatedShot.setTextureName(clone.relatedShot.getTextureName());
 		
 		this.draw = true;
 		this.x = towerPlacement.x;
