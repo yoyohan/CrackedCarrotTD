@@ -9,7 +9,7 @@ public class Player {
 	private int interestGainedEntireGame;
 	private int healthLost;
 	private int timeUntilNextLevel;
-	private double timeBetweenLevels;
+	private float timeBetweenLevels;
 	
 	public Player(int difficulty, int health, int money, int timeBetweenLevels) { 
 		this.difficulty = difficulty;
@@ -53,7 +53,7 @@ public class Player {
 		return money;
 	}
 
-	public double getTimeBetweenLevels() {
+	public float getTimeBetweenLevels() {
 		return timeBetweenLevels;
 	}
 
