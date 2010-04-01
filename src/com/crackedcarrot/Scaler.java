@@ -9,6 +9,8 @@ public class Scaler {
 	private int res_y;
 	private final int FX = 480;
 	private final int FY = 800;
+	private int nbrGridY;
+	private int nbrGridX;
 	private Coords tmpGridSize;
 	private Coords tmpPosStatusBar;
 	private Coords tmpTowerMenu;
@@ -19,6 +21,8 @@ public class Scaler {
 		tmpGridSize = scale(60,60);
 		tmpPosStatusBar = scale(0,740);
 		tmpTowerMenu = scale(0,80);
+		nbrGridY = (FY-60-80) / 60;
+		nbrGridX = FX / 60;
 		
 	}
 
@@ -82,5 +86,12 @@ public class Scaler {
 		return true;
 	}
 	
+	public int getGridWidth() {
+		return nbrGridX+1;
+	}
+	public int getGridHeight() {
+		return nbrGridY+1;
+		
+	}
 	
 }

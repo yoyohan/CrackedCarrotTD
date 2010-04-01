@@ -25,6 +25,7 @@ package com.crackedcarrot;
 //import com.crackedcarrot.menu.R;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.SystemClock;
@@ -44,7 +45,7 @@ public class SoundManager {
 	private  AudioManager  mAudioManager;
 	private  Context       mContext;
 
-    public   boolean       playSound = false; // play sounds? TODO: off by default.
+    public   boolean       playSound = false; // play sounds?
 
 	public SoundManager(Context baseContext) {
         this.initSounds(baseContext);
@@ -57,6 +58,10 @@ public class SoundManager {
         //this.addSound(20, 1.0f, R.raw.creaturehappy);
         //this.addSound(30, 1.0f, R.raw.victory);
         //this.addSound(31, 1.0f, R.raw.defeat);
+        
+        // Load default sound on/off settings.
+        SharedPreferences settings = baseContext.getSharedPreferences("Options", 0);
+        playSound = settings.getBoolean("optionsSound", false);
 	}
 
 	public void initSounds(Context context) { 
