@@ -27,30 +27,30 @@ aoe damage::10
 Shot texture::cannonball
 Shot size::8
 ////////////////////////////////////
-// Cannon tower with frost damage
+// AOE Tower
 ////////////////////////////////////
 texture::t2
-title::Cannon tower FROST
+title::AOE tower
 size::60
 price::10
 resell value::8
-minDamage::20
-maxDamage::50
+minDamage::10
+maxDamage::20
 Shot-velocity::250
 cooldown between shots::2
-hasFrostDamage::true
-frostTime(sec)::5
+hasFrostDamage::false
+frostTime(sec)::0
 hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::1
+0-projectile,1-projectileAOE,2-AOE::2
 upgradelink1::1
 upgradelink2::-1
-range::150
-aoe range:: 30
-aoe damage::10 
-Shot texture::cannonball
+range::128
+aoe range:: 0
+aoe damage::0 
+Shot texture::poison
 Shot size::8
 ////////////////////////////////////
 // Cannon tower with frost damage
