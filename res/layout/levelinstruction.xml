@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/relLay"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="#00000000"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+<ScrollView
+		android:id="@+id/level_instr"
+		android:orientation="horizontal"
+		android:layout_width="250dp"
+		android:layout_height="300dp"
+		android:background="#66000044">
+		
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="bottom"
+			android:background="#00000000" >
+        
+        	<com.crackedcarrot.LevelInstrView
+        		android:id="@+id/text_instr"
+        		android:textSize="10sp"
+        		android:textColor="#000000"
+				android:text="Here should the level instructions be, 
+				they are very interesting bla bla bla, so it is pretty funny yeah?"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content">
+			</com.crackedcarrot.LevelInstrView>
+        
+        </LinearLayout>
+		
+</ScrollView>
+</RelativeLayout>

@@ -99,6 +99,7 @@ public class GameInit extends Activity {
     final int DIALOG_WON_ID       = 2;
     final int DIALOG_LOST_ID      = 3;
     final int DIALOG_UPGRADE_ID   = 4;
+    final int DIALOG_LVL_INSTR_ID = 5;
     
 	/*
 	 * Creates our NextLevel-dialog.
@@ -216,6 +217,12 @@ public class GameInit extends Activity {
 	    	WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
 	    	dialog.getWindow().setAttributes(lp); // sets the updated windows attributes
 	    	dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+	    	
+	    	break;
+	    case DIALOG_LVL_INSTR_ID:
+	    	dialog = new Dialog(this,R.style.InstructionDialog);
+	        dialog.setContentView(R.layout.levelinstruction);
+	    	dialog.setOwnerActivity(this);
 	    	
 	    	break;
 	    default:
@@ -363,14 +370,15 @@ public class GameInit extends Activity {
         	}
         });
         
+        
         /** Create the ScrollView showing the level instructions */
-        levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
+        /**  levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
         levelInstrView.setLevelInstrUpdateListener(new LevelInstrUpdateListener() {
         	@Override
         	public void levelInstrUpdate(String s){
         		levelInstrView.setText(s);
         	}
-        });
+        }); */
         
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
@@ -433,6 +441,13 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		expandMenu.switchMenu();
+        	}
+        });
+        Button infoButton = (Button)findViewById(R.id.infobutton);
+        infoButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		showDialog(5);
         	}
         });
         
@@ -516,6 +531,9 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_UPGRADE_ID:
             		 showDialog(4);
+            		 break;
+            	 case DIALOG_LVL_INSTR_ID:
+            		 showDialog(5);
             		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);

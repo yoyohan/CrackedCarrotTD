@@ -55,7 +55,7 @@ public class GameLoop implements Runnable {
     private Handler updateCreatureHandler = new Handler();
     private Handler updateHealthHandler = new Handler();
     private Handler nextLevelHandler;
-    private LevelInstrUpdate lIUpdate = new LevelInstrUpdate();
+    //private LevelInstrUpdate lIUpdate = new LevelInstrUpdate();
     private CurrencyUpdate currUpdate = new CurrencyUpdate();
     private PlayerHealthUpdate pHUpdate = new PlayerHealthUpdate();
     private CreatureImageUpdate cIUpdate = new CreatureImageUpdate();
@@ -64,12 +64,13 @@ public class GameLoop implements Runnable {
     
     private Semaphore nextLevelSemaphore = new Semaphore(1);
     
+    /**
     private class LevelInstrUpdate implements Runnable{
 		public void run(){
 			LevelInstrView.listener.levelInstrUpdate("The instruction string variable for" +
 					"each level here");
 		}
-	}
+	} */
     
     private class CurrencyUpdate implements Runnable{
 		public void run(){
@@ -287,7 +288,7 @@ public class GameLoop implements Runnable {
     		//OR they will be infinitely small.
     		initializeLvl();
     		// Set the instruction text for this level
-    		updateLevelInstrHandler.post(lIUpdate);
+    		//updateLevelInstrHandler.post(lIUpdate);
     		// Initialize the status, displaying the amount of currency
     		updateCurrencyHandler.post(currUpdate);
     		// Initialize the status, displaying the players health
