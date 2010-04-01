@@ -47,7 +47,7 @@ poisonTime(sec)::0
 0-projectile,1-projectileAOE,2-AOE::2
 upgradelink1::1
 upgradelink2::-1
-range::128
+range::70
 aoe range:: 0
 aoe damage::0 
 Shot texture::poison

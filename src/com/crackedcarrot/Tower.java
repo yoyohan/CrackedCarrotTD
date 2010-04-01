@@ -255,9 +255,9 @@ public class Tower extends Sprite {
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-				this.relatedShot.scale = this.range/this.relatedShot.getWidth();
-	    		this.relatedShot.x = this.x + this.getWidth()/2 - this.range/2;
-	    		this.relatedShot.y = this.y + this.getHeight()/2 - this.range/2;
+				this.relatedShot.scale = (this.range*2)/this.relatedShot.getWidth();
+	    		this.relatedShot.x = this.x + this.getWidth()/2 - this.range;
+	    		this.relatedShot.y = this.y + this.getHeight()/2 - this.range;
 				this.relatedShot.x = this.relatedShot.x/this.relatedShot.scale;
 				this.relatedShot.y = this.relatedShot.y/this.relatedShot.scale;				
 			}
