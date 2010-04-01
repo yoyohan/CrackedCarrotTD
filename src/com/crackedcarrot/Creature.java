@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 
 /**
 * Class defining creature in the game
@@ -9,6 +11,8 @@ public class Creature extends Sprite{
 	private Player player;
 	//SoundManager ref
 	private SoundManager soundManager;
+	// Creatures needs to know gridlocation
+	private Scaler mScaler;
 	//Waypoints for this creature
 	private Coords[] wayP;
 	//Variable keeping all creatures from going in a straight line
@@ -29,6 +33,8 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
+    // All creatures are dead:
+    private boolean allDead = false;
     // Creature special abilty
     public boolean creatureFast;
     public boolean creatureFrostResistant;
@@ -38,8 +44,20 @@ public class Creature extends Sprite{
     public float creatureFrozenTime;
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
-    
-	public Creature(int resourceId, Player player, SoundManager soundMan, Coords[] wayP, GameLoop loop){
+	// This is the base rgb colors for this creature
+	protected float rDefault = 1;
+	protected float gDefault = 1;
+	protected float bDefault = 1;
+	// Data used by tracker
+	protected int currentGridPos;
+	protected int creatureIndex;
+	protected Tracker mTracker;
+	
+	
+	public Creature(int resourceId, Player player, 
+					SoundManager soundMan, Coords[] wayP, 
+					GameLoop loop, int creatureIndex, 
+					Scaler mScaler, Tracker mTracker){
 		super(resourceId);
 		this.draw = false;
 		this.player = player;
@@ -47,6 +65,9 @@ public class Creature extends Sprite{
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 		this.GL = loop;
+		this.mScaler = mScaler;
+		this.creatureIndex = creatureIndex;
+		this.mTracker = mTracker;
 	}
 	
 	//This is only used by the level constructor.
@@ -60,12 +81,14 @@ public class Creature extends Sprite{
 	}
 
 	public void damage(float dmg){
-		dmg = health >= dmg ? dmg : health; 
-		health -= dmg;
-		GL.updateCreatureProgress(dmg);
-		if(health <= 0){
-			die();
-		} 
+		if (health > 0) {
+			dmg = health >= dmg ? dmg : health; 
+			health -= dmg;
+			GL.updateCreatureProgress(dmg);
+			if(health <= 0){
+				die();
+			}
+		}
 	}
 	
 	public void setHealth(float health){
@@ -100,29 +123,32 @@ public class Creature extends Sprite{
 		return creatureFast;
 	}
 
-	public void update(float timeDeltaSeconds, long time, int gameSpeed){
+	public void update(float timeDeltaSeconds, long time){
 	
 		//Time to spawn.
-		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y)
+		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y) {
 			draw = true;
+			
+			// TODO: TRACKER
+			//prepareTracker();
+		}
 		
 		//If still alive move the creature.
 		float movement = 0;
 		if (draw && health > 0 && nextWayPoint < wayP.length) {
 			// If the creature is living calculate tower effects.
-			movement = applyEffects(timeDeltaSeconds, gameSpeed);
+			movement = applyEffects(timeDeltaSeconds);
 			move(movement);
 		}
-		
 	    // Creature is dead and fading...
-		else if (draw && health <= 0) {
-			fade(timeDeltaSeconds/10 * gameSpeed);
+		else if (allDead) {
+			fade(timeDeltaSeconds/5);
 		}
 	}
 	
 	private void die() {
 		setTextureName(this.mDeadTextureName);
-		this.opacity -= 0.5;
+		resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency(player.getMoney());
 		// play died1.mp3
@@ -130,6 +156,9 @@ public class Creature extends Sprite{
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
 		GL.creaturDiesOnMap(1);
+		
+		// TODO Remove creature from tracker
+		// mTracker.removeCreature(this, creatureIndex, currentGridPos);
 	}
 	
 	private void move(float movement){
@@ -146,6 +175,14 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += Math.cos(radian) * movement;
     		this.y += Math.sin(radian) * movement;
+    		
+    		// TODO: USED BY CREATURE TO LET TRACKER KNOW CREATURE HAS ENTERED A NEW GRIDPOS
+    		//Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
+    		//int gridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
+    		//if (gridPos != currentGridPos) {
+    		//	mTracker.UpdatePosition(this, creatureIndex, currentGridPos, gridPos);
+    		//	currentGridPos = gridPos;
+    		//}
 		}
     	// Creature has reached is destination without being killed
     	if (getNextWayPoint() >= wayP.length){
@@ -153,41 +190,42 @@ public class Creature extends Sprite{
     	}
 	}
 	
-	private float applyEffects(float timeDeltaSeconds, float gameSpeed){
-		this.r = 1;
-		this.g = 1;
-		this.b = 1;
+	private float applyEffects(float timeDeltaSeconds){
+		float tmpR = this.rDefault;
+		float tmpG = this.gDefault;
+		float tmpB = this.bDefault;
 		float tmpRGB = 1;
 		
 		int slowAffected = 1;
 		if (creatureFrozenTime > 0) {
 			slowAffected = 2;
-    		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
+    		creatureFrozenTime = creatureFrozenTime - (timeDeltaSeconds);
     		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
-    		this.r = tmpRGB;
-    		this.g = tmpRGB;
+    		tmpR = tmpR*tmpRGB;
+    		tmpG = tmpG*tmpRGB;
 		}
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
-			creaturePoisonTime = creaturePoisonTime - timeDeltaSeconds;
+			creaturePoisonTime = creaturePoisonTime - (timeDeltaSeconds);
 			damage(timeDeltaSeconds * creaturePoisonDamage);
 	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
-			this.r = tmpRGB;
-			this.b = tmpRGB;
+	  		tmpR = tmpR*tmpRGB;
+	  		tmpB = tmpG*tmpRGB;
 		}
   
 		if (creatureFrozenTime > 0 && creaturePoisonTime > 0) {
 			this.r = 0;
 		}
-
 		
-		float movement = (velocity * timeDeltaSeconds * gameSpeed) / slowAffected;
-		
+		float movement = (velocity * timeDeltaSeconds) / slowAffected;
 		if (health <= 0) {
    			die();
    			movement = 0;
    		}
 		
+		this.r = tmpR;
+		this.g = tmpG;
+		this.b = tmpB;		
 		return movement;
 	}
 	
@@ -233,6 +271,45 @@ public class Creature extends Sprite{
 
 	public void setOffset(int offset) {
 		this.offset = offset;
+	}
+
+	public void setAllDead(boolean allDead) {
+		this.allDead = allDead;
+	}
+
+	public void affectWithFrost(int time) {
+		if (!this.creatureFrostResistant)
+			this.creatureFrozenTime = time;
+	}
+
+	public void affectWithPoison(int poisonTime, int poisonDamage) {
+		if (!this.creaturePoisonResistant) {
+			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
+				this.creaturePoisonDamage = (int)(poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);
+			else
+				this.creaturePoisonDamage = (int)(poisonDamage);
+			this.creaturePoisonTime = poisonTime;
+		}
+	}
+
+	public void setRGB(float rDefault, float gDefault, float bDefault) {
+		this.rDefault = rDefault;
+		this.gDefault = gDefault;
+		this.bDefault = bDefault;
+	
+	}
+	private void resetRGB() {
+		this.r = this.rDefault;
+		this.g = this.gDefault;
+		this.b = this.bDefault;
+	}
+
+	// TODO:
+	// This is used by the tracker to make sure the creature is placed in the tracker before game starts
+	private void prepareTracker() {
+		Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
+		currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
+		mTracker.addCreature(this,creatureIndex,currentGridPos);
 	}
 
 }

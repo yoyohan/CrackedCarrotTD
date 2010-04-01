@@ -75,6 +75,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		Log.d("GL_INFO", gl.glGetString(GL11.GL_EXTENSIONS));
+		
 		if(renderList != null){
 			for(int i = 0; i < renderList.length; i++){
 	            // If we are using hardware buffers and the screen lost context
@@ -270,6 +272,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
+		Log.d("JAVA_LOADTEXTURE","Resource id:"+resourceId);
+		
+		
         int textureName = -1;
         if (context != null && gl != null) {
             gl.glGenTextures(1, mTextureNameWorkspace, 0);
@@ -277,13 +282,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
             textureName = mTextureNameWorkspace[0];
             gl.glBindTexture(GL10.GL_TEXTURE_2D, textureName);
 
-            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-
+            
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
 
-            gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+            gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
 
             InputStream is = context.getResources().openRawResource(resourceId);
             Bitmap bitmap;
@@ -309,7 +314,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             
             int error = gl.glGetError();
             if (error != GL10.GL_NO_ERROR) {
-                Log.e("SpriteMethodTest", "Texture Load GLError: " + error);
+                Log.e("JAVA_LOADTEXTURE", "Texture Load GLError: " + error);
             }
         
         }

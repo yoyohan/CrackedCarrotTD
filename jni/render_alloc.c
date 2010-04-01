@@ -1,6 +1,6 @@
 #include "render.h"
 
-#define emulator
+//#define emulator
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
@@ -13,7 +13,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 	
     __android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
-						"Allocating memory pool for Sprites of size %d\n ", 
+						"Allocating memory pool for Sprites of size %d ", 
 						noOfSprites);
 }
 
