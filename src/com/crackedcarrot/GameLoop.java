@@ -266,14 +266,13 @@ public class GameLoop implements Runnable {
 		}
 		dialogSemaphore.release();
 
-    	final long starttime = SystemClock.uptimeMillis();
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
 			reverse--;
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((long)(starttime + (player.getTimeBetweenLevels() + (reverse * (1000/special)))/gameSpeed));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + (reverse/special)));
 		}
 		
 	}
@@ -326,7 +325,11 @@ public class GameLoop implements Runnable {
     		msg.arg1 = 100;
     		guiHandler.sendMessage(msg);
     		
-            // The LEVEL loop. Will run until all creatures are dead or done or player are dead.
+    			// Fredrik: this was added by akerberg 2010-04-05, survied commit.
+    		// We have to reset this each wave
+    		mLastTime = 0;
+
+    		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
 
     			//Systemclock. Used to help determine speed of the game. 
@@ -339,11 +342,11 @@ public class GameLoop implements Runnable {
 	            mLastTime = time;
 	            	            
 	            // Shows how long it is left until next level
-	            player.setTimeUntilNextLevel((int)(player.getTimeUntilNextLevel() - mLastTime));	            
+	            player.setTimeUntilNextLevel((int)(player.getTimeUntilNextLevel() - timeDeltaSeconds));	            
 
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-	        		mCreatures[x].update(timeDeltaSeconds, time);
+	        		mCreatures[x].update(timeDeltaSeconds);
 	        	}       	
 	            //Calls the method that handles the monsterkilling.
 	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
@@ -556,5 +559,9 @@ public class GameLoop implements Runnable {
     public void upgradeTower(int i) {
     	Log.d("GAMELOOP", "upgradeTower: " + i);
     }
-    
+
+	public void setGameSpeed(int i) {
+		this.gameSpeed = i;
+	}
+
 }

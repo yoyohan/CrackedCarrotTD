@@ -2,7 +2,6 @@ package com.crackedcarrot;
 
 import android.util.Log;
 
-
 /**
 * Class defining creature in the game
 */
@@ -28,7 +27,7 @@ public class Creature extends Sprite{
     // The speed of the creature
     protected float velocity;
     // Delay before spawning the creature to the map
-    private long spawndelay;
+    private float spawndelay;
     // How much gold this creature gives when it's killed.
     protected int goldValue;
     //Ref to gameloop that runs this creature.
@@ -95,8 +94,8 @@ public class Creature extends Sprite{
 		this.health = health;
 	}
 	
-	public void setSpawndelay(long spawndelay) {
-		this.spawndelay = spawndelay;
+	public void setSpawndelay(float f) {
+		this.spawndelay = f;
 	}
 	
 	public void setDeadResourceId(int mDeadResourceId) {
@@ -123,12 +122,14 @@ public class Creature extends Sprite{
 		return creatureFast;
 	}
 
-	public void update(float timeDeltaSeconds, long time){
+	public void update(float timeDeltaSeconds){
 	
 		//Time to spawn.
-		if (time > spawndelay && wayP[0].x == x && wayP[0].y == y) {
+		if (wayP[0].x == x && wayP[0].y == y) {
+			spawndelay -= timeDeltaSeconds;
+		}
+		if (spawndelay <= 0 && wayP[0].x == x && wayP[0].y == y) {
 			draw = true;
-			
 			// TODO: TRACKER
 			//prepareTracker();
 		}
@@ -306,10 +307,10 @@ public class Creature extends Sprite{
 
 	// TODO:
 	// This is used by the tracker to make sure the creature is placed in the tracker before game starts
-	private void prepareTracker() {
-		Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
-		currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
-		mTracker.addCreature(this,creatureIndex,currentGridPos);
-	}
+	//private void prepareTracker() {
+	//	Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
+	//	currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
+	//	mTracker.addCreature(this,creatureIndex,currentGridPos);
+	//}
 
 }

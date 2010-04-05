@@ -23,29 +23,28 @@
 		android:layout_alignParentBottom="true">
 		
 		<Button
-        	android:id="@+id/inmenu6"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
+        	android:id="@+id/removeExpand"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
         	android:layout_marginRight="7dp"
         	android:layout_marginLeft="7dp"
         	android:background="@drawable/inmenu6_button" />
         	
-        <Button
-        	android:id="@+id/infobutton"
-        	android:layout_width="48px"
-        	android:layout_height="48px"
+		<Button
+        	android:id="@+id/normalSpeed"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"       	
         	android:layout_marginRight="7dp"
         	android:layout_marginLeft="7dp"
-        	android:background="@drawable/info" />
-        	
-        <Button
-        	android:id="@+id/pause"
-        	android:layout_width="48px"
-        	android:layout_height="48px"
+        	android:background="@drawable/button_play_128" />
+
+   		<Button
+        	android:id="@+id/fastSpeed"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
         	android:layout_marginRight="7dp"
         	android:layout_marginLeft="7dp"
-        	android:background="@drawable/pause" />
-		
+        	android:background="@drawable/button_forward_128" />			
 	</com.crackedcarrot.ExpandMenu>
 	
 	<LinearLayout
@@ -164,7 +163,6 @@
         	android:paddingTop="5dp"
         	android:paddingLeft="2dp" />
 
-        
     </LinearLayout>
   
 </RelativeLayout>
