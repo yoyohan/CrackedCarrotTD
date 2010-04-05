@@ -37,6 +37,14 @@
         	android:layout_marginRight="7dp"
         	android:layout_marginLeft="7dp"
         	android:background="@drawable/info" />
+        	
+        <Button
+        	android:id="@+id/pause"
+        	android:layout_width="48px"
+        	android:layout_height="48px"
+        	android:layout_marginRight="7dp"
+        	android:layout_marginLeft="7dp"
+        	android:background="@drawable/pause" />
 		
 	</com.crackedcarrot.ExpandMenu>
 	

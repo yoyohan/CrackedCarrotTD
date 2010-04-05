@@ -27,9 +27,11 @@
 				android:layout_height="wrap_content"/>
 		
 			<ImageView android:id="@+id/NextLevelImage"
-					android:layout_width="60dp"
-					android:src="@drawable/bunny_pink_alive" 
-					android:layout_height="wrap_content" android:layout_gravity="right"/>
+					android:layout_width="70dp"
+					android:layout_height="70dp"
+					android:src="@drawable/bunny_pink_alive"  
+					android:layout_gravity="right"
+					android:paddingRight="30dp"/>
 	
 		</TableRow>
 
@@ -46,18 +48,31 @@
 				android:textSize="16dip"
 				android:text="Next level information goes here." android:layout_height="250dp"/>                  
 		</TableRow>
+      
 		<TableRow 
 			android:id="@+id/TableRow02" 
-			android:layout_width="fill_parent" 
 			android:layout_height="fill_parent"
+			android:layout_width="200dp"
 			android:layout_span="2"
 			>
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent">
+			<Button
+        		android:id="@+id/infobutton2"
+        		android:layout_width="40dp"
+        		android:layout_height="40dp"
+        		android:layout_gravity="bottom|left"
+        		android:layout_marginRight="20dp"
+        		android:background="@drawable/info" />
+			
 		    <Button	android:id="@+id/NextLevelButton"
 				android:layout_width="wrap_content"
 				android:background="@drawable/startgame_button" 
 				android:layout_height="wrap_content"
 				android:layout_gravity="bottom|right">
 			</Button>
+			</LinearLayout>
 		</TableRow>
 </TableLayout>
 </LinearLayout>

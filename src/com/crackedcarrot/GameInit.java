@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -27,7 +28,6 @@ import android.widget.TextView;
 import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
 import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
 import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
-import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
 import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
@@ -40,7 +40,7 @@ import com.crackedcarrot.menu.R;
 public class GameInit extends Activity {
 
     public SurfaceView mGLSurfaceView;
-    private GameLoop simulationRuntime;
+    public GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
@@ -50,12 +50,11 @@ public class GameInit extends Activity {
     private int healthProgress = 100;
     private NrCreTextView nrCreText;
     private EnemyImageView enImView;
-    private LevelInstrView levelInstrView;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
-    
+   
     //private int highlightIcon = R.drawable.map_choose;
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
@@ -94,7 +93,6 @@ public class GameInit extends Activity {
     final int DIALOG_WON_ID       = 2;
     final int DIALOG_LOST_ID      = 3;
     final int DIALOG_UPGRADE_ID   = 4;
-    final int DIALOG_LVL_INSTR_ID = 5;
     
 	/*
 	 * Creates our NextLevel-dialog.
@@ -115,9 +113,21 @@ public class GameInit extends Activity {
 	    	dialog = new Dialog(this,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.nextlevel);
 	    	dialog.setOwnerActivity(this);	    	
+	    	dialog.setCancelable(false);
+	    	// Info button
+	    	Button infoButton2 = (Button) dialog.findViewById(R.id.infobutton2);
+	        infoButton2.setOnClickListener(new OnClickListener() {
+	        	
+	        	public void onClick(View v) {
+	        		int id = simulationRuntime.getLevelData().getResourceId();
+	        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
+	        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+	        		startActivity(ShowInstr);
+	        	}
+	        });
 	    	
 	    	// A button	    	
-	    	Button butt= (Button) dialog.findViewById(R.id.NextLevelButton);
+	    	Button butt = (Button) dialog.findViewById(R.id.NextLevelButton);
 	    	butt.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
@@ -214,19 +224,13 @@ public class GameInit extends Activity {
 	    	dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 	    	
 	    	break;
-	    case DIALOG_LVL_INSTR_ID:
-	    	dialog = new Dialog(this,R.style.InstructionDialog);
-	        dialog.setContentView(R.layout.levelinstruction);
-	    	dialog.setOwnerActivity(this);
-	    	
-	    	break;
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	    return dialog;
 	}
-
+	
 	/*
 	 * Creates our NextLevel-dialog.
 	 */
@@ -234,7 +238,7 @@ public class GameInit extends Activity {
 	protected void onPrepareDialog(int id, Dialog dialog) {
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
-
+	    	
 	    	int currLvlnbr = simulationRuntime.getLvlNumber() +1;
 	    	Level currLvl = simulationRuntime.getLevelData();
 
@@ -360,18 +364,11 @@ public class GameInit extends Activity {
         	}
         });
         
-        
-        /** Create the ScrollView showing the level instructions */
-        /**  levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
-        levelInstrView.setLevelInstrUpdateListener(new LevelInstrUpdateListener() {
-        	//@Override
-        	public void levelInstrUpdate(String s){
-        		levelInstrView.setText(s);
-        	}
-        }); */
-        
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
+        
+        /** Create the instruction view */
+       // instructionView = (InstructionView)findViewById(R.id.instruction_view);
         
         /** Listeners for the five icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
@@ -437,7 +434,19 @@ public class GameInit extends Activity {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		showDialog(5);
+        		int id = simulationRuntime.getLevelData().getResourceId();
+        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
+        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+        		startActivity(ShowInstr);
+        	}
+        });
+        Button pauseButton = (Button)findViewById(R.id.pause);
+        pauseButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		onPause();
+        		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
+        		startActivity(ShowInstr);
         	}
         });
         
@@ -522,14 +531,20 @@ public class GameInit extends Activity {
             	 case DIALOG_UPGRADE_ID:
             		 showDialog(4);
             		 break;
-            	 case DIALOG_LVL_INSTR_ID:
-            		 showDialog(5);
-            		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
                      break;
             }
         }
     }; 
+    
+    protected void onPause() {
+    	super.onPause();
+    	Log.d("ONPAUSE NOW", "onPause");
+    }
+    
+    protected void onResume() {
+    	super.onResume();
+    }
 
 }

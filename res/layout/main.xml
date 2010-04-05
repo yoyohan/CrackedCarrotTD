@@ -19,10 +19,6 @@
     the alpha channel which is used to define 
     opacity. */
     
-    /** android:layout_centerVertical="true"
-	android:layout_centerHorizontal="true" */
-	
-
     <TableRow>
         <Button
 		android:id="@+id/StartGame"
