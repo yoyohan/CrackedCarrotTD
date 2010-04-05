@@ -54,22 +54,13 @@ public class GameLoop implements Runnable {
     private Handler guiHandler;
     private Semaphore dialogSemaphore = new Semaphore(1);
 
-    private Handler updateLevelInstrHandler = new Handler();
     private Handler updateCurrencyHandler = new Handler();
     private Handler updatePlayerHealthHandler = new Handler();
     private Handler updateEnemyImageHandler = new Handler();
-    private LevelInstrUpdate lIUpdate = new LevelInstrUpdate();
     private CurrencyUpdate currUpdate = new CurrencyUpdate();
     private PlayerHealthUpdate pHUpdate = new PlayerHealthUpdate();
     private CreatureImageUpdate cIUpdate = new CreatureImageUpdate();
 
-    
-    private class LevelInstrUpdate implements Runnable{
-		public void run(){
-			LevelInstrView.listener.levelInstrUpdate("The instruction string variable for" +
-					"each level here");
-		}
-	}
     
     private class CurrencyUpdate implements Runnable{
 		public void run(){
@@ -233,8 +224,6 @@ public class GameLoop implements Runnable {
 			e.printStackTrace();
 		}
 		
-		// Set the instruction text for this level
-		updateLevelInstrHandler.post(lIUpdate);
 		// Initialize the status, displaying the amount of currency
 		updateCurrencyHandler.post(currUpdate);
 		// Initialize the status, displaying the players health
@@ -312,9 +301,18 @@ public class GameLoop implements Runnable {
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
+	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
+
+    		// Initialize the status, displaying the amount of currency
+    		updateCurrencyHandler.post(currUpdate);
+    		// Initialize the status, displaying the players health
+    		updatePlayerHealthHandler.post(pHUpdate);
+    		// Initialize the status, displaying the creature image
+    		updateEnemyImageHandler.post(cIUpdate);
+
     		
     		// Initialize the status, displaying how many creatures still alive
     		Message msg = new Message();

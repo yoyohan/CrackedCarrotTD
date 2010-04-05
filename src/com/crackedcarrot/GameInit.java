@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
 import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
-import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
+// import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -42,7 +42,7 @@ import com.scoreninja.adapter.ScoreNinjaAdapter;
 public class GameInit extends Activity {
 
     public SurfaceView mGLSurfaceView;
-    private GameLoop simulationRuntime;
+    public GameLoop simulationRuntime;
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
@@ -52,7 +52,6 @@ public class GameInit extends Activity {
     private PlayerHealthView playerHealthView;
     private CurrencyView currencyView;
     private EnemyImageView enImView;
-    private LevelInstrView levelInstrView;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
     
@@ -62,7 +61,7 @@ public class GameInit extends Activity {
 
     
     //private int highlightIcon = R.drawable.map_choose;
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
@@ -121,9 +120,21 @@ public class GameInit extends Activity {
 	    	dialog = new Dialog(this,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.nextlevel);
 	    	dialog.setOwnerActivity(this);	    	
+	    	dialog.setCancelable(false);
+	    	// Info button
+	    	Button infoButton2 = (Button) dialog.findViewById(R.id.infobutton2);
+	        infoButton2.setOnClickListener(new OnClickListener() {
+	        	
+	        	public void onClick(View v) {
+	        		int id = simulationRuntime.getLevelData().getResourceId();
+	        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
+	        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+	        		startActivity(ShowInstr);
+	        	}
+	        });
 	    	
 	    	// A button	    	
-	    	Button butt= (Button) dialog.findViewById(R.id.NextLevelButton);
+	    	Button butt = (Button) dialog.findViewById(R.id.NextLevelButton);
 	    	butt.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
@@ -226,7 +237,7 @@ public class GameInit extends Activity {
 	    }
 	    return dialog;
 	}
-
+	
 	/*
 	 * Creates our NextLevel-dialog.
 	 */
@@ -236,6 +247,7 @@ public class GameInit extends Activity {
 	    case DIALOG_NEXTLEVEL_ID:
 
 	    	int currLvlnbr = simulationRuntime.getLevelNumber() + 1;
+
 	    	Level currLvl = simulationRuntime.getLevelData();
 
 	    	// Title:
@@ -350,17 +362,11 @@ public class GameInit extends Activity {
         });
 
         
-        /** Create the ScrollView showing the level instructions */
-        levelInstrView = (LevelInstrView) findViewById(R.id.text_instr);
-        levelInstrView.setLevelInstrUpdateListener(new LevelInstrUpdateListener() {
-        	//@Override
-        	public void levelInstrUpdate(String s){
-        		levelInstrView.setText(s);
-        	}
-        });
-        
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
+        
+        /** Create the instruction view */
+       // instructionView = (InstructionView)findViewById(R.id.instruction_view);
         
         /** Listeners for the five icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
@@ -420,6 +426,25 @@ public class GameInit extends Activity {
         	
         	public void onClick(View v) {
         		expandMenu.switchMenu();
+        	}
+        });
+        Button infoButton = (Button)findViewById(R.id.infobutton);
+        infoButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		int id = simulationRuntime.getLevelData().getResourceId();
+        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
+        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+        		startActivity(ShowInstr);
+        	}
+        });
+        Button pauseButton = (Button)findViewById(R.id.pause);
+        pauseButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		onPause();
+        		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
+        		startActivity(ShowInstr);
         	}
         });
         
@@ -572,6 +597,15 @@ public class GameInit extends Activity {
             }
         }
     }; 
+    
+    protected void onPause() {
+    	super.onPause();
+    	Log.d("ONPAUSE NOW", "onPause");
+    }
+    
+    protected void onResume() {
+    	super.onResume();
+    }
 
     public void saveGame(int i) {
     	
