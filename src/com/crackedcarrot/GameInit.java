@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -23,12 +24,12 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
 import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
-import com.crackedcarrot.HealthProgressBar.ProgressChangeListener;
-import com.crackedcarrot.NrCreTextView.CreatureUpdateListener;
+// import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -36,6 +37,7 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 
@@ -44,15 +46,20 @@ public class GameInit extends Activity {
     private Thread RenderThread;
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
+    private ProgressBar healthProgressBar;
+    private int healthProgress = 100;
+    private TextView nrCreText;
     private PlayerHealthView playerHealthView;
     private CurrencyView currencyView;
-    private HealthProgressBar healthProgressBar;
-    private int healthProgress = 100;
-    private NrCreTextView nrCreText;
     private EnemyImageView enImView;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
-   
+    
+    private int resume;
+    
+    private ScoreNinjaAdapter scoreNinjaAdapter;
+
+    
     //private int highlightIcon = R.drawable.map_choose;
     
     @Override
@@ -68,9 +75,9 @@ public class GameInit extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
     	MenuItem sound = menu.getItem(0);
 		if (simulationRuntime.soundManager.playSound)
-	    	sound.setIcon(R.drawable.button_sound_off);
-		else
 	    	sound.setIcon(R.drawable.button_sound_on);
+		else
+	    	sound.setIcon(R.drawable.button_sound_off);
     	
     	return true;
     }
@@ -139,7 +146,7 @@ public class GameInit extends Activity {
 	    	dialog.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
-							simulationRuntime.nextLevelClick();
+							simulationRuntime.dialogClick();
 						}
 	    			});
 	    	break;
@@ -154,7 +161,7 @@ public class GameInit extends Activity {
 	    	       .setCancelable(true)
 	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
 	    	           public void onClick(DialogInterface dialog, int id) {
-	    	                dialog.cancel();
+	    	                simulationRuntime.dialogClick();
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
@@ -173,7 +180,7 @@ public class GameInit extends Activity {
 	    	       .setCancelable(true)
 	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
 	    	           public void onClick(DialogInterface dialog, int id) {
-	    	                dialog.cancel();
+	    	                simulationRuntime.dialogClick();
 	    	           }
 	    	       });
 	    	alertDialog = builder.create();
@@ -238,8 +245,9 @@ public class GameInit extends Activity {
 	protected void onPrepareDialog(int id, Dialog dialog) {
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
-	    	
-	    	int currLvlnbr = simulationRuntime.getLvlNumber() +1;
+
+	    	int currLvlnbr = simulationRuntime.getLevelNumber() + 1;
+
 	    	Level currLvl = simulationRuntime.getLevelData();
 
 	    	// Title:
@@ -316,6 +324,7 @@ public class GameInit extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
         /** Create the text view showing the amount of currency */
         currencyView = (CurrencyView)findViewById(R.id.currency);
@@ -336,16 +345,13 @@ public class GameInit extends Activity {
         });
         
         /** Create the progress bar, showing the enemies total health*/
-        healthProgressBar = (HealthProgressBar)findViewById(R.id.health_progress);
+        healthProgressBar = (ProgressBar) findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
         healthProgressBar.setProgress(healthProgress);
-        healthProgressBar.setProgressChangeListener(new ProgressChangeListener(){
-        	//@Override
-        	public void progressUpdate(int health){
-        		healthProgressBar.setProgress(health);
-        	}
-        });
         
+        /** Create the TextView showing number of enemies left */
+        nrCreText = (TextView) findViewById(R.id.nrEnemyLeft);
+
         /** Create the ImageView showing current creature */
         enImView = (EnemyImageView)findViewById(R.id.enemyImVi);
         enImView.setEnemyUpdateListener(new EnemyUpdateListener() {
@@ -354,15 +360,7 @@ public class GameInit extends Activity {
         		enImView.setImageResource(imageId);
         	}
         });
-        
-        /** Create the TextView showing number of enemies left and add a listener to it */
-        nrCreText = (NrCreTextView) findViewById(R.id.nrEnemyLeft);
-        nrCreText.setCreatureUpdateListener(new CreatureUpdateListener() {
-        	//@Override
-        	public void creatureUpdate(int number){
-        		nrCreText.setText("" + number);
-        	}
-        });
+
         
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
@@ -423,32 +421,43 @@ public class GameInit extends Activity {
         		mGLSurfaceView.setTowerType(3);
         	}
         });
-        Button inMenu6 = (Button)findViewById(R.id.inmenu6);
-        inMenu6.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		expandMenu.switchMenu();
-        	}
-        });
-        Button infoButton = (Button)findViewById(R.id.infobutton);
-        infoButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		int id = simulationRuntime.getLevelData().getResourceId();
-        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
-        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
-        		startActivity(ShowInstr);
-        	}
-        });
-        Button pauseButton = (Button)findViewById(R.id.pause);
-        pauseButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		onPause();
-        		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
-        		startActivity(ShowInstr);
-        	}
-        });
+
+        
+	    ////////////////////////////////////////////////////////////////
+	    // First button in Expand Menu
+	    ////////////////////////////////////////////////////////////////
+	    
+	    Button removeExpand = (Button)findViewById(R.id.removeExpand);
+	    removeExpand.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+	    
+	    // Second set normal gameSpeed
+	    Button normalSpeed = (Button)findViewById(R.id.normalSpeed);
+	    normalSpeed.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		simulationRuntime.setGameSpeed(1);
+	    		// And den remove menu
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+
+	    // Third set fast gameSpeed
+	    Button fastSpeed = (Button)findViewById(R.id.fastSpeed);
+	    fastSpeed.setOnClickListener(new OnClickListener() {
+	    	
+	    	public void onClick(View v) {
+	    		simulationRuntime.setGameSpeed(4);
+	    		//And then remove menu
+	    		expandMenu.switchMenu();
+	    	}
+	    });
+        
+        
         
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
@@ -456,33 +465,59 @@ public class GameInit extends Activity {
         int levelChoice = 0;
         int difficulty = 0;
         if(extras != null) {
-        	levelChoice = extras.getInt("com.crackedcarrot.menu.levelVal");
-        	difficulty = extras.getInt("com.crackedcarrot.menu.dificultVal");
-        }        
+        	levelChoice = extras.getInt("com.crackedcarrot.menu.map");
+        	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
+        }
+        
+        	// Are we resuming an old saved game?
+        resume = 0;
+        int resumeLevelNumber = 0;
+        int resumePlayerDifficulty = 0;
+        int resumePlayerHealth = 0;
+        int resumePlayerMoney = 0;
+        String resumeTowers = "";
+        if (levelChoice == 0) {
+            // Restore preferences
+            SharedPreferences settings = getSharedPreferences("Resume", 0);
+            resume                 = settings.getInt("Resume", 0) + 1;
+            resumeLevelNumber      = settings.getInt("LevelNumber", 0);
+            resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
+            resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
+            resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
+            resumeTowers           = settings.getString("Towers", "");
+        }
+        // TODO:
+        // Är detta nödvändigt?
+        //   difficulty = resumePlayerDIfficulty;
+        // Det används i WaveLoadern?
         
         // Create the map requested by the player
+        // TODO: resume needs to load the correct map aswell.
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
-        if (levelChoice == 0) 
+        if (levelChoice == 1) 
         	gameMap = mapLoad.readLevel("level1");
-        else if (levelChoice == 1)
+        else if (levelChoice == 2)
         	gameMap = mapLoad.readLevel("level2");
         else
         	gameMap = mapLoad.readLevel("level3");
 
         //Define player specific variables depending on difficulty.
         Player p;
-        if (difficulty == 2) {
-        	p = new Player(difficulty, 50, 100, 1000);
+        if (difficulty == 0) {
+        	p = new Player(difficulty, 60, 100, 1);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 40, 100, 1000);
+        	p = new Player(difficulty, 50, 100, 1);
         }
-        else {
-        	p = new Player(difficulty, 60, 100, 1000);
+        else if (difficulty == 2) {
+        	p = new Player(difficulty, 40, 100, 1);
+        }
+        else { // resume.
+        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1);
         }
         
-      //Load the creature waves and apply the correct difficulty
+        //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this,res);
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
@@ -491,16 +526,35 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,nextLevelHandler,new SoundManager(getBaseContext()));
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,guiHandler,new SoundManager(getBaseContext()));
+        
+        	// Resuming old game. Prepare GameLoop for this...
+        if (resume > 0) {
+        	simulationRuntime.resumeSetLevelNumber(resumeLevelNumber);
+        	simulationRuntime.resumeSetTowers(resumeTowers);
+        }
+        
         RenderThread = new Thread(simulationRuntime);
         
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(simulationRuntime);
 
+        	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(
+                this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
+        
         // Start GameLoop
         RenderThread.start();
     }
+    
+    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      scoreNinjaAdapter.onActivityResult(
+          requestCode, resultCode, data);
+    }
+
     
     public void onConfigurationChanged(Configuration newConfig) {
     	super.onConfigurationChanged(newConfig);
@@ -513,7 +567,9 @@ public class GameInit extends Activity {
 
     	// This is used to handle calls from the GameLoop to show
     	// our dialogs.
-    private Handler nextLevelHandler = new Handler() {
+    	// TODO: all the cases need different (and sane) ID-declarations.
+    	//       havent done it yet since I dont know how many/which are needed...
+    private Handler guiHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
@@ -531,6 +587,21 @@ public class GameInit extends Activity {
             	 case DIALOG_UPGRADE_ID:
             		 showDialog(4);
             		 break;
+            	 case 5:
+            		 scoreNinjaAdapter.show(0);
+            		 break;
+            	 case 20: // update number of creatures still alive on GUI.
+            		 nrCreText.setText("" + msg.arg1);
+            		 break;
+            	 case 21: // update progressbar with creatures health.
+            		 healthProgressBar.setProgress(msg.arg1);
+            		 break;
+            	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
+            		 finish();
+            		 break;
+            	 case 99: // SAVE THE GAME.
+            		 saveGame(msg.arg1);
+            		 break;
             	 default:
                      Log.e("GAMEINIT", "nextLevelHandler error, msg.what = " + msg.what);
                      break;
@@ -547,4 +618,32 @@ public class GameInit extends Activity {
     	super.onResume();
     }
 
+    public void saveGame(int i) {
+    	
+    	// This uses Android's own internal storage-system to save all
+    	// currently relevent information to restore the game to the
+    	// beginning of the next wave of creatures.
+    	// This is probably (read: only meant to work with) best called
+    	// in between levels when the NextLevel-dialog is shown.
+    	
+    	if (i == 1) {
+    			// Save everything.
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", resume);
+    		editor.putInt("LevelNumber", simulationRuntime.getLevelNumber());
+    		editor.putInt("PlayerDifficulty", simulationRuntime.getPlayerData().getDifficulty());
+    		editor.putInt("PlayerHealth", simulationRuntime.getPlayerData().getHealth());
+    		editor.putInt("PlayerMoney", simulationRuntime.getPlayerData().getMoney());
+    		editor.putString("Towers", simulationRuntime.resumeGetTowers());
+    		editor.commit();
+    	} else {
+    			// Dont allow resume. Clears the main resume flag!
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", -1);
+    		editor.commit();
+    	}
+    }
+    
 }

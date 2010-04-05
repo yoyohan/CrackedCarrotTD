@@ -9,7 +9,7 @@ public class Player {
 	private int interestGainedEntireGame;
 	private int healthLost;
 	private int timeUntilNextLevel;
-	private double timeBetweenLevels;
+	private float timeBetweenLevels;
 	
 	public Player(int difficulty, int health, int money, int timeBetweenLevels) { 
 		this.difficulty = difficulty;
@@ -21,7 +21,7 @@ public class Player {
 	public void calculateInterest() {
 		// Formula for calculating interest.
 		interestGainedLatestLvl = (int)(money * 0.05);
-		interestGainedEntireGame+=interestGainedLatestLvl;
+		interestGainedEntireGame += interestGainedLatestLvl;
 		money = (int)(money * 1.05);
 	}
 	
@@ -53,7 +53,7 @@ public class Player {
 		return money;
 	}
 
-	public double getTimeBetweenLevels() {
+	public float getTimeBetweenLevels() {
 		return timeBetweenLevels;
 	}
 

@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import java.util.Enumeration;
 import java.util.Random;
 
-import android.util.Log;
 
 /**
 * Class defining a tower in the game
@@ -440,4 +439,7 @@ public class Tower extends Sprite {
 			this.right_column = mScaler.getGridWidth();
 	}
 
+	public int getTowerType() {
+		return towerType;
+	}
 }
