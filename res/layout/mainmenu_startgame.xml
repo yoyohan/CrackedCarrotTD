@@ -81,7 +81,7 @@
 	    	<TableLayout>
 	    		<TableRow android:gravity="center">
 					<ImageView
-	    	    		android:id="@+id/lev_choose1"
+						android:id="@+id/StartGameImageViewEasy"
 						android:gravity="center"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
 		        		android:src="@drawable/level_easy" />
 	
 			        <ImageView
-	    	    		android:id="@+id/lev_choose2"
+						android:id="@+id/StartGameImageViewNormal"
 	        			android:gravity="center"
 	        			android:layout_width="wrap_content"
 	    	    		android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
 		        		android:src="@drawable/level_normal" />
 	        		
 	        		<ImageView
-		        		android:id="@+id/lev_choose3"
+						android:id="@+id/StartGameImageViewHard"
 						android:gravity="center"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"

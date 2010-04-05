@@ -138,6 +138,32 @@ public class MapOp extends Activity {
         		startActivity(StartGame2);
         	}
         });
+        
+        // Difficulty listeners.
+        ImageView easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        easy.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		level = 0;
+        	}
+        });
+        
+        ImageView normal = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        normal.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		level = 1;
+        	}
+        });
+        
+        ImageView hard = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        hard.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		level = 2;
+        	}
+        });
+
     }
     
     	// Called when we get focus again (after a game has ended).
