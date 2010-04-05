@@ -457,6 +457,28 @@ public class GameInit extends Activity {
 	    	}
 	    });
         
+	    // The second information button, activates the level info activity
+	    Button infoButton = (Button)findViewById(R.id.infobutton);
+        infoButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		int id = simulationRuntime.getLevelData().getResourceId();
+        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
+        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+        		startActivity(ShowInstr);
+        	}
+        });
+        
+        // The pause button
+        Button pauseButton = (Button)findViewById(R.id.pause);
+        pauseButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		onPause();
+        		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
+        		startActivity(ShowInstr);
+        	}
+        });
         
         
         // Fetch information from previous intent. The information will contain the
