@@ -28,6 +28,14 @@
     		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
     		android:screenOrientation="portrait"
     		android:configChanges="keyboardHidden|orientation"></activity>
+    	<activity android:name="com.crackedcarrot.InstructionView"
+    		android:theme="@android:style/Theme.Translucent.NoTitleBar"
+    		android:screenOrientation="portrait"
+    		android:configChanges="keyboardHidden|orientation"></activity>
+    	<activity android:name="com.crackedcarrot.PauseView"
+    		android:theme="@android:style/Theme.Translucent.NoTitleBar"
+    		android:screenOrientation="portrait"
+    		android:configChanges="keyboardHidden|orientation"></activity>
 </application>
     <uses-sdk android:minSdkVersion="4" />
 
