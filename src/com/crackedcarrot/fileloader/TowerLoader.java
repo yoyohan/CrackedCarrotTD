@@ -220,7 +220,8 @@ public class TowerLoader {
 					            	width,
 					            	height,
 					            	recalc.getX(),
-					            	recalc.getX());		
+					            	recalc.getX(),
+					            	resID);		
 			            	
 			            	twrNbr++;
 			            	tmpCount = 0;

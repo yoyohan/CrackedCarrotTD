@@ -272,6 +272,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
+		Log.d("JAVA_LOADTEXTURE","Resource id:"+resourceId);
+		
+		
         int textureName = -1;
         if (context != null && gl != null) {
             gl.glGenTextures(1, mTextureNameWorkspace, 0);

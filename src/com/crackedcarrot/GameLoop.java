@@ -22,6 +22,7 @@ public class GameLoop implements Runnable {
     private Player player;
     private Map mGameMap;
     private Sprite[] mGrid;
+    private Tracker mTracker;
 
     private Creature[] mCreatures;
     private int remainingCreaturesALIVE;
@@ -53,6 +54,40 @@ public class GameLoop implements Runnable {
     private Handler guiHandler;
     private Semaphore dialogSemaphore = new Semaphore(1);
 
+    private Handler updateLevelInstrHandler = new Handler();
+    private Handler updateCurrencyHandler = new Handler();
+    private Handler updatePlayerHealthHandler = new Handler();
+    private Handler updateEnemyImageHandler = new Handler();
+    private LevelInstrUpdate lIUpdate = new LevelInstrUpdate();
+    private CurrencyUpdate currUpdate = new CurrencyUpdate();
+    private PlayerHealthUpdate pHUpdate = new PlayerHealthUpdate();
+    private CreatureImageUpdate cIUpdate = new CreatureImageUpdate();
+
+    
+    private class LevelInstrUpdate implements Runnable{
+		public void run(){
+			LevelInstrView.listener.levelInstrUpdate("The instruction string variable for" +
+					"each level here");
+		}
+	}
+    
+    private class CurrencyUpdate implements Runnable{
+		public void run(){
+			CurrencyView.listener.currencyUpdate(player.getMoney());
+		}
+	}
+    
+    private class PlayerHealthUpdate implements Runnable{
+		public void run(){
+			PlayerHealthView.listener.playerHealthUpdate(player.getHealth());
+		}
+	}
+    
+    private class CreatureImageUpdate implements Runnable{
+		public void run(){
+			EnemyImageView.listener.enemyUpdate(mLvl[lvlNbr].getResourceId());
+		}
+	}
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, Handler gh, SoundManager sm){
@@ -65,6 +100,8 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.guiHandler = gh;
+    	// TODO:
+    	this.mTracker = new Tracker(mScaler.getGridWidth(),mScaler.getGridHeight(), 20);
     }
     
 	private void initializeDataStructures() {
@@ -77,7 +114,7 @@ public class GameLoop implements Runnable {
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager);
+	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager,mTracker);
 	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
@@ -91,7 +128,13 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, player, soundManager, mGameMap.getWaypoints().getCoords(), this);
+	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
+	    								 player, soundManager, 
+	    								 mGameMap.getWaypoints().getCoords(), 
+	    								 this,
+	    								 i, 
+	    								 mScaler, 
+	    								 mTracker);
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
@@ -117,7 +160,7 @@ public class GameLoop implements Runnable {
 				renderHandle.loadTexture(mLvl[i].getResourceId());
 				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
 			}
-			renderHandle.loadTexture(mGrid[0].getResourceId());
+			//renderHandle.loadTexture(mGrid[0].getResourceId());
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
@@ -190,6 +233,19 @@ public class GameLoop implements Runnable {
 			e.printStackTrace();
 		}
 		
+		// Set the instruction text for this level
+		updateLevelInstrHandler.post(lIUpdate);
+		// Initialize the status, displaying the amount of currency
+		updateCurrencyHandler.post(currUpdate);
+		// Initialize the status, displaying the players health
+		updatePlayerHealthHandler.post(pHUpdate);
+		// Initialize the status, displaying the creature image
+		updateEnemyImageHandler.post(cIUpdate);
+		// Initialize the status, displaying how many creatures still alive
+		// TODO: REMOVE???! updateCreatureHandler.post(cUpdate);
+		// Initialize the status, displaying total health of all creatures
+		// TODO: REMOVE?!?! updateHealthHandler.post(pUpdate);		
+				
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
     	try {
@@ -281,19 +337,19 @@ public class GameLoop implements Runnable {
 	            // Used to calculate creature movement.
 				final long timeDelta = time - mLastTime;
 	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? timeDelta / 1000.0f : 0.0f;
+	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time;
-	            
+	            	            
 	            // Shows how long it is left until next level
 	            player.setTimeUntilNextLevel((int)(player.getTimeUntilNextLevel() - mLastTime));	            
 
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-	        		mCreatures[x].update(timeDeltaSeconds, time, gameSpeed);
-	        	}
+	        		mCreatures[x].update(timeDeltaSeconds, time);
+	        	}       	
 	            //Calls the method that handles the monsterkilling.
 	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
-	        		mTower[x].towerKillCreature(timeDeltaSeconds,gameSpeed, mLvl[lvlNbr].nbrCreatures);
+	        		mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -409,7 +465,7 @@ public class GameLoop implements Runnable {
 			
 			if (mTowerGrid[tmpx][tmpy] != null && !mTowerGrid[tmpx][tmpy].draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement);
+				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement, mScaler);
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
 				totalNumberOfTowers++;
@@ -431,9 +487,16 @@ public class GameLoop implements Runnable {
     public void creatureLeavesMAP(int n){
     	this.remainingCreaturesALL -= n;
     }
-    // When a creature is dead we will notify the statusbar
+    // When the player decreases in health, we will notify the status bar
+    public void updatePlayerHealth(){
+    	updatePlayerHealthHandler.post(pHUpdate);
+    }
+    // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
+    	if (remainingCreaturesALIVE <= 0) 
+    		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
+    			mCreatures[x].setAllDead(true);
 		// Update the status, displaying how many creatures that are still alive
 		Message msg = new Message();
 		msg.what = 20;
@@ -449,6 +512,10 @@ public class GameLoop implements Runnable {
     	msg.what = 21;
     	msg.arg1 = (int)(100*(currentCreatureHealth/startCreatureHealth));
     	guiHandler.sendMessage(msg);
+    }
+    // Update the status when the players money increases
+    public void updateCurrency(int currency){
+    	updateCurrencyHandler.post(currUpdate);
     }
     
     public void stopGameLoop(){

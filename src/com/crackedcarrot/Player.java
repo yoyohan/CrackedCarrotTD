@@ -44,8 +44,9 @@ public class Player {
 		// Should be fine for negative values as well.
 		money = money + value;
 		
-		if (money < 0)
+		if (money < 0) {
 			money = 0;
+		}
 	}
 	
 	public int getMoney() {

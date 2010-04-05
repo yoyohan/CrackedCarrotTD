@@ -45,10 +45,14 @@ public class WaveLoader {
 		String tmpStr[] = null;
 		Level tmpLvl = null;
 		double gameDifficulty;
+		boolean fireResistant = false;
+		boolean poisonResistant = false;
+		boolean frostResistant = false;
+		boolean fast = false;
 		
 		if (difficulty == 2) gameDifficulty = 1;
-		if (difficulty == 3) gameDifficulty = 1.2;
-		else gameDifficulty = 0.8;
+		if (difficulty == 3) gameDifficulty = 1.7;
+		else gameDifficulty = 0.6;
 		
 		try {
 			String buf = "";
@@ -97,7 +101,7 @@ public class WaveLoader {
 			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
 							break;
 						case 7:
-			            	tmpLvl.setCreatureFast(Boolean.parseBoolean(tmpStr[1].trim()));
+			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
 			            	// I will put velocity here
 			            	recalc = scaler.scale(30,0);
 			        		if (tmpLvl.isCreatureFast())
@@ -105,14 +109,15 @@ public class WaveLoader {
 			        		else tmpLvl.setVelocity(recalc.getX());
 							break;
 						case 8:
-			            	tmpLvl.setCreatureFireResistant(Boolean.parseBoolean(tmpStr[1].trim()));
+							fireResistant = (Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
 						case 9:
-			            	tmpLvl.setCreatureFrostResistant(Boolean.parseBoolean(tmpStr[1].trim()));
+							frostResistant = (Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
 						case 10:
-			            	tmpLvl.setCreaturePoisonResistant(Boolean.parseBoolean(tmpStr[1].trim()));
-							break;
+							poisonResistant = (Boolean.parseBoolean(tmpStr[1].trim()));			            	
+			            	tmpLvl.setCreatureSpecials(fast,fireResistant,frostResistant,poisonResistant);
+			            	break;
 						case 11:
 			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
 							break;
