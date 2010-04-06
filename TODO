@@ -20,7 +20,7 @@ The game never really ends, no highscore nothing.
 --FREDRIK
 
 Towers class still needs cleaning/refactoring badly
---Henrik
+--Henrik  ALMOST DONE
 
 Level instructions. Under the game menu while playing. Needs to be scrollview
 --Johan - DONE!
@@ -66,7 +66,7 @@ Main menu -> Options menu. We need to have possible sound settings before game s
 --FREDRIK
 
 Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
---Anyone (Henrik?)
+--Henrik DONE!
 
 Save game info between levels.
 --Anyone
