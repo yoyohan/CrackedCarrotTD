@@ -44,7 +44,23 @@
         	android:layout_height="50dp"
         	android:layout_marginRight="7dp"
         	android:layout_marginLeft="7dp"
-        	android:background="@drawable/button_forward_128" />			
+        	android:background="@drawable/button_forward_128" />	
+        	
+        <Button
+        	android:id="@+id/infobutton"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
+        	android:layout_marginRight="7dp"
+        	android:layout_marginLeft="7dp"
+        	android:background="@drawable/info" />
+        	
+        <Button
+        	android:id="@+id/pause"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
+        	android:layout_marginRight="7dp"
+        	android:layout_marginLeft="7dp"
+        	android:background="@drawable/pause" />		
 	</com.crackedcarrot.ExpandMenu>
 	
 	<LinearLayout
