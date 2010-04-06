@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
 import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
-// import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -37,7 +36,6 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 
@@ -57,8 +55,6 @@ public class GameInit extends Activity {
     
     private int resume;
     
-    private ScoreNinjaAdapter scoreNinjaAdapter;
-
     
     //private int highlightIcon = R.drawable.map_choose;
     
@@ -562,19 +558,8 @@ public class GameInit extends Activity {
         
         mGLSurfaceView.setSimulationRuntime(simulationRuntime);
 
-        	// Register on ScoreNinja.
-        scoreNinjaAdapter = new ScoreNinjaAdapter(
-                this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
-        
         // Start GameLoop
         RenderThread.start();
-    }
-    
-    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      scoreNinjaAdapter.onActivityResult(
-          requestCode, resultCode, data);
     }
 
     
@@ -608,9 +593,6 @@ public class GameInit extends Activity {
             		 break;
             	 case DIALOG_UPGRADE_ID:
             		 showDialog(4);
-            		 break;
-            	 case 5:
-            		 scoreNinjaAdapter.show(0);
             		 break;
             	 case 20: // update number of creatures still alive on GUI.
             		 nrCreText.setText("" + msg.arg1);
