@@ -90,15 +90,9 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		last = &renderSprites[type][spriteNO-1];
 	}
 	if(last != NULL && last->subType == thisSprite->subType){
-
-	    thisSprite->vertBuffer = last->vertBuffer;
-	    thisSprite->indexBuffer = last->indexBuffer;
-	    thisSprite->textureCoordBuffers = last->textureCoordBuffers;
-	    
 		thisSprite->bufferName[0] = last->bufferName[0]; 
 		thisSprite->bufferName[1] = last->bufferName[1];
 		thisSprite->textureBufferNames = last->textureBufferNames;
-
 		__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
 						"Sprite No: %d of Type: %d and subType: %d .  Can share data with the previous sprite",
@@ -107,16 +101,13 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 						"NATIVE ALLOC",
 						"It has been assigned the buffers: %d, %d and %d",
 						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);
-
 	}
 	else{
 	    __android_log_print(ANDROID_LOG_DEBUG, 
 		                "NATIVE ALLOC", 
 		                "Sprite No: %d of Type: %d and subType: %d .   Needs new buffers.",
 		                spriteNO, type, subType);
-
 		initHwBuffers(env, thisSprite);
-
 	}
 }
 
@@ -124,19 +115,15 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	GLsizeiptr vertBufSize;
 	GLsizeiptr textCoordBufSize;
 	GLsizeiptr indexBufSize;
-
 	
 	vertBufSize = sizeof(GLfloat) * 4 * 3;
+	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
 	indexBufSize = sizeof(GLuint) * 6;
-
-
-	sprite->vertBuffer = malloc(vertBufSize);
-	sprite->indexBuffer = malloc(indexBufSize);
-
-	sprite->indexCount = 6;
-
-	GLfloat* vertBuffer  = sprite->vertBuffer;
-    GLfloat* indexBuffer = sprite->indexBuffer;
+	
+	GLfloat vertBuffer[4*3];
+	GLfloat textureCoordBuffer[4*2];
+	GLuint  indexBuffer[6];
+	sprite->indexCount = 6;	
 	
 	//This be the vertex order for our quad, its totaly square man.
 	indexBuffer[0] = 0;
@@ -181,34 +168,27 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	//Texture Coords
 	
 	int frames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
-
-	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
-	sprite->textureCoordBuffers = malloc(textCoordBufSize * frames);
-	
 	sprite->textureBufferNames = malloc(frames * sizeof(GLuint));
-	GLfloat* textureCoordBuffer = sprite->textureCoordBuffers;
 	glGenBuffers(frames, sprite->textureBufferNames);
-	
 	float texFraction = 1.0 / frames;
 	float startFraction = 0.0;
 	float endFraction;
 	int i;
-	int offset = 0;
+	int offset;
 	for(i = 0; i < frames; i++){
 		endFraction = startFraction + texFraction;
 		__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 
 		                "Allocating memcoords set no: %d from %f to %f", 
 		                i ,startFraction, endFraction );
-		textureCoordBuffer[offset + 0] = startFraction; 	textureCoordBuffer[offset + 1] = 1.0;
-		textureCoordBuffer[offset + 2] = endFraction; 	    textureCoordBuffer[offset + 3] = 1.0;
-		textureCoordBuffer[offset + 4] = startFraction; 	textureCoordBuffer[offset + 5] = 0.0;
-		textureCoordBuffer[offset + 6] = endFraction; 	    textureCoordBuffer[offset + 7] = 0.0;
+		textureCoordBuffer[0] = startFraction; 	textureCoordBuffer[1] = 1.0;
+		textureCoordBuffer[2] = endFraction; 	textureCoordBuffer[3] = 1.0;
+		textureCoordBuffer[4] = startFraction; 	textureCoordBuffer[5] = 0.0;
+		textureCoordBuffer[6] = endFraction; 	textureCoordBuffer[7] = 0.0;
 		glBindBuffer(GL_ARRAY_BUFFER, sprite->textureBufferNames[i]);
-		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer+offset,GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		startFraction = endFraction;
-		offset = offset + 8;
 	}
 	__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 

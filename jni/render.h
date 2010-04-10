@@ -27,14 +27,10 @@ typedef struct {
 	jfieldID r, g, b, opacity;
 	jfieldID nFrames;
 	jfieldID cFrame;
-
-    GLfloat*    vertBuffer;
-    GLfloat*    indexBuffer;
-    GLfloat*    textureCoordBuffers;
 	
 	GLushort 	indexCount;
-	GLuint      bufferName[2];
-	GLuint*     textureBufferNames;
+	GLuint bufferName[2];
+	GLuint* textureBufferNames;
 
 } GLSprite;
 
