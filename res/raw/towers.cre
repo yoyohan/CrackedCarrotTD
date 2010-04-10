@@ -18,7 +18,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::1
+0-projectile,1-projectileAOE,2-AOE::0
 upgradelink1::1
 upgradelink2::-1
 range::150
@@ -70,7 +70,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::1
+0-projectile,1-projectileAOE,2-AOE::2
 upgradelink1::1
 upgradelink2::-1
 range::150
@@ -96,7 +96,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::1
+0-projectile,1-projectileAOE,2-AOE::3
 upgradelink1::1
 upgradelink2::-1
 range::150

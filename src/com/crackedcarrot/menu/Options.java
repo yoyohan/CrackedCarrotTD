@@ -85,9 +85,9 @@ public class Options extends Activity {
     	this.optionsSound = b;
     	
     	if (b) {
-			imageButton1.setImageResource(R.drawable.button_sound_off);
-    	} else {
 			imageButton1.setImageResource(R.drawable.button_sound_on);
+    	} else {
+			imageButton1.setImageResource(R.drawable.button_sound_off);
     	}
     }
 

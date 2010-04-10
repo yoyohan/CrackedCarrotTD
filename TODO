@@ -17,7 +17,8 @@ Tower range indicator is missing.
 --Albin
 
 The game never really ends, no highscore nothing.
---FREDRIK
+--FREDRIK - YOU WON DIALOG EXISTS, LOOKING INTO WRITING OUR OWN HIGHSCORE-SYSTEM.
+            HIGHSCORE NINJA KEEPS CRASHING...?
 
 Towers class still needs cleaning/refactoring badly
 --Henrik  ALMOST DONE
@@ -26,16 +27,16 @@ Level instructions. Under the game menu while playing. Needs to be scrollview
 --Johan - DONE!
 
 Highscore ninja
---Fredrik
+--Fredrik - KEEPS CRASHING, EVEN IN A BAREBONE DOES-NOTHING-APPLICATION.
 
 new "DOOM style" difficulty settings on the start game screen.
---Fredrik (Half Done).
+--Fredrik - NEEDS GRAPHICS FOR PUSHABLE BUTTONS, XML-CODE IN PLACE.
 
 Support for pause. (During Incommeing phonecalls och SMS).
 --Anyone
 
 Options menyn: highscore settings/Sound etc.
---Anyone (fredrik ?)
+--Anyone (fredrik ?) - DONE.
 
 Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
 It would be really nice if the timer is shown instead of progress bar until lvl begins
@@ -63,13 +64,14 @@ before next level starts
 --Henrik
 
 Main menu -> Options menu. We need to have possible sound settings before game starts.
---FREDRIK
+--FREDRIK - DONE.
 
 Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
 --Henrik DONE!
 
-Save game info between levels.
---Anyone
+Save game info between levels. If the user quits/closes/something the game the game will allow the user
+to resume from the last completed level when the game starts again.
+--Fredrik - 90% DONE, ALL CODE NEEDED TO SAVE/RESTORE GAMESTATE IS COMPLETE AND INTEGRATED INTO THE GUI.
 
 Grid Remake
 --Albin
