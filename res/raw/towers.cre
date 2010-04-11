@@ -18,7 +18,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::0
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
 upgradelink1::1
 upgradelink2::-1
 range::150
@@ -44,7 +44,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::2
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
 upgradelink1::1
 upgradelink2::-1
 range::70
@@ -70,7 +70,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::2
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
 upgradelink1::1
 upgradelink2::-1
 range::150
@@ -82,21 +82,21 @@ Shot size::8
 // Cannon tower with frost damage
 ////////////////////////////////////
 texture::t4
-title::Cannon tower FROST
+title::Cannon tower POISON
 size::60
 price::10
 resell value::8
 minDamage::20
-maxDamage::50
+maxDamage::30
 Shot-velocity::250
 cooldown between shots::2
-hasFrostDamage::true
-frostTime(sec)::5
+hasFrostDamage::false
+frostTime(sec)::0
 hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-0-projectile,1-projectileAOE,2-AOE::3
+hasPoisonDamage::true
+poisonDamage(per sec)::2
+poisonTime(sec)::5
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
 upgradelink1::1
 upgradelink2::-1
 range::150

@@ -9,8 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,12 +27,12 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.crackedcarrot.CurrencyView.CurrencyUpdateListener;
 import com.crackedcarrot.EnemyImageView.EnemyUpdateListener;
-// import com.crackedcarrot.LevelInstrView.LevelInstrUpdateListener;
 import com.crackedcarrot.PlayerHealthView.PlayerHealthUpdateListener;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -49,6 +50,8 @@ public class GameInit extends Activity {
     private MapLoader mapLoad;
     private ExpandMenu expandMenu = null;
     private ProgressBar healthProgressBar;
+    private Drawable healthBarDrawable;
+    private int healthBarState = 3;
     private int healthProgress = 100;
     private TextView nrCreText;
     private PlayerHealthView playerHealthView;
@@ -56,11 +59,9 @@ public class GameInit extends Activity {
     private EnemyImageView enImView;
     //private int nextLevel_creatures = 0;
     private Dialog dialog = null;
-    
+	private LinearLayout statusBar;
     private int resume;
-    
     private ScoreNinjaAdapter scoreNinjaAdapter;
-
     
     //private int highlightIcon = R.drawable.map_choose;
     
@@ -328,6 +329,10 @@ public class GameInit extends Activity {
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
+		
+        // Create an pointer to the statusbar
+        statusBar = (LinearLayout) findViewById(R.id.status_menu);
+        
         /** Create the text view showing the amount of currency */
         currencyView = (CurrencyView)findViewById(R.id.currency);
         currencyView.setCurrencyUpdateListener(new CurrencyUpdateListener(){
@@ -350,10 +355,12 @@ public class GameInit extends Activity {
         healthProgressBar = (ProgressBar) findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
         healthProgressBar.setProgress(healthProgress);
-        
-        /** Create the TextView showing number of enemies left */
+        healthBarDrawable = healthProgressBar.getProgressDrawable();
+		healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
+		
+		/** Create the TextView showing number of enemies left */
         nrCreText = (TextView) findViewById(R.id.nrEnemyLeft);
-
+        
         /** Create the ImageView showing current creature */
         enImView = (EnemyImageView)findViewById(R.id.enemyImVi);
         enImView.setEnemyUpdateListener(new EnemyUpdateListener() {
@@ -362,7 +369,6 @@ public class GameInit extends Activity {
         		enImView.setImageResource(imageId);
         	}
         });
-
         
         /** Create the expandable menu */
         expandMenu =(ExpandMenu)findViewById(R.id.expand_menu);
@@ -529,13 +535,13 @@ public class GameInit extends Activity {
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 0) {
-        	p = new Player(difficulty, 60, 100, 1);
+        	p = new Player(difficulty, 60, 100, 13);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 50, 100, 1);
+        	p = new Player(difficulty, 50, 100, 13);
         }
         else if (difficulty == 2) {
-        	p = new Player(difficulty, 40, 100, 1);
+        	p = new Player(difficulty, 40, 100, 13);
         }
         else { // resume.
         	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1);
@@ -614,12 +620,42 @@ public class GameInit extends Activity {
             	 case 5:
             		 scoreNinjaAdapter.show(0);
             		 break;
+            	 case 19: // This is used to show how long time until next lvl.
+            		 nrCreText.setText("Next lvl in: " + msg.arg1);
+            		 break;
             	 case 20: // update number of creatures still alive on GUI.
             		 nrCreText.setText("" + msg.arg1);
             		 break;
             	 case 21: // update progressbar with creatures health.
+            		 // The code below is used to change color of healthbar when health drops
+            		 if (msg.arg1 >=  66 && healthBarState == 1) {
+           				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
+            			 healthBarState = 3;
+            		 }
+            		 if (msg.arg1 <= 66 && healthBarState == 3) {
+            			 healthBarDrawable.setColorFilter(Color.parseColor("#FFBB00"),PorterDuff.Mode.MULTIPLY);
+            			 healthBarState = 2;
+            		 }
+            		 if (msg.arg1 <= 33 && healthBarState == 2) {
+            			 healthBarDrawable.setColorFilter(Color.parseColor("#CC0000"),PorterDuff.Mode.MULTIPLY);
+            			 healthBarState = 1;
+            		 }
             		 healthProgressBar.setProgress(msg.arg1);
             		 break;
+            	 case 22:
+            		 //If we want to use space in statusbar to show time to next level counter
+            		 healthProgressBar.setVisibility(View.GONE);
+            		 enImView.setVisibility(View.GONE);
+            		 break;
+            	 case 23:
+            		 //If we want to switch back to healthbar
+            		 healthProgressBar.setVisibility(View.VISIBLE);
+            		 enImView.setVisibility(View.VISIBLE);
+            		 break;
+            	 case 24:
+            		 //Show statusbar
+        			statusBar.setVisibility(View.VISIBLE);
+        			break;
             	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
             		 finish();
             		 break;
