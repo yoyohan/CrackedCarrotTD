@@ -101,10 +101,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	                            "This should not happen, yet");
 				}else{
 					glBindBuffer(GL_ARRAY_BUFFER, texBufNames[0]);
-					/*__android_log_print(ANDROID_LOG_DEBUG, 
+					__android_log_print(ANDROID_LOG_DEBUG, 
 	                            LOG_TAG, 
 	                            "Setting TextureBuffer %d",
-	                            texBufNames[0]);*/
+	                            texBufNames[0]);
 	                /*__android_log_print(ANDROID_LOG_DEBUG, 
 	                            LOG_TAG, 
 	                            "Only one frame on this sprite, use frame no 0");*/
@@ -112,10 +112,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 				glTexCoordPointer(2, GL_FLOAT, 0, 0);
 		
 	            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName[INDEX_OBJECT]);
-	            /*__android_log_print(ANDROID_LOG_DEBUG, 
+	            __android_log_print(ANDROID_LOG_DEBUG, 
 	                            LOG_TAG, 
 	                            "Drawing From vertBuffer: %d  and IndexBuffer %d",
-	                            bufferName[VERT_OBJECT], bufferName[INDEX_OBJECT]);*/
+	                            bufferName[VERT_OBJECT], bufferName[INDEX_OBJECT]);
 				glDrawElements(GL_TRIANGLES, currSprt->indexCount, GL_UNSIGNED_SHORT, 0);
 			
 				glBindBuffer(GL_ARRAY_BUFFER, 0);

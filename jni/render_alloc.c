@@ -12,12 +12,11 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
         renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
-	
-        __android_log_print(ANDROID_LOG_DEBUG, 
+    }
+    __android_log_print(ANDROID_LOG_DEBUG, 
 		    				"NATIVE ALLOC",
 		    				"Allocating memory pool for Sprites, Type %d of size %d ", 
 		    				type, noOfSprites[type]);
-    }
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
