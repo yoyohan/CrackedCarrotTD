@@ -12,7 +12,7 @@
     <shape>
      <corners android:radius="4dip" />
      <stroke android:width="1dip" android:color="#000"/>
-     <solid android:color="#FFFF33"/> 
+     <solid android:color="#FFFFFF"/> 
     </shape>
    </clip>
   </item>
@@ -21,7 +21,7 @@
     <shape>
      <corners android:radius="4dip" />
      <stroke android:width="1dip" android:color="#000"/>
-     <solid android:color="#FFFF33"/> 
+     <solid android:color="#FFFFFF"/> 
     </shape>
    </clip>
   </item>

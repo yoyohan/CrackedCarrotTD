@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/relLay"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="#00000000"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+<TableLayout
+	android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+	android:layout_alignParentTop="true"
+	android:layout_centerHorizontal="true"
+	android:paddingTop="40dp"
+	android:background="#00000000">
+	<TableRow>
+
+		<ScrollView
+				android:id="@+id/level_instr"
+				android:orientation="horizontal"
+				android:minHeight="400dp" 
+		        android:minWidth="260dp" 
+		        android:layout_width="260dp" 
+		        android:layout_height="400dp"
+				android:background="#ff0000bb">
+		        
+		        <TableLayout
+					android:layout_width="260dp"
+		    		android:layout_height="400dp"
+					android:background="#00000000">
+					
+					<TableRow>
+						<LinearLayout>
+							<TextView
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:maxLines="1"
+								android:textStyle="bold"
+								android:text="Level information:"/>
+							<Button	
+								android:id="@+id/closedialog"
+								android:layout_width="wrap_content"
+								android:background="@drawable/arrow_left" 
+								android:layout_height="wrap_content">
+						</Button>
+						</LinearLayout>
+					</TableRow>
+					
+					<TableRow>
+						<View
+				        	android:layout_height="15dp"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+					
+				    <TableRow>
+				    	<LinearLayout>
+					        <ImageView
+								android:id="@+id/enemydescription"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content">
+							</ImageView>
+							<TextView
+								android:id="@+id/enemyText"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+						</LinearLayout>
+				    </TableRow>
+				
+					<TableRow>
+						<View
+				        	android:layout_height="15dp"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+				
+					<TableRow>
+				    	<LinearLayout>
+					        <ImageView
+								android:id="@+id/tower1"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/t1">
+							</ImageView>
+							<TextView
+								android:id="@+id/t1Text"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+						</LinearLayout>
+				    </TableRow>
+				
+					<TableRow>
+						<View
+				        	android:layout_height="15dp"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+				
+				    <TableRow>
+				        <LinearLayout>
+				        	<TextView
+				        		android:id="@+id/t2Text"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+					        <ImageView
+								android:id="@+id/tower2"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/t2">
+							</ImageView>
+						</LinearLayout>
+				    </TableRow>
+				
+					<TableRow>
+						<View
+				        	android:layout_height="15dp"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+				
+				    <TableRow>
+				        <LinearLayout>
+					        <ImageView
+								android:id="@+id/tower3"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/t3">
+							</ImageView>
+							<TextView
+								android:id="@+id/t3Text"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+						</LinearLayout>
+				    </TableRow>
+				
+					<TableRow>
+						<View
+				        	android:layout_height="15dip"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+				
+				    <TableRow>
+				        <LinearLayout>
+							<TextView
+								android:id="@+id/t4Text"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+							<ImageView
+								android:id="@+id/tower4"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/t4">
+							</ImageView>
+						</LinearLayout>
+				    </TableRow>
+				    
+				    <TableRow>
+						<View
+				        	android:layout_height="15dip"
+				        	android:layout_width="wrap_content"
+				        	android:background="#00000000" />
+					</TableRow>
+					
+					<TableRow>
+				        <LinearLayout>
+					        <ImageView
+								android:id="@+id/tower5"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:background="@drawable/tower1">
+							</ImageView>
+							<TextView
+								android:id="@+id/t5Text"
+								android:layout_width="190dp"
+								android:layout_height="wrap_content"
+								android:textColor="#000000"
+								android:minLines="5"/>
+						</LinearLayout>
+				    </TableRow>
+		
+				</TableLayout>
+		</ScrollView>
+	</TableRow>	
+</TableLayout>
+</RelativeLayout>
