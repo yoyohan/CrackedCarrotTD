@@ -39,7 +39,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private Semaphore lock2 = new Semaphore(0);
     
 	private Sprite[][] sprites = new Sprite[6][];
-	private Sprite[] renderList;
+	//private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;
 	private int[] mTextureNameWorkspace;
@@ -78,7 +78,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d("GL_INFO", gl.glGetString(GL11.GL_EXTENSIONS));
 		
-		if(renderList != null){
+		/*if(renderList != null){
 			for(int i = 0; i < renderList.length; i++){
 	            // If we are using hardware buffers and the screen lost context
 	            // then the buffer indexes that we recorded previously are now
@@ -98,6 +98,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	            }
 	        }
 		}
+		*/
 		glContext = gl;
 		nativeSurfaceCreated();
 		lock1.release();
@@ -105,7 +106,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public void finalizeSprites() throws InterruptedException {
 		lock1.acquire();
-		int listSize = 0;
+		//TODO verify that the data inside sprites are
+		//proper.
+		
+		/*int listSize = 0;
 		for(int i = 0; i < sprites.length; i++){
 			if(sprites[i] != null)
 				listSize += sprites[i].length;
@@ -121,7 +125,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 				}
 			}
 		}
-
+		*/
 		//This needs to run on the render Thread to get access to the glContext.
 		view.queueEvent(new Runnable(){
 			//@Override
@@ -129,6 +133,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 				for(int i = 0; i < sprites.length; i++){
 					if(sprites[i] != null)
 						nativeDataPoolSize(i,sprites[i].length);
+					else
+						nativeDataPoolSize(i, 0);
 				}
 				int lastTextureId = -1;
 				for(int j = 0; j < sprites.length; j++){
@@ -136,7 +142,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 						continue;
 					
 					for(int i = 0; i < sprites[j].length; i++){
-						// TODO Auto-generated method stub
 						nativeAlloc(i, sprites[j][i]);
 						//Try to load textures
 						int resource = sprites[j][i].getResourceId();
@@ -179,7 +184,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			}
 		});
 
-		this.renderList = null;
+		//this.renderList = null;
 		lock2.acquire();
 		lock1.release();
 	}

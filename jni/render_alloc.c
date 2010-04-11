@@ -8,14 +8,16 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jint size){
                                                                   
     noOfSprites[type] = size;
-    renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
+    if(noOfSprites[type] > 0){
+        renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
 	
-    __android_log_print(ANDROID_LOG_DEBUG, 
-						"NATIVE ALLOC",
-						"Allocating memory pool for Sprites, Type %d of size %d ", 
-						type, noOfSprites[type]);
+        __android_log_print(ANDROID_LOG_DEBUG, 
+		    				"NATIVE ALLOC",
+		    				"Allocating memory pool for Sprites, Type %d of size %d ", 
+		    				type, noOfSprites[type]);
+    }
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
@@ -85,7 +87,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	
 	//If this is not the first sprite of its type and its not an animation
 	//We can just use the same VBOs as the last sprite.
-	GLSprite* last = NULL;
+    GLSprite* last = NULL;
 	if(spriteNO != 0){
 		last = &renderSprites[type][spriteNO-1];
 	}
@@ -93,14 +95,14 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		thisSprite->bufferName[0] = last->bufferName[0]; 
 		thisSprite->bufferName[1] = last->bufferName[1];
 		thisSprite->textureBufferNames = last->textureBufferNames;
-		__android_log_print(ANDROID_LOG_DEBUG, 
+		/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
 						"Sprite No: %d of Type: %d and subType: %d .  Can share data with the previous sprite",
 						 spriteNO, type, subType);
 		__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
 						"It has been assigned the buffers: %d, %d and %d",
-						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);
+						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);*/
 	}
 	else{
 	    __android_log_print(ANDROID_LOG_DEBUG, 
@@ -135,6 +137,8 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 		
 	GLfloat width = (*env)->GetFloatField(env, sprite->object, sprite->width);
 	GLfloat height = (*env)->GetFloatField(env, sprite->object, sprite->height);
+
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "New vertBuffer with sizes width: %f, height: %f", width, height);
 		
 	//VERT1
 	vertBuffer[0] = 0.0;
@@ -162,24 +166,20 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
 	//Texture Coords
 	
 	int frames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
 	sprite->textureBufferNames = malloc(frames * sizeof(GLuint));
 	glGenBuffers(frames, sprite->textureBufferNames);
-	float texFraction = 1.0 / frames;
-	float startFraction = 0.0;
-	float endFraction;
+	GLfloat texFraction = 1.0 / frames;
+	GLfloat startFraction = 0.0;
+	GLfloat endFraction;
 	int i;
-	int offset;
 	for(i = 0; i < frames; i++){
 		endFraction = startFraction + texFraction;
 		__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 
-		                "Allocating memcoords set no: %d from %f to %f", 
+		                "Allocating texCoords Set No: %d from %f to %f", 
 		                i ,startFraction, endFraction );
 		textureCoordBuffer[0] = startFraction; 	textureCoordBuffer[1] = 1.0;
 		textureCoordBuffer[2] = endFraction; 	textureCoordBuffer[3] = 1.0;
@@ -187,13 +187,15 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 		textureCoordBuffer[6] = endFraction; 	textureCoordBuffer[7] = 0.0;
 		glBindBuffer(GL_ARRAY_BUFFER, sprite->textureBufferNames[i]);
 		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		startFraction = endFraction;
 	}
 	__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 
 		                "Sprite has been assigned the new buffers: %d, %d and %d", 
 		                sprite->bufferName[INDEX_OBJECT] ,sprite->bufferName[VERT_OBJECT], sprite->textureBufferNames[0] );
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 }
 

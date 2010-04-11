@@ -52,11 +52,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	GLSprite* currSprt = NULL;
 	GLfloat r, g, b, a;
 	GLfloat scale;
-	/*GLfloat* vertBuffer;
-	GLfloat* texCoordBuffer;
-	GLushort* indexBuffer;
-	GLshort indexCount;
-	*/
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -100,12 +96,18 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	                            LOG_TAG, 
 	                            "Setting TextureBuffer %d",
 	                            texBufNames[nFrames]);*/
+	                __android_log_print(ANDROID_LOG_DEBUG, 
+	                            LOG_TAG, 
+	                            "This should not happen, yet");
 				}else{
 					glBindBuffer(GL_ARRAY_BUFFER, texBufNames[0]);
 					/*__android_log_print(ANDROID_LOG_DEBUG, 
 	                            LOG_TAG, 
 	                            "Setting TextureBuffer %d",
 	                            texBufNames[0]);*/
+	                /*__android_log_print(ANDROID_LOG_DEBUG, 
+	                            LOG_TAG, 
+	                            "Only one frame on this sprite, use frame no 0");*/
 				}
 				glTexCoordPointer(2, GL_FLOAT, 0, 0);
 		
@@ -122,9 +124,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 				glPopMatrix();
 			}
 	    }
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
