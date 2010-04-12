@@ -116,7 +116,7 @@ public class Server extends Activity {
                 	// Show the "tap to play button" and start GameInit
                 	// with putExtraIntent and call this method from multiplayer part
                     // manageConnectedSocket(socket);
-                	
+                	Toast.makeText(Server.this, "Connection established", Toast.LENGTH_LONG).show();
                     //mmServerSocket.close();
                     break;
                 }
