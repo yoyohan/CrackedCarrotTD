@@ -159,10 +159,10 @@ public class GameLoop implements Runnable {
 		}
 		// Sends an array with sprites to the renderer
 		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		//renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		//renderHandle.setSprites(mTower, NativeRender.TOWER);
-		//renderHandle.setSprites(mShots, NativeRender.SHOT);
-		//renderHandle.setSprites(mGrid, NativeRender.GRID);
+		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
+		renderHandle.setSprites(mTower, NativeRender.TOWER);
+		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
 		//UGLY HACK!!
 		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);

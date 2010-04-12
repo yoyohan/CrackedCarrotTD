@@ -119,11 +119,11 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	
 	vertBufSize = sizeof(GLfloat) * 4 * 3;
 	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
-	indexBufSize = sizeof(GLuint) * 6;
+	indexBufSize = sizeof(GLushort) * 6;
 	
 	GLfloat vertBuffer[4*3];
 	GLfloat textureCoordBuffer[4*2];
-	GLuint  indexBuffer[6];
+	GLushort  indexBuffer[6];
 	sprite->indexCount = 6;	
 	
 	//This be the vertex order for our quad, its totaly square man.
@@ -162,9 +162,6 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[VERT_OBJECT]);
 	glBufferData(GL_ARRAY_BUFFER, vertBufSize, vertBuffer, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
-	
 	//Texture Coords
 	
 	int frames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
@@ -188,12 +185,17 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
 		startFraction = endFraction;
 	}
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
+	
 	__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 
 		                "Sprite has been assigned the new buffers: %d, %d and %d", 
 		                sprite->bufferName[INDEX_OBJECT] ,sprite->bufferName[VERT_OBJECT], sprite->textureBufferNames[0] );
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 }
