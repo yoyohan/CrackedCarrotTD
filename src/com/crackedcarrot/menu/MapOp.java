@@ -74,8 +74,7 @@ public class MapOp extends Activity implements ViewFactory {
     	// Added by the king
     	imageSwitcher = (ImageView) findViewById(R.id.switcher1);
     	//int pos = ((ImageView)gallery.getFocusedChild());
-//  	imageSwitcher.setImageResource(;
-//);
+    	imageSwitcher.setImageResource(mmaps[0]);
     	imageSwitcher.getDrawable().mutate().setAlpha(120);        
         
         // See if there's any old game saved that can be resumed.
