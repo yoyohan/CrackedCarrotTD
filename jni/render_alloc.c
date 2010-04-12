@@ -4,17 +4,19 @@
 
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
+															jint type, 
 															jint size){
                                                                   
-    noOfSprites = size;
-    renderSprites = malloc(sizeof(GLSprite) * noOfSprites);
+    noOfSprites[type] = size;
+    if(noOfSprites[type] > 0){
+        renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
 		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
 		//cropWorkspace = malloc(sizeof(GLuint) * 1);
-	
+    }
     __android_log_print(ANDROID_LOG_DEBUG, 
-						"NATIVE ALLOC",
-						"Allocating memory pool for Sprites of size %d ", 
-						noOfSprites);
+		    				"NATIVE ALLOC",
+		    				"Allocating memory pool for Sprites, Type %d of size %d ", 
+		    				type, noOfSprites[type]);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env, 
@@ -22,18 +24,27 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 													 jint spriteNO, 
 													 jobject sprite){
 	
-	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC",
-	//					"Loading Texture for SpriteNo %d \n", spriteNO);
-	GLSprite* thisSprite = &renderSprites[spriteNO];			
+													
+	//Get the class and read the type info
+	jclass class = (*env)->GetObjectClass(env, sprite);
+	jfieldID id = (*env)->GetFieldID(env, class, "type", "I");
+	jint type = (*env)->GetIntField(env, sprite, id);
 	
+	//Use type to figure out what element to manipulate
+	GLSprite* thisSprite = &renderSprites[type][spriteNO];
+	//Set a variable, dont cache reference as we do with the rest of the members of the
+	//sprite class, since the type is imutable.
+	thisSprite->type = type;
+	
+	id = (*env)->GetFieldID(env, class, "subType", "I");
+	jint subType = (*env)->GetIntField(env, sprite, id);
+	thisSprite->subType = subType;
+	
+	//Cache reference to this object
 	thisSprite->object = (*env)->NewGlobalRef(env,sprite);
 	
-		//Get GLSprite class and renderable class.
-	jclass class = (*env)->GetObjectClass(env, sprite);
-		//jclass super = (*env)->GetSuperclass(env, class);
-	
 		//cache the x,y,z pos ID
-	jfieldID id = (*env)->GetFieldID(env, class, "x", "F");
+	id = (*env)->GetFieldID(env, class, "x", "F");
 	thisSprite->x = id;
 	id = (*env)->GetFieldID(env, class, "y", "F");
 	thisSprite->y = id;
@@ -60,21 +71,71 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "opacity", "F");
 	thisSprite->opacity = id;
 	
+	id = (*env)->GetFieldID(env, class, "nFrames", "I");
+	thisSprite->nFrames = id;
+	id = (*env)->GetFieldID(env, class, "cFrame", "I");
+	thisSprite->cFrame = id;
+	
 		//cache TextureName
 	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
 	thisSprite->textureName = id;
 	
-	thisSprite->vertBufSize = sizeof(GLfloat) * 4 * 3;
-	thisSprite->textCoordBufSize = sizeof(GLfloat) * 4 * 2;
-	thisSprite->indexBufSize = sizeof(GLuint) * 6;
+	thisSprite->bufferName = malloc(sizeof(GLuint)*2);
 	
-	thisSprite->vertBuffer = malloc(thisSprite->vertBufSize);
-	thisSprite->textureCoordBuffer = malloc(thisSprite->textCoordBufSize);
-	thisSprite->indexBuffer = malloc(thisSprite->indexBufSize);
-	thisSprite->indexCount = 6;
+	thisSprite->bufferName[0] = 0; 
+	thisSprite->bufferName[1] = 0;
+	thisSprite->textureBufferNames = NULL;
 	
-	GLushort* indexBuffer = thisSprite->indexBuffer;
+	//If this is not the first sprite of its type and its not an animation
+	//We can just use the same VBOs as the last sprite.
+    GLSprite* last = NULL;
+	if(spriteNO != 0){
+		last = &renderSprites[thisSprite->type][spriteNO-1];
+	}
+	if(last != NULL && last->subType == thisSprite->subType){
+		//thisSprite->bufferName[VERT_OBJECT] = last->bufferName[VERT_OBJECT]; 
+		//thisSprite->bufferName[INDEX_OBJECT] = last->bufferName[INDEX_OBJECT];
+		thisSprite->bufferName = last->bufferName;
+		thisSprite->textureBufferNames = last->textureBufferNames;
+		thisSprite->indexCount = last->indexCount;
+		/*__android_log_print(ANDROID_LOG_DEBUG, 
+						"NATIVE_ALLOC", 
+						"VBOs EQUAL: Vert: %d, Index: %d, Tex: %d",
+						thisSprite->bufferName[VERT_OBJECT] == last->bufferName[VERT_OBJECT],
+						thisSprite->bufferName[INDEX_OBJECT] == last->bufferName[INDEX_OBJECT],
+						thisSprite->textureBufferNames == last->textureBufferNames);*/
+		
+/*		__android_log_print(ANDROID_LOG_DEBUG, 
+						"NATIVE ALLOC",
+						"Sprite No: %d of Type: %d and subType: %d .  Can share data with the previous sprite",
+						 spriteNO, type, subType);
+		__android_log_print(ANDROID_LOG_DEBUG, 
+						"NATIVE ALLOC",
+						"It has been assigned the buffers: %d, %d and %d",
+						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);*/
+	}
+	else{
+	    __android_log_print(ANDROID_LOG_DEBUG, 
+		                "NATIVE ALLOC", 
+		                "Sprite No: %d of Type: %d and subType: %d .   Needs new buffers.",
+		                spriteNO, type, subType);
+		initHwBuffers(env, thisSprite);
+	}
+}
+
+void initHwBuffers(JNIEnv* env, GLSprite* sprite){
+	GLsizeiptr vertBufSize;
+	GLsizeiptr textCoordBufSize;
+	GLsizeiptr indexBufSize;
 	
+	vertBufSize = sizeof(GLfloat) * 4 * 3;
+	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
+	indexBufSize = sizeof(GLushort) * 6;
+	
+	GLfloat vertBuffer[4*3];
+	GLfloat textureCoordBuffer[4*2];
+	GLushort  indexBuffer[6];
+	sprite->indexCount = 6;	
 	
 	//This be the vertex order for our quad, its totaly square man.
 	indexBuffer[0] = 0;
@@ -83,11 +144,11 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	indexBuffer[3] = 1;
 	indexBuffer[4] = 2;
 	indexBuffer[5] = 3;
-	
-	GLfloat* vertBuffer = thisSprite->vertBuffer;
-	
-	GLfloat width = (*env)->GetFloatField(env, thisSprite->object, thisSprite->width);
-	GLfloat height = (*env)->GetFloatField(env, thisSprite->object, thisSprite->height);
+		
+	GLfloat width = (*env)->GetFloatField(env, sprite->object, sprite->width);
+	GLfloat height = (*env)->GetFloatField(env, sprite->object, sprite->height);
+
+	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "New vertBuffer with sizes width: %f, height: %f", width, height);
 		
 	//VERT1
 	vertBuffer[0] = 0.0;
@@ -107,86 +168,77 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	vertBuffer[11] = 0.0;
 	//WOOO I CAN HAS QUAD!
 	
-	
-	GLfloat* textureCoordBuffer = thisSprite->textureCoordBuffer;
-	//Texture Coords
-	textureCoordBuffer[0] = 0.0; textureCoordBuffer[1] = 1.0;
-	textureCoordBuffer[2] = 1.0; textureCoordBuffer[3] = 1.0;
-	textureCoordBuffer[4] = 0.0; textureCoordBuffer[5] = 0.0;
-	textureCoordBuffer[6] = 1.0; textureCoordBuffer[7] = 0.0;
-	
-	thisSprite->bufferName[0] = 0; 
-	thisSprite->bufferName[1] = 0;
-	thisSprite->bufferName[2] = 0;
-	
-	
-	//Init of our quad is done.
-	
-	initHwBuffers(env, thisSprite);
-	
-	//spritesReady = 1;	
-}
-
-void initHwBuffers(JNIEnv* env, GLSprite* sprite){
-	
-	
-	float w = (*env)->GetFloatField(env, sprite->object, sprite->width);
-	float h = (*env)->GetFloatField(env, sprite->object, sprite->height);
-	/*__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "sprite has width: %f and hegiht %f", w,h);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "init HW buffers useing data:");
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Indices : %d %d %d %d %d %d",
-						sprite->indexBuffer[0], sprite->indexBuffer[1], sprite->indexBuffer[2],
-						sprite->indexBuffer[3],sprite->indexBuffer[4],sprite->indexBuffer[5]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 0: %f,%f,%f", sprite->vertBuffer[0],sprite->vertBuffer[1],sprite->vertBuffer[2]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 1: %f,%f,%f", sprite->vertBuffer[3],sprite->vertBuffer[4],sprite->vertBuffer[5]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 3: %f,%f,%f", sprite->vertBuffer[6],sprite->vertBuffer[7],sprite->vertBuffer[8]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "Vert 4: %f,%f,%f", sprite->vertBuffer[9],sprite->vertBuffer[10],sprite->vertBuffer[11]);
-	*/
-	glGenBuffers(3, sprite->bufferName);
+	glGenBuffers(2, sprite->bufferName);
 	//__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "GenBuffer retured error: %d", glGetError());
 	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[VERT_OBJECT]);
-	glBufferData(GL_ARRAY_BUFFER, sprite->vertBufSize, sprite->vertBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertBufSize, vertBuffer, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, sprite->bufferName[TEX_OBJECT]);
-	glBufferData(GL_ARRAY_BUFFER, sprite->textCoordBufSize, sprite->textureCoordBuffer,GL_STATIC_DRAW);
+	//Texture Coords
+	
+	int frames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
+	sprite->textureBufferNames = malloc(frames * sizeof(GLuint));
+	glGenBuffers(frames, sprite->textureBufferNames);
+	GLfloat texFraction = 1.0 / frames;
+	GLfloat startFraction = 0.0;
+	GLfloat endFraction;
+	int i;
+	for(i = 0; i < frames; i++){
+		endFraction = startFraction + texFraction;
+		__android_log_print(ANDROID_LOG_DEBUG, 
+		                "HWBUFFER ALLOC", 
+		                "Allocating texCoords Set No: %d from %f to %f", 
+		                i ,startFraction, endFraction );
+		textureCoordBuffer[0] = startFraction; 	textureCoordBuffer[1] = 1.0;
+		textureCoordBuffer[2] = endFraction; 	textureCoordBuffer[3] = 1.0;
+		textureCoordBuffer[4] = startFraction; 	textureCoordBuffer[5] = 0.0;
+		textureCoordBuffer[6] = endFraction; 	textureCoordBuffer[7] = 0.0;
+		glBindBuffer(GL_ARRAY_BUFFER, sprite->textureBufferNames[i]);
+		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
+		startFraction = endFraction;
+	}
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->bufferName[INDEX_OBJECT]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sprite->indexBufSize, sprite->indexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufSize, indexBuffer, GL_STATIC_DRAW);
 	
+	__android_log_print(ANDROID_LOG_DEBUG, 
+		                "HWBUFFER ALLOC", 
+		                "Sprite has been assigned the new buffers: %d, %d and %d", 
+		                sprite->bufferName[INDEX_OBJECT] ,sprite->bufferName[VERT_OBJECT], sprite->textureBufferNames[0] );
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
-	/*__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "IndexObject %d", sprite->bufferName[INDEX_OBJECT]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "VertObject  %d", sprite->bufferName[VERT_OBJECT]);
-	__android_log_print(ANDROID_LOG_DEBUG, "HWBUFFER ALLOC", "TextureObject %d", sprite->bufferName[TEX_OBJECT]);
-	*/
+
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
-	GLSprite* freeSprites = renderSprites;
-	GLSprite* currentSprite;
-	int spritesToFree = noOfSprites;
+	GLSprite* currSprt;
+	int spritesToFree;
 	int i;
+	int j;
 	
-	noOfSprites = 0;
-	renderSprites = NULL;
+	for(j = 0; j < 6; j++){
+		spritesToFree = noOfSprites[j];
+		for(i = 0; i < spritesToFree; i++){
+			currSprt = &renderSprites[j][i];
+			__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d:%d", j,i);
+			(*env)->DeleteGlobalRef(env, currSprt->object);
+			if(currSprt->textureBufferNames != NULL){
+				glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
+				 				currSprt->textureBufferNames);
+				//free(currSprt->textureBufferNames);
+				currSprt->textureBufferNames = NULL;
+			}
+			if(currSprt->bufferName != NULL){
+				glDeleteBuffers(2, currSprt->bufferName);
+				//free(currSprt->bufferName);
+				currSprt->bufferName = NULL;
+			}
+		}
 	
-	for(i = 0; i < spritesToFree; i++){
-		currentSprite = &freeSprites[i];
-		//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d",currentSprite->bufferName[INDEX_OBJECT]);
-		free(currentSprite->vertBuffer);
-		free(currentSprite->textureCoordBuffer);
-		free(currentSprite->indexBuffer);
-		
-		#ifndef emulator
-		glDeleteBuffers(3, currentSprite->bufferName);
-		#endif
-		(*env)->DeleteGlobalRef(env, currentSprite->object);
+		free(renderSprites[j]);
+		noOfSprites[j] = 0;
 	}
-	
-	free(freeSprites);
-	freeSprites = NULL;
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName){
