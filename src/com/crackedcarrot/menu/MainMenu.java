@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.crackedcarrot.multiplayer.*;
+
 public class MainMenu extends Activity {
 	
 	/*
@@ -65,8 +67,18 @@ public class MainMenu extends Activity {
         CreditsButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent Credits= new Intent(MainMenu.this,Credits.class);
+        		Intent Credits = new Intent(MainMenu.this,Credits.class);
         		startActivity(Credits);
+        	}
+        });
+        
+        Button MultiPlayerButton = (Button)findViewById(R.id.Multiplayer);
+        MultiPlayerButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		Intent Multiplayer = new Intent(MainMenu.this,MultiplayerOp.class);
+        		startActivity(Multiplayer);
+        		finish();
         	}
         });
         
