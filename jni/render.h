@@ -29,7 +29,7 @@ typedef struct {
 	jfieldID cFrame;
 	
 	GLushort 	indexCount;
-	GLuint bufferName[2];
+	GLuint* bufferName;
 	GLuint* textureBufferNames;
 
 } GLSprite;
