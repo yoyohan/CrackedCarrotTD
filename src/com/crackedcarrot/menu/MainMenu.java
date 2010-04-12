@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+
 public class MainMenu extends Activity {
 	
 	/*
@@ -56,7 +57,7 @@ public class MainMenu extends Activity {
         HelpButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent Help = new Intent(MainMenu.this,Help.class);
+        		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
         	}
         });
