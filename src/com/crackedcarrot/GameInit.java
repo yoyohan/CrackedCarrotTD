@@ -39,6 +39,7 @@ import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
+import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
 import com.scoreninja.adapter.ScoreNinjaAdapter;
 
@@ -129,9 +130,7 @@ public class GameInit extends Activity {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
-	        		int id = simulationRuntime.getLevelData().getResourceId();
-	        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
-	        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		startActivity(ShowInstr);
 	        	}
 	        });
@@ -470,9 +469,7 @@ public class GameInit extends Activity {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		int id = simulationRuntime.getLevelData().getResourceId();
-        		Intent ShowInstr = new Intent(v.getContext(),InstructionView.class);
-        		ShowInstr.putExtra("com.crackedcarrot.resourceId", id);
+        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		startActivity(ShowInstr);
         	}
         });

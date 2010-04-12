@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+<<<<<<< HEAD
 import com.crackedcarrot.multiplayer.*;
+=======
+>>>>>>> 4636ebc21e07ca666987842f47ff9c32e0942746
 
 public class MainMenu extends Activity {
 	
@@ -58,7 +61,7 @@ public class MainMenu extends Activity {
         HelpButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent Help = new Intent(MainMenu.this,Help.class);
+        		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
         	}
         });
