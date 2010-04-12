@@ -51,13 +51,20 @@ public class Creature extends Sprite{
 	protected int currentGridPos;
 	protected int creatureIndex;
 	protected Tracker mTracker;
-	
-	
-	public Creature(int resourceId, Player player, 
-					SoundManager soundMan, Coords[] wayP, 
-					GameLoop loop, int creatureIndex, 
-					Scaler mScaler, Tracker mTracker){
-		super(resourceId);
+
+    
+	public Creature(int resourceId, 
+					int type, 
+					int frames, 
+					Player player, 
+					SoundManager soundMan, 
+					Coords[] wayP, 
+					GameLoop loop, 
+					int creatureIndex, 
+					Scaler mScaler, 
+					Tracker mTracker){
+		
+		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
 		this.player = player;
 		this.setNextWayPoint(0);
@@ -70,9 +77,10 @@ public class Creature extends Sprite{
 	}
 	
 	//This is only used by the level constructor.
-	public Creature(int resourceId){
-		super(resourceId);
+	public Creature(int resourceId, int type , int frames){
+		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
+
 	}
 
 	public void updateWayPoint (){
