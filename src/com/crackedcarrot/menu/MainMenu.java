@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-<<<<<<< HEAD
 import com.crackedcarrot.multiplayer.*;
-=======
->>>>>>> 4636ebc21e07ca666987842f47ff9c32e0942746
+
 
 public class MainMenu extends Activity {
 	
@@ -47,6 +45,15 @@ public class MainMenu extends Activity {
         		startActivity(StartGame);
         	}
         });
+        
+        Button ResumeButton = (Button)findViewById(R.id.Resume);
+        ResumeButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		Intent Credits = new Intent(MainMenu.this,Resume.class);
+        		startActivity(Credits);
+        	}
+        });
 
         Button OptionsButton = (Button)findViewById(R.id.Options);
         OptionsButton.setOnClickListener(new OnClickListener() {
@@ -63,15 +70,6 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
-        	}
-        });
-        
-        Button CreditsButton = (Button)findViewById(R.id.Credits);
-        CreditsButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		Intent Credits = new Intent(MainMenu.this,Credits.class);
-        		startActivity(Credits);
         	}
         });
         
