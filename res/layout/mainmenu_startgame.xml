@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/background">
+	android:background="@drawable/backgradient">
 
 	<TableLayout
 		android:layout_centerHorizontal="true"
