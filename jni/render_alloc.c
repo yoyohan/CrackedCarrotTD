@@ -97,7 +97,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		//thisSprite->bufferName[INDEX_OBJECT] = last->bufferName[INDEX_OBJECT];
 		thisSprite->bufferName = last->bufferName;
 		thisSprite->textureBufferNames = last->textureBufferNames;
-		
+		thisSprite->indexCount = last->indexCount;
 		/*__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE_ALLOC", 
 						"VBOs EQUAL: Vert: %d, Index: %d, Tex: %d",
@@ -226,12 +226,12 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 			if(currSprt->textureBufferNames != NULL){
 				glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
 				 				currSprt->textureBufferNames);
-				free(currSprt->textureBufferNames);
+				//free(currSprt->textureBufferNames);
 				currSprt->textureBufferNames = NULL;
 			}
 			if(currSprt->bufferName != NULL){
 				glDeleteBuffers(2, currSprt->bufferName);
-				free(currSprt->bufferName);
+				//free(currSprt->bufferName);
 				currSprt->bufferName = NULL;
 			}
 		}
