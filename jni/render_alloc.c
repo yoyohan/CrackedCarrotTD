@@ -94,14 +94,14 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		thisSprite->bufferName[0] = last->bufferName[0]; 
 		thisSprite->bufferName[1] = last->bufferName[1];
 		thisSprite->textureBufferNames = last->textureBufferNames;
-		/*__android_log_print(ANDROID_LOG_DEBUG, 
+		__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
 						"Sprite No: %d of Type: %d and subType: %d .  Can share data with the previous sprite",
 						 spriteNO, type, subType);
 		__android_log_print(ANDROID_LOG_DEBUG, 
 						"NATIVE ALLOC",
 						"It has been assigned the buffers: %d, %d and %d",
-						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);*/
+						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);
 	}
 	else{
 	    __android_log_print(ANDROID_LOG_DEBUG, 
