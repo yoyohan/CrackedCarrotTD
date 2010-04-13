@@ -108,7 +108,7 @@ public class Client extends Activity {
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a chat session
+                // Bluetooth is now enabled, so set up a client
                 setupClient();
             } else {
                 // User did not enable Bluetooth or an error occured
