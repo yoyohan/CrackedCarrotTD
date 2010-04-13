@@ -605,7 +605,18 @@ public class GameInit extends Activity {
             		 showDialog(4);
             		 break;
             	 case 5:
-            		 scoreNinjaAdapter.show(0);
+            		 
+            	        // Restore highscore-preferences
+            	        SharedPreferences settings = getSharedPreferences("Options", 0);
+            	        boolean optionsHighscore = settings.getBoolean("optionsHighscore", false);
+            		 
+            	     if (optionsHighscore) {
+            	    	 	// Show ScoreNinja.
+            	    	 scoreNinjaAdapter.show(0);
+            	     } else {
+            	    	 	// Show standard you-won dialog.
+            	    	 showDialog(2);
+            	     }
             		 break;
             	 case 19: // This is used to show how long time until next lvl.
             		 nrCreText.setText("Next lvl in: " + msg.arg1);
