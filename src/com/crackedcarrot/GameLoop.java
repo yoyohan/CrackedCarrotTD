@@ -105,8 +105,9 @@ public class GameLoop implements Runnable {
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-	    	mTower[i] = new Tower(R.drawable.tower1, mCreatures, soundManager,mTracker);
-	    	mShots[i] = new Shot(R.drawable.cannonball, mTower[i]);
+
+	    	mTower[i] = new Tower(R.drawable.tower1, 0,1, mCreatures, soundManager,mTracker);
+	    	mShots[i] = new Shot(R.drawable.cannonball,0,1, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
@@ -119,13 +120,15 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
+
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
-	    								 player, soundManager, 
-	    								 mGameMap.getWaypoints().getCoords(), 
-	    								 this,
-	    								 i, 
-	    								 mScaler, 
-	    								 mTracker);
+	    								0,1,player, soundManager, 
+	    								mGameMap.getWaypoints().getCoords(), 
+	    								this,
+	    								i,
+	    								mScaler,
+	    								mTracker);
+
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
@@ -183,6 +186,10 @@ public class GameLoop implements Runnable {
 		renderHandle.setSprites(mTower, NativeRender.TOWER);
 		renderHandle.setSprites(mShots, NativeRender.SHOT);
 		renderHandle.setSprites(mGrid, NativeRender.GRID);
+		
+		//UGLY HACK!!
+		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
+		//END UGLY HACK!!
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
@@ -257,6 +264,43 @@ public class GameLoop implements Runnable {
     	               // (and cannot be resumed.)
     	guiHandler.sendMessage(msg);
 
+		// Initialize the status, displaying the amount of currency
+		updateCurrencyHandler.post(currUpdate);
+		// Initialize the status, displaying the players health
+		updatePlayerHealthHandler.post(pHUpdate);
+		// Initialize the status, displaying the creature image
+		updateEnemyImageHandler.post(cIUpdate);
+
+		// And set the progressbar with creature health to full again.
+		msg = new Message();
+		msg.what = 21;
+		msg.arg1 = 100;
+		guiHandler.sendMessage(msg);
+		
+		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
+		// If we dont reset this variable each wave. The timeDelta will be fucked up
+		// And creatures will try to move to second waypoint insteed.
+		mLastTime = 0;
+		// Reset gamespeed between levels?
+		gameSpeed = 1;
+    	
+		// Remove healthbar until game begins.
+		msg = new Message();
+		msg.what = 22;
+		guiHandler.sendMessage(msg);
+		player.setTimeUntilNextLevel(player.getTimeBetweenLevels());
+
+		// Initialize the status, displaying how long left until level starts
+		msg = new Message();
+		msg.what = 19;
+		msg.arg1 = (int) player.getTimeUntilNextLevel();
+		guiHandler.sendMessage(msg);		
+		
+		// We wait to show the status bar until everything is updated
+		msg = new Message();
+		msg.what = 24;
+		guiHandler.sendMessage(msg);
+		
 		// Code to wait for the user to click ok on NextLevel-dialog.
 		try {
 			dialogSemaphore.acquire();
@@ -274,7 +318,6 @@ public class GameLoop implements Runnable {
     			special = 2;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + (reverse/special)));
 		}
-		
 	}
 
     public void run() {
@@ -295,8 +338,6 @@ public class GameLoop implements Runnable {
 	    	}
 	    }
 	    
-	    gameSpeed = 1;
-
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
@@ -304,30 +345,9 @@ public class GameLoop implements Runnable {
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-
-    		// Initialize the status, displaying the amount of currency
-    		updateCurrencyHandler.post(currUpdate);
-    		// Initialize the status, displaying the players health
-    		updatePlayerHealthHandler.post(pHUpdate);
-    		// Initialize the status, displaying the creature image
-    		updateEnemyImageHandler.post(cIUpdate);
-
-    		
-    		// Initialize the status, displaying how many creatures still alive
-    		Message msg = new Message();
-    		msg.what = 20;
-    		msg.arg1 = remainingCreaturesALL;
-    		guiHandler.sendMessage(msg);
-    		
-    		// And set the progressbar with creature health to full again.
-    		msg = new Message();
-    		msg.what = 21;
-    		msg.arg1 = 100;
-    		guiHandler.sendMessage(msg);
-    		
-    			// Fredrik: this was added by akerberg 2010-04-05, survied commit.
-    		// We have to reset this each wave
-    		mLastTime = 0;
+    		    		
+            // This is used to know when the time has changed or not
+    		int lastTime = 0;
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -340,10 +360,30 @@ public class GameLoop implements Runnable {
 	            final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time;
-	            	            
+	            
 	            // Shows how long it is left until next level
-	            player.setTimeUntilNextLevel((int)(player.getTimeUntilNextLevel() - timeDeltaSeconds));	            
-
+	            if (player.getTimeUntilNextLevel() > 0) {
+	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {
+		            	// Show healthbar again.
+		            	Message msg = new Message();
+		            	msg.what = 23;
+		            	guiHandler.sendMessage(msg);
+	            		player.setTimeUntilNextLevel(0);     
+	            	    
+	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
+	            		creaturDiesOnMap(0);
+	            	}
+	            	else 
+	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
+	            	if (lastTime != (int)player.getTimeUntilNextLevel()) {
+	            		lastTime = (int)player.getTimeUntilNextLevel();
+	            		Message msg = new Message();
+	            		msg.what = 19;
+	            		msg.arg1 = lastTime;
+	            		guiHandler.sendMessage(msg);
+	            	}
+	            }
+	            
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
 	        		mCreatures[x].update(timeDeltaSeconds);
@@ -366,7 +406,7 @@ public class GameLoop implements Runnable {
             	Log.d("GAMETHREAD", "You are dead");
 
             		// Show the You Lost-dialog.
-        		msg = new Message();
+        		Message msg = new Message();
         		msg.what = 3; // YouLost-box.
             	guiHandler.sendMessage(msg);
             	
@@ -405,7 +445,7 @@ public class GameLoop implements Runnable {
                 	Log.d("GAMETHREAD", "You have completed this map");
                 	
             		// Show the You Won-dialog.
-            		msg = new Message();
+            		Message msg = new Message();
             		msg.what = 2; // YouWon
                 	guiHandler.sendMessage(msg);
 
@@ -508,7 +548,6 @@ public class GameLoop implements Runnable {
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-    	
     	Message msg = new Message();
     	msg.what = 21;
     	msg.arg1 = (int)(100*(currentCreatureHealth/startCreatureHealth));

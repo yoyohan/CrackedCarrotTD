@@ -22,12 +22,13 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public	static final int BACKGROUND = 0;
 	public 	static final int SHOT		= 1;
-	public 	static final int CREATURE	= 2;
-	public  static final int GRID		= 3;
-	public	static final int TOWER		= 4;
+	public  static final int EFFECT		= 2;
+	public 	static final int CREATURE	= 3;
+	public  static final int GRID		= 4;
+	public	static final int TOWER		= 5;
 
 	private static native void nativeAlloc(int n, Sprite s);
-	private static native void nativeDataPoolSize(int size);
+	private static native void nativeDataPoolSize(int type, int size);
     private static native void nativeResize(int w, int h);
     private static native void nativeDrawFrame();
     private static native void nativeSurfaceCreated();
@@ -37,8 +38,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private Semaphore lock1 = new Semaphore(0);
     private Semaphore lock2 = new Semaphore(0);
     
-	private Sprite[][] sprites = new Sprite[5][];
-	private Sprite[] renderList;
+	private Sprite[][] sprites = new Sprite[6][];
+	//private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;
 	private int[] mTextureNameWorkspace;
@@ -77,7 +78,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d("GL_INFO", gl.glGetString(GL11.GL_EXTENSIONS));
 		
-		if(renderList != null){
+		/*if(renderList != null){
 			for(int i = 0; i < renderList.length; i++){
 	            // If we are using hardware buffers and the screen lost context
 	            // then the buffer indexes that we recorded previously are now
@@ -97,6 +98,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	            }
 	        }
 		}
+		*/
 		glContext = gl;
 		nativeSurfaceCreated();
 		lock1.release();
@@ -104,7 +106,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public void finalizeSprites() throws InterruptedException {
 		lock1.acquire();
-		int listSize = 0;
+		//TODO verify that the data inside sprites are
+		//proper.
+		
+		/*int listSize = 0;
 		for(int i = 0; i < sprites.length; i++){
 			if(sprites[i] != null)
 				listSize += sprites[i].length;
@@ -120,26 +125,35 @@ public class NativeRender implements GLSurfaceView.Renderer {
 				}
 			}
 		}
-
+		*/
 		//This needs to run on the render Thread to get access to the glContext.
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-				nativeDataPoolSize(renderList.length);
+				for(int i = 0; i < sprites.length; i++){
+					if(sprites[i] != null)
+						nativeDataPoolSize(i,sprites[i].length);
+					else
+						nativeDataPoolSize(i, 0);
+				}
 				int lastTextureId = -1;
-				for(int i = 0; i < renderList.length; i++){
-					// TODO Auto-generated method stub
-					nativeAlloc(i, renderList[i]);
-					//Try to load textures
-					int resource = renderList[i].getResourceId();
-					if(resource == 0){
-						Log.d("FIN SPRITES", "Error Invalid resource ID");
+				for(int j = 0; j < sprites.length; j++){
+					if(sprites[j] == null)
+						continue;
+					
+					for(int i = 0; i < sprites[j].length; i++){
+						nativeAlloc(i, sprites[j][i]);
+						//Try to load textures
+						int resource = sprites[j][i].getResourceId();
+						if(resource == 0){
+							Log.d("FIN SPRITES", "Error Invalid resource ID");
+						}
+						if (!textureMap.containsKey(resource)) {
+							lastTextureId = loadBitmap(mContext, glContext, resource);
+							textureMap.put(resource, lastTextureId);
+						}
+						sprites[j][i].setTextureName(textureMap.get(resource));
 					}
-					if (!textureMap.containsKey(resource)) {
-						lastTextureId = loadBitmap(mContext, glContext, resource);
-						textureMap.put(resource, lastTextureId);
-					}
-					renderList[i].setTextureName(textureMap.get(resource));
 				}
 				lock2.release();
 			}
@@ -170,7 +184,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			}
 		});
 
-		this.renderList = null;
+		//this.renderList = null;
 		lock2.acquire();
 		lock1.release();
 	}

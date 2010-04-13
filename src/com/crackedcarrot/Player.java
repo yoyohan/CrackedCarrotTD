@@ -8,7 +8,7 @@ public class Player {
 	private int interestGainedLatestLvl;
 	private int interestGainedEntireGame;
 	private int healthLost;
-	private int timeUntilNextLevel;
+	private float timeUntilNextLevel;
 	private float timeBetweenLevels;
 	
 	public Player(int difficulty, int health, int money, int timeBetweenLevels) { 
@@ -57,11 +57,11 @@ public class Player {
 		return timeBetweenLevels;
 	}
 
-	public void setTimeUntilNextLevel(int timeUntilNextLevel) {
-		this.timeUntilNextLevel = timeUntilNextLevel;
+	public void setTimeUntilNextLevel(float f) {
+		this.timeUntilNextLevel = f;
 	}
 
-	public int getTimeUntilNextLevel() {
+	public float getTimeUntilNextLevel() {
 		return timeUntilNextLevel;
 	}
 

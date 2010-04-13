@@ -67,16 +67,16 @@ public class Tower extends Sprite {
     private int right_column;
     private int upper_row;
     private int bottom_row;
-    
-	public Tower(int resourceId, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
-		super(resourceId);
+
+	public Tower(int resourceId, int type, int frames, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
+		super(resourceId, NativeRender.TOWER, type, frames);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		this.creepTracker = creepTracker;
 		rand = new Random();
 	}
-	public Tower(int resourceId){
-		super(resourceId);
+	public Tower(int resourceId, int type , int frames){
+		super(resourceId,NativeRender.TOWER, type, frames);
 		rand = new Random();
 	}
 	

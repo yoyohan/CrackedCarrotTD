@@ -6,6 +6,7 @@ import java.io.InputStream;
 import android.content.Context;
 
 import com.crackedcarrot.Coords;
+import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.Tower;
@@ -37,7 +38,10 @@ public class MapLoader {
 		twg = new Tower[8][11];
 		for (int x = 0; x < twg.length; x++) {
 			for (int y = 0; y < twg[0].length; y++) {
-				twg[x][y] = new Tower(R.drawable.tower1);
+				//At the moment all towers are the same size.
+				//Number of frames can be changed together with the
+				//Texture.
+				twg[x][y] = new Tower(R.drawable.tower1,0,1);
 				twg[x][y].draw = false;
 			}
 		}
@@ -77,7 +81,7 @@ public class MapLoader {
 							return null;
 
 				        // Gamemap
-						Sprite background = new Sprite(resID);
+						Sprite background = new Sprite(resID, NativeRender.BACKGROUND, 0 ,1);
 						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
 				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
 				        background.setWidth(s.getScreenResolutionX());
