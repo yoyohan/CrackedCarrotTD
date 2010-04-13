@@ -458,9 +458,9 @@ public class GameLoop implements Runnable {
                 	guiHandler.sendMessage(msg);
                 	
                 	// Show Ninjahighscore-thingie. Not working atm..
-                	//msg = new Message();
-                	//msg.what = 5;
-                	//nextLevelHandler.sendMessage(msg);
+                	msg = new Message();
+                	msg.what = 5;
+                	guiHandler.sendMessage(msg);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
