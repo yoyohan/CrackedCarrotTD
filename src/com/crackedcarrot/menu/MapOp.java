@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crackedcarrot.GameInit;
+import com.crackedcarrot.GameLoopGUI;
 
 /**
  * This class/activity consists of three clickable objects, two buttons that
@@ -132,7 +133,7 @@ public class MapOp extends Activity {
         	
         	public void onClick(View v) {
         		/** Send the level variable to the game loop and start it */
-        		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
+        		Intent StartGame2 = new Intent(v.getContext(), GameInit.class);
         		StartGame2.putExtra("com.crackedcarrot.menu.map", indexMaps);
         		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", level);
         		startActivity(StartGame2);

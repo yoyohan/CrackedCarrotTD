@@ -19,6 +19,7 @@ import com.crackedcarrot.menu.R;
  * track of player life, level count etc.
  */
 public class GameLoop implements Runnable {
+	
     private Player player;
     private Map mGameMap;
     private Sprite[] mGrid;
@@ -53,32 +54,8 @@ public class GameLoop implements Runnable {
     
     private Handler guiHandler;
     private Semaphore dialogSemaphore = new Semaphore(1);
-
-    private Handler updateCurrencyHandler = new Handler();
-    private Handler updatePlayerHealthHandler = new Handler();
-    private Handler updateEnemyImageHandler = new Handler();
-    private CurrencyUpdate currUpdate = new CurrencyUpdate();
-    private PlayerHealthUpdate pHUpdate = new PlayerHealthUpdate();
-    private CreatureImageUpdate cIUpdate = new CreatureImageUpdate();
-
     
-    private class CurrencyUpdate implements Runnable{
-		public void run(){
-			CurrencyView.listener.currencyUpdate(player.getMoney());
-		}
-	}
-    
-    private class PlayerHealthUpdate implements Runnable{
-		public void run(){
-			PlayerHealthView.listener.playerHealthUpdate(player.getHealth());
-		}
-	}
-    
-    private class CreatureImageUpdate implements Runnable{
-		public void run(){
-			EnemyImageView.listener.enemyUpdate(mLvl[lvlNbr].getResourceId());
-		}
-	}
+   
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, Handler gh, SoundManager sm){
@@ -232,11 +209,20 @@ public class GameLoop implements Runnable {
 		}
 		
 		// Initialize the status, displaying the amount of currency
-		updateCurrencyHandler.post(currUpdate);
+		Message msg = new Message();
+		msg.what = 25;
+		msg.arg1 = player.getMoney();
+		guiHandler.sendMessage(msg);
 		// Initialize the status, displaying the players health
-		updatePlayerHealthHandler.post(pHUpdate);
+		msg = new Message();
+		msg.what = 26;
+		msg.arg1 = player.getHealth();
+		guiHandler.sendMessage(msg);
 		// Initialize the status, displaying the creature image
-		updateEnemyImageHandler.post(cIUpdate);
+		msg = new Message();
+		msg.what = 27;
+		msg.arg1 = mLvl[lvlNbr].getResourceId();
+		guiHandler.sendMessage(msg);
 		// Initialize the status, displaying how many creatures still alive
 		// TODO: REMOVE???! updateCreatureHandler.post(cUpdate);
 		// Initialize the status, displaying total health of all creatures
@@ -250,7 +236,7 @@ public class GameLoop implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		Message msg = new Message();
+		msg = new Message();
 		msg.what = 1; // 1 means to show NextLevel-box.
 		msg.arg1 = mLvl[lvlNbr].nbrCreatures;
 		msg.arg2 = mLvl[lvlNbr].getResourceId();
@@ -265,11 +251,20 @@ public class GameLoop implements Runnable {
     	guiHandler.sendMessage(msg);
 
 		// Initialize the status, displaying the amount of currency
-		updateCurrencyHandler.post(currUpdate);
+		msg = new Message();
+		msg.what = 25;
+		msg.arg1 = player.getMoney();
+		guiHandler.sendMessage(msg);
 		// Initialize the status, displaying the players health
-		updatePlayerHealthHandler.post(pHUpdate);
+		msg = new Message();
+		msg.what = 26;
+		msg.arg1 = player.getHealth();
+		guiHandler.sendMessage(msg);
 		// Initialize the status, displaying the creature image
-		updateEnemyImageHandler.post(cIUpdate);
+		msg = new Message();
+		msg.what = 27;
+		msg.arg1 = mLvl[lvlNbr].getResourceId();
+		guiHandler.sendMessage(msg);
 
 		// And set the progressbar with creature health to full again.
 		msg = new Message();
@@ -530,7 +525,10 @@ public class GameLoop implements Runnable {
     }
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-    	updatePlayerHealthHandler.post(pHUpdate);
+		Message msg = new Message();
+		msg.what = 26;
+		msg.arg1 = player.getHealth();
+		guiHandler.sendMessage(msg);
     }
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
@@ -555,7 +553,11 @@ public class GameLoop implements Runnable {
     }
     // Update the status when the players money increases
     public void updateCurrency(int currency){
-    	updateCurrencyHandler.post(currUpdate);
+		Message msg = new Message();
+		msg.what = 25;
+		msg.arg1 = player.getMoney();
+		guiHandler.sendMessage(msg);
+
     }
     
     public void stopGameLoop(){
