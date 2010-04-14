@@ -1,115 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/backgradient">
+	android:orientation="vertical"
+	android:background="@drawable/background2"
+	>
 
-    <ImageView
-        android:id="@+id/switcher1" 
-        android:layout_width="fill_parent" 
-        android:layout_height="fill_parent"
-        android:background="#00000000"      
-    	android:scaleType="fitXY"
-        />
-
-    <Gallery
-       android:id="@+id/gallery1"
-       android:layout_width="fill_parent" 
-       android:layout_height="wrap_content" />
-
-	<TableLayout
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:layout_width="300dp"
+	<LinearLayout 
+		android:minHeight="170dp" 
+	    android:layout_height="170dp"
+	    android:layout_width="fill_parent" 
+		android:paddingTop="10dp"
 		>
-		
-	    <TableRow>
+	    <Gallery
+	       android:id="@+id/gallery1"
+	       android:animationDuration="50"
+		   android:spacing="7dp" 	 
+		   android:unselectedAlpha="0.3"
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content" />
+
+	</LinearLayout>	
+	<LinearLayout 
+		android:orientation="vertical"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:gravity="center_horizontal" 
+		>
 	        <TextView android:text="Map 1: The field of grass."
 				android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:gravity="center"
 	            android:textStyle="bold"
-				android:textSize="15sp"
+				android:textSize="14sp"
 	            android:textColor="#000000"
+	            android:paddingBottom="20dp"
 				android:id="@+id/maptext" ></TextView>
-	    </TableRow>
 
-	    <TableRow>
-			<View android:layout_height="30dip" />
-		</TableRow>
-		
-	    <TableRow>
 	        <TextView android:text="How brave are you?"
 				android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:gravity="center"
 	            android:textStyle="bold"
-				android:textSize="20sp"
+				android:textSize="18sp"
 	            android:textColor="#000000"
 				android:id="@+id/difficultyText" />
-	    </TableRow>
-	    <TableRow>
-			<View android:layout_height="10dip" />
-		</TableRow>
-		
-		<TableRow>
-	    	<TableLayout>
-	    		<TableRow android:gravity="center">
-					<ImageView
-						android:id="@+id/StartGameImageViewEasy"
-						android:gravity="center"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-		        		android:layout_weight="1"
-		        		android:src="@drawable/level_easy" />
-	
-			        <ImageView
-						android:id="@+id/StartGameImageViewNormal"
-	        			android:gravity="center"
-	        			android:layout_width="wrap_content"
-	    	    		android:layout_height="wrap_content"
-		        		android:layout_weight="1"
-		        		android:src="@drawable/level_normal" />
-	        		
-	        		<ImageView
-						android:id="@+id/StartGameImageViewHard"
-						android:gravity="center"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-	        			android:layout_weight="1"
-	        			android:src="@drawable/level_hard" />
-	        	</TableRow>
-	        	
-	    		<TableRow android:gravity="center">
-					<TextView
-						android:text="Easy"
-						android:textColor="#000000"
-						android:textStyle="bold"
-						android:layout_gravity="center"
-						android:gravity="center" />
-	
-					<TextView
-						android:text="Normal"
-						android:textColor="#000000"
-						android:textStyle="bold"
-						android:layout_gravity="center"
-						android:gravity="center"
-						android:layout_marginLeft="27dp"
-						android:layout_marginRight="27dp"/>
-	        		
-					<TextView
-						android:text="Hard"
-						android:textColor="#000000"
-						android:textStyle="bold"
-						android:layout_gravity="center"
-						android:gravity="center" />
-	        	</TableRow>
-			</TableLayout>
-		</TableRow>
-	
-	</TableLayout>
 
-</RelativeLayout>
+
+			<LinearLayout
+				android:orientation="horizontal"
+			    android:layout_height="wrap_content"
+			    android:layout_width="135dp"
+			    android:gravity="left" 
+				android:padding="2dp"
+				>
+
+				<ImageView
+					android:id="@+id/StartGameImageViewEasy"
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+	        		android:scaleType="fitXY"
+					android:layout_gravity="center"
+					android:gravity="center"
+	        		android:src="@drawable/level_easy" />
+				
+				<RadioButton 
+					android:id="@+id/radioEasy" 
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content"
+					android:text="Easy" 
+					android:textColor="#000000"
+					android:textStyle="bold"
+				>
+				</RadioButton>
+				
+			</LinearLayout>
+
+			<LinearLayout 
+				android:orientation="horizontal"
+			    android:layout_height="wrap_content"
+			    android:layout_width="135dp"
+			    android:gravity="left" 
+				android:padding="2dp"
+				>
+						
+		        <ImageView
+					android:id="@+id/StartGameImageViewNormal"
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+	        		android:scaleType="fitXY"
+					android:layout_gravity="center"
+					android:gravity="center"
+	        		android:src="@drawable/level_normal" />
+
+		        <RadioButton android:id="@+id/radioNormal" 
+					 android:text="Normal" 
+					 android:textColor="#000000"
+					 android:checked="true"
+	 				 android:textStyle="bold"
+	       			 android:layout_width="wrap_content" 
+        			 android:layout_height="wrap_content">
+		        </RadioButton>
+		        
+
+			</LinearLayout>			        		
+   			<LinearLayout 
+			android:orientation="horizontal"
+		    android:layout_height="wrap_content"
+		    android:layout_width="135dp"
+		    android:gravity="left" 
+			android:padding="2dp"
+			>
+        		<ImageView
+					android:id="@+id/StartGameImageViewHard"
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+	        		android:scaleType="fitXY"
+					android:layout_gravity="center"
+					android:gravity="center"
+        			android:src="@drawable/level_hard" />
+
+        		<RadioButton  
+					android:text="Hard" 
+					android:textColor="#000000"
+					android:textStyle="bold"
+   					android:id="@+id/radioHard" 
+   					android:layout_width="wrap_content" 
+   					android:layout_height="wrap_content">
+        		</RadioButton>
+		
+		</LinearLayout>			        		
+	
+</LinearLayout>
+	<LinearLayout 
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent" 
+		android:gravity="center_horizontal"
+		>
+        <Button
+		android:id="@+id/startmap"
+		android:layout_gravity="center"
+		android:gravity="bottom"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/startgame_button">
+		</Button>
+	</LinearLayout>
+	
+</LinearLayout>
