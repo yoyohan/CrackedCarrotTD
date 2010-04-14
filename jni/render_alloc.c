@@ -1,7 +1,5 @@
 #include "render.h"
 
-//#define emulator
-
 void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
 															jint type, 
@@ -10,8 +8,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
     noOfSprites[type] = size;
     if(noOfSprites[type] > 0){
         renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
-		//textureNameWorkspace = malloc(sizeof(GLuint) * 1);
-		//cropWorkspace = malloc(sizeof(GLuint) * 1);
+
     }
     __android_log_print(ANDROID_LOG_DEBUG, 
 		    				"NATIVE ALLOC",
@@ -93,8 +90,6 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		last = &renderSprites[thisSprite->type][spriteNO-1];
 	}
 	if(last != NULL && last->subType == thisSprite->subType){
-		//thisSprite->bufferName[VERT_OBJECT] = last->bufferName[VERT_OBJECT]; 
-		//thisSprite->bufferName[INDEX_OBJECT] = last->bufferName[INDEX_OBJECT];
 		thisSprite->bufferName = last->bufferName;
 		thisSprite->textureBufferNames = last->textureBufferNames;
 		thisSprite->indexCount = last->indexCount;
@@ -226,12 +221,12 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 			if(currSprt->textureBufferNames != NULL){
 				glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
 				 				currSprt->textureBufferNames);
-				//free(currSprt->textureBufferNames);
+				free(currSprt->textureBufferNames);
 				currSprt->textureBufferNames = NULL;
 			}
 			if(currSprt->bufferName != NULL){
 				glDeleteBuffers(2, currSprt->bufferName);
-				//free(currSprt->bufferName);
+				free(currSprt->bufferName);
 				currSprt->bufferName = NULL;
 			}
 		}
