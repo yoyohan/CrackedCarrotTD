@@ -44,18 +44,25 @@ public class GameLoopGUI {
 	
 	private Dialog dialog = null;
 
-    private Drawable healthBarDrawable;
+    private int          healthBarState = 3;
+    private int          healthProgress = 100;
+    private Drawable     healthBarDrawable;
+    private ExpandMenu   expandMenu = null;
+    private ImageView    enImView;
 	private LinearLayout statusBar;
-    private ProgressBar healthProgressBar;
-    private int healthBarState = 3;
-    private int healthProgress = 100;
-    private TextView nrCreText;
-    private ImageView enImView;
-    private TextView currencyView;
-    private TextView playerHealthView;
-    private ExpandMenu expandMenu = null;
+    private ProgressBar  healthProgressBar;
+    private TextView     currencyView;
+    private TextView     nrCreText;
+    private TextView     playerHealthView;
 	
     private ScoreNinjaAdapter scoreNinjaAdapter;
+
+    
+    	// For readability-reasons.
+    final int DIALOG_NEXTLEVEL_ID = 1;
+    final int DIALOG_WON_ID       = 2;
+    final int DIALOG_LOST_ID      = 3;
+    final int DIALOG_HIGHSCORE_ID = 4;
     
     
     	// Constructor. A good place to initiate all our different GUI-components.
@@ -65,31 +72,32 @@ public class GameLoopGUI {
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
         
-		/** Create the TextView showing number of enemies left */
+		// Create the TextView showing number of enemies left
         nrCreText = (TextView) gameInit.findViewById(R.id.nrEnemyLeft);
         
-        /** Create the progress bar, showing the enemies total health*/
+        // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
         healthProgressBar.setProgress(healthProgress);
         healthBarDrawable = healthProgressBar.getProgressDrawable();
 		healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 
-        /** Create the ImageView showing current creature */
+        // Create the ImageView showing current creature
         enImView = (ImageView) gameInit.findViewById(R.id.enemyImVi);
         
-        /** Create the text view showing the amount of currency */
+        // Create the text view showing the amount of currency
         currencyView = (TextView)gameInit.findViewById(R.id.currency);
         
-        /** Create the text view showing a players health */
+        // Create the text view showing a players health
         playerHealthView = (TextView) gameInit.findViewById(R.id.playerHealth);
 
         
-        /** Create the expandable menu */
+        // Create the expandable menu
         expandMenu =(ExpandMenu) gameInit.findViewById(R.id.expand_menu);
         
-        /** Create the instruction view */
-       // instructionView = (InstructionView)findViewById(R.id.instruction_view);
+        // Create the instruction view
+        //instructionView = (InstructionView)findViewById(R.id.instruction_view);
+        
         
         /** Listeners for the five icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
@@ -231,16 +239,14 @@ public class GameLoopGUI {
 
         return false;
     }
-
     
-    	// For readability-reasons.
-    final int DIALOG_NEXTLEVEL_ID = 1;
-    final int DIALOG_WON_ID       = 2;
-    final int DIALOG_LOST_ID      = 3;
-    final int DIALOG_UPGRADE_ID   = 4;
     
 	/*
-	 * Creates all of our dialogs.
+	 *  Creates all of our dialogs.
+	 *  
+	 *  Note: This functions is only called ONCE for each dialog.
+	 *  If you need a dynamic dialog this code does NOT go here!
+	 *  
 	 */
 	protected Dialog onCreateDialog(int id) {
 	    AlertDialog alertDialog;
@@ -319,7 +325,7 @@ public class GameLoopGUI {
 	    	dialog = alertDialog;
 	    	
 	    	break;
-	    case DIALOG_UPGRADE_ID:
+	    case 255: // TODO: This is the old UpgradeTower-dialog, remove???
 	    	mContext = gameInit;
 	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    	layout = inflater.inflate(R.layout.upgradetower,
@@ -369,9 +375,14 @@ public class GameLoopGUI {
 	    }
 	    return dialog;
 	}
+
 	
 	/*
-	 * Creates our NextLevel-dialog.
+	 *  Creates our NextLevel-dialog.
+	 *  
+	 *  This is called every time a dialog is presented.
+	 *  If you want dynamic dialogs, put your code here.
+	 *  
 	 */
 	protected void onPrepareDialog(int id, Dialog dialog) {
 	    switch(id) {
@@ -454,21 +465,11 @@ public class GameLoopGUI {
 	        	 case DIALOG_LOST_ID:
 	        		 gameInit.showDialog(3);
 	        		 break;
-	        	 case DIALOG_UPGRADE_ID:
-	        		 gameInit.showDialog(4);
-	        		 break;
-	        	 case 5:
-	        		 
-	        	        // Restore highscore-preferences
-	        	        SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
-	        	        boolean optionsHighscore = settings.getBoolean("optionsHighscore", false);
-	        		 
-	        	     if (optionsHighscore) {
-	        	    	 	// Show ScoreNinja.
+	        	 case DIALOG_HIGHSCORE_ID:
+	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
+	        	     if (settings.getBoolean("optionsHighscore", false)) {
+	        	    	 	// If ScoreNinja is enabled we show it to the player: 
 	        	    	 scoreNinjaAdapter.show(0);
-	        	     } else {
-	        	    	 	// Show standard you-won dialog.
-	        	    	 gameInit.showDialog(2);
 	        	     }
 	        		 break;
 	        	 case 19: // This is used to show how long time until next lvl.

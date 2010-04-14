@@ -131,6 +131,8 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 13);
         }
         else { // resume.
+        	// TODO: set difficulty variable to this as well, so we load the correct
+        	//       difficulty level on resume.
         	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1);
         }
         
@@ -179,7 +181,6 @@ public class GameInit extends Activity {
     	gameLoop.stopGameLoop();
     	super.onStop();
     }
-
     
     protected void onPause() {
     	super.onPause();
@@ -190,6 +191,7 @@ public class GameInit extends Activity {
     	super.onResume();
     }
 
+    
     public void saveGame(int i) {
     	
     	// This uses Android's own internal storage-system to save all
