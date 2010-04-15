@@ -126,6 +126,23 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			}
 		}
 		*/
+		
+		//Do some simple verification of the data inside the sprites.
+		
+		for(int i = 0; i < sprites.length; i++){
+			
+			if(sprites[i] == null)
+				continue;
+			
+			for(int j = 0; j < sprites[i].length-1; j++){
+				if(sprites[i][j].getSubType() == sprites[i][j+1].getSubType() &&
+						!sprites[i][j].equals(sprites[i][j+1])){
+				
+					Log.e("NATIVE RENDER", "Inconsistent data in the same subtype");
+				}
+			}
+		}
+		
 		//This needs to run on the render Thread to get access to the glContext.
 		view.queueEvent(new Runnable(){
 			//@Override

@@ -1,6 +1,6 @@
 package com.crackedcarrot;
 
-public class Sprite {
+public class Sprite{
 	//Variable used to determine what kind of sprite this is.
 	//And what subtype. This is needed to avoid loading lots of
 	//VBOs needlessly. if two sprites are just the same
@@ -81,6 +81,7 @@ public class Sprite {
 	public void animate(){
 		cFrame = (cFrame +1) % nFrames;
 	}
+<<<<<<< HEAD
 	
 	public void setNFrames(int n) {
 		nFrames = n;
@@ -89,4 +90,28 @@ public class Sprite {
 		return nFrames;
 	}
 
+=======
+
+	public int getSubType() {
+		return this.subType;
+	}
+	
+	public boolean equals(Object sprite){
+		if(Sprite.class.isInstance(sprite)){
+			Sprite testSprite = (Sprite) sprite;
+			if(testSprite.height == this.height && 
+			   testSprite.width  == this.width  &&
+			   testSprite.nFrames == this.nFrames){
+				
+				return true;
+			}
+			
+			else
+				return false;
+		}
+		else{
+			return false;
+		}
+	}
+>>>>>>> 3ccac772735c06158739f3ea52c6368d8f0d2e90
 }
