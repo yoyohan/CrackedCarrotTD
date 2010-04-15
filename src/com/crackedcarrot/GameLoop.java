@@ -107,7 +107,7 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mTower.length; i++) {
 
 	    	mTower[i] = new Tower(R.drawable.tower1, 0,1, mCreatures, soundManager,mTracker);
-	    	mShots[i] = new Shot(R.drawable.cannonball,0,1, mTower[i]);
+	    	mShots[i] = new Shot(R.drawable.cannonball,0,16, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];

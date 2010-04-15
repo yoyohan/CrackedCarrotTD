@@ -81,4 +81,12 @@ public class Sprite {
 	public void animate(){
 		cFrame = (cFrame +1) % nFrames;
 	}
+	
+	public void setNFrames(int n) {
+		nFrames = n;
+	}
+	public int getNFrames() {
+		return nFrames;
+	}
+
 }
