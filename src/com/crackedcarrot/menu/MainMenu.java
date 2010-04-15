@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.crackedcarrot.GameInit;
 import com.crackedcarrot.multiplayer.*;
 
 
@@ -48,10 +49,12 @@ public class MainMenu extends Activity {
         
         Button ResumeButton = (Button)findViewById(R.id.Resume);
         ResumeButton.setOnClickListener(new OnClickListener() {
-        	
         	public void onClick(View v) {
-        		Intent Credits = new Intent(MainMenu.this,Resume.class);
-        		startActivity(Credits);
+        		//Send the level variable to the game loop and start it
+        		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
+        		StartGame2.putExtra("com.crackedcarrot.menu.map", 0);
+        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", 0);
+        		startActivity(StartGame2);
         	}
         });
 

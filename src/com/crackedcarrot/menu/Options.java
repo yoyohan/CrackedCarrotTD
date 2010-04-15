@@ -9,12 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-
+import android.widget.TextView;
 
 public class Options extends Activity {
 
+	private boolean optionsHighscore;
 	private boolean optionsSound;
+	
 	private ImageButton imageButton1;
+	private ImageButton imageButton2;
+	private TextView    textView2;
 	
 	
 	/** Called when the activity is first created. */
@@ -29,7 +33,8 @@ public class Options extends Activity {
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
-        optionsSound = settings.getBoolean("optionsSound", false);
+        optionsHighscore = settings.getBoolean("optionsHighscore", false);
+        optionsSound     = settings.getBoolean("optionsSound", false);
         
         
         imageButton1 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton1);
@@ -49,37 +54,58 @@ public class Options extends Activity {
         setSound(optionsSound);
 
         
-        final ImageButton imageButton2 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton2);
+        imageButton2 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton2);
+        textView2    = (TextView) findViewById(R.id.MainMenuOptionsTextView2);
         imageButton2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		Log.d("OPTIONS", "Clicked button 2");
+        			// Toggles highscore on or off
+        		if (optionsHighscore) {
+        			setHighscore(false);
+        		} else {
+        			setHighscore(true);
+        		}
         	}
         });
+        	// Update highscore-image
+        setHighscore(optionsHighscore);
         
         
-        ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonSave);
+        ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonOk);
         imageButtonSave.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		Log.d("OPTIONS", "Clicked button Save");
+        		setSave();
         	}
         });
-        
     }
     
     @Override
     protected void onStop() {
        super.onStop();
-    
-      // Save user preferences. We need an Editor object to
-      // make changes. All objects are from android.context.Context
+
       SharedPreferences settings = getSharedPreferences("Options", 0);
       SharedPreferences.Editor editor = settings.edit();
+      editor.putBoolean("optionsHighscore", optionsHighscore);
       editor.putBoolean("optionsSound", optionsSound);
 
-      // Don't forget to commit your edits!!!
       editor.commit();
     }
+
     
+    public void setHighscore(boolean b) {
+    	this.optionsHighscore = b;
+    	
+    	if (b) {
+			imageButton2.setImageResource(R.drawable.button_highscore_on);
+			textView2.setText("Use ScoreNinja to keep highscores. [Requires Internet Connection]");
+    	} else {
+			imageButton2.setImageResource(R.drawable.button_highscore_off);
+			textView2.setText("Use nothing to not keep highscores. [Requires No Internet Connection]");
+    	}
+    }
+    
+    public void setSave() {
+    	this.finish();
+    }
     
     public void setSound(boolean b) {
     	this.optionsSound = b;
