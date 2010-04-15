@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.concurrent.Semaphore;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -65,6 +67,8 @@ public class GameInit extends Activity {
     
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
+    public static Semaphore pauseSemaphore = new Semaphore(1);
+    
     //private int highlightIcon = R.drawable.map_choose;
     
     @Override
@@ -131,6 +135,9 @@ public class GameInit extends Activity {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
+	        		try {
+	    	    		GameInit.pauseSemaphore.acquire();
+	    			} catch (InterruptedException e1) {}
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		startActivity(ShowInstr);
 	        	}
@@ -316,6 +323,9 @@ public class GameInit extends Activity {
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
+    	/** Prevent the screen from sleeping while the game is active */
+    	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    	
     	/** Use the xml layout file. The GLSufaceView is declared in this */
     	setContentView(R.layout.gameinit);
     	
@@ -384,7 +394,7 @@ public class GameInit extends Activity {
         inMenu1.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		expandMenu.switchMenu();
+        		expandMenu.switchMenu(true);
         	}
         });
         /**final OnTouchListener o = new View.OnTouchListener() {
@@ -399,6 +409,7 @@ public class GameInit extends Activity {
         inMenu2.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
         		// A tower of type 1 has been chosen, where to put it?
         		mGLSurfaceView.setTowerType(0);
         		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
@@ -409,6 +420,7 @@ public class GameInit extends Activity {
         inMenu3.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
         		// A tower of type 2 has been chosen, where to put it?
         		mGLSurfaceView.setTowerType(1);
         	}
@@ -417,6 +429,7 @@ public class GameInit extends Activity {
         inMenu4.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
         		// A tower of type 3 has been chosen, where to put it?
         		mGLSurfaceView.setTowerType(2);
         	}
@@ -425,6 +438,7 @@ public class GameInit extends Activity {
         inMenu5.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
         		// A tower of type 4 has been chosen, where to put it?
         		mGLSurfaceView.setTowerType(3);
         	}
@@ -439,7 +453,7 @@ public class GameInit extends Activity {
 	    removeExpand.setOnClickListener(new OnClickListener() {
 	    	
 	    	public void onClick(View v) {
-	    		expandMenu.switchMenu();
+	    		expandMenu.switchMenu(false);
 	    	}
 	    });
 	    
@@ -450,7 +464,7 @@ public class GameInit extends Activity {
 	    	public void onClick(View v) {
 	    		simulationRuntime.setGameSpeed(1);
 	    		// And den remove menu
-	    		expandMenu.switchMenu();
+	    		expandMenu.switchMenu(false);
 	    	}
 	    });
 
@@ -461,7 +475,6 @@ public class GameInit extends Activity {
 	    	public void onClick(View v) {
 	    		simulationRuntime.setGameSpeed(4);
 	    		//And then remove menu
-	    		expandMenu.switchMenu();
 	    	}
 	    });
         
@@ -470,6 +483,11 @@ public class GameInit extends Activity {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
+        		try {
+            		pauseSemaphore.acquire();
+        		} catch (InterruptedException e1) {}
+        		onPause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		startActivity(ShowInstr);
         	}
@@ -480,6 +498,10 @@ public class GameInit extends Activity {
         pauseButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		expandMenu.switchMenu(false);
+        		try {
+            		pauseSemaphore.acquire();
+        		} catch (InterruptedException e1) {}
         		onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
         		startActivity(ShowInstr);
@@ -554,7 +576,8 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,guiHandler,new SoundManager(getBaseContext()));
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,
+        		tTypes,p,guiHandler,new SoundManager(getBaseContext()));
         
         	// Resuming old game. Prepare GameLoop for this...
         if (resume > 0) {
@@ -663,6 +686,7 @@ public class GameInit extends Activity {
     
     protected void onResume() {
     	super.onResume();
+    	Log.d("ONPAUSE NOW", "onPause");
     }
 
     public void saveGame(int i) {

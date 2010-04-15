@@ -33,7 +33,10 @@ new "DOOM style" difficulty settings on the start game screen.
 --Fredrik - NEEDS GRAPHICS FOR PUSHABLE BUTTONS, XML-CODE IN PLACE.
 
 Support for pause. (During Incommeing phonecalls och SMS).
---Anyone
+--Johan - DONE!
+
+Prevent display from going in sleep mode while playing
+--Johan - DONE!
 
 Options menyn: highscore settings/Sound etc.
 --Anyone (fredrik ?) - DONE.
@@ -54,7 +57,7 @@ Possibly support for texture blending for frost/fire effects on the creatures.
 --Albin
 
 Multiplayer support.
---JOHAN
+--JOHAN, CONNECTION ESTABLISHED!
 
 Balancing of the game. Create more levels balance towers etc.
 --Henrik

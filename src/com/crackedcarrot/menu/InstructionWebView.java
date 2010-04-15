@@ -1,14 +1,15 @@
 package com.crackedcarrot.menu;
 
+import com.crackedcarrot.GameInit;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-
-import com.crackedcarrot.menu.R;
 
 /**
  * Class that functions as the instruction view. It creates the
@@ -31,17 +32,42 @@ public class InstructionWebView extends Activity {
     	close.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
+    					GameInit.pauseSemaphore.release();
     					finish();
     				}
     			});
-      
+
+    	final Button back = (Button) findViewById(R.id.backwebdialog);
+    	back.setOnClickListener(
+    			new View.OnClickListener() {
+    				public void onClick(View v) {
+    					mWebView.goBack();
+    				}
+    			});
+    	
         mWebView = (WebView) findViewById(R.id.webview);
         mWebView.setBackgroundColor(0);
+
+        
+        mWebView.setWebViewClient(new WebViewClient() {
+        	   public void  onPageFinished(WebView  view, String  url) {
+        		   if (mWebView.canGoBack()) {
+        			  back.setVisibility(View.VISIBLE); 
+        		   } else {
+         			  back.setVisibility(View.INVISIBLE); 
+        		   }
+        	   }
+        	 });
+
+        //mWebView.canGoBack();
+        
+        
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setSavePassword(false);
         webSettings.setSaveFormData(false);
         webSettings.setJavaScriptEnabled(false);
         webSettings.setSupportZoom(false);
+        
         mWebView.loadUrl("file:///android_asset/instructions.html");
 	}	
 }

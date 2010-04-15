@@ -32,6 +32,8 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
+    //Is this creature dead ?
+    private boolean dead;
     // All creatures are dead:
     private boolean allDead = false;
     // Creature special abilty
@@ -66,6 +68,7 @@ public class Creature extends Sprite{
 		
 		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
+		this.dead = false;
 		this.player = player;
 		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
@@ -80,6 +83,7 @@ public class Creature extends Sprite{
 	public Creature(int resourceId, int type , int frames){
 		super(resourceId, NativeRender.CREATURE, type, frames);
 		this.draw = false;
+		this.dead = false;
 
 	}
 
@@ -156,6 +160,7 @@ public class Creature extends Sprite{
 	}
 	
 	private void die() {
+		this.dead = true;
 		setTextureName(this.mDeadTextureName);
 		resetRGB();
 		player.moneyFunction(this.goldValue);
@@ -227,10 +232,6 @@ public class Creature extends Sprite{
 		}
 		
 		float movement = (velocity * timeDeltaSeconds) / slowAffected;
-		if (health <= 0) {
-   			die();
-   			movement = 0;
-   		}
 		
 		this.r = tmpR;
 		this.g = tmpG;
@@ -252,7 +253,7 @@ public class Creature extends Sprite{
 		player.damage(1);
 		GL.updatePlayerHealth();
 		//GL.subtractCreature(1);
-		// Testar hur spelet blir om en creature som inte har dött börjar om längst upp
+		// Testar hur spelet blir om en creature som inte har dï¿½tt bï¿½rjar om lï¿½ngst upp
 		moveToWaypoint(0);
 		nextWayPoint = 1;
 	}
@@ -311,6 +312,10 @@ public class Creature extends Sprite{
 		this.r = this.rDefault;
 		this.g = this.gDefault;
 		this.b = this.bDefault;
+	}
+
+	public void setDead(boolean b) {
+		this.dead = b;
 	}
 
 	// TODO:

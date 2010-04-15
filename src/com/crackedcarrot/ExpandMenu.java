@@ -19,7 +19,6 @@ public class ExpandMenu extends LinearLayout {
 	private int duration = 300;
 	private DisplayMetrics dm;
 	private float height;
-	private boolean activated = false;
 	
 	public ExpandMenu (Context ctx){
 		super(ctx);
@@ -36,12 +35,12 @@ public class ExpandMenu extends LinearLayout {
 	/**
 	 * This method checks whether the expanded menu is activated or not,
 	 * and makes the appropriate switch.
+	 * @param boolean onoff true = activate menu, false = deactivate menu
 	 */
-	public void switchMenu() {
+	public void switchMenu(boolean onoff) {
 		TranslateAnimation animation = null;
-		activated = !activated;
 		
-		if(activated){
+		if(onoff){
 			setVisibility(View.VISIBLE);
 			animation = new TranslateAnimation(0.0f, 0.0f, this.height, 0.0f);
 		} else {

@@ -1,15 +1,25 @@
 package com.crackedcarrot.menu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Gallery;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ViewSwitcher.ViewFactory;
 
 import com.crackedcarrot.GameInit;
 
@@ -19,152 +29,133 @@ import com.crackedcarrot.GameInit;
  * that starts the game loop when clicked on. It sends a level variable to the game
  * loop the game loads the data depending on which level the user has chosen.
  */
-public class MapOp extends Activity {
+public class MapOp extends Activity implements ViewFactory {
 	
 	/** References to our images */
     private Integer[] mmaps = {
-    		R.drawable.map_resume,
-            R.drawable.map_choose,
-            R.drawable.map_choose2,
-            R.drawable.map_choose3};
+    		R.drawable.map1,
+    		R.drawable.button_pause_128,
+    		R.drawable.background,
+    };
+    
     /** The index for our "maps" array */
-    private int indexMaps = 1;
-    /** Representing the users choice of level */
-    private int level = 0;
-    
+    public int difficulty = 1;
     private int resume;
-    
-    private ImageView im;
     private TextView  tv;
-	
+    private int mapSelected;
+    private RadioButton radioEasy;
+    private RadioButton radioNormal;
+    private RadioButton radioHard;
+    
+    
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainmenu_startgame);
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-    	
-        // See if there's any old game saved that can be resumed.
-        SharedPreferences settings = getSharedPreferences("Resume", 0);
-        resume = settings.getInt("Resume", 0);
-        
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
-        im = (ImageView) findViewById(R.id.image_choose);
         tv = (TextView) this.findViewById(R.id.maptext);
-        
-        /** Listener for the left button */
-        Button LeftButton = (Button)findViewById(R.id.leftbutton);
-        LeftButton.setOnClickListener(new OnClickListener() {
-        	
+
+        Gallery gallery = (Gallery) findViewById(R.id.gallery1);
+        gallery.setAdapter(new ImageAdapter(this));
+        gallery.setOnItemSelectedListener(gItemSelectedHandler);
+        gallery.setSelection(gallery.getCount()/2, true);
+
+        Button StartGameButton = (Button)findViewById(R.id.startmap);
+        StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		//Set the correct map depending in the index value (0,1,2)
-        		indexMaps--;
-        			// Additional map-option only if resume available.
-        		if (resume == -1 || resume > 2) {
-        			if(indexMaps < 1) {
-        				indexMaps = 3;
-        			}
-        		} else {
-        			if(indexMaps < 0) {
-        				indexMaps = 3;
-        			}
-        		}
-                im.setImageResource(mmaps[indexMaps]);
-                //Set the text belonging to the current map  
-                switch(indexMaps){
-                	case 0:
-                		tv.setText("You have " + (3 - resume) + " resumes left.");
-                		break;
-                	case 1: 
-                		tv.setText("Map 1: The field of grass.");
-                		break;	
-                	case 2: 
-                		tv.setText("Map 2: The field of longer grass.");
-                		break;
-                	case 3: 
-                		tv.setText("Map 3: The field of longest grass.");
-                		break;
-                	}	
-        	}
-        });
-        /** Listener for the right button */
-        Button RightButton = (Button)findViewById(R.id.rightbutton);
-        RightButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		//Set the correct map depending in the index value (0,1,2)
-        		indexMaps++;
-        			// Additional map-option only if resume available.
-        		if (resume == -1 || resume > 2) {
-        			if(indexMaps > 3) {
-        				indexMaps = 1;
-        			}
-        		} else {
-        			if(indexMaps > 3) {
-        				indexMaps = 0;
-        			}
-        		}
-                im.setImageResource(mmaps[indexMaps]);
-                //Set the text belonging to the current map  
-                switch(indexMaps){
-                	case 0:
-                		tv.setText("You have " + (3 - resume) + " resumes left.");
-                		break;
-                	case 1: 
-                		tv.setText("Map 1: The field of grass.");
-                		break;	
-                	case 2: 
-                		tv.setText("Map 2: The field of longer grass.");
-                		break;
-                	case 3: 
-                		tv.setText("Map 3: The field of longest grass.");
-                		break;
-                	}	
-        	}
-        });
-        /** Listener for the imageView */
-        ImageView StartGameButton2 = (ImageView)findViewById(R.id.image_choose);
-        StartGameButton2.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		/** Send the level variable to the game loop and start it */
+        		//Send the level variable to the game loop and start it
         		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
-        		StartGame2.putExtra("com.crackedcarrot.menu.map", indexMaps);
-        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", level);
+        		StartGame2.putExtra("com.crackedcarrot.menu.map", mapSelected);
+        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		startActivity(StartGame2);
         	}
         });
         
+        
+        // See if there's any old game saved that can be resumed.
+        SharedPreferences settings = getSharedPreferences("Resume", 0);
+        resume = settings.getInt("Resume", 0);
+        
+        
         // Difficulty listeners.
+        radioEasy = (RadioButton) findViewById(R.id.radioEasy);
+        radioNormal = (RadioButton) findViewById(R.id.radioNormal);
+        radioHard = (RadioButton) findViewById(R.id.radioHard);
+
+        radioEasy.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		difficulty = 0;
+        		setRadioButtons(0);
+			}
+
+        });
+        radioNormal.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		difficulty = 1;
+        		setRadioButtons(1);
+			}
+        });
+        radioHard.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		difficulty = 2;
+        		setRadioButtons(2);
+			}
+        });
+
         ImageView easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
         easy.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		level = 0;
+        		difficulty = 0;
+        		setRadioButtons(0);
         	}
         });
         
-        ImageView normal = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        ImageView normal = (ImageView) findViewById(R.id.StartGameImageViewNormal);
         normal.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		level = 1;
+        		difficulty = 1;
+        		setRadioButtons(1);
         	}
         });
         
-        ImageView hard = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        ImageView hard = (ImageView) findViewById(R.id.StartGameImageViewHard);
         hard.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		level = 2;
+        		difficulty = 2;
+        		setRadioButtons(2);
         	}
         });
 
     }
+
+    private void setRadioButtons(int i) {        		
+    	radioEasy.setChecked(false);
+    	radioNormal.setChecked(false);
+    	radioHard.setChecked(false);
+    	
+    	switch(i) {
+    	case 0:
+        	radioEasy.setChecked(true);
+    		break;
+    	case 1:
+        	radioNormal.setChecked(true);
+    		break;
+    	case 2:
+        	radioHard.setChecked(true);
+    		break;
+    	}
+    }
+
+    
     
     	// Called when we get focus again (after a game has ended).
     @Override
@@ -177,15 +168,96 @@ public class MapOp extends Activity {
         
         	// If we have a possible resume show it directly.
 		if (resume == -1 || resume > 2) {
-        	indexMaps = 1;
+        	//indexMaps = 1;
         	tv.setText("Map 1: The field of grass.");
         } else {
-        	indexMaps = 0;
+        	//indexMaps = 0;
         	tv.setText("You have " + (3 - resume) + " resumes left.");
         }
-        
-        	// and update the Map-Image.
-        im.setImageResource(mmaps[indexMaps]);
+       	// and update the Map-Image.
+        //im.setImageResource(mmaps[indexMaps]);
     }
 
+	public View makeView() {
+        ImageView imageView = new ImageView(this);
+        imageView.setBackgroundResource(R.drawable.gallery);
+        //imageView.setBackgroundColor(0xFF000000);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setLayoutParams(new 
+                ImageSwitcher.LayoutParams(
+                        LayoutParams.FILL_PARENT,
+                        LayoutParams.FILL_PARENT));
+        return imageView;
+	}
+	
+   public OnItemSelectedListener gItemSelectedHandler = new
+   OnItemSelectedListener() {
+      //@Override
+       public void onItemSelected(AdapterView<?> parent, View v, int _position, long id) {
+    	   _position =  _position%3;
+    	   switch(_position){
+				case 0:
+					tv.setText("Map 1: The field of longest grass.");
+					mapSelected = 1;
+					break;
+				case 1: 
+					mapSelected = 2;
+					tv.setText("Map 2: The field of grass.");
+					break;	
+				case 2: 
+					mapSelected = 3;
+					tv.setText("Map 3: The field of longer grass.");
+					break;
+			}
+			
+       }
+        //@Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
+    };
+
+    public class ImageAdapter extends BaseAdapter 
+    {
+        private Context context;
+        //private int itemBackground;
+        public int position;
+        private int x;
+        private int y;
+        
+        public ImageAdapter(Context c) {
+            context = c;
+            x = (int) (110 * getResources().getDisplayMetrics().density);
+            y = (int) (165 * getResources().getDisplayMetrics().density);
+        }
+ 
+        //---returns the number of images---
+        public int getCount() {
+        	return 1000;
+        }
+ 
+        public Object getItem(int position) {
+            return position%3;
+        }
+ 
+        public long getItemId(int position) {
+            return position%3;
+        }
+ 
+        //---returns an ImageView view---
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+        	this.position = position%3;
+        	ImageView imageView = new ImageView(context);
+            imageView.setImageResource(mmaps[this.position]);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setLayoutParams(new Gallery.LayoutParams(x,y));
+            imageView.setBackgroundResource(R.drawable.gallery);
+            return imageView;
+        }
+   }
+    
+    
+    
+    
 }

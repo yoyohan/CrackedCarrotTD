@@ -70,6 +70,7 @@ public class Level extends Creature {
 		clone.creatureFrozenTime = 0;
 		clone.creaturePoisonTime = 0;
 		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
+		clone.setDead(false);
 		clone.setAllDead(false);
 	}	
 }
