@@ -4,6 +4,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 															jobject thiz, 
 															jint type, 
 															jint size){
+
                                                                   
     noOfSprites[type] = size;
     if(noOfSprites[type] > 0){
@@ -20,7 +21,6 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 													 jobject thiz, 
 													 jint spriteNO, 
 													 jobject sprite){
-	
 													
 	//Get the class and read the type info
 	jclass class = (*env)->GetObjectClass(env, sprite);
@@ -115,6 +115,27 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		                "Sprite No: %d of Type: %d and subType: %d .   Needs new buffers.",
 		                spriteNO, type, subType);
 		initHwBuffers(env, thisSprite);
+	}
+
+    //Class specific code
+	if(type == CREATURE){
+	    jclass creature = (*env)->FindClass(env, "com/crackedcarrot/Creature");
+
+	    if(creature == NULL){
+            __android_log_print(ANDROID_LOG_FATAL, "NATIVE ALLOC", "Failed to get creature class");
+	    }
+
+	    if((*env)->IsInstanceOf(env, thisSprite->object, creature)){
+            thisSprite->crExtens = malloc(sizeof(crExtensions));
+            thisSprite->crExtens->dead = (*env)->GetFieldID(env, creature, "dead", "Z");
+
+	    }
+	    else{
+            __android_log_print(ANDROID_LOG_FATAL, "NATIVE ALLOC", "ERROR, java class and typeVar does not MATCH!!");
+	    }
+	}
+	else{
+        thisSprite->crExtens = NULL;
 	}
 }
 
@@ -221,12 +242,12 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
 			if(currSprt->textureBufferNames != NULL){
 				glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
 				 				currSprt->textureBufferNames);
-				free(currSprt->textureBufferNames);
+				//free(currSprt->textureBufferNames);
 				currSprt->textureBufferNames = NULL;
 			}
 			if(currSprt->bufferName != NULL){
 				glDeleteBuffers(2, currSprt->bufferName);
-				free(currSprt->bufferName);
+				//free(currSprt->bufferName);
 				currSprt->bufferName = NULL;
 			}
 		}

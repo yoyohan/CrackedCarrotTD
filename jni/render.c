@@ -49,10 +49,35 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	for(j = 0; j < 6; j++){
-		for (i = 0; i < noOfSprites[j]; i++) {
-			if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw)){
-    				drawSprite(env, &renderSprites[j][i]);
-			}
+	    if(j == CREATURE){
+            //First we draw the dead creatures.
+            //Hopefully this 2n loop dont ad to mutch overhead.
+            //My guess is that the real cost is in the drawing code anyway.
+            //This should be insignificant and i cant be arsed to redesign this
+            //in a clever way.
+
+            for(i = 0; i < noOfSprites[j]; i++){
+                if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw) && 
+                   (*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].crExtens->dead)){
+
+    		    		drawSprite(env, &renderSprites[j][i]);
+			    }
+            }
+            for(i = 0; i < noOfSprites[j]; i++){
+                if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw) && 
+                   !(*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].crExtens->dead)){
+
+    		    		drawSprite(env, &renderSprites[j][i]);
+			    }
+            }          
+            
+	    }
+	    else{
+		    for (i = 0; i < noOfSprites[j]; i++) {
+			    if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw)){
+    		    		drawSprite(env, &renderSprites[j][i]);
+			    }
+	        }
 	    }
 	}
 	glDisableClientState(GL_VERTEX_ARRAY);
