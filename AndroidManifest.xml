@@ -44,7 +44,7 @@
 			android:screenOrientation="portrait"></activity>
 		<activity android:name="com.crackedcarrot.multiplayer.Client"
 			android:screenOrientation="portrait"></activity>
-		<activity android:name="com.crackedcarrot.multiplayer.DeviceListActivity"
+		<activity android:name="com.crackedcarrot.multiplayer.ScanDevices"
 			android:screenOrientation="portrait"></activity>
 	</application>
 

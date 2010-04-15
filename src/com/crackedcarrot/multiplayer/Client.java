@@ -45,8 +45,7 @@ public class Client extends Activity {
     	ScanButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		// Launch the DeviceListActivity to see devices and do scan
-                Intent serverIntent = new Intent(Client.this, DeviceListActivity.class);
+                Intent serverIntent = new Intent(Client.this, ScanDevices.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
         	}
         });
@@ -61,8 +60,6 @@ public class Client extends Activity {
             finish();
             return;
         }
-        
-       
     }
     
     /** When the activity first starts, do following */
@@ -78,10 +75,11 @@ public class Client extends Activity {
         } 
     }
     
-    private void setupClient() {
-    	
-    }
-    
+    /**
+     * This synchronized method starts the thread that
+     * does the actual connection with the available server
+     * @param device
+     */
     private synchronized void connect(BluetoothDevice device) {
     	if (mConnectThread == null) {
     		mConnectThread = new ConnectThread(device);
@@ -94,22 +92,21 @@ public class Client extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case REQUEST_CONNECT_DEVICE:
-            // When DeviceListActivity returns with a device to connect
+            // When ScanDevices returns with a device to connect
             if (resultCode == Activity.RESULT_OK) {
-                // Get the device MAC address
+                // Get the MAC address of the device
                 String address = data.getExtras()
-                                     .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                                     .getString(ScanDevices.EXTRA_DEVICE_ADDRESS);
                 // Get the BLuetoothDevice object
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                // Attempt to connect to the device
+                // Try to connect to the device
                 connect(device);
             }
             break;
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a client
-                setupClient();
+                // Bluetooth is now enabled, so do nothing
             } else {
                 // User did not enable Bluetooth or an error occured
                 Toast.makeText(this, "Bluetooth was not enabled. Leaving Bluetooth Chat."
@@ -120,12 +117,11 @@ public class Client extends Activity {
     }
     
     private class ConnectThread extends Thread {
-        private final BluetoothSocket mmSocket;
+        private final BluetoothSocket mmClientSocket;
         private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
-            // Use a temporary object that is later assigned to mmSocket,
-            // because mmSocket is final
+        	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
             mmDevice = device;
 
@@ -134,7 +130,7 @@ public class Client extends Activity {
                 // MY_UUID is the app's UUID string, also used by the server code
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) { }
-            mmSocket = tmp;
+            mmClientSocket = tmp;
         }
 
         public void run() {
@@ -142,19 +138,18 @@ public class Client extends Activity {
             mBluetoothAdapter.cancelDiscovery();
 
             try {
-                // Connect the device through the socket. This will block
-                // until it succeeds or throws an exception
-                mmSocket.connect();
+                // Connect through the socket. This will block until it succeeds or throws an exception
+                mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
                 try {
-                    mmSocket.close();
+                    mmClientSocket.close();
                 } catch (IOException closeException) { }
                 return;
             }
 
             // Do work to manage the connection (in a separate thread)
-            // manageConnectedSocket(mmSocket);
+            // manageConnectedSocket(mmClientSocket);
             // Start the service over to restart listening mode
             //BluetoothChatService.this.start();
             //Bättre att när connectad så avsluta denna tråd.
@@ -165,7 +160,7 @@ public class Client extends Activity {
         /** Will cancel an in-progress connection, and close the socket */
         public void cancel() {
             try {
-                mmSocket.close();
+                mmClientSocket.close();
             } catch (IOException e) { }
         }
     }

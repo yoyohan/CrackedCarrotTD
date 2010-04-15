@@ -78,7 +78,7 @@ public class Server extends Activity {
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a chat session
+                // Bluetooth is now enabled, so set up a server
                 setupServer();
             } else {
                 // If the user did not want to turn BT on, or error occurred

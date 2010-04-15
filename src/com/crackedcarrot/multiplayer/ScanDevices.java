@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -24,20 +23,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.crackedcarrot.menu.R;
 
 /**
- * This Activity appears as a dialog. It lists any paired devices and
- * devices detected in the area after discovery. When a device is chosen
- * by the user, the MAC address of the device is sent back to the parent
- * Activity in the result Intent.
+ * This Activity lists available and paired devices. When the user
+ * chooses a device in the list, the MAC address of the device is sent back to the Client
+ * in the result Intent.
  */
-public class DeviceListActivity extends Activity {
-    // Debugging
-    private static final String TAG = "DeviceListActivity";
-    private static final boolean D = true;
-
+public class ScanDevices extends Activity {
+   
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
-    // Member fields
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
@@ -120,14 +114,9 @@ public class DeviceListActivity extends Activity {
      * Start device discover with the BluetoothAdapter
      */
     private void doDiscovery() {
-        if (D) Log.d(TAG, "doDiscovery()");
-
         // Indicate scanning in the title
         setProgressBarIndeterminateVisibility(true);
         setTitle("scanning for devices...");
-
-        // Turn on sub-title for new devices
-        findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
 
         // If we're already discovering, stop it
         if (mBluetoothAdapter.isDiscovering()) {
@@ -141,7 +130,7 @@ public class DeviceListActivity extends Activity {
     // The on-click listener for all devices in the ListViews
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
-            // Cancel discovery because it's costly and we're about to connect
+        	// Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
 
             // Get the device MAC address, which is the last 17 chars in the View
