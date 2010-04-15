@@ -34,7 +34,7 @@ public class Intro extends Activity {
                  startActivity(theMain);
                  finish();
                  /* The fade- in and out animations, only works from version 2.0 */
-                 //overridePendingTransition(R.anim.mainfadein, R.anim.introfadeout);
+                 overridePendingTransition(R.anim.mainfadein, R.anim.introfadeout);
             }
        }, INTRO_LENGTH); 
         

@@ -356,7 +356,7 @@ public class GameLoop implements Runnable {
 				final long time = SystemClock.uptimeMillis();
     			
     			try {
-    	    		GameInit.pauseSemaphore.acquire(1);
+    	    		GameInit.pauseSemaphore.acquire();
     			} catch (InterruptedException e1) {}
     			GameInit.pauseSemaphore.release();
     			
