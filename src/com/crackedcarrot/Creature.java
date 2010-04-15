@@ -227,10 +227,6 @@ public class Creature extends Sprite{
 		}
 		
 		float movement = (velocity * timeDeltaSeconds) / slowAffected;
-		if (health <= 0) {
-   			die();
-   			movement = 0;
-   		}
 		
 		this.r = tmpR;
 		this.g = tmpG;
