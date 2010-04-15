@@ -351,15 +351,24 @@ public class GameLoop implements Runnable {
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
-
+    			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
-				
+    			
+    			try {
+    	    		GameInit.pauseSemaphore.acquire();
+    			} catch (InterruptedException e1) {}
+    			GameInit.pauseSemaphore.release();
+    			
+    			//Get the time after an eventual pause and add this to the mLastTime variable
+    			final long time2 = SystemClock.uptimeMillis();
+    			final long pauseTime = time2 - time;
+
 	            // Used to calculate creature movement.
 				final long timeDelta = time - mLastTime;
 	            final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time;
+	            mLastTime = time + pauseTime;
 	            
 	            // Shows how long it is left until next level
 	            if (player.getTimeUntilNextLevel() > 0) {
