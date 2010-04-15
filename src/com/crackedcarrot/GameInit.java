@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.concurrent.Semaphore;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -63,6 +65,8 @@ public class GameInit extends Activity {
 	private LinearLayout statusBar;
     private int resume;
     private ScoreNinjaAdapter scoreNinjaAdapter;
+    
+    public static Semaphore pauseSemaphore = new Semaphore(1);
     
     //private int highlightIcon = R.drawable.map_choose;
     
@@ -315,6 +319,9 @@ public class GameInit extends Activity {
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
+    	/** Prevent the screen from sleeping while the game is active */
+    	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    	
     	/** Use the xml layout file. The GLSufaceView is declared in this */
     	setContentView(R.layout.gameinit);
     	
@@ -479,6 +486,9 @@ public class GameInit extends Activity {
         pauseButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		try {
+            		pauseSemaphore.acquire();
+        		} catch (InterruptedException e1) {}
         		onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
         		startActivity(ShowInstr);
@@ -553,7 +563,8 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,guiHandler,new SoundManager(getBaseContext()));
+        simulationRuntime = new GameLoop(nativeRenderer,gameMap,waveList,
+        		tTypes,p,guiHandler,new SoundManager(getBaseContext()));
         
         	// Resuming old game. Prepare GameLoop for this...
         if (resume > 0) {
@@ -673,6 +684,7 @@ public class GameInit extends Activity {
     
     protected void onResume() {
     	super.onResume();
+    	Log.d("ONPAUSE NOW", "onPause");
     }
 
     public void saveGame(int i) {
