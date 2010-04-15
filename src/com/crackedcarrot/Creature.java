@@ -318,6 +318,10 @@ public class Creature extends Sprite{
 		this.b = this.bDefault;
 	}
 
+	public void setDead(boolean b) {
+		this.dead = b;
+	}
+
 	// TODO:
 	// This is used by the tracker to make sure the creature is placed in the tracker before game starts
 	//private void prepareTracker() {

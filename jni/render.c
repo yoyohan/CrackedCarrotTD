@@ -72,6 +72,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
             }          
             
 	    }
+	    
 	    else{
 		    for (i = 0; i < noOfSprites[j]; i++) {
 			    if((*env)->GetBooleanField(env,renderSprites[j][i].object, renderSprites[j][i].draw)){
@@ -132,9 +133,9 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
                             LOG_TAG, 
                             "Setting TextureBuffer %d",
                             texBufNames[nFrames]);*/
-       __android_log_print(ANDROID_LOG_DEBUG, 
+       /*__android_log_print(ANDROID_LOG_DEBUG, 
                            LOG_TAG, 
-                           "This should not happen, yet");
+                           "This should not happen, yet");*/
 	}
 	else{
 	
