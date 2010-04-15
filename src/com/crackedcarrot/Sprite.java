@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import com.crackedcarrot.textures.TextureData;
+
 public class Sprite{
 	//Variable used to determine what kind of sprite this is.
 	//And what subtype. This is needed to avoid loading lots of
@@ -20,7 +22,6 @@ public class Sprite{
     public float opacity = 1.0f;
     //This needs to be here for the sake of animated sprites.
     //It makes the implementation of animated sprites mutch simpler.
-    private int nFrames;
 	private int cFrame;
     // Size.
     private float width;
@@ -28,18 +29,18 @@ public class Sprite{
     //Scale.
     public float scale = 1.0f;
     // The OpenGL ES texture handle to draw.
-    private int mTextureName;
-    // The id of the original resource that mTextureName is based on.
+    private int currTexName;
+    private TextureData texData;
+    // The id of the original resource that the firstCurrTexName is based on.
     private int mResourceId;
     
     public Sprite() {
     }
     
-    public Sprite(int resourceId, int type, int subType, int frames) {
+    public Sprite(int resourceId, int type, int subType) {
         mResourceId = resourceId;
         this.type = type;
         this.subType = subType;
-        this.nFrames = frames;
     }
     
     public void setResourceId(int id) {
@@ -50,12 +51,14 @@ public class Sprite{
         return mResourceId;
     }
 
-	public void setTextureName(int mTextureName) {
-		this.mTextureName = mTextureName;
+	public void setCurrentTexture(TextureData texture) {
+		this.cFrame = 0;
+		this.texData = texture;
+		this.currTexName = this.texData.mTextureName;
 	}
 
-	public int getTextureName() {
-		return mTextureName;
+	public TextureData getCurrentTexture() {
+		return this.texData;
 	}
 
 	public void setWidth(float width) {
@@ -79,7 +82,7 @@ public class Sprite{
 		this.subType = subType;
 	}
 	public void animate(){
-		cFrame = (cFrame +1) % nFrames;
+		cFrame = (cFrame +1) % this.texData.nFrames;
 	}
 
 	public int getSubType() {
@@ -91,7 +94,7 @@ public class Sprite{
 			Sprite testSprite = (Sprite) sprite;
 			if(testSprite.height == this.height && 
 			   testSprite.width  == this.width  &&
-			   testSprite.nFrames == this.nFrames){
+			   testSprite.texData == this.texData){
 				
 				return true;
 			}

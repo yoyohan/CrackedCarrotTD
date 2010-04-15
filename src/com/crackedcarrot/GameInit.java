@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
@@ -536,9 +537,9 @@ public class GameInit extends Activity {
             resumeTowers           = settings.getString("Towers", "");
         }
         // TODO:
-        // Är detta nödvändigt?
+        // ï¿½r detta nï¿½dvï¿½ndigt?
         //   difficulty = resumePlayerDIfficulty;
-        // Det används i WaveLoadern?
+        // Det anvï¿½nds i WaveLoadern?
         
         // Create the map requested by the player
         // TODO: resume needs to load the correct map aswell.
@@ -594,6 +595,12 @@ public class GameInit extends Activity {
         scoreNinjaAdapter = new ScoreNinjaAdapter(
                 this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
         
+        
+        //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
+        //You also need to uncomment the stopMethodTraceing() further down.
+        
+        //Debug.startMethodTracing();
+        
         // Start GameLoop
         RenderThread.start();
     }
@@ -612,6 +619,11 @@ public class GameInit extends Activity {
     
     protected void onStop() {
     	simulationRuntime.stopGameLoop();
+    	
+    	//You also need to stop the trace when you are done!
+    	
+    	//Debug.stopMethodTracing();
+    	
     	super.onStop();
     }
 
