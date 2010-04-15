@@ -58,7 +58,7 @@
 				<TableRow
 					android:gravity="center">
 					<ImageButton
-						android:id="@+id/MainMenuOptionsImageButtonSave"
+						android:id="@+id/MainMenuOptionsImageButtonOk"
 						android:src="@drawable/button_options_ok" />
 				</TableRow>
 			</TableLayout>

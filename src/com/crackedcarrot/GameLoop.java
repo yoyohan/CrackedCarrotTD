@@ -323,7 +323,7 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
-	    if (resumeTowers != null) {
+	    if ((resumeTowers != null) && (resumeTowers.compareTo("") != 0)) {
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {

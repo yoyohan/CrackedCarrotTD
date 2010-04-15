@@ -9,14 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-
+import android.widget.TextView;
 
 public class Options extends Activity {
 
 	private boolean optionsHighscore;
 	private boolean optionsSound;
+	
 	private ImageButton imageButton1;
 	private ImageButton imageButton2;
+	private TextView    textView2;
 	
 	
 	/** Called when the activity is first created. */
@@ -53,6 +55,7 @@ public class Options extends Activity {
 
         
         imageButton2 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton2);
+        textView2    = (TextView) findViewById(R.id.MainMenuOptionsTextView2);
         imageButton2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         			// Toggles highscore on or off
@@ -67,13 +70,12 @@ public class Options extends Activity {
         setHighscore(optionsHighscore);
         
         
-        ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonSave);
+        ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonOk);
         imageButtonSave.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		Log.d("OPTIONS", "Clicked button Save");
+        		setSave();
         	}
         });
-        
     }
     
     @Override
@@ -94,9 +96,15 @@ public class Options extends Activity {
     	
     	if (b) {
 			imageButton2.setImageResource(R.drawable.button_highscore_on);
+			textView2.setText("Use ScoreNinja to keep highscores. [Requires Internet Connection]");
     	} else {
 			imageButton2.setImageResource(R.drawable.button_highscore_off);
+			textView2.setText("Use nothing to not keep highscores. [Requires No Internet Connection]");
     	}
+    }
+    
+    public void setSave() {
+    	this.finish();
     }
     
     public void setSound(boolean b) {

@@ -107,7 +107,7 @@ public class GameLoopGUI {
         inMenu1.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		expandMenu.switchMenu();
+        		expandMenu.switchMenu(true);
         	}
         });
         /**final OnTouchListener o = new View.OnTouchListener() {
@@ -162,7 +162,7 @@ public class GameLoopGUI {
 	    removeExpand.setOnClickListener(new OnClickListener() {
 	    	
 	    	public void onClick(View v) {
-	    		expandMenu.switchMenu();
+	    		expandMenu.switchMenu(false);
 	    	}
 	    });
 	    
@@ -173,7 +173,7 @@ public class GameLoopGUI {
 	    	public void onClick(View v) {
 	    		gameInit.gameLoop.setGameSpeed(1);
 	    		// And den remove menu
-	    		expandMenu.switchMenu();
+	    		expandMenu.switchMenu(false);
 	    	}
 	    });
 
@@ -184,7 +184,9 @@ public class GameLoopGUI {
 	    	public void onClick(View v) {
 	    		gameInit.gameLoop.setGameSpeed(4);
 	    		//And then remove menu
-	    		expandMenu.switchMenu();
+	    			// TODO: we leave the menu raised in case the user wants to
+	    			//       return to normal speed quickly again... good or bad? :)
+	    		//expandMenu.switchMenu(false);
 	    	}
 	    });
         
