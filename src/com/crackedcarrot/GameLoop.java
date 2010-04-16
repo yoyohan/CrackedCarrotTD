@@ -454,10 +454,12 @@ public class GameLoop implements Runnable {
     public void creatureLeavesMAP(int n){
     	this.remainingCreaturesALL -= n;
     }
+    
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
 		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
+
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
@@ -470,8 +472,10 @@ public class GameLoop implements Runnable {
     
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
+    	this.currentCreatureHealth -= dmg;
 		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
     }
+    
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
 		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);

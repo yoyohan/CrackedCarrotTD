@@ -511,6 +511,9 @@ public class GameLoopGUI {
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
+	        		 
+	        		 Log.d("GameLoopGUI", "progressbar: " + msg.what + " " + msg.arg1);
+	        		 
 	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
@@ -525,6 +528,7 @@ public class GameLoopGUI {
 	        		 }
 	        		 healthProgressBar.setProgress(msg.arg1);
 	        		 break;
+	        		 
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
 	        		 nrCreText.setText("Next level in: " + msg.arg1);
 	        		 break;
@@ -548,6 +552,7 @@ public class GameLoopGUI {
 	        		 gameInit.finish();
 	        		 break;
 	        	 case -2: // SAVE THE GAME.
+	        		 	// arg 1 = save game, 2 = remove saved game.
 	        		 gameInit.saveGame(msg.arg1);
 	        		 break;
 	        		 
