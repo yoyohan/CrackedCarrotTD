@@ -17,7 +17,7 @@
     	android:id="@+id/expand_menu"
     	android:orientation="horizontal"
 		android:layout_width="fill_parent"
-		android:layout_height="120dp"
+		android:layout_height="100dp"
 		android:background="#66000044"
 		android:visibility="gone"
 		android:layout_alignParentBottom="true">
@@ -67,50 +67,56 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:gravity="bottom"
-		android:background="#66000088"
+		android:background="#00000000"
         android:layout_alignParentBottom="true">
         
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="52dp"
+			android:layout_height="48dp"
+			android:id="@+id/exbutton"
 			android:gravity="center_horizontal"
-			android:background="@drawable/bottom_menu"
+			android:background="@drawable/button_normal"
 	    >
         
         	<Button
         		android:id="@+id/inmenu1"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/inmenu1_button" />
 
 		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="52dp"
+			android:layout_height="48dp"
+			android:id="@+id/tbutton1"
 			android:gravity="center_horizontal"
-			android:background="@drawable/bottom_menu"
+			android:background="@drawable/button_normal"
 	    >
 		        		
 	        <Button
         		android:id="@+id/inmenu2"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/t1" />
 
 		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="52dp"
+			android:layout_height="48dp"
+			android:id="@+id/tbutton2"
 			android:gravity="center_horizontal"
-			android:background="@drawable/bottom_menu"
+			android:background="@drawable/button_normal"
 	    >
         		
 	        <Button
         		android:id="@+id/inmenu3"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/t2" 
         	/>
         		
@@ -118,60 +124,76 @@
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="52dp"
+			android:layout_height="48dp"
+			android:id="@+id/tbutton3"
 			android:gravity="center_horizontal"
-			android:background="@drawable/bottom_menu"
+			android:background="@drawable/button_normal"
 	    >
 	        <Button
         		android:id="@+id/inmenu4"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/t3" />
         		
 		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="52dp"
+			android:layout_height="48dp"
+			android:id="@+id/tbutton4"
 			android:gravity="center_horizontal"
-			android:background="@drawable/bottom_menu"
+			android:background="@drawable/button_normal"
 	    >
 	
 	        <Button
         		android:id="@+id/inmenu5"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/t4" />
     
     	</LinearLayout>    		
 		<LinearLayout
 			android:layout_width="256dp"
-			android:layout_height="52dp"
-			android:gravity="left"
+			android:layout_height="48dp"
+			android:id="@+id/ttext"
+			android:gravity="center_horizontal"
 			android:visibility="gone"
-			android:background="#FFFFFF"
+			android:background="#00000000"
 	    >
 			
+			<LinearLayout
+				android:layout_width="192dp"
+				android:layout_height="48dp"
+				android:padding="2dp"
+				android:gravity="center_horizontal"
+				android:background="@drawable/button_normal"
+		    >
+
 	        <TextView
 				android:textColor="#000000"
 				android:textStyle="bold"
-				android:textSize="15sp"
+				android:textSize="12sp"
 				android:id="@+id/towerInformation"
-				android:layout_width="192dp" 
-				android:layout_height="wrap_content" >
+				android:layout_width="fill_parent" 
+				android:layout_height="fill_parent" >
 			</TextView>
+
+			</LinearLayout>    
 			
 			<LinearLayout
 				android:layout_width="64dp"
-				android:layout_height="52dp"
+				android:layout_height="48dp"
 				android:gravity="center_horizontal"
-				android:background="@drawable/bottom_menu"
+				android:background="@drawable/button_normal"
 		    >
 		    
 	        <Button
         		android:id="@+id/inmenu6"
-        		android:layout_width="52dp"
-        		android:layout_height="52dp"
+        		android:layout_width="48dp"
+        		android:layout_height="48dp"
+				android:scaleType="fitXY"
         		android:background="@drawable/button_close_64" />
 			</LinearLayout>    
     	</LinearLayout>    		
@@ -199,7 +221,7 @@
 		<TextView
 			android:textColor="#000000"
 			android:textStyle="bold"
-			android:textSize="15sp"
+			android:textSize="12sp"
 			android:id="@+id/currency"
 			android:paddingTop="5dp" 
 			android:paddingLeft="3dp"
@@ -228,7 +250,7 @@
 			<TextView
 				android:textColor="#000000"
 				android:textStyle="bold"
-				android:textSize="15sp"
+				android:textSize="12sp"
 				android:id="@+id/playerHealth"
 				android:paddingTop="5dp" 
 				android:paddingLeft="3dp"
@@ -257,7 +279,7 @@
 	        <TextView
 				android:textColor="#000000"
 				android:textStyle="bold"
-				android:textSize="15sp"
+				android:textSize="12sp"
 				android:id="@+id/nrEnemyLeft"
 	        	android:paddingRight="2dp"
 				android:paddingTop="5dp"

@@ -25,8 +25,8 @@ range::150
 aoe range:: 30
 aoe damage::10
 Shot texture::sprite_sheet
-Nbr shot frames:: 16
-Shot size::64
+Nbr shot frames:: 1
+Shot size::8
 ////////////////////////////////////
 // AOE Tower
 ////////////////////////////////////

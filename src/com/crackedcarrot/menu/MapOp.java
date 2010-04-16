@@ -64,7 +64,7 @@ public class MapOp extends Activity implements ViewFactory {
         Gallery gallery = (Gallery) findViewById(R.id.gallery1);
         gallery.setAdapter(new ImageAdapter(this));
         gallery.setOnItemSelectedListener(gItemSelectedHandler);
-        gallery.setSelection(gallery.getCount()/2, true);
+        gallery.setSelection((gallery.getCount()/2)+1, true);
 
         Button StartGameButton = (Button)findViewById(R.id.startmap);
         StartGameButton.setOnClickListener(new OnClickListener() {

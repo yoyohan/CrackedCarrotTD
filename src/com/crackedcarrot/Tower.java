@@ -3,6 +3,8 @@ package com.crackedcarrot;
 import java.util.Enumeration;
 import java.util.Random;
 
+import android.util.Log;
+
 
 /**
 * Class defining a tower in the game

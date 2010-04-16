@@ -108,8 +108,14 @@ public class GameLoopGUI {
         // Create the instruction view
         //instructionView = (InstructionView)findViewById(R.id.instruction_view);
         
-        
-        /** Listeners for the five icons in the in-game menu.
+        final LinearLayout towerbutton1 = (LinearLayout) gameInit.findViewById(R.id.tbutton1);
+        final LinearLayout towerbutton2 = (LinearLayout) gameInit.findViewById(R.id.tbutton2);
+        final LinearLayout towerbutton3 = (LinearLayout) gameInit.findViewById(R.id.tbutton3);
+        final LinearLayout towerbutton4 = (LinearLayout) gameInit.findViewById(R.id.tbutton4);
+        final LinearLayout towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
+        final LinearLayout exButton = (LinearLayout) gameInit.findViewById(R.id.exbutton);
+
+        /** Listeners for the six icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
          *  on an empty space on the map. The first button
          *  expands the menu. */
@@ -118,6 +124,7 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		expandMenu.switchMenu(true);
+        		exButton.setBackgroundResource(R.drawable.button_pressed);
         	}
         });
         /**final OnTouchListener o = new View.OnTouchListener() {
@@ -128,12 +135,21 @@ public class GameLoopGUI {
 				return true;
 			}
 		}; */
+
+        final TextView towerInformation = (TextView) gameInit.findViewById(R.id.towerInformation);
+        
         final Button inMenu2 = (Button) gameInit.findViewById(R.id.inmenu2);
         inMenu2.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(0);
+           		towerInformation.setText("ArrowTower Lvl1 etc etc");
+        		towerbutton1.setVisibility(View.GONE);
+        		towerbutton2.setVisibility(View.GONE);
+        		towerbutton3.setVisibility(View.GONE);
+        		towerbutton4.setVisibility(View.GONE);
+        		towertext.setVisibility(View.VISIBLE);
         		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
         		v.setOnTouchListener(o); */
         	}
@@ -144,6 +160,12 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 2 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(1);
+        		towerInformation.setText("CannonTower Lvl1 etc etc");
+        		towerbutton1.setVisibility(View.GONE);
+        		towerbutton2.setVisibility(View.GONE);
+        		towerbutton3.setVisibility(View.GONE);
+        		towerbutton4.setVisibility(View.GONE);
+        		towertext.setVisibility(View.VISIBLE);
         	}
         });
         Button inMenu4 = (Button) gameInit.findViewById(R.id.inmenu4);
@@ -152,6 +174,12 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 3 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(2);
+        		towerInformation.setText("AOE Tower Lvl1 etc etc");
+        		towerbutton1.setVisibility(View.GONE);
+        		towerbutton2.setVisibility(View.GONE);
+        		towerbutton3.setVisibility(View.GONE);
+        		towerbutton4.setVisibility(View.GONE);
+        		towertext.setVisibility(View.VISIBLE);
         	}
         });
         Button inMenu5 = (Button) gameInit.findViewById(R.id.inmenu5);
@@ -160,9 +188,29 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 4 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(3);
+        		towerInformation.setText("Ultimate Tower Lvl1 etc etc");
+        		towerbutton1.setVisibility(View.GONE);
+        		towerbutton2.setVisibility(View.GONE);
+        		towerbutton3.setVisibility(View.GONE);
+        		towerbutton4.setVisibility(View.GONE);
+        		towertext.setVisibility(View.VISIBLE);
         	}
         });
 
+        // Button that removes towerInformation
+        final Button inMenu6 = (Button) gameInit.findViewById(R.id.inmenu6);
+        inMenu6.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		gameInit.mGLSurfaceView.setTowerType(-1);
+           		towerInformation.setText("ArrowTower Lvl1 etc etc");
+        		towertext.setVisibility(View.GONE);
+           		towerbutton1.setVisibility(View.VISIBLE);
+        		towerbutton2.setVisibility(View.VISIBLE);
+        		towerbutton3.setVisibility(View.VISIBLE);
+        		towerbutton4.setVisibility(View.VISIBLE);
+        	}
+        });
         
 	    ////////////////////////////////////////////////////////////////
 	    // First button in Expand Menu
@@ -173,6 +221,7 @@ public class GameLoopGUI {
 	    	
 	    	public void onClick(View v) {
 	    		expandMenu.switchMenu(false);
+        		exButton.setBackgroundResource(R.drawable.button_normal);
 	    	}
 	    });
 	    
@@ -184,6 +233,7 @@ public class GameLoopGUI {
 	    		gameInit.gameLoop.setGameSpeed(1);
 	    		// And den remove menu
 	    		expandMenu.switchMenu(false);
+        		exButton.setBackgroundResource(R.drawable.button_normal);
 	    	}
 	    });
 
@@ -455,7 +505,10 @@ public class GameLoopGUI {
 		    	lvlText += 		"<br><b>Previous level:</b><br>";
 		    	lvlText += 		"Interest gained:" + currPlayer.getInterestGainedThisLvl() + "<br>";
 		    	lvlText += 		"Health lost:" + currPlayer.getHealthLostThisLvl();		    	
-		    	
+		    }
+		    else {
+		    	lvlText += 		"<br><b>Tip:</b><br>";
+		    	lvlText += 		"If you have trouble <br>understanding this game.<br> Use the information<br> button below or ingame";
 		    }
 		    styledText = Html.fromHtml(lvlText);
 		    text.setText(styledText);
@@ -506,13 +559,14 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case GUI_CREATURELEFT_ID:
 	        		 // update number of creatures still alive on GUI.
-	        		 nrCreText.setText("" + msg.arg1);
+	        		 String tt = String.valueOf(msg.arg1);
+	        		 if (msg.arg1 < 10)
+	        			 tt = "0" + tt;
+	        		 nrCreText.setText("" + tt);
 	        		 break;
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
-	        		 
-	        		 Log.d("GameLoopGUI", "progressbar: " + msg.what + " " + msg.arg1);
 	        		 
 	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
@@ -530,7 +584,10 @@ public class GameLoopGUI {
 	        		 break;
 	        		 
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
-	        		 nrCreText.setText("Next level in: " + msg.arg1);
+	        		 tt = String.valueOf(msg.arg1);
+	        		 if (msg.arg1 < 10)
+	        			 tt = "0" + tt;
+	        		 nrCreText.setText("Next level in: " + tt);
 	        		 break;
 	        		 
 	        	 case GUI_SHOWSTATUSBAR_ID:
