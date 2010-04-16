@@ -93,8 +93,8 @@ public class Sprite{
 		if(Sprite.class.isInstance(sprite)){
 			Sprite testSprite = (Sprite) sprite;
 			if(testSprite.height == this.height && 
-			   testSprite.width  == this.width  &&
-			   testSprite.texData == this.texData){
+			   testSprite.width  == this.width  //&& testSprite.texData == this.texData
+			   ){
 				
 				return true;
 			}

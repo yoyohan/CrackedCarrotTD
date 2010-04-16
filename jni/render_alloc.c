@@ -19,9 +19,17 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 
 void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length){
 
+    int allocSize=0;
+
     if(length > 0){
-        texData = malloc(sizeof(textureData)*length);
-        texDataLength = length;
+    
+        //This is just to make room for the last pice of data in the buffer,
+        //Gl begins to create identifiers from 1 not 0; pos 0 in texData will be unused.
+        
+        allocSize = length+1;
+        texData = malloc(sizeof(textureData)*allocSize);
+        texDataLength = allocSize;
+        __android_log_print(ANDROID_LOG_DEBUG, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
     }
     else{
         __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Invalid buffer length! Buffer not allocated!");

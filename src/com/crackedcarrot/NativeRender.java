@@ -108,7 +108,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		*/
 		glContext = gl;
 		nativeSurfaceCreated();
-		nativeAllocTextureBuffers(100);
+		nativeAllocTextureBuffers(texLib.size());
 		lock1.release();
 	}
 	
@@ -174,10 +174,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
 							Log.d("FIN SPRITES", "Error Invalid resource ID");
 						}
 						if (!textureMap.containsKey(resource)) {
-							lastTextureId = loadBitmap(mContext, glContext, resource);
-							textureMap.put(resource, new TextureData(lastTextureId,texLib.getFrameData(resource)));
+							TextureData d = loadTexture(resource);
+							sprites[j][i].setCurrentTexture(d);
+						}else{
+							sprites[j][i].setCurrentTexture(textureMap.get(resource));
 						}
-						sprites[j][i].setCurrentTexture(textureMap.get(resource));
 					}
 				}
 				lock2.release();
@@ -227,20 +228,33 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @return textureName
 	 * @throws InterruptedException 
 	 */
-	public void loadTexture(int rId) throws InterruptedException{
-		lock1.acquire();
+	private TextureData loadTexture(int rId){
 		final int resourceId = rId;
+		int lastTextureId = 0;
+		if (!textureMap.containsKey(resourceId)) {
+			lastTextureId = loadBitmap(mContext, glContext, resourceId);
+			TextureData d = new TextureData(lastTextureId, texLib.getFrameData(resourceId));
+			textureMap.put(resourceId, d);
+			nativeSetTextureBuffer(d);
+			return d;
+		}
+		return null;
+	}
+	
+	public void preloadTextureLibrary() throws InterruptedException{
+		lock1.acquire();
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-				int lastTextureId = 0;
-				if (!textureMap.containsKey(resourceId)) {
-					lastTextureId = loadBitmap(mContext, glContext, resourceId);
-					textureMap.put(resourceId, new TextureData(lastTextureId, texLib.getFrameData(resourceId)));
+				Iterator<Integer> it = texLib.textureResourceIdIterator();
+				while(it.hasNext()){
+					loadTexture(it.next());
 				}
 				lock2.release();
 			}
 		});
+
+		//this.renderList = null;
 		lock2.acquire();
 		lock1.release();
 	}

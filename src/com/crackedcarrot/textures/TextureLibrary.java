@@ -1,6 +1,7 @@
 package com.crackedcarrot.textures;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class TextureLibrary {
 	private HashMap<Integer, Integer> frameData;
@@ -16,5 +17,12 @@ public class TextureLibrary {
 	
 	public Integer getFrameData(Integer resourceId){
 		return frameData.get(resourceId);
+	}
+	
+	public Iterator<Integer> textureResourceIdIterator(){
+		return frameData.keySet().iterator();
+	}
+	public int size(){
+		return frameData.size();
 	}
 }

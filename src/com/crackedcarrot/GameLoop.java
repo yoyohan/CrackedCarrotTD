@@ -140,21 +140,7 @@ public class GameLoop implements Runnable {
 	    //we don't have any garbage anywhere.
 		try {
 			renderHandle.freeSprites();
-			renderHandle.freeAllTextures();		
-			
-			//Load textures for towers.
-
-			for (int i = 0; i < mTTypes.length; i++) {
-				renderHandle.loadTexture(mTTypes[i].getResourceId());
-				renderHandle.loadTexture(mTTypes[i].relatedShot.getResourceId());
-			}
-
-			//Load textures for all creature types.
-			for(int i = 0; i < mLvl.length; i++){
-				renderHandle.loadTexture(mLvl[i].getResourceId());
-				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
-			}
-			//renderHandle.loadTexture(mGrid[0].getResourceId());
+			renderHandle.preloadTextureLibrary();
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
