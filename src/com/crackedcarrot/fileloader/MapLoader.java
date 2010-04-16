@@ -41,7 +41,7 @@ public class MapLoader {
 				//At the moment all towers are the same size.
 				//Number of frames can be changed together with the
 				//Texture.
-				twg[x][y] = new Tower(R.drawable.tower1,0,1);
+				twg[x][y] = new Tower(R.drawable.tower1,0);
 				twg[x][y].draw = false;
 			}
 		}
@@ -81,7 +81,7 @@ public class MapLoader {
 							return null;
 
 				        // Gamemap
-						Sprite background = new Sprite(resID, NativeRender.BACKGROUND, 0 ,1);
+						Sprite background = new Sprite(resID, NativeRender.BACKGROUND, 0);
 						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
 				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
 				        background.setWidth(s.getScreenResolutionX());

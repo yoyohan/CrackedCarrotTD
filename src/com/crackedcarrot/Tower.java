@@ -70,15 +70,15 @@ public class Tower extends Sprite {
     private int upper_row;
     private int bottom_row;
 
-	public Tower(int resourceId, int type, int frames, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
-		super(resourceId, NativeRender.TOWER, type, frames);
+	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
+		super(resourceId, NativeRender.TOWER, type);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		this.creepTracker = creepTracker;
 		rand = new Random();
 	}
-	public Tower(int resourceId, int type , int frames){
-		super(resourceId,NativeRender.TOWER, type, frames);
+	public Tower(int resourceId, int type){
+		super(resourceId,NativeRender.TOWER, type);
 		rand = new Random();
 	}
 	
@@ -362,7 +362,6 @@ public class Tower extends Sprite {
 			this.relatedShot.setWidth(copyShot.getWidth());
 			this.relatedShot.setHeight(copyShot.getHeight());
 			this.relatedShot.setResourceId(copyShot.getResourceId());
-			this.relatedShot.setNFrames(copyShot.getNFrames());
 	}
 
 	/**
@@ -399,8 +398,8 @@ public class Tower extends Sprite {
 		
 		// This cannot be in the cloneTower function because
 		// then it breaks with TowerLoader.java
-		this.setTextureName(clone.getTextureName());
-		this.relatedShot.setTextureName(clone.relatedShot.getTextureName());
+		this.setCurrentTexture(clone.getCurrentTexture());
+		this.relatedShot.setCurrentTexture(clone.relatedShot.getCurrentTexture());
 		
 		this.draw = true;
 		this.x = towerPlacement.x;
@@ -419,7 +418,7 @@ public class Tower extends Sprite {
 		int size = range.x;
 		
 		// TODO USED BY tracker to define tower position
-		//Översta raden:
+		//ï¿½versta raden:
 		this.upper_row = row+size;
 		if (this.upper_row > mScaler.getGridHeight())
 			this.upper_row = mScaler.getGridHeight();
@@ -427,11 +426,11 @@ public class Tower extends Sprite {
 		this.bottom_row = row-size;
 		if (this.bottom_row < 0)
 			this.bottom_row = 0;
-		//Vänstra
+		//Vï¿½nstra
 		this.left_column = column - size;
 		if (this.left_column < 0)
 			this.left_column = 0;
-		//Högra
+		//Hï¿½gra
 		this.right_column = column + size;
 		if (this.right_column > mScaler.getGridWidth())
 			this.right_column = mScaler.getGridWidth();
