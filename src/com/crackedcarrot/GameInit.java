@@ -10,10 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +23,6 @@ import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
 import com.crackedcarrot.textures.TextureLibraryLoader;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 

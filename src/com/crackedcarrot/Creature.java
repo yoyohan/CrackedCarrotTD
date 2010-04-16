@@ -1,9 +1,6 @@
 package com.crackedcarrot;
 
 import com.crackedcarrot.textures.TextureData;
-
-import android.util.Log;
-
 /**
 * Class defining creature in the game
 */
