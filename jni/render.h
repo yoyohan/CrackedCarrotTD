@@ -65,8 +65,8 @@ enum bufferTag {
 
 void initHwBuffers(JNIEnv* env, GLSprite* sprite);
 
-void java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length);
-void java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData);
+void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length);
+void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData);
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h);
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env, jobject thiz);

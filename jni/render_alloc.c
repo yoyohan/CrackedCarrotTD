@@ -17,7 +17,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 		    				type, noOfSprites[type]);
 }
 
-void java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length){
+void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length){
 
     if(length > 0){
         texData = malloc(sizeof(textureData)*length);
@@ -28,7 +28,7 @@ void java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, 
     }
 }
 
-void java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData){
+void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData){
     jclass class = (*env)->GetObjectClass(env, textureData);
 
     jfieldID id = (*env)->GetFieldID(env, class, "mTextureName", "I");

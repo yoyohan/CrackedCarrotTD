@@ -44,6 +44,7 @@ import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.textures.TextureLibraryLoader;
 import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
@@ -333,7 +334,7 @@ public class GameInit extends Activity {
     	 *  that are used for define the pixel resolution of current display;
     	 *  DisplayMetrics & Scaler */
         mGLSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView);
+        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this));
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
@@ -586,7 +587,6 @@ public class GameInit extends Activity {
         }
         
         RenderThread = new Thread(simulationRuntime);
-        
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(simulationRuntime);

@@ -106,8 +106,8 @@ public class GameLoop implements Runnable {
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 
-	    	mTower[i] = new Tower(R.drawable.tower1, 0,1, mCreatures, soundManager,mTracker);
-	    	mShots[i] = new Shot(R.drawable.cannonball,0,1, mTower[i]);
+	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager,mTracker);
+	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
@@ -162,17 +162,17 @@ public class GameLoop implements Runnable {
 			//Towers shots and creatures.
 			
 			for(int i = 0; i < mTTypes.length; i++){
-				mTTypes[i].setTextureName(
-						renderHandle.getTextureName(mTTypes[i].getResourceId()));
+				mTTypes[i].setCurrentTexture(
+						renderHandle.getTexture(mTTypes[i].getResourceId()));
 				
-				mTTypes[i].relatedShot.setTextureName(
-						renderHandle.getTextureName(mTTypes[i].relatedShot.getResourceId()));
+				mTTypes[i].relatedShot.setCurrentTexture(
+						renderHandle.getTexture(mTTypes[i].relatedShot.getResourceId()));
 				
 			}
 			
 			for(int i = 0; i < mLvl.length; i++){
-				mLvl[i].setTextureName(renderHandle.getTextureName(mLvl[i].getResourceId()));
-				mLvl[i].setDeadTextureName(renderHandle.getTextureName(mLvl[i].getDeadResourceId()));
+				mLvl[i].setCurrentTexture(renderHandle.getTexture(mLvl[i].getResourceId()));
+				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
 						

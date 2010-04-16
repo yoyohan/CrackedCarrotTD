@@ -304,7 +304,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public TextureData getTextureData(int resourceId) throws InterruptedException{
+	public TextureData getTexture(int resourceId) throws InterruptedException{
 		lock1.acquire();
 		TextureData data = textureMap.get(resourceId);
 		lock1.release();
