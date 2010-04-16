@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import com.crackedcarrot.textures.TextureData;
+
 import android.util.Log;
 
 /**
@@ -23,7 +25,7 @@ public class Creature extends Sprite{
     // SPRITE DEAD RESOURCE
     private int mDeadResourceId;
     // SPRITE DEAD 
-	private int mDeadTextureName;
+	private TextureData mDeadTextureData;
     // The speed of the creature
     protected float velocity;
     // Delay before spawning the creature to the map
@@ -66,7 +68,7 @@ public class Creature extends Sprite{
 					Scaler mScaler, 
 					Tracker mTracker){
 		
-		super(resourceId, NativeRender.CREATURE, type, frames);
+		super(resourceId, NativeRender.CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 		this.player = player;
@@ -80,8 +82,8 @@ public class Creature extends Sprite{
 	}
 	
 	//This is only used by the level constructor.
-	public Creature(int resourceId, int type , int frames){
-		super(resourceId, NativeRender.CREATURE, type, frames);
+	public Creature(int resourceId, int type){
+		super(resourceId, NativeRender.CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 
@@ -126,8 +128,8 @@ public class Creature extends Sprite{
 		this.velocity = velocity;
 	}
 	
-	public void setDeadTextureName(int mDeadTextureName) {
-		this.mDeadTextureName = mDeadTextureName;
+	public void setDeadTexture(TextureData mDeadTexture) {
+		this.mDeadTextureData = mDeadTexture;
 	}
 
 	public boolean isCreatureFast() {
@@ -161,7 +163,7 @@ public class Creature extends Sprite{
 	
 	private void die() {
 		this.dead = true;
-		setTextureName(this.mDeadTextureName);
+		setCurrentTexture(this.mDeadTextureData);
 		resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency(player.getMoney());
@@ -275,8 +277,8 @@ public class Creature extends Sprite{
 		return nextWayPoint;
 	}
 
-	public int getDeadTextureName() {
-		return mDeadTextureName;
+	public TextureData getDeadTexture() {
+		return mDeadTextureData;
 	}
 
 	public void setOffset(int offset) {
