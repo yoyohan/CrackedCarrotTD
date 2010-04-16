@@ -103,4 +103,13 @@ public class Sprite{
 			return false;
 		}
 	}
+	
+	public void setNFrames(int n) {
+		nFrames = n;
+	}
+
+	public int getNFrames() {
+		return nFrames;
+	}
+
 }

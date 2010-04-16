@@ -15,9 +15,14 @@ public class SurfaceView extends GLSurfaceView {
 	
 		// Not very magic, read the comment below for explanation.
 	public int magicValue;
+	private boolean buildTower = false;
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
+		if (!buildTower) {
+			return false;
+		}
+		
 		Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
 		// we build where the user last touched the screen.
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
@@ -49,6 +54,11 @@ public class SurfaceView extends GLSurfaceView {
 	}
 	
 	public void setTowerType(int i) {
+		if (i == -1) {
+			this.buildTower = false;
+		}
+		else 
+			this.buildTower = true;
 		this.towerType = i;
 	}
 

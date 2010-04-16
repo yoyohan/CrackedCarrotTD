@@ -23,8 +23,9 @@ upgradelink1::1
 upgradelink2::-1
 range::150
 aoe range:: 30
-aoe damage::10 
-Shot texture::cannonball
+aoe damage::10
+Shot texture::sprite_sheet
+Nbr shot frames:: 1
 Shot size::8
 ////////////////////////////////////
 // AOE Tower
@@ -51,6 +52,7 @@ range::70
 aoe range:: 0
 aoe damage::0 
 Shot texture::poison
+Nbr shot frames:: 1
 Shot size::8
 ////////////////////////////////////
 // Cannon tower with frost damage
@@ -77,6 +79,7 @@ range::150
 aoe range:: 30
 aoe damage::10 
 Shot texture::cannonball
+Nbr shot frames:: 1
 Shot size::8
 ////////////////////////////////////
 // Cannon tower with frost damage
@@ -103,5 +106,6 @@ range::150
 aoe range:: 30
 aoe damage::10 
 Shot texture::cannonball
+Nbr shot frames:: 1
 Shot size::8
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

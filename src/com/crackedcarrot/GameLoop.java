@@ -3,9 +3,7 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -22,7 +20,7 @@ public class GameLoop implements Runnable {
 
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
 
-    private Handler      guiHandler;
+    private GameLoopGUI  gui;
     private NativeRender renderHandle;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
@@ -34,9 +32,6 @@ public class GameLoop implements Runnable {
     private boolean run = true;
     
     private long mLastTime;
-
-    	// TODO: Maybe this can be changed somehow so the GC wont run?
-    private Message msg = new Message();
     
     	// TODO: Maybe we can remove this string thingie-completely...?
     private String resumeTowers = null;
@@ -57,10 +52,10 @@ public class GameLoop implements Runnable {
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
-    
+
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
-			Player p, Handler gh, SoundManager sm){
+			Player p, GameLoopGUI gui, SoundManager sm){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
    		this.mTowerGrid = gameMap.getTowerGrid();
@@ -69,7 +64,7 @@ public class GameLoop implements Runnable {
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
-    	this.guiHandler = gh;
+    	this.gui = gui;
     	this.mTracker = new Tracker(mScaler.getGridWidth(),mScaler.getGridHeight(), 20);
     }
     
@@ -155,7 +150,6 @@ public class GameLoop implements Runnable {
 			
 						
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Sends an array with sprites to the renderer
@@ -183,7 +177,6 @@ public class GameLoop implements Runnable {
 			//Unused creatures and settings that are no longer valid.
 			renderHandle.freeSprites();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
     	
@@ -205,73 +198,40 @@ public class GameLoop implements Runnable {
 			renderHandle.finalizeSprites();
 			
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		// Initialize the status, displaying the amount of currency
-		msg = new Message();
-		msg.what = 25;
-		msg.arg1 = player.getMoney();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
 		// Initialize the status, displaying the players health
-		msg = new Message();
-		msg.what = 26;
-		msg.arg1 = player.getHealth();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
 		// Initialize the status, displaying the creature image
-		msg = new Message();
-		msg.what = 27;
-		msg.arg1 = mLvl[lvlNbr].getResourceId();
-		guiHandler.sendMessage(msg);
-		// Initialize the status, displaying how many creatures still alive
-		// TODO: REMOVE???! updateCreatureHandler.post(cUpdate);
-		// Initialize the status, displaying total health of all creatures
-		// TODO: REMOVE?!?! updateHealthHandler.post(pUpdate);		
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
 				
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
     	try {
 			dialogSemaphore.acquire();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		msg = new Message();
-		msg.what = 1; // 1 means to show NextLevel-box.
-		msg.arg1 = mLvl[lvlNbr].nbrCreatures;
-		msg.arg2 = mLvl[lvlNbr].getResourceId();
-    	guiHandler.sendMessage(msg);
-    	
+		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
+		
     	// This is a good time to save the current progress of the game.
-    	msg = new Message();
-    	msg.what = 99; // 99 means save the game.
-    	msg.arg1 = 1;  // 1 means actually save.
-    				   // 2 means clear everything, the level is  D O N E !
-    	               // (and cannot be resumed.)
-    	guiHandler.sendMessage(msg);
+			// -2 = call the SaveGame-function.
+			// 1  = ask SaveGame to save all data.
+			// 0  = not used.
+		gui.sendMessage(-2, 1, 0);
 
 		// Initialize the status, displaying the amount of currency
-    	msg = new Message();
-		msg.what = 25;
-		msg.arg1 = player.getMoney();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
 		// Initialize the status, displaying the players health
-		msg = new Message();
-		msg.what = 26;
-		msg.arg1 = player.getHealth();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
 		// Initialize the status, displaying the creature image
-		msg = new Message();
-		msg.what = 27;
-		msg.arg1 = mLvl[lvlNbr].getResourceId();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
 
 		// And set the progressbar with creature health to full again.
-		msg = new Message();
-		msg.what = 21;
-		msg.arg1 = 100;
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, 100, 0);
 		
 		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
@@ -281,27 +241,20 @@ public class GameLoop implements Runnable {
 		gameSpeed = 1;
     	
 		// Remove healthbar until game begins.
-		msg = new Message();
-		msg.what = 22;
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_HIDEHEALTHBAR_ID, 0, 0);
+
 		player.setTimeUntilNextLevel(player.getTimeBetweenLevels());
 
 		// Initialize the status, displaying how long left until level starts
-		msg = new Message();
-		msg.what = 19;
-		msg.arg1 = (int) player.getTimeUntilNextLevel();
-		guiHandler.sendMessage(msg);		
+		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, (int) player.getTimeUntilNextLevel(), 0);
 		
 		// We wait to show the status bar until everything is updated
-		msg = new Message();
-		msg.what = 24;
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_SHOWSTATUSBAR_ID, 0, 0);
 		
 		// Code to wait for the user to click ok on NextLevel-dialog.
 		try {
 			dialogSemaphore.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		dialogSemaphore.release();
@@ -370,22 +323,17 @@ public class GameLoop implements Runnable {
 	            if (player.getTimeUntilNextLevel() > 0) {
 	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {
 		            	// Show healthbar again.
-	            		msg = new Message();
-		            	msg.what = 23;
-		            	guiHandler.sendMessage(msg);
-	            		player.setTimeUntilNextLevel(0);     
+	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            	    
 	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
 	            		creaturDiesOnMap(0);
 	            	}
 	            	else 
 	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
-	            	if (lastTime != (int)player.getTimeUntilNextLevel()) {
-	            		lastTime = (int)player.getTimeUntilNextLevel();
-	            		msg = new Message();
-	            		msg.what = 19;
-	            		msg.arg1 = lastTime;
-	            		guiHandler.sendMessage(msg);
+	            	if (lastTime != (int) player.getTimeUntilNextLevel()) {
+	            		lastTime = (int) player.getTimeUntilNextLevel();
+	            		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, lastTime, 0);
+
 	            	}
 	            }
 	            
@@ -411,23 +359,17 @@ public class GameLoop implements Runnable {
             	Log.d("GAMETHREAD", "You are dead");
 
             		// Show the You Lost-dialog.
-            	msg = new Message();
-        		msg.what = 3; // YouLost-box.
-            	guiHandler.sendMessage(msg);
-            	
+            	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
             	// This is a good time clear all savegame data.
-            	msg = new Message();
-            	msg.what = 99; // 99 means save the game.
-            	msg.arg1 = 2;  // 1 means actually save.
-            				   // 2 means clear everything, the level is  D O N E !
-            	               // (and cannot be resumed.)
-            	guiHandler.sendMessage(msg);
+            		// -2 = call the SaveGame-function.
+            		// 2  = ask SaveGame to clear all data.
+            		// 0  = not used.
+            	gui.sendMessage(-2, 2, 0);
             	
         		// Code to wait for the user to click ok on YouLost-dialog.
         		try {
         			dialogSemaphore.acquire();
         		} catch (InterruptedException e) {
-        			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
 
@@ -442,28 +384,21 @@ public class GameLoop implements Runnable {
                 	Log.d("GAMETHREAD", "You have completed this map");
                 	
             		// Show the You Won-dialog.
-                	msg = new Message();
-            		msg.what = 2; // YouWon
-                	guiHandler.sendMessage(msg);
+                	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
 
                 	// This is a good time clear all savegame data.
-                	msg = new Message();
-                	msg.what = 99; // 99 means save the game.
-                	msg.arg1 = 2;  // 1 means actually save.
-                				   // 2 means clear everything, the level is  D O N E !
-                	               // (and cannot be resumed.)
-                	guiHandler.sendMessage(msg);
+            			// -2 = call the SaveGame-function.
+            			// 2  = ask SaveGame to clear all data.
+            			// 0  = not used.
+                	gui.sendMessage(-2, 2, 0);
                 	
                 	// Show Ninjahighscore-thingie.
-                	msg = new Message();
-                	msg.what = 4;
-                	guiHandler.sendMessage(msg);
+                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, 0, 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
             			dialogSemaphore.acquire();
             		} catch (InterruptedException e) {
-            			// TODO Auto-generated catch block
             			e.printStackTrace();
             		}
 
@@ -474,9 +409,7 @@ public class GameLoop implements Runnable {
     	Log.d("GAMETHREAD", "dead thread");
     	
     	// Close activity/gameview.
-    	msg = new Message();
-    	msg.what = 98; // Call to finish() in parent.
-    	guiHandler.sendMessage(msg);
+    	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
     public boolean createTower(Coords TowerPos, int towerType) {
@@ -504,10 +437,14 @@ public class GameLoop implements Runnable {
 				
 				return true;
 			} else {
-			/*	// User clicked on an existing tower. Show upgrade window.
+			/*	
+			 * TODO: Maybe someone can use this to upgrade towers, comment left intact.
+			 *
+			    // User clicked on an existing tower. Show upgrade window.
 				Message msg = new Message();
 				msg.what = 4;
-				nextLevelHandler.sendMessage(msg);*/
+				nextLevelHandler.sendMessage(msg);
+			  */
 			}
 		}
 		return false;
@@ -519,10 +456,7 @@ public class GameLoop implements Runnable {
     }
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-    	msg = new Message();
-		msg.what = 26;
-		msg.arg1 = player.getHealth();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
@@ -531,26 +465,18 @@ public class GameLoop implements Runnable {
     		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
     			mCreatures[x].setAllDead(true);
 		// Update the status, displaying how many creatures that are still alive
-		msg = new Message();
-		msg.what = 20;
-		msg.arg1 = remainingCreaturesALIVE;
-		guiHandler.sendMessage(msg);
+    	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
     
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-    	msg = new Message();
-    	msg.what = 21;
-    	msg.arg1 = (int)(100*(currentCreatureHealth/startCreatureHealth));
-    	guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
     }
+    
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
-		msg = new Message();
-		msg.what = 25;
-		msg.arg1 = player.getMoney();
-		guiHandler.sendMessage(msg);
+		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
     }
     
     public void stopGameLoop(){

@@ -153,7 +153,7 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
-        gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui.guiHandler,new SoundManager(getBaseContext()));
+        gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui,new SoundManager(getBaseContext()));
         
         	// Resuming old game. Prepare GameLoop for this...
         if (resume > 0) {

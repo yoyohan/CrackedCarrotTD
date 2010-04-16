@@ -3,6 +3,8 @@ package com.crackedcarrot;
 import java.util.Enumeration;
 import java.util.Random;
 
+import android.util.Log;
+
 
 /**
 * Class defining a tower in the game
@@ -332,10 +334,8 @@ public class Tower extends Sprite {
 				float coolDown,
 				float width,
 				float height,
-				float relatedShotWidth,
-				float relatedShotHeight,
-				int shotResourceId
-				){
+				Shot copyShot
+			){
 
 			this.setResourceId(resourceId);
 			this.towerType = towerType;
@@ -359,10 +359,10 @@ public class Tower extends Sprite {
 			this.coolDown = coolDown;
 			this.setWidth(width);
 			this.setHeight(height);
-			this.relatedShot.setWidth(relatedShotWidth);
-			this.relatedShot.setHeight(relatedShotHeight);
-			this.relatedShot.setResourceId(shotResourceId);
-
+			this.relatedShot.setWidth(copyShot.getWidth());
+			this.relatedShot.setHeight(copyShot.getHeight());
+			this.relatedShot.setResourceId(copyShot.getResourceId());
+			this.relatedShot.setNFrames(copyShot.getNFrames());
 	}
 
 	/**
@@ -394,9 +394,7 @@ public class Tower extends Sprite {
 				clone.coolDown,
 				clone.getWidth(),
 				clone.getHeight(),
-		    	clone.relatedShot.getWidth(),
-		    	clone.relatedShot.getHeight(),
-		    	clone.relatedShot.getResourceId()
+		    	clone.relatedShot
 			);
 		
 		// This cannot be in the cloneTower function because
