@@ -36,7 +36,7 @@ public class TextureLibraryLoader {
 						if(resId == 0)
 							Log.e("TEXTURE LIBRARY", "Invalid resourceId from context, Rid fetch failed!");
 						
-						rLib.setFrameData(resId, Integer.parseInt(resIdAndFrames[1]));
+						rLib.setFrameData(resId, Integer.parseInt(resIdAndFrames[1].trim()));
 						buf = new StringBuffer();
 					}
 				}	
