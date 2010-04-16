@@ -195,6 +195,9 @@ public class GameLoopGUI {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		try {
+    	    		GameInit.pauseSemaphore.acquire();
+    			} catch (InterruptedException e1) {}
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
         	}
@@ -205,6 +208,9 @@ public class GameLoopGUI {
         pauseButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		try {
+    	    		GameInit.pauseSemaphore.acquire();
+    			} catch (InterruptedException e1) {}
         		gameInit.onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
         		gameInit.startActivity(ShowInstr);
@@ -268,6 +274,9 @@ public class GameLoopGUI {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
+	        		try {
+	    	    		GameInit.pauseSemaphore.acquire();
+	    			} catch (InterruptedException e1) {}
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
 	        	}
