@@ -64,6 +64,16 @@ public class GameLoopGUI {
     final int DIALOG_LOST_ID      = 3;
     final int DIALOG_HIGHSCORE_ID = 4;
     
+    final int GUI_PLAYERMONEY_ID     = 10;
+    final int GUI_PLAYERHEALTH_ID    = 11;
+    final int GUI_CREATUREVIEW_ID    = 12;
+    final int GUI_CREATURELEFT_ID    = 13;
+    final int GUI_PROGRESSBAR_ID     = 14;
+    final int GUI_NEXTLEVELINTEXT_ID = 15;
+    final int GUI_SHOWSTATUSBAR_ID   = 16;
+    final int GUI_SHOWHEALTHBAR_ID   = 17;
+    final int GUI_HIDEHEALTHBAR_ID   = 18;
+    
     
     	// Constructor. A good place to initiate all our different GUI-components.
     public GameLoopGUI(GameInit gi) {
@@ -459,8 +469,6 @@ public class GameLoopGUI {
 	
 		// This is used to handle calls from the GameLoop to show
 		// our dialogs.
-		// TODO: all the cases need different (and sane) ID-declarations.
-		//       havent done it yet since I dont know how many/which are needed...
 	public Handler guiHandler = new Handler() {
 	
 	    @Override
@@ -468,13 +476,13 @@ public class GameLoopGUI {
 	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        		 gameInit.showDialog(1);
+	        		 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        		 break;
 	        	 case DIALOG_WON_ID:
-	        		 gameInit.showDialog(2);
+	        		 gameInit.showDialog(DIALOG_WON_ID);
 	        		 break;
 	        	 case DIALOG_LOST_ID:
-	        		 gameInit.showDialog(3);
+	        		 gameInit.showDialog(DIALOG_LOST_ID);
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
 	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
@@ -483,14 +491,29 @@ public class GameLoopGUI {
 	        	    	 scoreNinjaAdapter.show(0);
 	        	     }
 	        		 break;
-	        	 case 19: // This is used to show how long time until next lvl.
-	        		 nrCreText.setText("Next level in: " + msg.arg1);
+	        		 
+	        	 case GUI_PLAYERMONEY_ID:
+	        		 // Update currencyView (MONEY)
+	        		 currencyView.setText("" + msg.arg1);
 	        		 break;
-	        	 case 20: // update number of creatures still alive on GUI.
+	        	 case GUI_PLAYERHEALTH_ID:
+	        		 // Update player-health.
+	        		 playerHealthView.setText("" + msg.arg1);
+	        		 break;
+	        	 case GUI_CREATUREVIEW_ID:
+	        		 // Update Enemy-ImageView
+	        		 enImView.setImageResource(msg.arg1);
+	        		 break;
+	        	 case GUI_CREATURELEFT_ID:
+	        		 // update number of creatures still alive on GUI.
 	        		 nrCreText.setText("" + msg.arg1);
 	        		 break;
-	        	 case 21: // update progressbar with creatures health.
+	        		 
+	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
+	        		 
+	        		 Log.d("GameLoopGUI", "progressbar: " + msg.what + " " + msg.arg1);
+	        		 
 	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
@@ -505,38 +528,33 @@ public class GameLoopGUI {
 	        		 }
 	        		 healthProgressBar.setProgress(msg.arg1);
 	        		 break;
-	        	 case 22:
-	        		 //If we want to use space in statusbar to show time to next level counter
-	        		 healthProgressBar.setVisibility(View.GONE);
-	        		 enImView.setVisibility(View.GONE);
+	        		 
+	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
+	        		 nrCreText.setText("Next level in: " + msg.arg1);
 	        		 break;
-	        	 case 23:
+	        		 
+	        	 case GUI_SHOWSTATUSBAR_ID:
+	        		 //Show statusbar
+		    			statusBar.setVisibility(View.VISIBLE);
+		    			break;
+	        	 case GUI_SHOWHEALTHBAR_ID:
 	        		 //If we want to switch back to healthbar
 	        		 healthProgressBar.setVisibility(View.VISIBLE);
 	        		 enImView.setVisibility(View.VISIBLE);
 	        		 break;
-	        	 case 24:
-	        		 //Show statusbar
-	    			statusBar.setVisibility(View.VISIBLE);
-	    			break;
-	        	 case 25:
-	        		 // Update currencyView.
-	        		 currencyView.setText("" + msg.arg1);
+	        	 case GUI_HIDEHEALTHBAR_ID:
+	        		 //If we want to use space in statusbar to show time to next level counter
+	        		 healthProgressBar.setVisibility(View.GONE);
+	        		 enImView.setVisibility(View.GONE);
 	        		 break;
-	        	 case 26:
-	        		 // Update player-health.
-	        		 playerHealthView.setText("" + msg.arg1);
-	        		 break;
-	        	 case 27:
-	        		 // Update Enemy-ImageView
-	        		 enImView.setImageResource(msg.arg1);
-	        		 break;
-	        	 case 98: // GAME IS DONE, CLOSE ACTIVITY.
+	    			
+	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
-	        	 case 99: // SAVE THE GAME.
+	        	 case -2: // SAVE THE GAME.
 	        		 gameInit.saveGame(msg.arg1);
 	        		 break;
+	        		 
 	        	 default:
 	                 Log.e("GAMELOOPGUI", "guiHandler error! msg.what: " + msg.what);
 	                 break;
@@ -547,6 +565,15 @@ public class GameLoopGUI {
 	
 	public ScoreNinjaAdapter getScoreNinjaAdapter() {
 		return this.scoreNinjaAdapter;
+	}
+	
+	
+	public void sendMessage(int i, int j, int k) {
+		Message msg = new Message();
+		msg.what = i;
+		msg.arg1 = j;
+		msg.arg2 = k;
+		guiHandler.sendMessage(msg);
 	}
 	
 }
