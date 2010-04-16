@@ -470,8 +470,10 @@ public class GameLoop implements Runnable {
     
     public void updateCreatureProgress(float dmg){
     	// Update the status, displaying total health of all creatures
+    	this.currentCreatureHealth -= dmg;
 		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
     }
+    
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
 		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
