@@ -124,7 +124,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->cFrame = id;
 	
 		//cache TextureName
-	id = (*env)->GetFieldID(env, class, "mTextureName", "I");
+	id = (*env)->GetFieldID(env, class, "currTexName", "I");
 	thisSprite->textureName = id;
 	
 	thisSprite->bufferName = malloc(sizeof(GLuint)*2);
