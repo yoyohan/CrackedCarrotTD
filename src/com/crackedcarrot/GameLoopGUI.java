@@ -79,6 +79,9 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi) {
     	gameInit = gi;
     	
+    	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
+    	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
         

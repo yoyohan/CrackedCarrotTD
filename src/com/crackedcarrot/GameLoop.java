@@ -358,6 +358,13 @@ public class GameLoop implements Runnable {
         		} catch (InterruptedException e) {
         			e.printStackTrace();
         		}
+        		
+        		try {
+        			dialogSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        		dialogSemaphore.release();
 
             	run = false;
         	} 
@@ -387,6 +394,13 @@ public class GameLoop implements Runnable {
             		} catch (InterruptedException e) {
             			e.printStackTrace();
             		}
+            		
+            		try {
+            			dialogSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			e.printStackTrace();
+            		}
+            		dialogSemaphore.release();
 
         			run = false;
         		}
