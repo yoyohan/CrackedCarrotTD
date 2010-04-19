@@ -22,7 +22,7 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
-
+import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
 
@@ -73,7 +73,7 @@ public class GameInit extends Activity {
     	 *  that are used for define the pixel resolution of current display;
     	 *  DisplayMetrics & Scaler */
         mGLSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView);
+        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this));
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
@@ -112,9 +112,9 @@ public class GameInit extends Activity {
             resumeTowers           = settings.getString("Towers", "");
         }
         // TODO:
-        // Är detta nödvändigt?
+        // ï¿½r detta nï¿½dvï¿½ndigt?
         //   difficulty = resumePlayerDIfficulty;
-        // Det används i WaveLoadern?
+        // Det anvï¿½nds i WaveLoadern?
         
         // Create the map requested by the player
         // TODO: resume needs to load the correct map aswell.
@@ -166,7 +166,11 @@ public class GameInit extends Activity {
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(gameLoop);
-
+        
+        //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
+        //You also need to uncomment the stopMethodTraceing() further down.
+        
+        //Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }
@@ -187,6 +191,10 @@ public class GameInit extends Activity {
     
     protected void onStop() {
     	gameLoop.stopGameLoop();
+    	
+    	//You also need to stop the trace when you are done!
+    	
+    	//Debug.stopMethodTracing();
     	super.onStop();
     }
     

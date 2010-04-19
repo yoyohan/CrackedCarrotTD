@@ -42,6 +42,7 @@ public class TowerLoader {
     private Shot relatedShot;
 	private float width;
 	private float height;
+	private int nFrames;
     
 	/**
 	 * Constructor 
@@ -189,11 +190,18 @@ public class TowerLoader {
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	break;
 						case 26:
+			            	// Number of frames in the shot texture
+							nFrames = Integer.parseInt(tmpStr[1].trim());
+			            	break;
+						case 27:
 			            	// Shot size
 			            	recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 
-			            	towerList[twrNbr] = new Tower(mResourceId, 0, 1);
-			            	relatedShot = new Shot(resID, 0, 1, towerList[twrNbr]);
+			            	towerList[twrNbr] = new Tower(mResourceId, 0);
+			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
+			            	relatedShot.setHeight(recalc.getX());
+			            	relatedShot.setWidth(recalc.getX());
+			            	
 			            	towerList[twrNbr].relatedShot = relatedShot;
 			            	
 			            	towerList[twrNbr].cloneTower(
@@ -219,9 +227,8 @@ public class TowerLoader {
 					            	coolDown,
 					            	width,
 					            	height,
-					            	recalc.getX(),
-					            	recalc.getX(),
-					            	resID);		
+					            	relatedShot
+			            			);		
 			            	
 			            	twrNbr++;
 			            	tmpCount = 0;

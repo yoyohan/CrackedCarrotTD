@@ -40,7 +40,7 @@ void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thi
 	
 }
 
-void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env){
+void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env, jobject thiz){
 	
     int i,j;
 
@@ -96,7 +96,7 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	GLfloat scale;
 
     bufferName = sprite->bufferName;
-	texBufNames = sprite->textureBufferNames;
+
 		
 	r = (*env)->GetFloatField(env, sprite->object, sprite->r);
 	g = (*env)->GetFloatField(env, sprite->object, sprite->g);
@@ -104,7 +104,6 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	a = (*env)->GetFloatField(env, sprite->object, sprite->opacity);
 			
 	scale = (*env)->GetFloatField(env, sprite->object, sprite->scale);
-	nFrames = (*env)->GetIntField(env, sprite->object, sprite->nFrames);
 	
 	currTexture = (*env)->GetIntField(env,sprite->object, sprite->textureName);
 	if(currTexture == 0){
@@ -115,6 +114,8 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
     	glBindTexture(GL_TEXTURE_2D, currTexture);
 		prevTexture = currTexture;
 	}
+	nFrames = texData[currTexture].nFrames;
+	texBufNames = texData[currTexture].textureBufferNames;
 	
 	glPushMatrix();
 	glLoadIdentity();
@@ -166,7 +167,7 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	
 }
 
-void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env){
+void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobject thiz){
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
 	
 }
