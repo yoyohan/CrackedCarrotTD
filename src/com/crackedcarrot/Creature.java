@@ -187,7 +187,7 @@ public class Creature extends Sprite{
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
-		GL.creaturDiesOnMap(1);
+		GL.creatureDiesOnMap(1);
 		
 		// TODO Remove creature from tracker
 		// mTracker.removeCreature(this, creatureIndex, currentGridPos);
