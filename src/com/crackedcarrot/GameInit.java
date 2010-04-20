@@ -97,50 +97,53 @@ public class GameInit extends Activity {
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
         Bundle extras  = getIntent().getExtras();
-        int levelChoice = 0;
+        int mapChoice = 0;
         int difficulty = 0;
         if(extras != null) {
-        	levelChoice = extras.getInt("com.crackedcarrot.menu.map");
+        	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         }
         
         	// Are we resuming an old saved game?
         int resume = 0;
         int resumeLevelNumber = 0;
+        int resumeMap = 0;
         int resumePlayerDifficulty = 0;
         int resumePlayerHealth = 0;
         int resumePlayerMoney = 0;
         String resumeTowers = null;
-        if (levelChoice == 0) {
-            // Restore preferences
+        if (mapChoice == 0) {
+            // Restore saved preferences
             SharedPreferences settings = getSharedPreferences("Resume", 0);
             resume                 = settings.getInt("Resume", 0) + 1;
             resumeLevelNumber      = settings.getInt("LevelNumber", 0);
+            resumeMap              = settings.getInt("Map", 0);
             resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
             resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
             resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
             resumeTowers           = settings.getString("Towers", "");
         } else {
-        		// We are not resuming anything, clear the old flag.
+        		// We are not resuming anything, clear the old flag(s). Prepare for a new Save.
     		SharedPreferences settings = getSharedPreferences("Resume", 0);
     		SharedPreferences.Editor editor = settings.edit();
     		editor.putInt("Resume", -1);
+    		editor.putInt("Map", mapChoice);
     		editor.commit();
         }
         
         // Create the map requested by the player
 
-        // resume needs to load the correct map aswell.
-        if (levelChoice == 0)
-        	levelChoice = resumeLevelNumber;
+       	// resume needs to load the correct map aswell.
+       	if (mapChoice == 0)
+       		mapChoice = resumeMap;
         
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
-        if (levelChoice == 1) 
+        if (mapChoice == 1) 
         	gameMap = mapLoad.readLevel("level1");
-        else if (levelChoice == 2)
+        else if (mapChoice == 2)
         	gameMap = mapLoad.readLevel("level2");
-        else if (levelChoice == 3)
+        else if (mapChoice == 3)
         	gameMap = mapLoad.readLevel("level3");
 
         //Define player specific variables depending on difficulty.
@@ -238,6 +241,8 @@ public class GameInit extends Activity {
     			// Increase the counter of # of resumes the player has used.
     		editor.putInt("Resume", settings.getInt("Resume", 0) + 1);
     		editor.putInt("LevelNumber", gameLoop.getLevelNumber());
+    		//editor.putInt("Map",... <- this is saved above, at the if (mapChoice == 0) check.
+    		// this comment added to keep people from going nuts looking for it.
     		editor.putInt("PlayerDifficulty", gameLoop.getPlayerData().getDifficulty());
     		editor.putInt("PlayerHealth", gameLoop.getPlayerData().getHealth());
     		editor.putInt("PlayerMoney", gameLoop.getPlayerData().getMoney());
