@@ -543,7 +543,7 @@ public class GameLoopGUI {
 	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings.getBoolean("optionsHighscore", false)) {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
-	        	    	 scoreNinjaAdapter.show(0);
+	        	    	 scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
 	        		 

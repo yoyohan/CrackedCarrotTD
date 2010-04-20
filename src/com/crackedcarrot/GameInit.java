@@ -141,7 +141,7 @@ public class GameInit extends Activity {
         else { // resume.
         	// TODO: set difficulty variable to this as well, so we load the correct
         	//       difficulty level on resume.
-        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1);
+        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 13);
         }
         
         //Load the creature waves and apply the correct difficulty

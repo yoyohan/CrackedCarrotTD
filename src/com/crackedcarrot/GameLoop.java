@@ -387,7 +387,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(-2, 2, 0);
                 	
                 	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, 0, 0);
+                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getInterestGainedEntireGame(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
@@ -520,7 +520,7 @@ public class GameLoop implements Runnable {
     	String s = "";
     	for (int i = 0; i < totalNumberOfTowers; i++) {
     		Tower t = mTower[i];
-    		s = s + t.getTowerType() + "," + (int) t.x + "," + (int) t.y + "-";
+    		s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
     	}
     	
     	return s;

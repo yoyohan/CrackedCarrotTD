@@ -72,5 +72,9 @@ public class Player {
 	public int getDifficulty() {
 		return difficulty;
 	}
+	
+	public int getInterestGainedEntireGame() {
+		return this.interestGainedEntireGame;
+	}
 
 }

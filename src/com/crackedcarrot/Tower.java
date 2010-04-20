@@ -3,9 +3,6 @@ package com.crackedcarrot;
 import java.util.Enumeration;
 import java.util.Random;
 
-import android.util.Log;
-
-
 /**
 * Class defining a tower in the game
 */
@@ -69,6 +66,9 @@ public class Tower extends Sprite {
     private int right_column;
     private int upper_row;
     private int bottom_row;
+    
+    	// used by resume to uniquely identify this tower-type.
+    private int towerTypeId;
 
     private boolean esplodeGIB = false;
     
@@ -474,8 +474,8 @@ public class Tower extends Sprite {
 		if (this.right_column > mScaler.getGridWidth())
 			this.right_column = mScaler.getGridWidth();
 	}
-
-	public int getTowerType() {
-		return towerType;
+	
+	public int getTowerTypeId() {
+		return towerTypeId;
 	}
 }

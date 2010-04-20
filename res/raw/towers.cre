@@ -90,7 +90,7 @@ minDamage::20
 maxDamage::30
 Shot-velocity::250
 cooldown between shots::2
-hasFrostDamage::falseeditable	true
+hasFrostDamage::false
 frostTime(sec)::0
 hasFireDamage::false
 hasPoisonDamage::true
