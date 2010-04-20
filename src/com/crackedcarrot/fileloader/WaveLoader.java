@@ -3,6 +3,8 @@ package com.crackedcarrot.fileloader;
 import java.io.IOException;
 import java.io.InputStream;
 import android.content.Context;
+import android.util.Log;
+
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 
@@ -86,47 +88,55 @@ public class WaveLoader {
 							break;
 						case 3:
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
-			            	tmpLvl.setDeadResourceId(resID);
+			            	tmpLvl.setDisplayResourceId(resID);
 							break;
 						case 4:
-							tmpLvl.creepTitle = tmpStr[1].trim();
+			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
+			            	tmpLvl.setDeadResourceId(resID);
 							break;
 						case 5:
-			            	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
-			            	tmpLvl.setWidth(recalc.getX());
-			            	tmpLvl.setHeight(recalc.getX());
-							break;							
+							tmpLvl.scale = Float.valueOf(tmpStr[1].trim());
+							break;
 						case 6:
+							tmpLvl.creepTitle = tmpStr[1].trim();
+							break;
+						case 7:
 			            	tmpLvl.setHealth(Integer.parseInt(tmpStr[1].trim()));
 			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
 							break;
-						case 7:
+						case 8:
 			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
+
+			            	// Define creature size
+			            	Coords recalc = scaler.scale(60,0);
+			            	tmpLvl.setWidth(recalc.getX());
+			            	tmpLvl.setHeight(recalc.getX());
+
 			            	// I will put velocity here
-			            	recalc = scaler.scale(30,0);
+			            	recalc = scaler.scale(50,0);
 			        		if (tmpLvl.isCreatureFast())
 				            	tmpLvl.setVelocity(recalc.getX()* 2);
 			        		else tmpLvl.setVelocity(recalc.getX());
 							break;
-						case 8:
+						case 9:
 							fireResistant = (Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
-						case 9:
+						case 10:
 							frostResistant = (Boolean.parseBoolean(tmpStr[1].trim()));
 							break;
-						case 10:
+						case 11:
 							poisonResistant = (Boolean.parseBoolean(tmpStr[1].trim()));			            	
 			            	tmpLvl.setCreatureSpecials(fast,fireResistant,frostResistant,poisonResistant);
 			            	break;
-						case 11:
+						case 12:
 			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
 							break;
-						case 12:
+						case 13:
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;
 			            	tmpCount = 0;
-							break;
+			            	break;
 						}
 					}
 					buf = "";

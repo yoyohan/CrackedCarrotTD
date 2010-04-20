@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import java.util.Random;
+
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining creature in the game
@@ -10,7 +12,6 @@ public class Creature extends Sprite{
 	//SoundManager ref
 	private SoundManager soundManager;
 	// Creatures needs to know gridlocation
-	private Scaler mScaler;
 	//Waypoints for this creature
 	private Coords[] wayP;
 	//Variable keeping all creatures from going in a straight line
@@ -23,6 +24,8 @@ public class Creature extends Sprite{
     private int mDeadResourceId;
     // SPRITE DEAD 
 	private TextureData mDeadTextureData;
+	// Display image
+	private int mDisplayResourceId;
     // The speed of the creature
     protected float velocity;
     // Delay before spawning the creature to the map
@@ -31,7 +34,7 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
-    //Is this creature dead ?
+    //Is this creature dead USED BY ALBIN
     private boolean dead;
     // All creatures are dead:
     private boolean allDead = false;
@@ -53,6 +56,11 @@ public class Creature extends Sprite{
 	protected int creatureIndex;
 	protected Tracker mTracker;
 
+	// Variables used for animation
+    private Random rand;
+	protected float animationTime;
+	protected float tmpAnimationTime;
+	
     
 	public Creature(int resourceId, 
 					int type, 
@@ -62,7 +70,6 @@ public class Creature extends Sprite{
 					Coords[] wayP, 
 					GameLoop loop, 
 					int creatureIndex, 
-					Scaler mScaler, 
 					Tracker mTracker){
 		
 		super(resourceId, NativeRender.CREATURE, type);
@@ -73,9 +80,12 @@ public class Creature extends Sprite{
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 		this.GL = loop;
-		this.mScaler = mScaler;
 		this.creatureIndex = creatureIndex;
 		this.mTracker = mTracker;
+	
+		rand = new Random();
+		double randomDouble = (rand.nextDouble());
+		animationTime = (float)randomDouble;
 	}
 	
 	//This is only used by the level constructor.
@@ -133,6 +143,14 @@ public class Creature extends Sprite{
 		return creatureFast;
 	}
 
+	public void animate(float timeDeltaSeconds) {
+		this.tmpAnimationTime -= timeDeltaSeconds;
+		if (tmpAnimationTime <= 0f) {
+			this.tmpAnimationTime = this.animationTime;
+			this.animate();
+		}
+	}
+	
 	public void update(float timeDeltaSeconds){
 	
 		//Time to spawn.
@@ -151,6 +169,7 @@ public class Creature extends Sprite{
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
 			move(movement);
+			animate(timeDeltaSeconds);
 		}
 	    // Creature is dead and fading...
 		else if (allDead) {
@@ -324,5 +343,14 @@ public class Creature extends Sprite{
 	//	currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
 	//	mTracker.addCreature(this,creatureIndex,currentGridPos);
 	//}
+	
+
+	// This setters is used by the waveloader. Needed to show correct creature
+	public void setDisplayResourceId(int resID) {
+		this.mDisplayResourceId = resID;
+	}
+	public int getDisplayResourceId() {
+		return this.mDisplayResourceId;
+	}
 
 }

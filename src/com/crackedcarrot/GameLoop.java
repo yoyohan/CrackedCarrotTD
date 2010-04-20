@@ -100,7 +100,6 @@ public class GameLoop implements Runnable {
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
 	    								i,
-	    								mScaler,
 	    								mTracker);
 
 	    	mCreatures[i].draw = false;
@@ -131,7 +130,11 @@ public class GameLoop implements Runnable {
 			}
 			
 			for(int i = 0; i < mLvl.length; i++){
-				mLvl[i].setCurrentTexture(renderHandle.getTexture(mLvl[i].getResourceId()));
+				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
+				Log.d("INIT", ""+mLvl[i].getResourceId());
+				
+				Log.d("INIT", ""+test.mTextureName);
+				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
@@ -193,7 +196,7 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the players health
 		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
 		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
@@ -215,7 +218,7 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the players health
 		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
 		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 
 		// And set the progressbar with creature health to full again.
 		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, 100, 0);
