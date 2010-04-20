@@ -1,5 +1,7 @@
 package com.crackedcarrot.HUD;
 
+import android.util.Log;
+
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 
@@ -13,13 +15,15 @@ public class HUDHandler extends Thread{
 	}
 	
 	public void showGrid(){
-		 if(!(g.Show.isAlive() && g.Hide.isAlive())){
+		Log.d("HUD","Showing grid.");
+		 if(!(g.Show.isAlive() || g.Hide.isAlive())){
 			 g.Show.start();
 		 }
 	}
 	
 	public void hideGrid(){
-		 if(!(g.Show.isAlive() && g.Hide.isAlive())){
+		Log.d("HUD","Showing grid.");
+		 if(!(g.Show.isAlive() || g.Hide.isAlive())){
 			 g.Hide.start();
 		 }
 	}

@@ -1,6 +1,7 @@
 package com.crackedcarrot.HUD;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
@@ -24,9 +25,11 @@ public class Grid extends Sprite{
 		setType(NativeRender.HUD, 0);
 	}
 	
-	public Thread Show = new Thread(){
+	public class Show implements Runnable{
 		@Override
 		public void run() {
+			Log.d("HUD", "Starting the thread.");
+			draw = true;
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
@@ -39,10 +42,11 @@ public class Grid extends Sprite{
 				currentTime = SystemClock.uptimeMillis();
 			}
 			opacity = 1.0f;
+			Log.d("HUD", "Stoping the thread.");
 		}
 	};
 	
-	public Thread Hide = new Thread(){
+	public class Hide implements Runnable{
 		@Override
 		public void run() {
 			startTime = SystemClock.uptimeMillis();
@@ -57,6 +61,7 @@ public class Grid extends Sprite{
 				currentTime = SystemClock.uptimeMillis();
 			}
 			opacity = 0.0f;
+			draw = false;
 		}
 	};
 }

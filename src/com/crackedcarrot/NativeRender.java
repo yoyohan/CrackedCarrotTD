@@ -68,8 +68,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
         sBitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;
         
         this.texLib = texLib;
-		mContext = context;
+		this.mContext = context;
 		this.view = view;
+		this.sprites[HUD] = HUDObjects;
 		System.loadLibrary("render");
 	}
 

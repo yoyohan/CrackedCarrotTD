@@ -90,7 +90,7 @@ public class GameInit extends Activity {
 
         
     	// We need this to communicate with our GUI.
-        gameLoopGui = new GameLoopGUI(this);
+        gameLoopGui = new GameLoopGUI(this, hudHandler);
         
         
         // Fetch information from previous intent. The information will contain the
