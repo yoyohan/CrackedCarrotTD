@@ -3,9 +3,9 @@ package com.crackedcarrot.HUD;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
+import com.crackedcarrot.menu.R;
 
 public class Grid extends Sprite{
 	
@@ -16,15 +16,15 @@ public class Grid extends Sprite{
 	private Show showRunner;
 	private Hide hideRunner;
 	
-	public Grid(int resourceId, Scaler s){
+	public Grid(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
-		super(resourceId, NativeRender.HUD, 0);
+		super(R.drawable.grid4px, HUD, 0);
 		this.x = 0; this.y = 0; this.z = 0;
 		this.setWidth(s.getScreenResolutionX());
         this.setHeight(s.getScreenResolutionY());
         this.draw = false;
         this.opacity = 0.0f;
-		setType(NativeRender.HUD, 0);
+		setType(HUD, 0);
 		
 		showRunner = new Show();
 		hideRunner = new Hide();

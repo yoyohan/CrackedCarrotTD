@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.crackedcarrot.HUD.Grid;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -50,7 +49,6 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[]    mLvl;
     private Shot[]     mShots;
-    private Sprite[]   mGrid;
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
@@ -75,8 +73,6 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-		this.mGrid = new Grid[1]; 
-		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
@@ -146,13 +142,13 @@ public class GameLoop implements Runnable {
 		// Sends an array with sprites to the renderer
 		
 		//UGLY HACK!!
-		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
+		mGameMap.getBackground()[0].setType(Sprite.BACKGROUND, 0);
 		//END UGLY HACK!!
 		
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
+		renderHandle.setSprites(mCreatures, Sprite.CREATURE);
+		renderHandle.setSprites(mTower, Sprite.TOWER);
+		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit

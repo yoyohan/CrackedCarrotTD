@@ -72,7 +72,7 @@ public class Creature extends Sprite{
 					int creatureIndex, 
 					Tracker mTracker){
 		
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 		this.player = player;
@@ -90,7 +90,7 @@ public class Creature extends Sprite{
 	
 	//This is only used by the level constructor.
 	public Creature(int resourceId, int type){
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 
