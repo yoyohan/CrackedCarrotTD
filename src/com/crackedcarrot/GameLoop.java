@@ -484,6 +484,7 @@ public class GameLoop implements Runnable {
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
 		//gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERHEALTH_ID)) {
     	if (SystemClock.uptimeMillis() > msgPlayerHealthTime + 1000) {
     		msgPlayerHealthTime = SystemClock.uptimeMillis();
     		
@@ -491,7 +492,7 @@ public class GameLoop implements Runnable {
     		msgPlayerHealth.arg1 = player.getHealth();
     		gui.pushMessage(msgPlayerHealth);
     		
-    		Log.d("GAMELOOP", "push'd msgPlayerHealth");
+    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
     	}
     }
 
@@ -511,7 +512,7 @@ public class GameLoop implements Runnable {
     		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
     		gui.pushMessage(msgCreatureLeft);
     		
-    		Log.d("GAMELOOP", "push'd msgCreatureLeft");
+    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
     	}
     }
     
@@ -527,7 +528,7 @@ public class GameLoop implements Runnable {
     		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
     		gui.pushMessage(msgProgressbar);
     		
-    		Log.d("GAMELOOP", "push'd msgProgressbar");
+    		//Log.d("GAMELOOP", "push'd msgProgressbar");
     	}
     }
     
@@ -542,7 +543,7 @@ public class GameLoop implements Runnable {
     		msgMoney.arg1 = player.getMoney();
     		gui.pushMessage(msgMoney);
     		
-    		Log.d("GAMELOOP", "push'd msgMoney");
+    		//Log.d("GAMELOOP", "push'd msgMoney");
     	}
     }
     
