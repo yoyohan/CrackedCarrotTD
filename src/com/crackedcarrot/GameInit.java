@@ -154,7 +154,7 @@ public class GameInit extends Activity {
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
-        TowerLoader towerLoad = new TowerLoader(this,res);
+        TowerLoader towerLoad = new TowerLoader(this,res,nativeRenderer);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP

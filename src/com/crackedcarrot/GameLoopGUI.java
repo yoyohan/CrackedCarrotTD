@@ -124,7 +124,6 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		expandMenu.switchMenu(true);
-        		exButton.setBackgroundResource(R.drawable.button_pressed);
         	}
         });
         /**final OnTouchListener o = new View.OnTouchListener() {
@@ -561,7 +560,7 @@ public class GameLoopGUI {
 	        		 // update number of creatures still alive on GUI.
 	        		 String tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = "0" + tt;
+	        			 tt = " " + tt;
 	        		 nrCreText.setText("" + tt);
 	        		 break;
 	        		 
@@ -586,7 +585,7 @@ public class GameLoopGUI {
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
 	        		 tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = "0" + tt;
+	        			 tt = " " + tt;
 	        		 nrCreText.setText("Next level in: " + tt);
 	        		 break;
 	        		 
