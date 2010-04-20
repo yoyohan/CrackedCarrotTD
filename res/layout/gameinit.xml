@@ -80,8 +80,8 @@
         
         	<Button
         		android:id="@+id/inmenu1"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/inmenu1_button" />
 
@@ -97,8 +97,8 @@
 		        		
 	        <Button
         		android:id="@+id/inmenu2"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/t1" />
 
@@ -114,8 +114,8 @@
         		
 	        <Button
         		android:id="@+id/inmenu3"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/t2" 
         	/>
@@ -131,8 +131,8 @@
 	    >
 	        <Button
         		android:id="@+id/inmenu4"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/t3" />
         		
@@ -148,8 +148,8 @@
 	
 	        <Button
         		android:id="@+id/inmenu5"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/t4" />
     
@@ -166,7 +166,7 @@
 			<LinearLayout
 				android:layout_width="192dp"
 				android:layout_height="48dp"
-				android:padding="2dp"
+				android:padding="6dp"
 				android:gravity="center_horizontal"
 				android:background="@drawable/button_normal"
 		    >
@@ -191,8 +191,8 @@
 		    
 	        <Button
         		android:id="@+id/inmenu6"
-        		android:layout_width="48dp"
-        		android:layout_height="48dp"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
 				android:scaleType="fitXY"
         		android:background="@drawable/button_close_64" />
 			</LinearLayout>    

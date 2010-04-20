@@ -70,6 +70,8 @@ public class Tower extends Sprite {
     private int upper_row;
     private int bottom_row;
 
+    private boolean esplodeGIB = false;
+    
 	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
 		super(resourceId, NativeRender.TOWER, type);
 		this.soundManager = soundManager;
@@ -118,7 +120,9 @@ public class Tower extends Sprite {
 		
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
-				double distance = Math.sqrt(Math.pow((this.x - mCreatures[i].x),2) + Math.pow((this.y - mCreatures[i].y),2));
+				double distance = Math.sqrt(
+									Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
+									Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
 						targetCreature = mCreatures[i];
@@ -133,7 +137,7 @@ public class Tower extends Sprite {
 	}
 
 	/**
-	 * TODO: TRACKER BETA
+	 * TRACKER BETA
 	 * The tower is safe to asume that all creatures that will be returned by the tracker is alive 
 	 */
 	private Creature trackNearestEnemyBETA() {
@@ -142,7 +146,9 @@ public class Tower extends Sprite {
 		Enumeration<Creature> tmpCreep = creepTracker.getCreaturesInRange(left_column, right_column, upper_row, bottom_row);
 		while (tmpCreep.hasMoreElements()) {
 			Creature currCreep = tmpCreep.nextElement();
-			double distance = Math.sqrt(Math.pow((currCreep.x - currCreep.x),2) + Math.pow((this.y - currCreep.y),2));
+			double distance = Math.sqrt(
+					Math.pow((this.relatedShot.x - currCreep.x + currCreep.getWidth()/2),2) + 
+					Math.pow((this.relatedShot.y - currCreep.y + currCreep.getHeight()/2),2));
 			if(distance < range){ // Is the creature within tower range?
 				if (lastCreatureDistance > distance) {
 					targetCreature = currCreep;
@@ -158,7 +164,7 @@ public class Tower extends Sprite {
 	 * Method that tracks all creatures that are in range of tower. It iterates over a list of creatures and 
 	 * picks all creatures in range.
 	 */
-	private int trackAllNearbyEnemies(int nbrCreatures, float x, float y, boolean doFullDamage) {
+	private int trackAllNearbyEnemies(int nbrCreatures, boolean doFullDamage) {
 		int nbrOfHits = 0;
 		float range;
 		if (doFullDamage)
@@ -168,8 +174,10 @@ public class Tower extends Sprite {
 		
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
-				double distance = Math.sqrt(Math.pow((x - mCreatures[i].x),2) + Math.pow((y - mCreatures[i].y),2));
-				if(distance < range){ 
+				double distance = Math.sqrt(
+						Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
+						Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
+				if(distance <= range){ 
 					float randomInt;
 					if (doFullDamage) {
 						float damageFactor = specialDamage(mCreatures[i],false);
@@ -192,10 +200,30 @@ public class Tower extends Sprite {
 	 * so the damage wont be predictable during game play
 	 */
 	private void createProjectileDamage(float timeDeltaSeconds, int nbrCreatures){
+		// AOE tower uses this to create animate
+		if (esplodeGIB) {
+			if (this.tmpCoolDown <= this.coolDown/2) {
+				this.relatedShot.draw = false;
+				this.esplodeGIB = false;
+				this.resetShotCordinates();
+				this.relatedShot.scale = 1;
+				this.relatedShot.cFrame = 0;
+			}
+			else {
+				//this.relatedShot.cFrame = (int)
+				//	(2*(this.relatedShot.getNbrOfFrames()-1)
+				//			* (1-tmpCoolDown/coolDown)) + 1;
+				this.relatedShot.cFrame = (int)
+					(
+							(this.relatedShot.getNbrOfFrames() - 1)*((coolDown-tmpCoolDown)/(coolDown/2))
+					);
+				this.relatedShot.cFrame++;
+				
+			}
+		}
 		//First we have to check if the tower is ready to fire
-		if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
+		else if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
 			// This is happens when a tower with projectile damage is ready to fire.
-			//TODO: THIS LINE WILL MAKE TOWER USE TRACKER
 			//this.targetCreature = trackNearestEnemyBETA();
 			this.targetCreature = trackNearestEnemy(nbrCreatures);
 			towerStartFireSequence(this.targetCreature);
@@ -211,34 +239,41 @@ public class Tower extends Sprite {
 	 */
 	private void updateProjectile(float timeDeltaSeconds, int nbrCreatures) {
 
-		float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y;
-		float xDistance = (targetCreature.x+(targetCreature.getWidth()/2)) - this.relatedShot.x;
+		float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y+(this.relatedShot.getHeight()/2);
+		float xDistance = (targetCreature.x+(targetCreature.getWidth()/2)) - this.relatedShot.x+(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
 		// This will only happen if we have reached our destination creature
-		if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) {
-    		this.relatedShot.draw = false;
-    		this.resetShotCordinates();
-    		float damageFactor = specialDamage(this.targetCreature,false);
-    		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
-    		targetCreature.damage(randomInt);
-    		//IF A PROJECTILEAOE tower fires a shot we also have to damage surrounding creatures
-    		if (this.towerType == this.PROJECTILEAOE){
-		    	this.trackAllNearbyEnemies(nbrCreatures,targetCreature.x,targetCreature.y,false);
-    		}
-		}
+		if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) 
+			projectileHitsTarget(nbrCreatures);		
 		else {
 			// Travel until we reach target
 			double radian = Math.atan2(yDistance, xDistance);
 			this.relatedShot.x += Math.cos(radian) * xyMovement;
 			this.relatedShot.y += Math.sin(radian) * xyMovement;
 		}
-
 	}
 
+	private void projectileHitsTarget(int nbrCreatures) {
+		this.tmpCoolDown = this.coolDown;
+
+		float damageFactor = specialDamage(this.targetCreature,false);
+		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
+		targetCreature.damage(randomInt);
+		//IF A PROJECTILEAOE tower fires a shot we also have to damage surrounding creatures
+		if (this.towerType == this.PROJECTILEAOE){
+	    	this.trackAllNearbyEnemies(nbrCreatures,false);
+	    	relatedShot.scale(this.rangeAOE);
+	    	esplodeGIB = true;
+		}
+		else {
+			this.resetShotCordinates();
+			this.relatedShot.draw = false;
+		}
+	}
 	
 	/**
-	 * TODO: Method that calculates AOE damage for a specific tower
+	 * Method that calculates AOE damage for a specific tower
 	 * depending on the upgrade level and a random integer
 	 * so the damage wont be predictable during game play
 	 * This method is only used by towers with direct aoe damage.
@@ -247,20 +282,20 @@ public class Tower extends Sprite {
 	private void createPureAOEDamage(int nbrCreatures){
 		if (this.tmpCoolDown <= this.coolDown/2) {
 			this.relatedShot.draw = false;
+			this.resetShotCordinates();
 		}
 		else if (this.relatedShot.draw && this.tmpCoolDown-this.coolDown/2 <= 1f) {
 	    	this.relatedShot.opacity = this.tmpCoolDown-this.coolDown/2;
 		}
 		if (this.tmpCoolDown <= 0) {
-			if (trackAllNearbyEnemies(nbrCreatures,this.x,this.y,true) > 0) {
+			if (trackAllNearbyEnemies(nbrCreatures,true) > 0) {
+				// TODO: 
+				// TODO:
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-				this.relatedShot.scale = (this.range*2)/this.relatedShot.getWidth();
-	    		this.relatedShot.x = this.x + this.getWidth()/2 - this.range;
-	    		this.relatedShot.y = this.y + this.getHeight()/2 - this.range;
-				this.relatedShot.x = this.relatedShot.x/this.relatedShot.scale;
-				this.relatedShot.y = this.relatedShot.y/this.relatedShot.scale;				
+				this.resetShotCordinates();
+				relatedShot.scale(this.range);
 			}
 		}
 	}	
@@ -286,7 +321,7 @@ public class Tower extends Sprite {
 		if (targetCreature != null) {
 			// play shot1.mp3
 			soundManager.playSound(0);
-			this.tmpCoolDown = this.coolDown;
+			//this.tmpCoolDown = this.coolDown;
 			this.relatedShot.draw = true;
 		}
 	}
@@ -398,8 +433,9 @@ public class Tower extends Sprite {
 		
 		// This cannot be in the cloneTower function because
 		// then it breaks with TowerLoader.java
-		this.setCurrentTexture(clone.getCurrentTexture());
-		this.relatedShot.setCurrentTexture(clone.relatedShot.getCurrentTexture());
+
+		//this.setCurrentTexture(clone.getCurrentTexture());
+		//this.relatedShot.setCurrentTexture(clone.relatedShot.getCurrentTexture());
 		
 		this.draw = true;
 		this.x = towerPlacement.x;
@@ -416,9 +452,12 @@ public class Tower extends Sprite {
 		
 		Coords range = mScaler.getGridXandY((int)this.range, 0);
 		int size = range.x;
+
+		
+		
 		
 		// TODO USED BY tracker to define tower position
-		//ï¿½versta raden:
+		//Översta raden:
 		this.upper_row = row+size;
 		if (this.upper_row > mScaler.getGridHeight())
 			this.upper_row = mScaler.getGridHeight();
@@ -426,11 +465,11 @@ public class Tower extends Sprite {
 		this.bottom_row = row-size;
 		if (this.bottom_row < 0)
 			this.bottom_row = 0;
-		//Vï¿½nstra
+		//Vänstra
 		this.left_column = column - size;
 		if (this.left_column < 0)
 			this.left_column = 0;
-		//Hï¿½gra
+		//Högra
 		this.right_column = column + size;
 		if (this.right_column > mScaler.getGridWidth())
 			this.right_column = mScaler.getGridWidth();
