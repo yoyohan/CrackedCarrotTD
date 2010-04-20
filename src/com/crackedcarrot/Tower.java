@@ -478,4 +478,8 @@ public class Tower extends Sprite {
 	public int getTowerType() {
 		return towerType;
 	}
+	public void setTowerTypeId(int twrNbr) {
+		// TODO Auto-generated method stub
+		
+	}
 }
