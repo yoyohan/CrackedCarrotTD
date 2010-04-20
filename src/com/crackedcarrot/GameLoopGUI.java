@@ -170,6 +170,8 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
+
         	}
         });
         Button inMenu4 = (Button) gameInit.findViewById(R.id.inmenu4);
@@ -184,6 +186,7 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
         	}
         });
         Button inMenu5 = (Button) gameInit.findViewById(R.id.inmenu5);
@@ -198,6 +201,7 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
         	}
         });
 
@@ -213,6 +217,7 @@ public class GameLoopGUI {
         		towerbutton2.setVisibility(View.VISIBLE);
         		towerbutton3.setVisibility(View.VISIBLE);
         		towerbutton4.setVisibility(View.VISIBLE);
+        		hud.hideGrid();
         	}
         });
         

@@ -81,6 +81,7 @@ public class GameInit extends Activity {
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
         hudHandler = new HUDHandler(R.drawable.grid4px, res);
+        hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),

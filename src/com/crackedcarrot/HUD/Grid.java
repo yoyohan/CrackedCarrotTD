@@ -10,9 +10,11 @@ import com.crackedcarrot.Sprite;
 public class Grid extends Sprite{
 	
 	private long startTime;
-	private long timeIncrement;
 	private long currentTime;
 	private long lastUpdateTime;
+	
+	private Show showRunner;
+	private Hide hideRunner;
 	
 	public Grid(int resourceId, Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
@@ -23,9 +25,20 @@ public class Grid extends Sprite{
         this.draw = false;
         this.opacity = 0.0f;
 		setType(NativeRender.HUD, 0);
+		
+		showRunner = new Show();
+		hideRunner = new Hide();
 	}
-	
-	public class Show implements Runnable{
+
+	public Show getShowRunner() {
+		return showRunner;
+	}
+
+	public Hide getHideRunner() {
+		return hideRunner;
+	}
+
+	private class Show implements Runnable{
 		@Override
 		public void run() {
 			Log.d("HUD", "Starting the thread.");
@@ -46,7 +59,7 @@ public class Grid extends Sprite{
 		}
 	};
 	
-	public class Hide implements Runnable{
+	private class Hide implements Runnable{
 		@Override
 		public void run() {
 			startTime = SystemClock.uptimeMillis();
