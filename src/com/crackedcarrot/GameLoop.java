@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.crackedcarrot.HUD.Grid;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -140,15 +141,16 @@ public class GameLoop implements Runnable {
 			e.printStackTrace();
 		}
 		// Sends an array with sprites to the renderer
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
-		renderHandle.setSprites(mGrid, NativeRender.GRID);
 		
 		//UGLY HACK!!
 		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
 		//END UGLY HACK!!
+		
+		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
+		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
+		renderHandle.setSprites(mTower, NativeRender.TOWER);
+		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		//renderHandle.setSprites(mGrid, NativeRender.HUD);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
         // allocation during the test, the GC should stay dormant and not
