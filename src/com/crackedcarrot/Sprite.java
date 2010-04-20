@@ -13,6 +13,7 @@ public class Sprite{
     public float x;
     public float y;
     public float z;
+    
     // Is the sprite going to be draw'd or not?
     public boolean draw = true;
     // color and opacity and for this sprite.
@@ -22,7 +23,7 @@ public class Sprite{
     public float opacity = 1.0f;
     //This needs to be here for the sake of animated sprites.
     //It makes the implementation of animated sprites mutch simpler.
-	private int cFrame;
+	protected int cFrame;
     // Size.
     private float width;
     private float height;
@@ -30,7 +31,7 @@ public class Sprite{
     public float scale = 1.0f;
     // The OpenGL ES texture handle to draw.
     private int currTexName;
-    private TextureData texData;
+    public TextureData texData;
     // The id of the original resource that the firstCurrTexName is based on.
     private int mResourceId;
     
@@ -105,5 +106,24 @@ public class Sprite{
 		else{
 			return false;
 		}
+	}
+	
+	public void scale(float newSize) {
+		// Calculate how much we have to scale
+		this.scale = newSize*2/this.width;
+		// Find center of the submitted sprite
+		float cen_x = x + this.width/2;
+		float cen_y = y + this.height/2;
+		// Calculate the real position without scaling 
+		float new_x = cen_x - newSize;
+		float new_y = cen_y - newSize;
+		// Apply scaling to sprite
+		x = new_x/this.scale;
+		y = new_y/this.scale;				
+	}
+	
+	
+	public int getNbrOfFrames() {
+		return texData.nFrames;
 	}
 }

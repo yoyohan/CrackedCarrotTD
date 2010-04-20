@@ -10,6 +10,7 @@ import android.util.Log;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.textures.TextureData;
 
 /**
  * A runnable that updates the position of each creature and projectile
@@ -251,7 +252,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + (reverse/special)));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*2)));
 		}
 	}
 
@@ -431,8 +432,17 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement, mScaler);
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
-				totalNumberOfTowers++;
 				
+				try {
+					TextureData tex = renderHandle.getTexture(mTower[totalNumberOfTowers].getResourceId());
+					mTower[totalNumberOfTowers].setCurrentTexture(tex);
+					TextureData tex2 = renderHandle.getTexture(mTower[totalNumberOfTowers].relatedShot.getResourceId());
+					mTower[totalNumberOfTowers].relatedShot.setCurrentTexture(tex2);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				totalNumberOfTowers++;
 				soundManager.playSound(20);
 				
 				return true;
