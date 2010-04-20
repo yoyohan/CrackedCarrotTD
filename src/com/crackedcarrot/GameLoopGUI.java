@@ -79,6 +79,9 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi) {
     	gameInit = gi;
     	
+    	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
+    	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
         
@@ -566,7 +569,6 @@ public class GameLoopGUI {
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
-	        		 
 	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
@@ -608,6 +610,7 @@ public class GameLoopGUI {
 	        		 gameInit.finish();
 	        		 break;
 	        	 case -2: // SAVE THE GAME.
+	        		 	// arg 1 = save game, 2 = remove saved game.
 	        		 gameInit.saveGame(msg.arg1);
 	        		 break;
 	        		 

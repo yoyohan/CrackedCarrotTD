@@ -161,7 +161,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 					else
 						nativeDataPoolSize(i, 0);
 				}
-				int lastTextureId = -1;
 				for(int j = 0; j < sprites.length; j++){
 					if(sprites[j] == null)
 						continue;

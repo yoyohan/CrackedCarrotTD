@@ -359,6 +359,13 @@ public class GameLoop implements Runnable {
         		} catch (InterruptedException e) {
         			e.printStackTrace();
         		}
+        		
+        		try {
+        			dialogSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        		dialogSemaphore.release();
 
             	run = false;
         	} 
@@ -388,6 +395,13 @@ public class GameLoop implements Runnable {
             		} catch (InterruptedException e) {
             			e.printStackTrace();
             		}
+            		
+            		try {
+            			dialogSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			e.printStackTrace();
+            		}
+            		dialogSemaphore.release();
 
         			run = false;
         		}
@@ -450,10 +464,12 @@ public class GameLoop implements Runnable {
     public void creatureLeavesMAP(int n){
     	this.remainingCreaturesALL -= n;
     }
+    
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
 		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
+
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;
