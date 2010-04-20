@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.crackedcarrot.menu.R;
@@ -68,6 +69,7 @@ public class Server extends Activity {
     	if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
+            Log.d("SERVER", "Start server thread");
     	}
     }
     
@@ -98,6 +100,7 @@ public class Server extends Activity {
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
             } catch (IOException e) { }
             mmServerSocket = tmp;
+            Log.d("SERVER", "Serverthread constructor");
         }
 
         public void run() {
@@ -109,6 +112,7 @@ public class Server extends Activity {
                 } catch (IOException e) {
                     break;
                 }
+                Log.d("SERVER", "Serverthread running");
                 // Connection accepted?
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)

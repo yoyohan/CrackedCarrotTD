@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class Client extends Activity {
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+            Log.d("CLIENT", "Request enable Bluetooth");
         } 
     }
     
@@ -84,6 +86,7 @@ public class Client extends Activity {
     	if (mConnectThread == null) {
     		mConnectThread = new ConnectThread(device);
     		mConnectThread.start();
+    		Log.d("CLIENT", "Start connect thread");
     	}
     }
     
@@ -124,7 +127,7 @@ public class Client extends Activity {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
             mmDevice = device;
-
+            Log.d("CLIENT", "Connectthread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
