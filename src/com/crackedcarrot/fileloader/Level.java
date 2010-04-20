@@ -72,5 +72,7 @@ public class Level extends Creature {
 		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
 		clone.setDead(false);
 		clone.setAllDead(false);
-	}	
+		clone.scale = this.scale;
+		clone.setDisplayResourceId(this.getDisplayResourceId());
+	}
 }

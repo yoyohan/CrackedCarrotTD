@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 import com.crackedcarrot.textures.TextureData;
 
 public class Sprite{

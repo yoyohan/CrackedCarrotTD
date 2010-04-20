@@ -42,15 +42,13 @@ public class TowerLoader {
     private Shot relatedShot;
 	private float width;
 	private float height;
-	private NativeRender renderHandle;
 	/**
 	 * Constructor 
 	 * 
 	 * @param  Context  	The context of the activity that requested the loader.
 	 * @param  Scaler	 	A scaler.	
 	 */
-	public TowerLoader(Context context, Scaler scaler, NativeRender renderHandle){
-		this.renderHandle = renderHandle;
+	public TowerLoader(Context context, Scaler scaler){
 		this.context = context;
 		this.scaler = scaler;
 	}

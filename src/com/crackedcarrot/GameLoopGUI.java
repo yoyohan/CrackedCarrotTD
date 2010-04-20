@@ -482,7 +482,7 @@ public class GameLoopGUI {
 
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(currLvl.getResourceId());
+	    	image.setImageResource(currLvl.getDisplayResourceId());
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
