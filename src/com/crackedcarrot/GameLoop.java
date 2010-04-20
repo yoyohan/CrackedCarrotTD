@@ -523,6 +523,8 @@ public class GameLoop implements Runnable {
     		s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
     	}
     	
+    	Log.d("GAMELOOP", "resumeTowers: " + s);
+
     	return s;
     }
     

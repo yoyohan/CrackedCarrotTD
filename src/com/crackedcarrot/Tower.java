@@ -3,6 +3,8 @@ package com.crackedcarrot;
 import java.util.Enumeration;
 import java.util.Random;
 
+import android.util.Log;
+
 /**
 * Class defining a tower in the game
 */
@@ -349,6 +351,7 @@ public class Tower extends Sprite {
 	public void cloneTower(	
 				int resourceId,
 				int towerType,
+				int towerTypeId,
 				float range,
 				float rangeAOE,
 				String title,
@@ -374,6 +377,7 @@ public class Tower extends Sprite {
 
 			this.setResourceId(resourceId);
 			this.towerType = towerType;
+			this.towerTypeId = towerTypeId;
 			this.range = range;
 			this.rangeAOE = rangeAOE;
 			this.title = title;
@@ -408,6 +412,7 @@ public class Tower extends Sprite {
 		this.cloneTower(
 				clone.getResourceId(),
 				clone.towerType,
+				clone.towerTypeId,
 				clone.range,
 				clone.rangeAOE,
 				clone.title,
@@ -476,10 +481,8 @@ public class Tower extends Sprite {
 	}
 	
 	public int getTowerTypeId() {
+		Log.d("TOWER", "arg returned: " + towerTypeId);
 		return towerTypeId;
 	}
-	public void setTowerTypeId(int twrNbr) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

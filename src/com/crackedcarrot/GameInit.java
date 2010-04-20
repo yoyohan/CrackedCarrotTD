@@ -111,20 +111,20 @@ public class GameInit extends Activity {
             resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
             resumeTowers           = settings.getString("Towers", "");
         }
-        // TODO:
-        // �r detta n�dv�ndigt?
-        //   difficulty = resumePlayerDIfficulty;
-        // Det anv�nds i WaveLoadern?
         
         // Create the map requested by the player
-        // TODO: resume needs to load the correct map aswell.
+
+        // resume needs to load the correct map aswell.
+        if (levelChoice == 0)
+        	levelChoice = resumeLevelNumber;
+        
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
         if (levelChoice == 1) 
         	gameMap = mapLoad.readLevel("level1");
         else if (levelChoice == 2)
         	gameMap = mapLoad.readLevel("level2");
-        else
+        else if (levelChoice == 3)
         	gameMap = mapLoad.readLevel("level3");
 
         //Define player specific variables depending on difficulty.

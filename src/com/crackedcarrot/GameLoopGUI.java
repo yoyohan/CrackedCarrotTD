@@ -330,7 +330,7 @@ public class GameLoopGUI {
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.nextlevel);
 	    	//dialog.setOwnerActivity(this);	    	
-	    	dialog.setCancelable(false);
+	    	dialog.setCancelable(true);
 	    	// Info button
 	    	Button infoButton2 = (Button) dialog.findViewById(R.id.infobutton2);
 	        infoButton2.setOnClickListener(new OnClickListener() {
