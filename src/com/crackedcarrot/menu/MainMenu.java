@@ -2,6 +2,7 @@ package com.crackedcarrot.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -13,19 +14,6 @@ import com.crackedcarrot.multiplayer.*;
 
 
 public class MainMenu extends Activity {
-	
-	/*
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // When the user center presses, let them pick a contact.
-    		Intent Credits = new Intent(MainMenu.this,Credits.class);
-			Log.d("MAINMENU", "User pressed a button.");
-            return true;
-        }
-        return false;
-    }
-    */
-    
 
 	/** Called when the activity is first created. */
     @Override
@@ -48,15 +36,28 @@ public class MainMenu extends Activity {
         });
         
         Button ResumeButton = (Button)findViewById(R.id.Resume);
-        ResumeButton.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		//Send the level variable to the game loop and start it
-        		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
-        		StartGame2.putExtra("com.crackedcarrot.menu.map", 0);
-        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", 0);
-        		startActivity(StartGame2);
-        	}
-        });
+    	View ResumeWrap = (View) findViewById(R.id.ResumeWrap);
+
+        	// See if there's any old game saved that can be resumed.
+        	SharedPreferences settings = getSharedPreferences("Resume", 0);
+        	int resume = settings.getInt("Resume", 0);
+
+       	if (resume > -1 && resume < 4) {
+	        ResumeButton.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		//Send the level variable to the game loop and start it
+	        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
+	        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
+	        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
+	        		startActivity(StartGame);
+	        	}
+	        });
+        	ResumeButton.setEnabled(true);
+        } else {
+        	ResumeButton.setEnabled(false);
+        	ResumeButton.setVisibility(View.GONE);
+        	ResumeWrap.setVisibility(View.GONE);
+        }
 
         Button OptionsButton = (Button)findViewById(R.id.Options);
         OptionsButton.setOnClickListener(new OnClickListener() {
@@ -87,4 +88,38 @@ public class MainMenu extends Activity {
         });
         
     }
+    
+	// Called when we get focus again (after a game has ended).
+    @Override
+    public void onRestart() {
+        super.onRestart();
+
+    	// See if there's any old game saved that can be resumed.
+    	SharedPreferences settings = getSharedPreferences("Resume", 0);
+    	int resume = settings.getInt("Resume", 0);
+
+        Button ResumeButton = (Button)findViewById(R.id.Resume);
+    	View   ResumeWrap = (View) findViewById(R.id.ResumeWrap);
+    	
+       	if (resume > -1 && resume < 4) {
+	        ResumeButton.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		//Send the level variable to the game loop and start it
+	        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
+	        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
+	        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
+	        		startActivity(StartGame);
+	        	}
+	        });
+        	ResumeButton.setEnabled(true);
+        	ResumeButton.setVisibility(View.VISIBLE);
+        	ResumeWrap.setVisibility(View.VISIBLE);
+        } else {
+        	ResumeButton.setEnabled(false);
+        	ResumeButton.setVisibility(View.GONE);
+        	ResumeWrap.setVisibility(View.GONE);
+        }
+    	
+    }
+    
 }

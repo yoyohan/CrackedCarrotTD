@@ -120,6 +120,12 @@ public class GameInit extends Activity {
             resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
             resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
             resumeTowers           = settings.getString("Towers", "");
+        } else {
+        		// We are not resuming anything, clear the old flag.
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", -1);
+    		editor.commit();
         }
         
         // Create the map requested by the player
@@ -149,8 +155,6 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 13);
         }
         else { // resume.
-        	// TODO: set difficulty variable to this as well, so we load the correct
-        	//       difficulty level on resume.
         	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 13);
         }
         
@@ -231,6 +235,7 @@ public class GameInit extends Activity {
     			// Save everything.
     		SharedPreferences settings = getSharedPreferences("Resume", 0);
     		SharedPreferences.Editor editor = settings.edit();
+    			// Increase the counter of # of resumes the player has used.
     		editor.putInt("Resume", settings.getInt("Resume", 0) + 1);
     		editor.putInt("LevelNumber", gameLoop.getLevelNumber());
     		editor.putInt("PlayerDifficulty", gameLoop.getPlayerData().getDifficulty());
