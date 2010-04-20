@@ -79,6 +79,9 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi) {
     	gameInit = gi;
     	
+    	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
+    	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
         
@@ -124,7 +127,6 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		expandMenu.switchMenu(true);
-        		exButton.setBackgroundResource(R.drawable.button_pressed);
         	}
         });
         /**final OnTouchListener o = new View.OnTouchListener() {
@@ -561,13 +563,12 @@ public class GameLoopGUI {
 	        		 // update number of creatures still alive on GUI.
 	        		 String tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = "0" + tt;
+	        			 tt = " " + tt;
 	        		 nrCreText.setText("" + tt);
 	        		 break;
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
-	        		 
 	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
@@ -586,7 +587,7 @@ public class GameLoopGUI {
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
 	        		 tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = "0" + tt;
+	        			 tt = " " + tt;
 	        		 nrCreText.setText("Next level in: " + tt);
 	        		 break;
 	        		 
@@ -609,6 +610,7 @@ public class GameLoopGUI {
 	        		 gameInit.finish();
 	        		 break;
 	        	 case -2: // SAVE THE GAME.
+	        		 	// arg 1 = save game, 2 = remove saved game.
 	        		 gameInit.saveGame(msg.arg1);
 	        		 break;
 	        		 

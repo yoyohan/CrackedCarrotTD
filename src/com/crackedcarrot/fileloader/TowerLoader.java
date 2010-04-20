@@ -2,13 +2,13 @@
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.content.Context;
-
 import com.crackedcarrot.Coords;
+import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Shot;
 import com.crackedcarrot.Tower;
+import com.crackedcarrot.textures.TextureData;
 
 /**
  * A class that reads the requested towerConf and returns an list of Towers.
@@ -42,15 +42,15 @@ public class TowerLoader {
     private Shot relatedShot;
 	private float width;
 	private float height;
-	private int nFrames;
-    
+	private NativeRender renderHandle;
 	/**
 	 * Constructor 
 	 * 
 	 * @param  Context  	The context of the activity that requested the loader.
 	 * @param  Scaler	 	A scaler.	
 	 */
-	public TowerLoader(Context context, Scaler scaler){
+	public TowerLoader(Context context, Scaler scaler, NativeRender renderHandle){
+		this.renderHandle = renderHandle;
 		this.context = context;
 		this.scaler = scaler;
 	}
@@ -190,19 +190,15 @@ public class TowerLoader {
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	break;
 						case 26:
-			            	// Number of frames in the shot texture
-							nFrames = Integer.parseInt(tmpStr[1].trim());
-			            	break;
-						case 27:
 			            	// Shot size
 			            	recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 
-			            	towerList[twrNbr] = new Tower(mResourceId, 0, 1);
-			            	relatedShot = new Shot(resID, 0, nFrames, towerList[twrNbr]);
+			            	towerList[twrNbr] = new Tower(mResourceId, 0);
+			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
 			            	relatedShot.setHeight(recalc.getX());
 			            	relatedShot.setWidth(recalc.getX());
 			            	towerList[twrNbr].relatedShot = relatedShot;
-			            	
+
 			            	towerList[twrNbr].cloneTower(
 			            			mResourceId,
 			            			towerType,

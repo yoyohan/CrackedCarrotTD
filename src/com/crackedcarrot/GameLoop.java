@@ -10,6 +10,7 @@ import android.util.Log;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.textures.TextureData;
 
 /**
  * A runnable that updates the position of each creature and projectile
@@ -79,8 +80,8 @@ public class GameLoop implements Runnable {
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 
-	    	mTower[i] = new Tower(R.drawable.tower1, 0,1, mCreatures, soundManager,mTracker);
-	    	mShots[i] = new Shot(R.drawable.cannonball,0,1, mTower[i]);
+	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager,mTracker);
+	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
@@ -113,21 +114,7 @@ public class GameLoop implements Runnable {
 	    //we don't have any garbage anywhere.
 		try {
 			renderHandle.freeSprites();
-			renderHandle.freeAllTextures();		
-			
-			//Load textures for towers.
-
-			for (int i = 0; i < mTTypes.length; i++) {
-				renderHandle.loadTexture(mTTypes[i].getResourceId());
-				renderHandle.loadTexture(mTTypes[i].relatedShot.getResourceId());
-			}
-
-			//Load textures for all creature types.
-			for(int i = 0; i < mLvl.length; i++){
-				renderHandle.loadTexture(mLvl[i].getResourceId());
-				renderHandle.loadTexture(mLvl[i].getDeadResourceId());
-			}
-			//renderHandle.loadTexture(mGrid[0].getResourceId());
+			renderHandle.preloadTextureLibrary();
 			//Ok, here comes something superduper mega important.
 			//The folowing looks up what names the render assigned
 			//To every texture from their resource ids 
@@ -135,17 +122,17 @@ public class GameLoop implements Runnable {
 			//Towers shots and creatures.
 			
 			for(int i = 0; i < mTTypes.length; i++){
-				mTTypes[i].setTextureName(
-						renderHandle.getTextureName(mTTypes[i].getResourceId()));
+				mTTypes[i].setCurrentTexture(
+						renderHandle.getTexture(mTTypes[i].getResourceId()));
 				
-				mTTypes[i].relatedShot.setTextureName(
-						renderHandle.getTextureName(mTTypes[i].relatedShot.getResourceId()));
+				mTTypes[i].relatedShot.setCurrentTexture(
+						renderHandle.getTexture(mTTypes[i].relatedShot.getResourceId()));
 				
 			}
 			
 			for(int i = 0; i < mLvl.length; i++){
-				mLvl[i].setTextureName(renderHandle.getTextureName(mLvl[i].getResourceId()));
-				mLvl[i].setDeadTextureName(renderHandle.getTextureName(mLvl[i].getDeadResourceId()));
+				mLvl[i].setCurrentTexture(renderHandle.getTexture(mLvl[i].getResourceId()));
+				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
 						
@@ -265,7 +252,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + (reverse/special)));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*2)));
 		}
 	}
 
@@ -372,6 +359,13 @@ public class GameLoop implements Runnable {
         		} catch (InterruptedException e) {
         			e.printStackTrace();
         		}
+        		
+        		try {
+        			dialogSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        		dialogSemaphore.release();
 
             	run = false;
         	} 
@@ -401,6 +395,13 @@ public class GameLoop implements Runnable {
             		} catch (InterruptedException e) {
             			e.printStackTrace();
             		}
+            		
+            		try {
+            			dialogSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			e.printStackTrace();
+            		}
+            		dialogSemaphore.release();
 
         			run = false;
         		}
@@ -431,8 +432,17 @@ public class GameLoop implements Runnable {
 				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement, mScaler);
 				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
 				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
-				totalNumberOfTowers++;
 				
+				try {
+					TextureData tex = renderHandle.getTexture(mTower[totalNumberOfTowers].getResourceId());
+					mTower[totalNumberOfTowers].setCurrentTexture(tex);
+					TextureData tex2 = renderHandle.getTexture(mTower[totalNumberOfTowers].relatedShot.getResourceId());
+					mTower[totalNumberOfTowers].relatedShot.setCurrentTexture(tex2);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				totalNumberOfTowers++;
 				soundManager.playSound(20);
 				
 				return true;
@@ -454,10 +464,12 @@ public class GameLoop implements Runnable {
     public void creatureLeavesMAP(int n){
     	this.remainingCreaturesALL -= n;
     }
+    
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
 		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
+
     // When a creature is dead we will notify the status bar
     public void creaturDiesOnMap(int n){
     	this.remainingCreaturesALIVE -= n;

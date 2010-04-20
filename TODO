@@ -3,6 +3,9 @@ And add more todos as you come up with them.
 
 HIGH PRIORITY:
 
+Dead Creatures Stay below living.
+-- Albin DONE!
+
 We need a currency display. ATM the player cant tell how much money he has.
 -- JOHAN - DONE!
 
@@ -17,8 +20,7 @@ Tower range indicator is missing.
 --Albin
 
 The game never really ends, no highscore nothing.
---FREDRIK - YOU WON DIALOG EXISTS, LOOKING INTO WRITING OUR OWN HIGHSCORE-SYSTEM.
-            HIGHSCORE NINJA KEEPS CRASHING...?
+--FREDRIK - DONE, scoreninja works on phones and crashes on emulator, this is normal.
 
 Towers class still needs cleaning/refactoring badly
 --Henrik  ALMOST DONE
@@ -27,7 +29,7 @@ Level instructions. Under the game menu while playing. Needs to be scrollview
 --Johan - DONE!
 
 Highscore ninja
---Fredrik - KEEPS CRASHING, EVEN IN A BAREBONE DOES-NOTHING-APPLICATION.
+--Fredrik - DONE.
 
 new "DOOM style" difficulty settings on the start game screen.
 --Fredrik - NEEDS GRAPHICS FOR PUSHABLE BUTTONS, XML-CODE IN PLACE.
@@ -39,7 +41,7 @@ Prevent display from going in sleep mode while playing
 --Johan - DONE!
 
 Options menyn: highscore settings/Sound etc.
---Anyone (fredrik ?) - DONE.
+--FREDRIK - DONE.
 
 Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
 It would be really nice if the timer is shown instead of progress bar until lvl begins
@@ -51,7 +53,7 @@ Ljud Inspelning. Helg hemma hos albin med en mic och ett gäng öl.
 --ALLA
 
 Support for animated sprites, explosions etc..
---Albin
+--Albin DONE!.
 
 Possibly support for texture blending for frost/fire effects on the creatures.
 --Albin

@@ -11,6 +11,9 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
+import com.crackedcarrot.textures.TextureData;
+import com.crackedcarrot.textures.TextureLibrary;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +29,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public 	static final int CREATURE	= 3;
 	public  static final int GRID		= 4;
 	public	static final int TOWER		= 5;
-
+	
+	private static native void nativeAllocTextureBuffers(int length);
+	private static native void nativeSetTextureBuffer(TextureData textureData);
 	private static native void nativeAlloc(int n, Sprite s);
 	private static native void nativeDataPoolSize(int type, int size);
     private static native void nativeResize(int w, int h);
@@ -50,9 +55,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private static BitmapFactory.Options sBitmapOptions
     = new BitmapFactory.Options();
 	
-	private HashMap<Integer,Integer> textureMap = new HashMap<Integer,Integer>();
+	private TextureLibrary texLib;
+	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
 	
-	public NativeRender(Context context, GLSurfaceView view) {
+	public NativeRender(Context context, GLSurfaceView view, TextureLibrary texLib) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -61,6 +67,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
         // Set our bitmaps to 16-bit, 565 format.
         sBitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;
         
+        this.texLib = texLib;
 		mContext = context;
 		this.view = view;
 		System.loadLibrary("render");
@@ -101,6 +108,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		*/
 		glContext = gl;
 		nativeSurfaceCreated();
+		nativeAllocTextureBuffers(texLib.size());
 		lock1.release();
 	}
 	
@@ -153,7 +161,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 					else
 						nativeDataPoolSize(i, 0);
 				}
-				int lastTextureId = -1;
 				for(int j = 0; j < sprites.length; j++){
 					if(sprites[j] == null)
 						continue;
@@ -166,10 +173,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
 							Log.d("FIN SPRITES", "Error Invalid resource ID");
 						}
 						if (!textureMap.containsKey(resource)) {
-							lastTextureId = loadBitmap(mContext, glContext, resource);
-							textureMap.put(resource, lastTextureId);
+							TextureData d = loadTexture(resource);
+							sprites[j][i].setCurrentTexture(d);
+						}else{
+							sprites[j][i].setCurrentTexture(textureMap.get(resource));
 						}
-						sprites[j][i].setTextureName(textureMap.get(resource));
 					}
 				}
 				lock2.release();
@@ -219,20 +227,33 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @return textureName
 	 * @throws InterruptedException 
 	 */
-	public void loadTexture(int rId) throws InterruptedException{
-		lock1.acquire();
+	private TextureData loadTexture(int rId){
 		final int resourceId = rId;
+		int lastTextureId = 0;
+		if (!textureMap.containsKey(resourceId)) {
+			lastTextureId = loadBitmap(mContext, glContext, resourceId);
+			TextureData d = new TextureData(lastTextureId, texLib.getFrameData(resourceId));
+			textureMap.put(resourceId, d);
+			nativeSetTextureBuffer(d);
+			return d;
+		}
+		return null;
+	}
+	
+	public void preloadTextureLibrary() throws InterruptedException{
+		lock1.acquire();
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-				int lastTextureId = 0;
-				if (!textureMap.containsKey(resourceId)) {
-					lastTextureId = loadBitmap(mContext, glContext, resourceId);
-					textureMap.put(resourceId, lastTextureId);
+				Iterator<Integer> it = texLib.textureResourceIdIterator();
+				while(it.hasNext()){
+					loadTexture(it.next());
 				}
 				lock2.release();
 			}
 		});
+
+		//this.renderList = null;
 		lock2.acquire();
 		lock1.release();
 	}
@@ -253,8 +274,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
-				Integer i = textureMap.get(rId);
-				nativeFreeTex(i.intValue());
+				TextureData d = textureMap.get(rId);
+				nativeFreeTex(d.mTextureName);
+				textureMap.remove(rId);
 				lock2.release();
 			}
 		});
@@ -270,16 +292,16 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	@SuppressWarnings("unchecked")
 	public void freeAllTextures() throws InterruptedException{	
 		lock1.acquire();
-		final HashMap<Integer,Integer> map = (HashMap<Integer, Integer>) textureMap.clone();
+		final HashMap<Integer,TextureData> map = (HashMap<Integer, TextureData>) textureMap.clone();
 		textureMap.clear();
 
 		view.queueEvent(new Runnable(){
 			//@Override
 			public void run() {
 
-				Iterator<Integer> it = map.values().iterator();
+				Iterator<TextureData> it = map.values().iterator();
 				while(it.hasNext()){
-					nativeFreeTex(it.next().intValue());
+					nativeFreeTex(it.next().mTextureName);
 				}
 				lock2.release();
 			}
@@ -295,11 +317,11 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public int getTextureName(int resourceId) throws InterruptedException{
+	public TextureData getTexture(int resourceId) throws InterruptedException{
 		lock1.acquire();
-		int texId = textureMap.get(resourceId);
+		TextureData data = textureMap.get(resourceId);
 		lock1.release();
-		return texId;
+		return data;
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
