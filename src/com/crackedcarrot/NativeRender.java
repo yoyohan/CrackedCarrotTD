@@ -27,7 +27,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	public 	static final int SHOT		= 1;
 	public  static final int EFFECT		= 2;
 	public 	static final int CREATURE	= 3;
-	public  static final int GRID		= 4;
+	public  static final int HUD		= 4;
 	public	static final int TOWER		= 5;
 	
 	private static native void nativeAllocTextureBuffers(int length);
@@ -58,7 +58,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private TextureLibrary texLib;
 	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
 	
-	public NativeRender(Context context, GLSurfaceView view, TextureLibrary texLib) {
+	public NativeRender(Context context, GLSurfaceView view, TextureLibrary texLib, Sprite[] HUDObjects) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -68,8 +68,9 @@ public class NativeRender implements GLSurfaceView.Renderer {
         sBitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;
         
         this.texLib = texLib;
-		mContext = context;
+		this.mContext = context;
 		this.view = view;
+		this.sprites[HUD] = HUDObjects;
 		System.loadLibrary("render");
 	}
 
