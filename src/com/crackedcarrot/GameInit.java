@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.crackedcarrot.HUD.HUDHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -27,9 +28,10 @@ import com.crackedcarrot.textures.TextureLibraryLoader;
 public class GameInit extends Activity {
 
 	public GameLoop    gameLoop;
-	public GameLoopGUI gameLoopGui;
+	private GameLoopGUI gameLoopGui;
     public SurfaceView mGLSurfaceView;
-
+    private HUDHandler  hudHandler;
+    
     private Thread     gameLoopThread;
     private MapLoader  mapLoad;
     
@@ -73,15 +75,23 @@ public class GameInit extends Activity {
     	 *  that are used for define the pixel resolution of current display;
     	 *  DisplayMetrics & Scaler */
         mGLSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        NativeRender nativeRenderer = new NativeRender(this, mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this));
+        
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        
+        hudHandler = new HUDHandler(R.drawable.grid4px, res);
+        hudHandler.start();
+        
+        NativeRender nativeRenderer = new NativeRender(this, 
+        		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),
+        		hudHandler.getObjectsToRender());
+
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
 
         
     	// We need this to communicate with our GUI.
-        gameLoopGui = new GameLoopGUI(this);
+        gameLoopGui = new GameLoopGUI(this, hudHandler);
         
         
         // Fetch information from previous intent. The information will contain the

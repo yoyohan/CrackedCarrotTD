@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crackedcarrot.HUD.HUDHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
@@ -54,6 +55,7 @@ public class GameLoopGUI {
     private TextView     currencyView;
     private TextView     nrCreText;
     private TextView     playerHealthView;
+    private HUDHandler	 hud;
 	
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -76,8 +78,9 @@ public class GameLoopGUI {
     
     
     	// Constructor. A good place to initiate all our different GUI-components.
-    public GameLoopGUI(GameInit gi) {
+    public GameLoopGUI(GameInit gi, final HUDHandler hud) {
     	gameInit = gi;
+    	this.hud = hud;
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
@@ -149,6 +152,7 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
         		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
         		v.setOnTouchListener(o); */
         	}
@@ -165,6 +169,8 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
+
         	}
         });
         Button inMenu4 = (Button) gameInit.findViewById(R.id.inmenu4);
@@ -179,6 +185,7 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
         	}
         });
         Button inMenu5 = (Button) gameInit.findViewById(R.id.inmenu5);
@@ -193,6 +200,7 @@ public class GameLoopGUI {
         		towerbutton3.setVisibility(View.GONE);
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
+        		hud.showGrid();
         	}
         });
 
@@ -208,6 +216,7 @@ public class GameLoopGUI {
         		towerbutton2.setVisibility(View.VISIBLE);
         		towerbutton3.setVisibility(View.VISIBLE);
         		towerbutton4.setVisibility(View.VISIBLE);
+        		hud.hideGrid();
         	}
         });
         
