@@ -27,13 +27,13 @@ import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
 
-	public GameLoop    gameLoop;
+	public GameLoop     gameLoop;
+    public SurfaceView  mGLSurfaceView;
 	private GameLoopGUI gameLoopGui;
-    public SurfaceView mGLSurfaceView;
     private HUDHandler  hudHandler;
     
-    private Thread     gameLoopThread;
-    private MapLoader  mapLoad;
+    private Thread      gameLoopThread;
+    private MapLoader   mapLoad;
     
     public static Semaphore pauseSemaphore = new Semaphore(1);
     
@@ -61,6 +61,8 @@ public class GameInit extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	
+    	Log.d("GAMEINIT", "onCreate");
     	
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -206,23 +208,48 @@ public class GameInit extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
     
-    protected void onStop() {
-    	gameLoop.stopGameLoop();
+    
+    protected void onDestroy() {
+    	super.onDestroy();
     	
-    	//You also need to stop the trace when you are done!
-    	
-    	//Debug.stopMethodTracing();
-    	super.onStop();
+    	gameLoop = null;
+        mGLSurfaceView = null;
+    	gameLoopGui = null;
+        hudHandler = null;
+        
+        gameLoopThread = null;
+        mapLoad = null;
+        
+    	Log.d("GAMEINIT", "onDestroy");
     }
     
     protected void onPause() {
     	super.onPause();
-    	Log.d("ONPAUSE NOW", "onPause");
+    	Log.d("GAMEINIT", "onPause");
+    }
+    
+    protected void onRestart() {
+    	super.onRestart();
+    	Log.d("GAMEINIT", "onRestart");
     }
     
     protected void onResume() {
     	super.onResume();
-    	Log.d("ONPAUSE NOW", "onPause");
+    	Log.d("GAMEINIT", "onResume");
+    }
+    
+    protected void onStart() {
+    	super.onStart();
+    	Log.d("GAMEINIT", "onStart");
+    }
+    
+    protected void onStop() {
+    	super.onStop();
+    	gameLoop.stopGameLoop();
+    	Log.d("GAMEINIT", "onStop");
+
+    	//You also need to stop the trace when you are done!
+    	//Debug.stopMethodTracing();
     }
 
     

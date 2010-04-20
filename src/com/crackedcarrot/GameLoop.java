@@ -23,7 +23,7 @@ public class GameLoop implements Runnable {
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
 
     private GameLoopGUI  gui;
-    private NativeRender renderHandle;
+    public NativeRender renderHandle;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
     private Tracker      mTracker;
