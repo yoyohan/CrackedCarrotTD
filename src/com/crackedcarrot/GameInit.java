@@ -211,15 +211,6 @@ public class GameInit extends Activity {
     
     protected void onDestroy() {
     	super.onDestroy();
-    	
-    	gameLoop = null;
-        mGLSurfaceView = null;
-    	gameLoopGui = null;
-        hudHandler = null;
-        
-        gameLoopThread = null;
-        mapLoad = null;
-        
     	Log.d("GAMEINIT", "onDestroy");
     }
     
