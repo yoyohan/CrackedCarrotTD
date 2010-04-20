@@ -614,7 +614,7 @@ public class GameLoopGUI {
 	        		 healthProgressBar.setVisibility(View.GONE);
 	        		 enImView.setVisibility(View.GONE);
 	        		 break;
-	    			
+	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -642,6 +642,10 @@ public class GameLoopGUI {
 		msg.arg1 = j;
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
+	}
+	
+	public void pushMessage(Message m) {
+		guiHandler.sendMessage(m);
 	}
 	
 }
