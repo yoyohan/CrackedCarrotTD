@@ -78,5 +78,8 @@ Save game info between levels. If the user quits/closes/something the game the g
 to resume from the last completed level when the game starts again.
 --Fredrik - 90% DONE, ALL CODE NEEDED TO SAVE/RESTORE GAMESTATE IS COMPLETE AND INTEGRATED INTO THE GUI.
 
+Scale. if we want to change the size of creatures we have to use the renderer scale function and balance it with the game.
+--Henrik - DONE!
+
 Grid Remake
 --Albin
