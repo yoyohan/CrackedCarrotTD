@@ -56,10 +56,10 @@ public class GameLoop implements Runnable {
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
     
-    public Message     msgCreatureLeft = new Message();
-    public Message     msgMoney = new Message();
-    public Message     msgPlayerHealth = new Message();
-    public Message     msgProgressbar = new Message();
+    private Message     msgCreatureLeft;
+    private Message     msgMoney;
+    private Message     msgPlayerHealth;
+    private Message     msgProgressbar;
     
     private long       msgCreatureLeftTime = 0;
     private long       msgMoneyTime = 0;
@@ -272,9 +272,7 @@ public class GameLoop implements Runnable {
 	}
 
     public void run() {
-    	
-    	Looper.prepare();
-    	
+   	
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
@@ -493,6 +491,7 @@ public class GameLoop implements Runnable {
     	if (SystemClock.uptimeMillis() > msgPlayerHealthTime + 1000) {
     		msgPlayerHealthTime = SystemClock.uptimeMillis();
     		
+    		msgPlayerHealth = Message.obtain();
     		msgPlayerHealth.what = gui.GUI_PLAYERHEALTH_ID;
     		msgPlayerHealth.arg1 = player.getHealth();
     		gui.pushMessage(msgPlayerHealth);
@@ -513,6 +512,7 @@ public class GameLoop implements Runnable {
     	if (SystemClock.uptimeMillis() > msgCreatureLeftTime + 1000) {
     		msgCreatureLeftTime = SystemClock.uptimeMillis();
     		
+    		msgCreatureLeft = Message.obtain();
     		msgCreatureLeft.what = gui.GUI_CREATURELEFT_ID;
     		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
     		gui.pushMessage(msgCreatureLeft);
@@ -529,6 +529,7 @@ public class GameLoop implements Runnable {
     	if (SystemClock.uptimeMillis() > msgProgressbarTime + 1000) {
     		msgProgressbarTime = SystemClock.uptimeMillis();
 
+    		msgProgressbar = Message.obtain();
     		msgProgressbar.what = gui.GUI_PROGRESSBAR_ID;
     		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
     		gui.pushMessage(msgProgressbar);
@@ -544,6 +545,7 @@ public class GameLoop implements Runnable {
     	if (SystemClock.uptimeMillis() > msgMoneyTime + 1000) {
     		msgMoneyTime = SystemClock.uptimeMillis();
 
+    		msgMoney = Message.obtain();
     		msgMoney.what = gui.GUI_PLAYERMONEY_ID;
     		msgMoney.arg1 = player.getMoney();
     		gui.pushMessage(msgMoney);
