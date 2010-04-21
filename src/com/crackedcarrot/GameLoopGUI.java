@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
 import android.util.Log;
@@ -638,14 +637,13 @@ public class GameLoopGUI {
 	
 	
 	protected void sendMessage(int i, int j, int k) {
-		Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
 		Message msg = Message.obtain();
 		msg.what = i;
 		msg.arg1 = j;
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
-		//msg.recycle();
 	}
 	
 	protected void pushMessage(Message m) {

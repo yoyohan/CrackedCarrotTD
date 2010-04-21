@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
@@ -496,7 +495,7 @@ public class GameLoop implements Runnable {
     		msgPlayerHealth.arg1 = player.getHealth();
     		gui.pushMessage(msgPlayerHealth);
     		
-    		Log.d("GAMELOOP", "push'd msgPlayerHealth");
+    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
     	}
     }
 
@@ -517,7 +516,7 @@ public class GameLoop implements Runnable {
     		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
     		gui.pushMessage(msgCreatureLeft);
     		
-    		Log.d("GAMELOOP", "push'd msgCreatureLeft");
+    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
     	}
     }
     
@@ -534,7 +533,7 @@ public class GameLoop implements Runnable {
     		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
     		gui.pushMessage(msgProgressbar);
     		
-    		Log.d("GAMELOOP", "push'd msgProgressbar");
+    		//Log.d("GAMELOOP", "push'd msgProgressbar");
     	}
     }
     
@@ -550,7 +549,7 @@ public class GameLoop implements Runnable {
     		msgMoney.arg1 = player.getMoney();
     		gui.pushMessage(msgMoney);
     		
-    		Log.d("GAMELOOP", "push'd msgMoney");
+    		//Log.d("GAMELOOP", "push'd msgMoney");
     	}
     }
     
