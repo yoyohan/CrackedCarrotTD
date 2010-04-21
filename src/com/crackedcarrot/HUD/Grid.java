@@ -39,7 +39,7 @@ public class Grid extends Sprite{
 	}
 
 	private class Show implements Runnable{
-		@Override
+		//@Override
 		public void run() {
 			Log.d("HUD", "Starting the thread.");
 			draw = true;
@@ -60,7 +60,7 @@ public class Grid extends Sprite{
 	};
 	
 	private class Hide implements Runnable{
-		@Override
+		//@Override
 		public void run() {
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();

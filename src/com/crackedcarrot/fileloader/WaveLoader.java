@@ -3,8 +3,6 @@ package com.crackedcarrot.fileloader;
 import java.io.IOException;
 import java.io.InputStream;
 import android.content.Context;
-import android.util.Log;
-
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 
