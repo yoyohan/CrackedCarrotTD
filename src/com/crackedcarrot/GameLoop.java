@@ -299,6 +299,9 @@ public class GameLoop implements Runnable {
 
     		// This is used to know when the time has changed or not
     		int lastTime = 0;
+    		
+    			// hack to stop sending hundreds of msgs' every second...
+    		boolean betweenLevels = true;
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -322,14 +325,16 @@ public class GameLoop implements Runnable {
 	            mLastTime = time + pauseTime;
 	            
 	            // Shows how long it is left until next level
-	            if (player.getTimeUntilNextLevel() > 0) {
-	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {
+	            if (player.getTimeUntilNextLevel() > 0 && betweenLevels) {
+	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) < 0) {
 		            	// Show healthbar again.
 	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            	    
 	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
-	            		// TODO: removed this, we dont need to call it at all times really do we?
+	            		// TODO: fix this, we dont need to call it at all times really do we?
 	            		creatureDiesOnMap(0);
+	            		
+	            		betweenLevels = false;
 	            	}
 	            	else 
 	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
@@ -492,7 +497,7 @@ public class GameLoop implements Runnable {
     		msgPlayerHealth.arg1 = player.getHealth();
     		gui.pushMessage(msgPlayerHealth);
     		
-    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
+    		Log.d("GAMELOOP", "push'd msgPlayerHealth");
     	}
     }
 
@@ -512,7 +517,7 @@ public class GameLoop implements Runnable {
     		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
     		gui.pushMessage(msgCreatureLeft);
     		
-    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
+    		Log.d("GAMELOOP", "push'd msgCreatureLeft");
     	}
     }
     
@@ -528,7 +533,7 @@ public class GameLoop implements Runnable {
     		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
     		gui.pushMessage(msgProgressbar);
     		
-    		//Log.d("GAMELOOP", "push'd msgProgressbar");
+    		Log.d("GAMELOOP", "push'd msgProgressbar");
     	}
     }
     
@@ -543,7 +548,7 @@ public class GameLoop implements Runnable {
     		msgMoney.arg1 = player.getMoney();
     		gui.pushMessage(msgMoney);
     		
-    		//Log.d("GAMELOOP", "push'd msgMoney");
+    		Log.d("GAMELOOP", "push'd msgMoney");
     	}
     }
     

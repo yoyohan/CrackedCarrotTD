@@ -637,6 +637,8 @@ public class GameLoopGUI {
 	
 	
 	public void sendMessage(int i, int j, int k) {
+		Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		
 		Message msg = new Message();
 		msg.what = i;
 		msg.arg1 = j;
