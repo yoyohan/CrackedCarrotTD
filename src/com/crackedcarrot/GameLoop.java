@@ -3,6 +3,7 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import android.os.Debug;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
@@ -274,7 +275,7 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
-	    
+        
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
@@ -285,7 +286,7 @@ public class GameLoop implements Runnable {
     		    		
             // This is used to know when the time has changed or not
     		int lastTime = 0;
-
+    		
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
     			
@@ -339,6 +340,7 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	}
 	        }
+    		
     		player.calculateInterest();
 
     		// Check if the GameLoop are to run the level loop one more time.
@@ -409,7 +411,6 @@ public class GameLoop implements Runnable {
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
-    	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
@@ -535,6 +536,31 @@ public class GameLoop implements Runnable {
     
 	public void setGameSpeed(int i) {
 		this.gameSpeed = i;
+	}
+
+	public boolean gridOcupied(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return false;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		return mTowerGrid[tmpC.x][tmpC.y] != null;
+	}
+
+	public int[] getTowerCoordsAndRange(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return null;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		
+		int[] rData = new int[3];
+		
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
+		
+		return rData;
 	}
 
 }

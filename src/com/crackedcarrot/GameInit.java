@@ -184,6 +184,7 @@ public class GameInit extends Activity {
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(gameLoop);
+        mGLSurfaceView.setHUDHandler(hudHandler);
         
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.

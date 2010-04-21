@@ -481,8 +481,11 @@ public class Tower extends Sprite {
 	}
 	
 	public int getTowerTypeId() {
-		Log.d("TOWER", "arg returned: " + towerTypeId);
+		//Log.d("TOWER", "arg returned: " + towerTypeId);
 		return towerTypeId;
+	}
+	public float getRange() {
+		return this.range;
 	}
 
 }

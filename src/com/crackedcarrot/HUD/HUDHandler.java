@@ -42,13 +42,12 @@ public class HUDHandler extends Thread{
 
 	}
 	
-	public void showRangeIndicator(){
-		Log.d("HUD","Showing range indicator.");
+	public void showRangeIndicator(int towerCenterX, int towerCenterY, int towerRange){
+		range.setSizeAndPos(towerCenterX, towerCenterY, towerRange);
 		this.mHandler.post(range.getShowRunner());
 	}
 	
 	public void hideRangeIndicator(){
-		Log.d("HUD","Showing range indicator.");
 		this.mHandler.post(range.getShowRunner());
 	}
 	
