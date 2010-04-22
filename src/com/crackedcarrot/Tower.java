@@ -121,8 +121,8 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-									Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
-									Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
+									Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+									Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
 						targetCreature = mCreatures[i];
@@ -147,8 +147,8 @@ public class Tower extends Sprite {
 		while (tmpCreep.hasMoreElements()) {
 			Creature currCreep = tmpCreep.nextElement();
 			double distance = Math.sqrt(
-					Math.pow((this.relatedShot.x - currCreep.x + currCreep.getWidth()/2),2) + 
-					Math.pow((this.relatedShot.y - currCreep.y + currCreep.getHeight()/2),2));
+					Math.pow((this.relatedShot.x - currCreep.getScaledX()),2) + 
+					Math.pow((this.relatedShot.y - currCreep.getScaledY()),2));
 			if(distance < range){ // Is the creature within tower range?
 				if (lastCreatureDistance > distance) {
 					targetCreature = currCreep;
@@ -175,8 +175,8 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-						Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
-						Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
+						Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+						Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance <= range){ 
 					float randomInt;
 					if (doFullDamage) {
@@ -210,6 +210,10 @@ public class Tower extends Sprite {
 				this.relatedShot.cFrame = 0;
 			}
 			else {
+				this.relatedShot.x = this.targetCreature.getScaledX();
+				this.relatedShot.y = this.targetCreature.getScaledY();
+		    	relatedShot.scale(this.rangeAOE);
+
 				//this.relatedShot.cFrame = (int)
 				//	(2*(this.relatedShot.getNbrOfFrames()-1)
 				//			* (1-tmpCoolDown/coolDown)) + 1;
@@ -239,8 +243,8 @@ public class Tower extends Sprite {
 	 */
 	private void updateProjectile(float timeDeltaSeconds, int nbrCreatures) {
 
-		float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y+(this.relatedShot.getHeight()/2);
-		float xDistance = (targetCreature.x+(targetCreature.getWidth()/2)) - this.relatedShot.x+(this.relatedShot.getWidth()/2);
+		float yDistance = targetCreature.getScaledY() - this.relatedShot.y+(this.relatedShot.getHeight()/2);
+		float xDistance = targetCreature.getScaledX() - this.relatedShot.x+(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
 		// This will only happen if we have reached our destination creature
@@ -263,7 +267,6 @@ public class Tower extends Sprite {
 		//IF A PROJECTILEAOE tower fires a shot we also have to damage surrounding creatures
 		if (this.towerType == this.PROJECTILEAOE){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);
-	    	relatedShot.scale(this.rangeAOE);
 	    	esplodeGIB = true;
 		}
 		else {
@@ -477,5 +480,9 @@ public class Tower extends Sprite {
 
 	public int getTowerType() {
 		return towerType;
+	}
+	public void setTowerTypeId(int twrNbr) {
+		// TODO Auto-generated method stub
+		
 	}
 }

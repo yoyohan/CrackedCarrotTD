@@ -476,7 +476,7 @@ public class GameLoopGUI {
 
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
-	    	image.setImageResource(currLvl.getResourceId());
+	    	image.setImageResource(currLvl.getDisplayResourceId());
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
@@ -566,7 +566,7 @@ public class GameLoopGUI {
 	        		 // update number of creatures still alive on GUI.
 	        		 String tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = " " + tt;
+	        			 tt = "  " + tt;
 	        		 nrCreText.setText("" + tt);
 	        		 break;
 	        		 
@@ -590,7 +590,7 @@ public class GameLoopGUI {
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
 	        		 tt = String.valueOf(msg.arg1);
 	        		 if (msg.arg1 < 10)
-	        			 tt = " " + tt;
+	        			 tt = "  " + tt;
 	        		 nrCreText.setText("Next level in: " + tt);
 	        		 break;
 	        		 

@@ -101,13 +101,14 @@ public class GameLoop implements Runnable {
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
 	    								i,
-	    								mScaler,
 	    								mTracker);
 
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
-	    	mCreatures[i].setOffset(tmpCoord.getX());
+	    	mCreatures[i].setXOffset(tmpCoord.getX());
+	    	tmpCoord = mScaler.scale(6,0);
+	    	mCreatures[i].setYOffset(tmpCoord.getX());
 	    }
 	    //Set grid attributes.
 	    //Free all allocated data in the render
@@ -132,7 +133,11 @@ public class GameLoop implements Runnable {
 			}
 			
 			for(int i = 0; i < mLvl.length; i++){
-				mLvl[i].setCurrentTexture(renderHandle.getTexture(mLvl[i].getResourceId()));
+				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
+				Log.d("INIT", ""+mLvl[i].getResourceId());
+				
+				Log.d("INIT", ""+test.mTextureName);
+				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
@@ -195,7 +200,7 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the players health
 		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
 		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
@@ -217,7 +222,7 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the players health
 		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
 		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getResourceId(), 0);
+		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 
 		// And set the progressbar with creature health to full again.
 		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, 100, 0);
@@ -254,7 +259,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*2)));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*1.5f)));
 		}
 	}
 
@@ -309,7 +314,17 @@ public class GameLoop implements Runnable {
 	            final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time + pauseTime;
-	            
+
+	            // To save some cpu we will sleep the
+	            // gameloop when not needed. GOAL 60fps
+	            if (timeDelta <= 15) {
+	            	int naptime = (int)(15-timeDelta);
+		            try {
+						Thread.sleep(naptime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+	            }
 	            // Shows how long it is left until next level
 	            if (player.getTimeUntilNextLevel() > 0) {
 	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {

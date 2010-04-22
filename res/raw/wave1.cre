@@ -1,10 +1,11 @@
 // Name: waweSet1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::10
+Total number of levels::11
 ////////////////////////////// level 1
-Texture alive::mrrabbit
+Texture animate::mrrabbit_animate
+Texture display::mrrabbit
 Texture dead::mrrabbitdead
-Wave title::Mr Rabbit
-size::60
+scale::0.8
+Wave title::Mr Baby Rabbit
 health::115
 fast level::false
 fire resistant::false
@@ -12,11 +13,25 @@ frost resistant::false
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
+////////////////////////////// level 1.5
+Texture animate::mrrabbit_animate
+Texture display::mrrabbit
+Texture dead::mrrabbitdead
+scale::1.2
+Wave title::Mr Frostrabbit
+health::115
+fast level::false
+fire resistant::false
+frost resistant::true
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
 /////////////////////////////// level 2
-Texture alive::mrmonkey
+Texture animate::mrmonkey
+Texture display::mrmonkey
 Texture dead::mrmonkeydead
+scale::1
 Wave title::Mr Monkey
-size::60
 health::135
 fast level::false
 fire resistant::false
@@ -25,10 +40,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 3
-Texture alive::mrpingu
+Texture animate::mrpingu
+Texture display::mrpingu
 Texture dead::mrpingudead
+scale::1
 Wave title::Mr Pingu
-size::60
 health::160
 fast level::false
 fire resistant::false
@@ -37,10 +53,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 4
-Texture alive::mrbully
+Texture animate::mrbully
+Texture display::mrbully
 Texture dead::mrbullydead
+scale::1
 Wave title::Mr Bully
-size::60
 health::185
 fast level::false
 fire resistant::false
@@ -49,10 +66,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 5
-Texture alive::mrlion
+Texture animate::mrlion
+Texture display::mrlion
 Texture dead::mrliondead
+scale::1
 Wave title::Mr Lion
-size::60
 health::220
 fast level::false
 fire resistant::false
@@ -61,10 +79,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 6
-Texture alive::mrcat
+Texture animate::mrcat
+Texture display::mrcat
 Texture dead::mrcatdead
+scale::1
 Wave title::Mr Cat
-size::60
 health::250
 fast level::true
 fire resistant::false
@@ -73,10 +92,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 7
-Texture alive::skate1
+Texture animate::skate1
+Texture display::skate1
 Texture dead::skate1
+scale::1
 Wave title::Not done
-size::60
 health::295
 fast level::false
 fire resistant::false
@@ -85,10 +105,11 @@ poison resistant::true
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 8
-Texture alive::mrbear
+Texture animate::mrbear
+Texture display::mrbear
 Texture dead::mrbeardead
+scale::1
 Wave title::Mr Bear
-size::60
 health::345
 fast level::false
 fire resistant::true
@@ -97,10 +118,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 9
-Texture alive::skate1
+Texture animate::skate1
+Texture display::skate1
 Texture dead::skate1
+scale::1
 Wave title::Not done
-size::60
 health::405
 fast level::false
 fire resistant::false
@@ -109,10 +131,11 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 10
-Texture alive::misspiggy
+Texture animate::misspiggy
+Texture display::misspiggy
 Texture dead::misspiggydead
+scale::1
 Wave title::Miss Piggy(Boss)
-size::60
 health::10000
 fast level::false
 fire resistant::false

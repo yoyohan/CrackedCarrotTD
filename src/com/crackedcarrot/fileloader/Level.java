@@ -58,7 +58,6 @@ public class Level extends Creature {
 		clone.creatureFireResistant = this.creatureFireResistant;
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
-		clone.moveToWaypoint(0);
 		clone.setHealth(this.health);
 		clone.setNextWayPoint(1);
 		clone.setVelocity(this.velocity);
@@ -72,5 +71,9 @@ public class Level extends Creature {
 		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
 		clone.setDead(false);
 		clone.setAllDead(false);
-	}	
+		clone.scale = this.scale;
+		clone.setDisplayResourceId(this.getDisplayResourceId());
+		clone.setAnimationTime(clone.creatureFast);
+		clone.moveToWaypoint(0);
+	}
 }
