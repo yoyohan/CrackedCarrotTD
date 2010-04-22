@@ -2,7 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -295,11 +294,13 @@ public class GameLoop implements Runnable {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
-
-    			try {
-    	    		GameInit.pauseSemaphore.acquire();
-    			} catch (InterruptedException e1) {}
-    			GameInit.pauseSemaphore.release();
+    			
+				if(GameInit.pause){
+	    			try {
+	    	    		GameInit.pauseSemaphore.acquire();
+	    			} catch (InterruptedException e1) {}
+	    			GameInit.pauseSemaphore.release();
+				}
     			
     			//Get the time after an eventual pause and add this to the mLastTime variable
     			final long time2 = SystemClock.uptimeMillis();
@@ -501,7 +502,7 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
 
-    	/* Henk visar hur det ska gå till:
+    	/* Henk visar hur det ska gï¿½ till:
     	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
     	public int lastPorgress 
     	if (test != lastpro)
@@ -589,8 +590,9 @@ public class GameLoop implements Runnable {
 		
 		int[] rData = new int[3];
 		
-		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
-		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth();
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight();
+		
 		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
 		
 		return rData;

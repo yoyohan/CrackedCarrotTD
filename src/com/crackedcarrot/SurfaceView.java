@@ -35,7 +35,7 @@ public class SurfaceView extends GLSurfaceView {
 			boolean test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
 			//Log.d("SURFACEVIEW", "Create tower: " + test);
 			
-			/*if(!test && hud != null){
+			if(!test && hud != null){
 				//Do some shit.
 				if(gameLoop.gridOcupied((int)me.getX(), magicValue - (int) me.getY())){
 					int[] data = gameLoop.getTowerCoordsAndRange((int)me.getX(), magicValue - (int) me.getY());
@@ -48,7 +48,7 @@ public class SurfaceView extends GLSurfaceView {
 				}
 				else
 					Log.d("SURFACEVIEW", "The edge of the map, here be dragons!");
-			}*/
+			}
 			
 			return true;
 		}
