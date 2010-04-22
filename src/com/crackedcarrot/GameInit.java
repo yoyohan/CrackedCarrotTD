@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -191,7 +190,8 @@ public class GameInit extends Activity {
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
         
-        Debug.startMethodTracing();
+        // BEGONE!
+        // Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }
