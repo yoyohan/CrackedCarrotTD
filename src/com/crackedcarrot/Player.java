@@ -6,8 +6,9 @@ public class Player {
 	private int health;
 	private int money;
 	private int interestGainedLatestLvl;
-	private int interestGainedEntireGame;
+	private int score;
 	private int healthLost;
+		// TODO: Är inte dom här två nedan samma saker?
 	private float timeUntilNextLevel;
 	private float timeBetweenLevels;
 	
@@ -21,7 +22,7 @@ public class Player {
 	public void calculateInterest() {
 		// Formula for calculating interest.
 		interestGainedLatestLvl = (int)(money * 0.05);
-		interestGainedEntireGame += interestGainedLatestLvl;
+		score += interestGainedLatestLvl;
 		money = (int)(money * 1.05);
 	}
 	
@@ -38,6 +39,9 @@ public class Player {
 	public void damage(int dmg){
 		healthLost++;
 		health -= dmg;
+		
+			// Punish bad players who let creatures through.
+		score = score - dmg * difficulty;
 	}
 	
 	public void moneyFunction(int value) {
@@ -71,6 +75,11 @@ public class Player {
 
 	public int getDifficulty() {
 		return difficulty;
+	}
+	
+	public int getScore() {
+		// Times 10 just so we get a little cooler highscore.
+		return this.score * 10;
 	}
 
 }

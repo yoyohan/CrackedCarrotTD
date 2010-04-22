@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import com.crackedcarrot.HUD.HUDHandler;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
@@ -16,6 +18,7 @@ public class SurfaceView extends GLSurfaceView {
 		// Not very magic, read the comment below for explanation.
 	public int magicValue;
 	private boolean buildTower = false;
+	private HUDHandler hud;
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
@@ -30,8 +33,23 @@ public class SurfaceView extends GLSurfaceView {
 			// 480 - clickedYValue = the correct Y-value, for example, on a 
 			// screen with a 480 Y-resolution.
 			boolean test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
-		
-			Log.d("SURFACEVIEW", "Create tower: " + test);
+			//Log.d("SURFACEVIEW", "Create tower: " + test);
+			
+			/*if(!test && hud != null){
+				//Do some shit.
+				if(gameLoop.gridOcupied((int)me.getX(), magicValue - (int) me.getY())){
+					int[] data = gameLoop.getTowerCoordsAndRange((int)me.getX(), magicValue - (int) me.getY());
+					if(data != null){
+						hud.showRangeIndicator(data[0], data[1], data[2]);
+					}
+					else{
+						Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
+					}
+				}
+				else
+					Log.d("SURFACEVIEW", "The edge of the map, here be dragons!");
+			}*/
+			
 			return true;
 		}
 		return false;
@@ -60,6 +78,10 @@ public class SurfaceView extends GLSurfaceView {
 		else 
 			this.buildTower = true;
 		this.towerType = i;
+	}
+
+	public void setHUDHandler(HUDHandler hudHandler) {
+		hud = hudHandler;
 	}
 
 }

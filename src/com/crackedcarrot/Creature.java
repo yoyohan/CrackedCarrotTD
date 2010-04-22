@@ -81,7 +81,7 @@ public class Creature extends Sprite{
 					int creatureIndex, 
 					Tracker mTracker){
 		
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 		this.player = player;
@@ -99,7 +99,7 @@ public class Creature extends Sprite{
 	
 	//This is only used by the level constructor.
 	public Creature(int resourceId, int type){
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 
@@ -222,7 +222,7 @@ public class Creature extends Sprite{
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
-		GL.creaturDiesOnMap(1);
+		GL.creatureDiesOnMap(1);
 		
 		// TODO Remove creature from tracker
 		// mTracker.removeCreature(this, creatureIndex, currentGridPos);

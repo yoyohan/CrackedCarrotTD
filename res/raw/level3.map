@@ -3,7 +3,7 @@
 // Line6 - Line(6 + nbrOfwaypoints): each waypoint xcord,ycord,waypointNbr
 map1
 12
-1,10,0
+1,4,0
 1,7,1
 4,7,2
 4,9,3

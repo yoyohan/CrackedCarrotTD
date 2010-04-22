@@ -3,11 +3,9 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.crackedcarrot.HUD.Grid;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -20,10 +18,10 @@ import com.crackedcarrot.textures.TextureData;
  */
 public class GameLoop implements Runnable {
 
+    public  NativeRender renderHandle;
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
-
+    
     private GameLoopGUI  gui;
-    private NativeRender renderHandle;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
     private Tracker      mTracker;
@@ -50,11 +48,12 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[]    mLvl;
     private Shot[]     mShots;
-    private Sprite[]   mGrid;
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
-
+    
+    private int progressbarLastSent = 0;
+    
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -75,8 +74,6 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-		this.mGrid = new Grid[1]; 
-		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
@@ -146,13 +143,13 @@ public class GameLoop implements Runnable {
 		// Sends an array with sprites to the renderer
 		
 		//UGLY HACK!!
-		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
+		mGameMap.getBackground()[0].setType(Sprite.BACKGROUND, 0);
 		//END UGLY HACK!!
 		
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
+		renderHandle.setSprites(mCreatures, Sprite.CREATURE);
+		renderHandle.setSprites(mTower, Sprite.TOWER);
+		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
@@ -264,9 +261,7 @@ public class GameLoop implements Runnable {
 	}
 
     public void run() {
-    	
-    	Looper.prepare();
-    	
+   	
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
@@ -280,7 +275,7 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
-	    
+        
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
@@ -288,9 +283,14 @@ public class GameLoop implements Runnable {
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-    		    		
-            // This is used to know when the time has changed or not
+
+    		// This is used to know when the time has changed or not
     		int lastTime = 0;
+    		
+    			// hack to stop sending hundreds of msgs' every second...
+    		boolean betweenLevels = true;
+    		
+    		progressbarLastSent = 100;
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -324,13 +324,16 @@ public class GameLoop implements Runnable {
 					}
 	            }
 	            // Shows how long it is left until next level
-	            if (player.getTimeUntilNextLevel() > 0) {
-	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {
+	            if (player.getTimeUntilNextLevel() > 0 && betweenLevels) {
+	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) < 0) {
 		            	// Show healthbar again.
 	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            	    
 	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
-	            		creaturDiesOnMap(0);
+	            		// TODO: fix this, we dont need to call it at all times really do we?
+	            		creatureDiesOnMap(0);
+	            		
+	            		betweenLevels = false;
 	            	}
 	            	else 
 	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
@@ -355,6 +358,7 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	}
 	        }
+    		
     		player.calculateInterest();
 
     		// Check if the GameLoop are to run the level loop one more time.
@@ -404,7 +408,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(-2, 2, 0);
                 	
                 	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, 0, 0);
+                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
@@ -425,7 +429,6 @@ public class GameLoop implements Runnable {
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
-    	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
@@ -484,28 +487,45 @@ public class GameLoop implements Runnable {
     
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
+    	gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
 
     // When a creature is dead we will notify the status bar
-    public void creaturDiesOnMap(int n){
+    public void creatureDiesOnMap(int n) {
     	this.remainingCreaturesALIVE -= n;
     	if (remainingCreaturesALIVE <= 0) 
     		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
     			mCreatures[x].setAllDead(true);
-		// Update the status, displaying how many creatures that are still alive
     	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
     
-    public void updateCreatureProgress(float dmg){
+    public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
+
+    	/* Henk visar hur det ska gå till:
+    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
+    	public int lastPorgress 
+    	if (test != lastpro)
+    	*/
+
+    		// Only send this if there are no updates in the queue, saves on performance:
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
+
+    		// Another solution, only send when the update is 1/20'th of the total healthbar:
+    	int step = (int) 100/20;
+    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
+    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
+    	if ((progressbarLastSent - step) >= curr) {
+    		progressbarLastSent = progressbarLastSent - step;
+    		
+    		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
+    	}
     }
     
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
-		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
+    	gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
     }
     
     public void stopGameLoop(){
@@ -537,9 +557,11 @@ public class GameLoop implements Runnable {
     	String s = "";
     	for (int i = 0; i < totalNumberOfTowers; i++) {
     		Tower t = mTower[i];
-    		s = s + t.getTowerType() + "," + (int) t.x + "," + (int) t.y + "-";
+    		s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
     	}
     	
+    	Log.d("GAMELOOP", "resumeTowers: " + s);
+
     	return s;
     }
     
@@ -549,6 +571,31 @@ public class GameLoop implements Runnable {
     
 	public void setGameSpeed(int i) {
 		this.gameSpeed = i;
+	}
+
+	public boolean gridOcupied(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return false;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		return mTowerGrid[tmpC.x][tmpC.y] != null;
+	}
+
+	public int[] getTowerCoordsAndRange(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return null;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		
+		int[] rData = new int[3];
+		
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
+		
+		return rData;
 	}
 
 }

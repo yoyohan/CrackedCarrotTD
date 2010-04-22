@@ -186,7 +186,6 @@ public class TowerLoader {
 			            	// Shot size
 			            	recalc = scaler.scale(8,0);
 			            	towerList[twrNbr] = new Tower(mResourceId, 0);
-			            	towerList[twrNbr].setTowerTypeId(twrNbr);
 			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
 			            	relatedShot.setHeight(recalc.getX());
 			            	relatedShot.setWidth(recalc.getX());
@@ -194,6 +193,7 @@ public class TowerLoader {
 			            	towerList[twrNbr].cloneTower(
 			            			mResourceId,
 			            			towerType,
+			            			twrNbr,
 					            	range,
 					            	rangeAOE,
 					            	title,

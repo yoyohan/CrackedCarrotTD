@@ -339,7 +339,7 @@ public class GameLoopGUI {
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.nextlevel);
 	    	//dialog.setOwnerActivity(this);	    	
-	    	dialog.setCancelable(false);
+	    	dialog.setCancelable(true);
 	    	// Info button
 	    	Button infoButton2 = (Button) dialog.findViewById(R.id.infobutton2);
 	        infoButton2.setOnClickListener(new OnClickListener() {
@@ -552,7 +552,7 @@ public class GameLoopGUI {
 	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings.getBoolean("optionsHighscore", false)) {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
-	        	    	 scoreNinjaAdapter.show(0);
+	        	    	 scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
 	        		 
@@ -578,7 +578,7 @@ public class GameLoopGUI {
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
-	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
+	        		 if (msg.arg1 >= 66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
 	        		 }
@@ -614,7 +614,7 @@ public class GameLoopGUI {
 	        		 healthProgressBar.setVisibility(View.GONE);
 	        		 enImView.setVisibility(View.GONE);
 	        		 break;
-	    			
+	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -636,8 +636,11 @@ public class GameLoopGUI {
 	}
 	
 	
-	public void sendMessage(int i, int j, int k) {
-		Message msg = new Message();
+	protected void sendMessage(int i, int j, int k) {
+		// TODO: remove this when done debugging msgs.
+		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		
+		Message msg = Message.obtain();
 		msg.what = i;
 		msg.arg1 = j;
 		msg.arg2 = k;

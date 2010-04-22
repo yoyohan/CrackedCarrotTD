@@ -5,7 +5,6 @@ import java.util.Random;
 
 import android.util.Log;
 
-
 /**
 * Class defining a tower in the game
 */
@@ -69,18 +68,21 @@ public class Tower extends Sprite {
     private int right_column;
     private int upper_row;
     private int bottom_row;
+    
+    	// used by resume to uniquely identify this tower-type.
+    private int towerTypeId;
 
     private boolean esplodeGIB = false;
     
 	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
-		super(resourceId, NativeRender.TOWER, type);
+		super(resourceId, TOWER, type);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		this.creepTracker = creepTracker;
 		rand = new Random();
 	}
 	public Tower(int resourceId, int type){
-		super(resourceId,NativeRender.TOWER, type);
+		super(resourceId,TOWER, type);
 		rand = new Random();
 	}
 	
@@ -352,6 +354,7 @@ public class Tower extends Sprite {
 	public void cloneTower(	
 				int resourceId,
 				int towerType,
+				int towerTypeId,
 				float range,
 				float rangeAOE,
 				String title,
@@ -377,6 +380,7 @@ public class Tower extends Sprite {
 
 			this.setResourceId(resourceId);
 			this.towerType = towerType;
+			this.towerTypeId = towerTypeId;
 			this.range = range;
 			this.rangeAOE = rangeAOE;
 			this.title = title;
@@ -411,6 +415,7 @@ public class Tower extends Sprite {
 		this.cloneTower(
 				clone.getResourceId(),
 				clone.towerType,
+				clone.towerTypeId,
 				clone.range,
 				clone.rangeAOE,
 				clone.title,
@@ -460,7 +465,7 @@ public class Tower extends Sprite {
 		
 		
 		// TODO USED BY tracker to define tower position
-		//Översta raden:
+		//ï¿½versta raden:
 		this.upper_row = row+size;
 		if (this.upper_row > mScaler.getGridHeight())
 			this.upper_row = mScaler.getGridHeight();
@@ -468,21 +473,22 @@ public class Tower extends Sprite {
 		this.bottom_row = row-size;
 		if (this.bottom_row < 0)
 			this.bottom_row = 0;
-		//Vänstra
+		//Vï¿½nstra
 		this.left_column = column - size;
 		if (this.left_column < 0)
 			this.left_column = 0;
-		//Högra
+		//Hï¿½gra
 		this.right_column = column + size;
 		if (this.right_column > mScaler.getGridWidth())
 			this.right_column = mScaler.getGridWidth();
 	}
+	
+	public int getTowerTypeId() {
+		//Log.d("TOWER", "arg returned: " + towerTypeId);
+		return towerTypeId;
+	}
+	public float getRange() {
+		return this.range;
+	}
 
-	public int getTowerType() {
-		return towerType;
-	}
-	public void setTowerTypeId(int twrNbr) {
-		// TODO Auto-generated method stub
-		
-	}
 }
