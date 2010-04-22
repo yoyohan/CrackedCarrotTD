@@ -408,7 +408,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(-2, 2, 0);
                 	
                 	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getInterestGainedEntireGame(), 0);
+                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
