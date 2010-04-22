@@ -588,7 +588,7 @@ public class GameLoop implements Runnable {
 		}
 		Coords tmpC = mScaler.getGridXandY(x,y);
 		
-		int[] rData = new int[5];
+		int[] rData = new int[3];
 		
 		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x;
 		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y;

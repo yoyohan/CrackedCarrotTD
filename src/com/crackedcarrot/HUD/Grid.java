@@ -18,7 +18,7 @@ public class Grid extends Sprite{
 	
 	public Grid(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
-		super(R.drawable.grid, HUD, 0);
+		super(R.drawable.grid, OVERLAY, 0);
 		this.x = 0; this.y = 0; this.z = 0;
 		this.setWidth(s.getScreenResolutionX());
         this.setHeight(s.getScreenResolutionY());
