@@ -24,7 +24,6 @@ public class GameLoop implements Runnable {
     private GameLoopGUI  gui;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
-    private Tracker      mTracker;
 
     private Map mGameMap;
     private Player player;
@@ -66,7 +65,6 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.mTracker = new Tracker(mScaler.getGridWidth(),mScaler.getGridHeight(), 20);
     }
     
 	private void initializeDataStructures() {
@@ -78,7 +76,7 @@ public class GameLoop implements Runnable {
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 
-	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager,mTracker);
+	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
@@ -97,8 +95,8 @@ public class GameLoop implements Runnable {
 	    								0,1,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
-	    								i,
-	    								mTracker);
+	    								i
+	    								);
 
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;

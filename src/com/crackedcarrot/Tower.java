@@ -1,9 +1,6 @@
 package com.crackedcarrot;
 
-import java.util.Enumeration;
 import java.util.Random;
-
-import android.util.Log;
 
 /**
 * Class defining a tower in the game
@@ -11,7 +8,6 @@ import android.util.Log;
 public class Tower extends Sprite {
 	private SoundManager soundManager;
 	private Creature[] mCreatures;
-	private Tracker creepTracker;
 	
 	//different towertypes
 	private final int PROJECTILEAOE = 1;
@@ -63,22 +59,16 @@ public class Tower extends Sprite {
     private Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
-    // DATA used by tracker
-    private int left_column;
-    private int right_column;
-    private int upper_row;
-    private int bottom_row;
     
-    	// used by resume to uniquely identify this tower-type.
+   // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
 
     private boolean esplodeGIB = false;
     
-	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
+	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager){
 		super(resourceId, TOWER, type);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
-		this.creepTracker = creepTracker;
 		rand = new Random();
 	}
 	public Tower(int resourceId, int type){
@@ -137,30 +127,6 @@ public class Tower extends Sprite {
 		}
 		return targetCreature;
 	}
-
-	/**
-	 * TRACKER BETA
-	 * The tower is safe to asume that all creatures that will be returned by the tracker is alive 
-	 */
-	private Creature trackNearestEnemyBETA() {
-		Creature targetCreature = null;
-		double lastCreatureDistance = Double.MAX_VALUE;
-		Enumeration<Creature> tmpCreep = creepTracker.getCreaturesInRange(left_column, right_column, upper_row, bottom_row);
-		while (tmpCreep.hasMoreElements()) {
-			Creature currCreep = tmpCreep.nextElement();
-			double distance = Math.sqrt(
-					Math.pow((this.relatedShot.x - currCreep.getScaledX()),2) + 
-					Math.pow((this.relatedShot.y - currCreep.getScaledY()),2));
-			if(distance < range){ // Is the creature within tower range?
-				if (lastCreatureDistance > distance) {
-					targetCreature = currCreep;
-					lastCreatureDistance = distance;
-				}
-			}
-		}
-		return targetCreature;
-	}	
-	
 	
 	/**
 	 * Method that tracks all creatures that are in range of tower. It iterates over a list of creatures and 
@@ -294,8 +260,6 @@ public class Tower extends Sprite {
 		}
 		if (this.tmpCoolDown <= 0) {
 			if (trackAllNearbyEnemies(nbrCreatures,true) > 0) {
-				// TODO: 
-				// TODO:
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
@@ -451,36 +415,6 @@ public class Tower extends Sprite {
 		this.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
 		
-		////////////////////////////////////
-		// Code used by the tracker:
-		////////////////////////////////////
-		Coords tmp = mScaler.getGridXandY((int)this.x, (int)this.y);
-		int column = tmp.x;
-		int row = tmp.y;
-		
-		Coords range = mScaler.getGridXandY((int)this.range, 0);
-		int size = range.x;
-
-		
-		
-		
-		// TODO USED BY tracker to define tower position
-		//�versta raden:
-		this.upper_row = row+size;
-		if (this.upper_row > mScaler.getGridHeight())
-			this.upper_row = mScaler.getGridHeight();
-		//Nedersta raden
-		this.bottom_row = row-size;
-		if (this.bottom_row < 0)
-			this.bottom_row = 0;
-		//V�nstra
-		this.left_column = column - size;
-		if (this.left_column < 0)
-			this.left_column = 0;
-		//H�gra
-		this.right_column = column + size;
-		if (this.right_column > mScaler.getGridWidth())
-			this.right_column = mScaler.getGridWidth();
 	}
 	
 	public int getTowerTypeId() {
