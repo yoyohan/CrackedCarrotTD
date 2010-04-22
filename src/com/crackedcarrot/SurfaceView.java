@@ -22,36 +22,40 @@ public class SurfaceView extends GLSurfaceView {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
-		if (!buildTower) {
-			return false;
-		}
 		
-		Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
 		// we build where the user last touched the screen.
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
+			
+			boolean test = false;
+			Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
+			
 			// We need to do this because Java and our grid counts backwards.
 			// 480 - clickedYValue = the correct Y-value, for example, on a 
 			// screen with a 480 Y-resolution.
-			boolean test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
-			//Log.d("SURFACEVIEW", "Create tower: " + test);
-			
-			if(!test && hud != null){
-				//Do some shit.
-				if(gameLoop.gridOcupied((int)me.getX(), magicValue - (int) me.getY())){
-					int[] data = gameLoop.getTowerCoordsAndRange((int)me.getX(), magicValue - (int) me.getY());
-					if(data != null){
-						hud.showRangeIndicator(data[0], data[1], data[2]);
-					}
-					else{
-						Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
-					}
-				}
-				else
-					Log.d("SURFACEVIEW", "The edge of the map, here be dragons!");
+			if(buildTower){
+				test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
+				//Log.d("SURFACEVIEW", "Create tower: " + test);
 			}
 			
-			return true;
+			if(hud != null && gameLoop.gridOcupied((int)me.getX(), magicValue - (int) me.getY())){
+				
+				int[] data = gameLoop.getTowerCoordsAndRange((int)me.getX(), magicValue - (int) me.getY());
+				if(data != null){
+					hud.showRangeIndicator(data[0], data[1], data[2]);
+					test = true;
+				}
+				else{
+					Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
+				}
+			}
+			
+			else{
+				Log.d("SURFACEVIEW", "The edge of the map, here be dragons!");
+			}
+			
+			return test;
 		}
+		
 		return false;
 	}
 
