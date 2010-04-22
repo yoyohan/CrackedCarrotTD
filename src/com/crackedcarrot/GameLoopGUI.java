@@ -631,6 +631,7 @@ public class GameLoopGUI {
 	
 	
 	protected void sendMessage(int i, int j, int k) {
+		// TODO: remove this when done debugging msgs.
 		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
 		Message msg = Message.obtain();
@@ -638,10 +639,6 @@ public class GameLoopGUI {
 		msg.arg1 = j;
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
-	}
-	
-	protected void pushMessage(Message m) {
-		guiHandler.sendMessage(m);
 	}
 	
 }

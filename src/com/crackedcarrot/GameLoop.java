@@ -2,7 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -52,15 +51,8 @@ public class GameLoop implements Runnable {
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
     
-    private Message     msgCreatureLeft;
-    private Message     msgMoney;
-    private Message     msgPlayerHealth;
-    private Message     msgProgressbar;
+    private int progressbarLastSent = 0;
     
-    private long       msgCreatureLeftTime = 0;
-    private long       msgMoneyTime = 0;
-    private long       msgPlayerHealthTime = 0;
-    private long       msgProgressbarTime = 0;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -293,9 +285,12 @@ public class GameLoop implements Runnable {
 
     		// This is used to know when the time has changed or not
     		int lastTime = 0;
-
+    		
     			// hack to stop sending hundreds of msgs' every second...
     		boolean betweenLevels = true;
+    		
+    		progressbarLastSent = 100;
+
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
     			
@@ -414,7 +409,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(-2, 2, 0);
                 	
                 	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getInterestGainedEntireGame(), 0);
+                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
             		try {
@@ -493,18 +488,7 @@ public class GameLoop implements Runnable {
     
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-		//gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERHEALTH_ID)) {
-    	if (SystemClock.uptimeMillis() > msgPlayerHealthTime + 1000) {
-    		msgPlayerHealthTime = SystemClock.uptimeMillis();
-    		
-    		msgPlayerHealth = Message.obtain();
-    		msgPlayerHealth.what = gui.GUI_PLAYERHEALTH_ID;
-    		msgPlayerHealth.arg1 = player.getHealth();
-    		gui.pushMessage(msgPlayerHealth);
-    		
-    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
-    	}
+    	gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
 
     // When a creature is dead we will notify the status bar
@@ -513,52 +497,36 @@ public class GameLoop implements Runnable {
     	if (remainingCreaturesALIVE <= 0) 
     		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
     			mCreatures[x].setAllDead(true);
-		// Update the status, displaying how many creatures that are still alive
-    	//gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_CREATURELEFT_ID)) {
-    	if (SystemClock.uptimeMillis() > msgCreatureLeftTime + 1000) {
-    		msgCreatureLeftTime = SystemClock.uptimeMillis();
-    		
-    		msgCreatureLeft = Message.obtain();
-    		msgCreatureLeft.what = gui.GUI_CREATURELEFT_ID;
-    		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
-    		gui.pushMessage(msgCreatureLeft);
-    		
-    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
-    	}
+    	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
     
     public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-		//gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-    	if (SystemClock.uptimeMillis() > msgProgressbarTime + 1000) {
-    		msgProgressbarTime = SystemClock.uptimeMillis();
 
-    		msgProgressbar = Message.obtain();
-    		msgProgressbar.what = gui.GUI_PROGRESSBAR_ID;
-    		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
-    		gui.pushMessage(msgProgressbar);
+    	/* Henk visar hur det ska g� till:
+    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
+    	public int lastPorgress 
+    	if (test != lastpro)
+    	*/
+
+    		// Only send this if there are no updates in the queue, saves on performance:
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
+
+    		// Another solution, only send when the update is 1/20'th of the total healthbar:
+    	int step = (int) 100/20;
+    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
+    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
+    	if ((progressbarLastSent - step) >= curr) {
+    		progressbarLastSent = progressbarLastSent - step;
     		
-    		//Log.d("GAMELOOP", "push'd msgProgressbar");
+    		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
     	}
     }
     
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
-		//gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERMONEY_ID)) {
-    	if (SystemClock.uptimeMillis() > msgMoneyTime + 1000) {
-    		msgMoneyTime = SystemClock.uptimeMillis();
-
-    		msgMoney = Message.obtain();
-    		msgMoney.what = gui.GUI_PLAYERMONEY_ID;
-    		msgMoney.arg1 = player.getMoney();
-    		gui.pushMessage(msgMoney);
-    		
-    		//Log.d("GAMELOOP", "push'd msgMoney");
-    	}
+    	gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
     }
     
     public void stopGameLoop(){
