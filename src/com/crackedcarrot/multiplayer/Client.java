@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 
 public class Client extends Activity {
@@ -29,6 +30,9 @@ public class Client extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_CONNECT_DEVICE = 2;
+    
+    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
+    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
 
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
@@ -154,10 +158,8 @@ public class Client extends Activity {
 
             // Do work to manage the connection (in a separate thread)
             // manageConnectedSocket(mmClientSocket);
-            // Start the service over to restart listening mode
-            //BluetoothChatService.this.start();
-            //Bättre att när connectad så avsluta denna tråd.
             Log.d("CLIENT", "Ansluten!!!");
+            startGame();
 
         }
 
@@ -169,4 +171,11 @@ public class Client extends Activity {
         }
     }
 
+    private void startGame(){
+    	Intent StartGame = new Intent(this ,GameInit.class);
+		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
+		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		startActivity(StartGame);
+    }
+    
 }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 
 public class Server extends Activity {
@@ -27,6 +28,9 @@ public class Server extends Activity {
     private static final UUID MY_UUID = UUID.fromString("9a8aa173-eaf0-4370-80e1-3a13ed5efae9");
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+    
+    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
+    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
 	
 	/** Called when the activity is first created. */
     @Override
@@ -117,16 +121,22 @@ public class Server extends Activity {
                 Log.d("SERVER", "Serverthread running");
                 // Connection accepted?
                 if (socket != null) {
-                    // Do work to manage the connection (in a separate thread)
-                	
-                	// Show the "tap to play button" and start GameInit
-                	// with putExtraIntent and call this method from multiplayer part
-                    // manageConnectedSocket(socket);
                 	Log.d("SERVER", "anlutning klar!");
-                    //mmServerSocket.close();
+                    // manageConnectedSocket(socket);
+                	startGame();
+                	try{
+                		mmServerSocket.close();
+                	} catch (Exception e){}
                     break;
                 }
             }
         }
+    }
+    
+    private void startGame(){
+    	Intent StartGame = new Intent(this ,GameInit.class);
+		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
+		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		startActivity(StartGame);
     }
 }
