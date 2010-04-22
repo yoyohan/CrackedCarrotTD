@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.example.android.BluetoothChat.BluetoothChatService.ConnectedThread;
 
+
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +21,12 @@ public class MultiplayerService extends Thread {
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
     private final Handler mMultiplayerHandler;
+    
+    // Constants that indicate the current connection state
+    public static final int STATE_NONE = 0;       // we're doing nothing
+    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
+    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
     public MultiplayerService(BluetoothSocket socket, Handler handler) {
         Log.d("MultiplayerService", "create ConnectedThread");
@@ -56,6 +65,10 @@ public class MultiplayerService extends Thread {
             } */
         }
            
+    }
+    
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+        this.start();
     }
     
     /**

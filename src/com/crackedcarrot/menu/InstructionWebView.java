@@ -32,6 +32,7 @@ public class InstructionWebView extends Activity {
     	close.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
+    					GameInit.pause = false;
     					GameInit.pauseSemaphore.release();
     					finish();
     				}

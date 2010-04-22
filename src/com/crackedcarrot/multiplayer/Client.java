@@ -10,11 +10,13 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 
 public class Client extends Activity {
@@ -28,6 +30,9 @@ public class Client extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_CONNECT_DEVICE = 2;
+    
+    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
+    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
 
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
@@ -72,6 +77,7 @@ public class Client extends Activity {
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+            Log.d("CLIENT", "Request enable Bluetooth");
         } 
     }
     
@@ -84,6 +90,7 @@ public class Client extends Activity {
     	if (mConnectThread == null) {
     		mConnectThread = new ConnectThread(device);
     		mConnectThread.start();
+    		Log.d("CLIENT", "Start connect thread");
     	}
     }
     
@@ -124,7 +131,7 @@ public class Client extends Activity {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
             mmDevice = device;
-
+            Log.d("CLIENT", "Connect thread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
@@ -136,9 +143,10 @@ public class Client extends Activity {
         public void run() {
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
-
+            Log.d("CLIENT", "Connectthread runs");
             try {
                 // Connect through the socket. This will block until it succeeds or throws an exception
+            	Log.d("CLIENT", "Connectthread call connect");
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
@@ -150,10 +158,8 @@ public class Client extends Activity {
 
             // Do work to manage the connection (in a separate thread)
             // manageConnectedSocket(mmClientSocket);
-            // Start the service over to restart listening mode
-            //BluetoothChatService.this.start();
-            //Bättre att när connectad så avsluta denna tråd.
-        	Toast.makeText(Client.this, "Connection established", Toast.LENGTH_LONG).show();
+            Log.d("CLIENT", "Ansluten!!!");
+            startGame();
 
         }
 
@@ -165,4 +171,11 @@ public class Client extends Activity {
         }
     }
 
+    private void startGame(){
+    	Intent StartGame = new Intent(this ,GameInit.class);
+		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
+		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		startActivity(StartGame);
+    }
+    
 }

@@ -301,11 +301,13 @@ public class GameLoop implements Runnable {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
-
-    			try {
-    	    		GameInit.pauseSemaphore.acquire();
-    			} catch (InterruptedException e1) {}
-    			GameInit.pauseSemaphore.release();
+    			
+				if(GameInit.pause){
+	    			try {
+	    	    		GameInit.pauseSemaphore.acquire();
+	    			} catch (InterruptedException e1) {}
+	    			GameInit.pauseSemaphore.release();
+				}
     			
     			//Get the time after an eventual pause and add this to the mLastTime variable
     			final long time2 = SystemClock.uptimeMillis();
