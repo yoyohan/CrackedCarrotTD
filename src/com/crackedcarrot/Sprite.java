@@ -120,13 +120,17 @@ public class Sprite{
 	
 	public void scale(float newSize) {
 		// Calculate how much we have to scale
-		this.scale = newSize*2/this.width;
+		this.scale = (newSize*2)/this.width;
+		float scale2 = (newSize*2)/this.height;
+
 		// Find center of the submitted sprite
-		float cen_x = x + this.width/2;
-		float cen_y = y + this.height/2;
+		float cen_x = x + (this.width/2);
+		float cen_y = y + (this.height/2)/(this.scale/scale2);
+
 		// Calculate the real position without scaling 
 		float new_x = cen_x - newSize;
-		float new_y = cen_y - newSize;
+		float new_y = cen_y - newSize*(this.scale/scale2);
+		
 		// Apply scaling to sprite
 		x = new_x/this.scale;
 		y = new_y/this.scale;				

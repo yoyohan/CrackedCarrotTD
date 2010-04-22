@@ -1,8 +1,8 @@
 package com.crackedcarrot.HUD;
 
 import android.os.SystemClock;
-import android.util.Log;
 
+import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.menu.R;
@@ -19,8 +19,9 @@ public class RangeIndicator extends Sprite{
 		//The grid only has one subtype, and one frame. Magical constants for the win.
 		super(R.drawable.range_indicator, HUD, 1);
 		this.x = 0; this.y = 0; this.z = 0;
-		this.setWidth(128);
-        this.setHeight(128);
+		Coords co = s.scale(60, 60);
+		this.setWidth(co.getX());
+        this.setHeight(co.getY());
         this.draw = false;
         
         this.r = 1.0f;
@@ -89,7 +90,6 @@ public class RangeIndicator extends Sprite{
 	public void setSizeAndPos(int x, int y, int towerRange) {
 		this.x = x;
 		this.y = y;
-		
 		this.scale(towerRange);
 	};
 }
