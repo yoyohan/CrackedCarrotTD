@@ -27,6 +27,7 @@ public class PauseView extends Activity {
     	resume.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
+    					GameInit.pause = false;
     					GameInit.pauseSemaphore.release();
     					finish();
     				}

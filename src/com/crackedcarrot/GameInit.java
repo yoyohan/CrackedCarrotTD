@@ -36,6 +36,7 @@ public class GameInit extends Activity {
     private MapLoader  mapLoad;
     
     public static Semaphore pauseSemaphore = new Semaphore(1);
+    public static boolean pause = false;
     
     
     /*

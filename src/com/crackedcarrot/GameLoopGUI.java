@@ -129,17 +129,9 @@ public class GameLoopGUI {
         inMenu1.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		expandMenu.switchMenu(true);
+        		expandMenu.switchMenu();
         	}
         });
-        /**final OnTouchListener o = new View.OnTouchListener() {
-			
-			public boolean onTouch(View v1, MotionEvent event){
-				v1.setBackgroundResource(R.drawable.inmenu2_button);
-				o = null;
-				return true;
-			}
-		}; */
 
         final TextView towerInformation = (TextView) gameInit.findViewById(R.id.towerInformation);
         
@@ -156,8 +148,7 @@ public class GameLoopGUI {
         		towerbutton4.setVisibility(View.GONE);
         		towertext.setVisibility(View.VISIBLE);
         		hud.showGrid();
-        		/**inMenu2.setBackgroundResource(R.drawable.icon_selected);
-        		v.setOnTouchListener(o); */
+
         	}
         });
         Button inMenu3 = (Button) gameInit.findViewById(R.id.inmenu3);
@@ -268,6 +259,7 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		try {
     	    		GameInit.pauseSemaphore.acquire();
+    	    		GameInit.pause = true;
     			} catch (InterruptedException e1) {}
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
@@ -281,6 +273,7 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		try {
     	    		GameInit.pauseSemaphore.acquire();
+    	    		GameInit.pause = true;
     			} catch (InterruptedException e1) {}
         		gameInit.onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
@@ -347,6 +340,7 @@ public class GameLoopGUI {
 	        	public void onClick(View v) {
 	        		try {
 	    	    		GameInit.pauseSemaphore.acquire();
+	    	    		GameInit.pause = true;
 	    			} catch (InterruptedException e1) {}
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);

@@ -108,8 +108,10 @@ public class Server extends Activity {
             // Listen, by calling accept(), until exception occurs or a socket is returned
             while (true) {
                 try {
+                	Log.d("SERVER", "Kör server accept()");
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
+                	Log.e("SERVER", "Accept() fungerar ej");
                     break;
                 }
                 Log.d("SERVER", "Serverthread running");
@@ -120,7 +122,7 @@ public class Server extends Activity {
                 	// Show the "tap to play button" and start GameInit
                 	// with putExtraIntent and call this method from multiplayer part
                     // manageConnectedSocket(socket);
-                	Toast.makeText(Server.this, "Connection established", Toast.LENGTH_LONG).show();
+                	Log.d("SERVER", "anlutning klar!");
                     //mmServerSocket.close();
                     break;
                 }

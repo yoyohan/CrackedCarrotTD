@@ -127,7 +127,7 @@ public class Client extends Activity {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
             mmDevice = device;
-            Log.d("CLIENT", "Connectthread constructor");
+            Log.d("CLIENT", "Connect thread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
@@ -139,9 +139,10 @@ public class Client extends Activity {
         public void run() {
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
-
+            Log.d("CLIENT", "Connectthread runs");
             try {
                 // Connect through the socket. This will block until it succeeds or throws an exception
+            	Log.d("CLIENT", "Connectthread call connect");
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
@@ -156,7 +157,7 @@ public class Client extends Activity {
             // Start the service over to restart listening mode
             //BluetoothChatService.this.start();
             //Bättre att när connectad så avsluta denna tråd.
-        	Toast.makeText(Client.this, "Connection established", Toast.LENGTH_LONG).show();
+            Log.d("CLIENT", "Ansluten!!!");
 
         }
 
