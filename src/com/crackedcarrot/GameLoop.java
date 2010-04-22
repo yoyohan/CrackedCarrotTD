@@ -111,8 +111,6 @@ public class GameLoop implements Runnable {
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
 	    	mCreatures[i].setXOffset(tmpCoord.getX());
-	    	tmpCoord = mScaler.scale(6,0);
-	    	mCreatures[i].setYOffset(tmpCoord.getX());
 	    }
 	    //Set grid attributes.
 	    //Free all allocated data in the render
@@ -188,7 +186,9 @@ public class GameLoop implements Runnable {
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
-		}
+	    	Coords tmpCoord = mScaler.scale(14,0);
+	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
+    	}
 		try {
 			
 			//Finally send of the sprites to the render to be allocated
