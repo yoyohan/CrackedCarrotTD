@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -63,6 +64,8 @@ public class GameInit extends Activity {
     	super.onCreate(savedInstanceState);
     	
     	Log.d("GAMEINIT", "onCreate");
+    	
+    	//Debug.startMethodTracing("cracked");
     	
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
