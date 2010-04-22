@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -174,7 +175,7 @@ public class GameInit extends Activity {
     	// Sending data to GAMELOOP
         gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui,new SoundManager(getBaseContext()));
         
-        	// Resuming old game. Prepare GameLoop for this...
+        	// Resuming old game? Prepare GameLoop for this...
         if (resume > 0) {
         	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
         	gameLoop.resumeSetTowers(resumeTowers);

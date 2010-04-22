@@ -1,7 +1,10 @@
 package com.crackedcarrot.menu;
 
 import com.crackedcarrot.menu.R;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -19,7 +22,9 @@ public class Options extends Activity {
 	private ImageButton imageButton1;
 	private ImageButton imageButton2;
 	private TextView    textView2;
-	
+
+    private ScoreNinjaAdapter scoreNinjaAdapter;
+
 	
 	/** Called when the activity is first created. */
     @Override
@@ -29,7 +34,9 @@ public class Options extends Activity {
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    	
+
+    	// Register on ScoreNinja.
+        scoreNinjaAdapter = new ScoreNinjaAdapter(this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
@@ -68,6 +75,15 @@ public class Options extends Activity {
         });
         	// Update highscore-image
         setHighscore(optionsHighscore);
+
+        
+        ImageButton imageButton3 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton3);
+        imageButton3.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        			// Shows the highscore.
+        		scoreNinjaAdapter.show();
+        	}
+        });
         
         
         ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonOk);
@@ -77,6 +93,14 @@ public class Options extends Activity {
         	}
         });
     }
+
+    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      scoreNinjaAdapter.onActivityResult(
+          requestCode, resultCode, data);
+    }
+
     
     @Override
     protected void onStop() {
