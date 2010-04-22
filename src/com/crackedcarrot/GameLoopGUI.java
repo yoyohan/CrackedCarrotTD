@@ -578,7 +578,7 @@ public class GameLoopGUI {
 	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
-	        		 if (msg.arg1 >=  66 && healthBarState == 1) {
+	        		 if (msg.arg1 >= 66 && healthBarState == 1) {
 	       				 healthBarDrawable.setColorFilter(Color.parseColor("#339900"),PorterDuff.Mode.MULTIPLY);
 	        			 healthBarState = 3;
 	        		 }
@@ -614,7 +614,7 @@ public class GameLoopGUI {
 	        		 healthProgressBar.setVisibility(View.GONE);
 	        		 enImView.setVisibility(View.GONE);
 	        		 break;
-	    			
+	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -636,12 +636,18 @@ public class GameLoopGUI {
 	}
 	
 	
-	public void sendMessage(int i, int j, int k) {
-		Message msg = new Message();
+	protected void sendMessage(int i, int j, int k) {
+		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		
+		Message msg = Message.obtain();
 		msg.what = i;
 		msg.arg1 = j;
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
+	}
+	
+	protected void pushMessage(Message m) {
+		guiHandler.sendMessage(m);
 	}
 	
 }

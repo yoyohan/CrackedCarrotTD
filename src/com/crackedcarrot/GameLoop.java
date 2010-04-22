@@ -2,9 +2,7 @@ package com.crackedcarrot;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-
-import android.os.Debug;
-import android.os.Looper;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -20,10 +18,10 @@ import com.crackedcarrot.textures.TextureData;
  */
 public class GameLoop implements Runnable {
 
+    public  NativeRender renderHandle;
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
-
+    
     private GameLoopGUI  gui;
-    private NativeRender renderHandle;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
     private Tracker      mTracker;
@@ -53,7 +51,16 @@ public class GameLoop implements Runnable {
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
-
+    
+    private Message     msgCreatureLeft;
+    private Message     msgMoney;
+    private Message     msgPlayerHealth;
+    private Message     msgProgressbar;
+    
+    private long       msgCreatureLeftTime = 0;
+    private long       msgMoneyTime = 0;
+    private long       msgPlayerHealthTime = 0;
+    private long       msgProgressbarTime = 0;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -261,9 +268,7 @@ public class GameLoop implements Runnable {
 	}
 
     public void run() {
-    	
-    	Looper.prepare();
-    	
+   	
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
@@ -285,10 +290,12 @@ public class GameLoop implements Runnable {
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-    		    		
-            // This is used to know when the time has changed or not
+
+    		// This is used to know when the time has changed or not
     		int lastTime = 0;
-    		
+
+    			// hack to stop sending hundreds of msgs' every second...
+    		boolean betweenLevels = true;
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
     			
@@ -321,13 +328,16 @@ public class GameLoop implements Runnable {
 					}
 	            }
 	            // Shows how long it is left until next level
-	            if (player.getTimeUntilNextLevel() > 0) {
-	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) <= 0) {
+	            if (player.getTimeUntilNextLevel() > 0 && betweenLevels) {
+	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) < 0) {
 		            	// Show healthbar again.
 	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            	    
 	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
-	            		creaturDiesOnMap(0);
+	            		// TODO: fix this, we dont need to call it at all times really do we?
+	            		creatureDiesOnMap(0);
+	            		
+	            		betweenLevels = false;
 	            	}
 	            	else 
 	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
@@ -481,28 +491,72 @@ public class GameLoop implements Runnable {
     
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
+		//gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERHEALTH_ID)) {
+    	if (SystemClock.uptimeMillis() > msgPlayerHealthTime + 1000) {
+    		msgPlayerHealthTime = SystemClock.uptimeMillis();
+    		
+    		msgPlayerHealth = Message.obtain();
+    		msgPlayerHealth.what = gui.GUI_PLAYERHEALTH_ID;
+    		msgPlayerHealth.arg1 = player.getHealth();
+    		gui.pushMessage(msgPlayerHealth);
+    		
+    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
+    	}
     }
 
     // When a creature is dead we will notify the status bar
-    public void creaturDiesOnMap(int n){
+    public void creatureDiesOnMap(int n) {
     	this.remainingCreaturesALIVE -= n;
     	if (remainingCreaturesALIVE <= 0) 
     		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
     			mCreatures[x].setAllDead(true);
 		// Update the status, displaying how many creatures that are still alive
-    	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
+    	//gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_CREATURELEFT_ID)) {
+    	if (SystemClock.uptimeMillis() > msgCreatureLeftTime + 1000) {
+    		msgCreatureLeftTime = SystemClock.uptimeMillis();
+    		
+    		msgCreatureLeft = Message.obtain();
+    		msgCreatureLeft.what = gui.GUI_CREATURELEFT_ID;
+    		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
+    		gui.pushMessage(msgCreatureLeft);
+    		
+    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
+    	}
     }
     
-    public void updateCreatureProgress(float dmg){
+    public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
+		//gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
+    	if (SystemClock.uptimeMillis() > msgProgressbarTime + 1000) {
+    		msgProgressbarTime = SystemClock.uptimeMillis();
+
+    		msgProgressbar = Message.obtain();
+    		msgProgressbar.what = gui.GUI_PROGRESSBAR_ID;
+    		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
+    		gui.pushMessage(msgProgressbar);
+    		
+    		//Log.d("GAMELOOP", "push'd msgProgressbar");
+    	}
     }
     
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
-		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
+		//gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERMONEY_ID)) {
+    	if (SystemClock.uptimeMillis() > msgMoneyTime + 1000) {
+    		msgMoneyTime = SystemClock.uptimeMillis();
+
+    		msgMoney = Message.obtain();
+    		msgMoney.what = gui.GUI_PLAYERMONEY_ID;
+    		msgMoney.arg1 = player.getMoney();
+    		gui.pushMessage(msgMoney);
+    		
+    		//Log.d("GAMELOOP", "push'd msgMoney");
+    	}
     }
     
     public void stopGameLoop(){
