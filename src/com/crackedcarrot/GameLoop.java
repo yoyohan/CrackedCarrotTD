@@ -624,8 +624,9 @@ public class GameLoop implements Runnable {
 		
 		int[] rData = new int[3];
 		
-		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
-		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth();
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight();
+		
 		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
 		
 		return rData;

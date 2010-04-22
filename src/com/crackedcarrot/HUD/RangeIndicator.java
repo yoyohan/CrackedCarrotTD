@@ -60,6 +60,16 @@ public class RangeIndicator extends Sprite{
 				currentTime = SystemClock.uptimeMillis();
 			}
 			opacity = 0.5f;
+			while((currentTime - startTime) < 500){
+				if((currentTime - lastUpdateTime) > 50){
+					opacity -= 0.05f;
+					lastUpdateTime = currentTime;
+				}
+				SystemClock.sleep(10);
+				currentTime = SystemClock.uptimeMillis();
+			}
+			opacity = 0.0f;
+			draw = false;
 		}
 	};
 	
@@ -73,23 +83,13 @@ public class RangeIndicator extends Sprite{
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
-			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
-					opacity -= 0.05f;
-					lastUpdateTime = currentTime;
-				}
-				SystemClock.sleep(10);
-				currentTime = SystemClock.uptimeMillis();
-			}
-			opacity = 0.0f;
-			draw = false;
 		}
 	}
 
-	public void setSizeAndPos(int towerCenterX, int towerCenterY, int towerRange) {
+	public void setSizeAndPos(int x, int y, int towerRange) {
+		this.x = x;
+		this.y = y;
 		
-		this.x = towerCenterX - towerRange;
-		this.y = towerCenterY - towerRange;
-		this.scale = ((float)(towerRange*2)) / (float)getHeight();		
+		this.scale(towerRange);
 	};
 }
