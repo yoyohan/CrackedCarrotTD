@@ -2,6 +2,8 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import android.util.Log;
+
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining creature in the game
@@ -62,6 +64,11 @@ public class Creature extends Sprite{
     private Random rand;
 	protected float animationTime;
 	protected float tmpAnimationTime;
+	// Next waypoint location
+	private float wayPointX;
+	private float wayPointY;
+	private float spawnWayPointX;
+	private float spawnWayPointY;
 	
     
 	public Creature(int resourceId, 
@@ -78,7 +85,6 @@ public class Creature extends Sprite{
 		this.draw = false;
 		this.dead = false;
 		this.player = player;
-		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 		this.GL = loop;
@@ -100,7 +106,12 @@ public class Creature extends Sprite{
 	}
 
 	public void updateWayPoint (){
-		setNextWayPoint(getNextWayPoint() + 1);
+    	// Creature has reached is destination without being killed
+    	if (getNextWayPoint() +1 >= wayP.length){
+    		score();
+    	}
+    	else 		
+    		setNextWayPoint(getNextWayPoint() + 1);
 	}
 
 	public void damage(float dmg){
@@ -154,12 +165,12 @@ public class Creature extends Sprite{
 		}
 	}
 
-	public float getWayX(int i) {
+	private float getWayX(int i) {
 		float newsize = (this.getWidth()/2 - this.scale*this.getWidth()/2);
 		float cen_x = wayP[i].getX() + newsize;
 		return (cen_x/this.scale);
 	}
-	public float getWayY(int i) {
+	private float getWayY(int i) {
 		float newsize = (this.getHeight() - this.scale*this.getHeight());
 		float cen_y = wayP[i].getY() + newsize;
 		return (cen_y/this.scale);
@@ -176,10 +187,12 @@ public class Creature extends Sprite{
 	public void update(float timeDeltaSeconds){
 	
 		//Time to spawn.
-		if (getWayX(0) == this.x && getWayY(0) == this.y) {
+		if (spawnWayPointX == this.x && spawnWayPointY == this.y) {
 			spawndelay -= timeDeltaSeconds;
 			if (spawndelay <= 0) {
 				draw = true;
+				spawnWayPointX = 0;
+				spawnWayPointY = 0;
 				// TODO: TRACKER
 				//prepareTracker();
 			}
@@ -187,7 +200,7 @@ public class Creature extends Sprite{
 		
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0 && nextWayPoint < wayP.length) {
+		if (draw && health > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
 			move(movement);
@@ -216,10 +229,8 @@ public class Creature extends Sprite{
 	}
 	
 	private void move(float movement){
-		//Coords co = wayP[getNextWayPoint()];
-		
-		float yDistance = this.getWayY(getNextWayPoint()) - this.y+yoffset;
-		float xDistance = this.getWayX(getNextWayPoint()) - this.x+xoffset;
+		float yDistance = this.wayPointY - this.y+yoffset;
+		float xDistance = this.wayPointX - this.x+xoffset;
 			
 		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
 			// We have reached our destination!!!
@@ -238,10 +249,7 @@ public class Creature extends Sprite{
     		//	currentGridPos = gridPos;
     		//}
 		}
-    	// Creature has reached is destination without being killed
-    	if (getNextWayPoint() >= wayP.length){
-    		score();
-    	}
+
 	}
 	
 	private float applyEffects(float timeDeltaSeconds){
@@ -295,7 +303,7 @@ public class Creature extends Sprite{
 		//GL.subtractCreature(1);
 		// Testar hur spelet blir om en creature som inte har d�tt b�rjar om l�ngst upp
 		moveToWaypoint(0);
-		nextWayPoint = 1;
+		setNextWayPoint(1);
 	}
 	
 	public void SetWayPoints(Coords[] waypoints){
@@ -309,6 +317,8 @@ public class Creature extends Sprite{
 
 	public void setNextWayPoint(int nextWayPoint) {
 		this.nextWayPoint = nextWayPoint;
+		this.wayPointX = this.getWayX(nextWayPoint);
+		this.wayPointY = this.getWayY(nextWayPoint);
 	}
 
 	public int getNextWayPoint() {
@@ -346,12 +356,15 @@ public class Creature extends Sprite{
 		}
 	}
 
+	// Set rgb to new value
 	public void setRGB(float rDefault, float gDefault, float bDefault) {
 		this.rDefault = rDefault;
 		this.gDefault = gDefault;
 		this.bDefault = bDefault;
 	
 	}
+	
+	// Needed to reset rgb to default value
 	private void resetRGB() {
 		this.r = this.rDefault;
 		this.g = this.gDefault;
@@ -379,12 +392,18 @@ public class Creature extends Sprite{
 		return this.mDisplayResourceId;
 	}
 
-	// Defines animation
+	// Defines animationtime for the walk of a creature
 	public void setAnimationTime(boolean fast) {
 		if (fast)
 			this.animationTime = 0.15f;
 		else
 			this.animationTime = 0.3f;
+	}
+
+	//This is the spawnpoint of a creature
+	public void setSpawnPoint() {
+		this.spawnWayPointX = this.getWayX(0);
+		this.spawnWayPointY = this.getWayY(0);
 	}
 
 }
