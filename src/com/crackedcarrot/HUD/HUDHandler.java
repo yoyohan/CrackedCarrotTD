@@ -7,25 +7,24 @@ import android.util.Log;
 
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
+import com.crackedcarrot.menu.R;
 
 public class HUDHandler extends Thread{
 	
 	private Grid g;
-	public Handler mHandler;
+	private RangeIndicator range;
 	
-	public HUDHandler(int gridResId, Scaler s){
-		g = new Grid(gridResId, s);
-		
+	private Handler mHandler;
+	
+	public HUDHandler(Scaler s){
+		g = new Grid(s);
+		range = new RangeIndicator(s);
 	}
 	
 	public void run(){
 		Looper.prepare();
         
-		mHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                // process incoming messages here
-            }
-        };
+		mHandler = new Handler();
         
         Looper.loop();
 
@@ -43,9 +42,19 @@ public class HUDHandler extends Thread{
 
 	}
 	
+	public void showRangeIndicator(int towerCenterX, int towerCenterY, int towerRange){
+		range.setSizeAndPos(towerCenterX, towerCenterY, towerRange);
+		this.mHandler.post(range.getShowRunner());
+	}
+	
+	public void hideRangeIndicator(){
+		this.mHandler.post(range.getShowRunner());
+	}
+	
 	public Sprite[] getObjectsToRender(){
-		Sprite [] rArray = new Sprite[1];
+		Sprite [] rArray = new Sprite[2];
 		rArray[0] = g;
+		rArray[1] = range;
 		return rArray;
 	}
 	

@@ -6,7 +6,6 @@ import java.util.concurrent.Semaphore;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.crackedcarrot.HUD.Grid;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -49,7 +48,6 @@ public class GameLoop implements Runnable {
     private Creature[] mCreatures;
     private Level[]    mLvl;
     private Shot[]     mShots;
-    private Sprite[]   mGrid;
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
@@ -76,8 +74,6 @@ public class GameLoop implements Runnable {
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
 	    this.mCreatures = new Creature[50];
-		this.mGrid = new Grid[1]; 
-		mGrid[0]  = new Grid(R.drawable.grid4px, mScaler);
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
@@ -107,7 +103,9 @@ public class GameLoop implements Runnable {
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
 	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
-	    	mCreatures[i].setOffset(tmpCoord.getX());
+	    	mCreatures[i].setXOffset(tmpCoord.getX());
+	    	tmpCoord = mScaler.scale(6,0);
+	    	mCreatures[i].setYOffset(tmpCoord.getX());
 	    }
 	    //Set grid attributes.
 	    //Free all allocated data in the render
@@ -147,13 +145,13 @@ public class GameLoop implements Runnable {
 		// Sends an array with sprites to the renderer
 		
 		//UGLY HACK!!
-		mGameMap.getBackground()[0].setType(NativeRender.BACKGROUND, 0);
+		mGameMap.getBackground()[0].setType(Sprite.BACKGROUND, 0);
 		//END UGLY HACK!!
 		
-		renderHandle.setSprites(mGameMap.getBackground(), NativeRender.BACKGROUND);
-		renderHandle.setSprites(mCreatures, NativeRender.CREATURE);
-		renderHandle.setSprites(mTower, NativeRender.TOWER);
-		renderHandle.setSprites(mShots, NativeRender.SHOT);
+		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
+		renderHandle.setSprites(mCreatures, Sprite.CREATURE);
+		renderHandle.setSprites(mTower, Sprite.TOWER);
+		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);
 		
         // Now's a good time to run the GC.  Since we won't do any explicit
@@ -258,7 +256,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*2)));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*1.5f)));
 		}
 	}
 
@@ -277,7 +275,7 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
-	    
+        
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 	    while(run){
@@ -299,7 +297,7 @@ public class GameLoop implements Runnable {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
-    			
+
     			try {
     	    		GameInit.pauseSemaphore.acquire();
     			} catch (InterruptedException e1) {}
@@ -314,7 +312,17 @@ public class GameLoop implements Runnable {
 	            final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time + pauseTime;
-	            
+
+	            // To save some cpu we will sleep the
+	            // gameloop when not needed. GOAL 60fps
+	            if (timeDelta <= 15) {
+	            	int naptime = (int)(15-timeDelta);
+		            try {
+						Thread.sleep(naptime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+	            }
 	            // Shows how long it is left until next level
 	            if (player.getTimeUntilNextLevel() > 0 && betweenLevels) {
 	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) < 0) {
@@ -350,6 +358,7 @@ public class GameLoop implements Runnable {
 	            	run = false;
             	}
 	        }
+    		
     		player.calculateInterest();
 
     		// Check if the GameLoop are to run the level loop one more time.
@@ -420,7 +429,6 @@ public class GameLoop implements Runnable {
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
-    	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
@@ -501,14 +509,14 @@ public class GameLoop implements Runnable {
     	if (test != lastpro)
     	*/
 
-    		// Only send this if there are no updates in the queue, saves on performance.
+    		// Only send this if there are no updates in the queue, saves on performance:
     	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
 
-    		// Another solution, only send when the update is 1/20'th of the total healthbar.
+    		// Another solution, only send when the update is 1/20'th of the total healthbar:
     	int step = (int) 100/20;
     	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
     	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
-    	if ((progressbarLastSent - step) > curr) {
+    	if ((progressbarLastSent - step) >= curr) {
     		progressbarLastSent = progressbarLastSent - step;
     		
     		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
@@ -563,6 +571,31 @@ public class GameLoop implements Runnable {
     
 	public void setGameSpeed(int i) {
 		this.gameSpeed = i;
+	}
+
+	public boolean gridOcupied(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return false;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		return mTowerGrid[tmpC.x][tmpC.y] != null;
+	}
+
+	public int[] getTowerCoordsAndRange(int x, int y) {
+		if (!mScaler.insideGrid(x,y)) {
+			//Towers do can not exist at these coordinates
+			return null;
+		}
+		Coords tmpC = mScaler.getGridXandY(x,y);
+		
+		int[] rData = new int[3];
+		
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
+		
+		return rData;
 	}
 
 }

@@ -81,7 +81,7 @@ public class MapLoader {
 							return null;
 
 				        // Gamemap
-						Sprite background = new Sprite(resID, NativeRender.BACKGROUND, 0);
+						Sprite background = new Sprite(resID, Sprite.BACKGROUND, 0);
 						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
 				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
 				        background.setWidth(s.getScreenResolutionX());

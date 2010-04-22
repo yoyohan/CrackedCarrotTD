@@ -75,14 +75,14 @@ public class Tower extends Sprite {
     private boolean esplodeGIB = false;
     
 	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager, Tracker creepTracker){
-		super(resourceId, NativeRender.TOWER, type);
+		super(resourceId, TOWER, type);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		this.creepTracker = creepTracker;
 		rand = new Random();
 	}
 	public Tower(int resourceId, int type){
-		super(resourceId,NativeRender.TOWER, type);
+		super(resourceId,TOWER, type);
 		rand = new Random();
 	}
 	
@@ -123,8 +123,8 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-									Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
-									Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
+									Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+									Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
 						targetCreature = mCreatures[i];
@@ -149,8 +149,8 @@ public class Tower extends Sprite {
 		while (tmpCreep.hasMoreElements()) {
 			Creature currCreep = tmpCreep.nextElement();
 			double distance = Math.sqrt(
-					Math.pow((this.relatedShot.x - currCreep.x + currCreep.getWidth()/2),2) + 
-					Math.pow((this.relatedShot.y - currCreep.y + currCreep.getHeight()/2),2));
+					Math.pow((this.relatedShot.x - currCreep.getScaledX()),2) + 
+					Math.pow((this.relatedShot.y - currCreep.getScaledY()),2));
 			if(distance < range){ // Is the creature within tower range?
 				if (lastCreatureDistance > distance) {
 					targetCreature = currCreep;
@@ -177,8 +177,8 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-						Math.pow((this.relatedShot.x - (mCreatures[i].x + mCreatures[i].getWidth()/2))  , 2) + 
-						Math.pow((this.relatedShot.y - (mCreatures[i].y + mCreatures[i].getHeight()/2)) , 2)  );
+						Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+						Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance <= range){ 
 					float randomInt;
 					if (doFullDamage) {
@@ -212,6 +212,10 @@ public class Tower extends Sprite {
 				this.relatedShot.cFrame = 0;
 			}
 			else {
+				this.relatedShot.x = this.targetCreature.getScaledX();
+				this.relatedShot.y = this.targetCreature.getScaledY();
+		    	relatedShot.scale(this.rangeAOE);
+
 				//this.relatedShot.cFrame = (int)
 				//	(2*(this.relatedShot.getNbrOfFrames()-1)
 				//			* (1-tmpCoolDown/coolDown)) + 1;
@@ -241,8 +245,8 @@ public class Tower extends Sprite {
 	 */
 	private void updateProjectile(float timeDeltaSeconds, int nbrCreatures) {
 
-		float yDistance = (targetCreature.y+(targetCreature.getHeight()/2)) - this.relatedShot.y+(this.relatedShot.getHeight()/2);
-		float xDistance = (targetCreature.x+(targetCreature.getWidth()/2)) - this.relatedShot.x+(this.relatedShot.getWidth()/2);
+		float yDistance = targetCreature.getScaledY() - this.relatedShot.y+(this.relatedShot.getHeight()/2);
+		float xDistance = targetCreature.getScaledX() - this.relatedShot.x+(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
 		// This will only happen if we have reached our destination creature
@@ -265,7 +269,6 @@ public class Tower extends Sprite {
 		//IF A PROJECTILEAOE tower fires a shot we also have to damage surrounding creatures
 		if (this.towerType == this.PROJECTILEAOE){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);
-	    	relatedShot.scale(this.rangeAOE);
 	    	esplodeGIB = true;
 		}
 		else {
@@ -462,7 +465,7 @@ public class Tower extends Sprite {
 		
 		
 		// TODO USED BY tracker to define tower position
-		//Översta raden:
+		//ï¿½versta raden:
 		this.upper_row = row+size;
 		if (this.upper_row > mScaler.getGridHeight())
 			this.upper_row = mScaler.getGridHeight();
@@ -470,19 +473,22 @@ public class Tower extends Sprite {
 		this.bottom_row = row-size;
 		if (this.bottom_row < 0)
 			this.bottom_row = 0;
-		//Vänstra
+		//Vï¿½nstra
 		this.left_column = column - size;
 		if (this.left_column < 0)
 			this.left_column = 0;
-		//Högra
+		//Hï¿½gra
 		this.right_column = column + size;
 		if (this.right_column > mScaler.getGridWidth())
 			this.right_column = mScaler.getGridWidth();
 	}
 	
 	public int getTowerTypeId() {
-		Log.d("TOWER", "arg returned: " + towerTypeId);
+		//Log.d("TOWER", "arg returned: " + towerTypeId);
 		return towerTypeId;
+	}
+	public float getRange() {
+		return this.range;
 	}
 
 }

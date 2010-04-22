@@ -8,7 +8,7 @@ public class Shot extends Sprite{
     public Tower tower;
     
 	public Shot(int resourceId,  int type, Tower tower){
-		super(resourceId, NativeRender.SHOT, type);
+		super(resourceId, SHOT, type);
 		this.tower = tower;
 		super.draw = false;
 	}

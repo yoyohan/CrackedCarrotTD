@@ -83,7 +83,7 @@ public class GameInit extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
-        hudHandler = new HUDHandler(R.drawable.grid4px, res);
+        hudHandler = new HUDHandler(res);
         hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
@@ -186,11 +186,12 @@ public class GameInit extends Activity {
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(gameLoop);
+        mGLSurfaceView.setHUDHandler(hudHandler);
         
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
         
-        //Debug.startMethodTracing();
+        Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }

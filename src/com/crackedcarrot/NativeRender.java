@@ -23,13 +23,6 @@ import android.util.Log;
 
 public class NativeRender implements GLSurfaceView.Renderer {
 	
-	public	static final int BACKGROUND = 0;
-	public 	static final int SHOT		= 1;
-	public  static final int EFFECT		= 2;
-	public 	static final int CREATURE	= 3;
-	public  static final int HUD		= 4;
-	public	static final int TOWER		= 5;
-	
 	private static native void nativeAllocTextureBuffers(int length);
 	private static native void nativeSetTextureBuffer(TextureData textureData);
 	private static native void nativeAlloc(int n, Sprite s);
@@ -70,7 +63,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
         this.texLib = texLib;
 		this.mContext = context;
 		this.view = view;
-		this.sprites[HUD] = HUDObjects;
+		this.sprites[Sprite.HUD] = HUDObjects;
 		System.loadLibrary("render");
 	}
 

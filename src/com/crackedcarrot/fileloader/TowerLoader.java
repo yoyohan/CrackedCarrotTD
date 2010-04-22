@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import android.content.Context;
 import com.crackedcarrot.Coords;
-import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Shot;
 import com.crackedcarrot.Tower;
-import com.crackedcarrot.textures.TextureData;
 
 /**
  * A class that reads the requested towerConf and returns an list of Towers.

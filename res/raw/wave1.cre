@@ -1,15 +1,28 @@
 // Name: waweSet1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::10
+Total number of levels::11
 ////////////////////////////// level 1
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
-scale::1
-Wave title::Mr Rabbit
+scale::0.8
+Wave title::Mr Baby Rabbit
 health::115
 fast level::false
 fire resistant::false
 frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+////////////////////////////// level 1.5
+Texture animate::mrrabbit_animate
+Texture display::mrrabbit
+Texture dead::mrrabbitdead
+scale::1.2
+Wave title::Mr Frostrabbit
+health::115
+fast level::false
+fire resistant::false
+frost resistant::true
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
