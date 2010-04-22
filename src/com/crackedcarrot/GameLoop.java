@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -54,6 +53,8 @@ public class GameLoop implements Runnable {
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
+    
+    private int progressbarLastSent = 0;
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -290,6 +291,8 @@ public class GameLoop implements Runnable {
     		
     			// hack to stop sending hundreds of msgs' every second...
     		boolean betweenLevels = true;
+    		
+    		progressbarLastSent = 100;
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
     		while(remainingCreaturesALL > 0 && run){
@@ -499,8 +502,16 @@ public class GameLoop implements Runnable {
     	*/
 
     		// Only send this if there are no updates in the queue, saves on performance.
-    	if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-    		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int) (100*(currentCreatureHealth/startCreatureHealth)), 0);
+    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
+
+    		// Another solution, only send when the update is 1/20'th of the total healthbar.
+    	int step = (int) 100/20;
+    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
+    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
+    	if ((progressbarLastSent - step) > curr) {
+    		progressbarLastSent = progressbarLastSent - step;
+    		
+    		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
     	}
     }
     
