@@ -637,17 +637,13 @@ public class GameLoopGUI {
 	
 	
 	protected void sendMessage(int i, int j, int k) {
+		Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		
 		Message msg = Message.obtain();
 		msg.what = i;
 		msg.arg1 = j;
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
-	}
-	
-	protected void pushMessage(Message m) {
-		Log.d("GAMELOOPGUI", "pushMessage" + m.what);
-		
-		guiHandler.sendMessage(m);
 	}
 	
 }

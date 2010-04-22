@@ -65,8 +65,6 @@ public class GameInit extends Activity {
     	
     	Log.d("GAMEINIT", "onCreate");
     	
-    	//Debug.startMethodTracing("cracked");
-    	
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
@@ -177,7 +175,7 @@ public class GameInit extends Activity {
     	// Sending data to GAMELOOP
         gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui,new SoundManager(getBaseContext()));
         
-        	// Resuming old game. Prepare GameLoop for this...
+        	// Resuming old game? Prepare GameLoop for this...
         if (resume > 0) {
         	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
         	gameLoop.resumeSetTowers(resumeTowers);

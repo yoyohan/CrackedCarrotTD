@@ -55,15 +55,6 @@ public class GameLoop implements Runnable {
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
     
-    private Message     msgCreatureLeft;
-    private Message     msgMoney;
-    private Message     msgPlayerHealth;
-    private Message     msgProgressbar;
-    
-    private long       msgCreatureLeftTime = 0;
-    private long       msgMoneyTime = 0;
-    private long       msgPlayerHealthTime = 0;
-    private long       msgProgressbarTime = 0;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -485,21 +476,6 @@ public class GameLoop implements Runnable {
     
     // When the player decreases in health, we will notify the status bar
     public void updatePlayerHealth(){
-		//gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERHEALTH_ID)) {
-    	/*
-    	if (SystemClock.uptimeMillis() > msgPlayerHealthTime + 1000) {
-    		msgPlayerHealthTime = SystemClock.uptimeMillis();
-    		
-    		msgPlayerHealth = Message.obtain();
-    		msgPlayerHealth.what = gui.GUI_PLAYERHEALTH_ID;
-    		msgPlayerHealth.arg1 = player.getHealth();
-    		gui.pushMessage(msgPlayerHealth);
-    		
-    		//Log.d("GAMELOOP", "push'd msgPlayerHealth");
-    	}
-    	*/
-    	
     	gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
     }
 
@@ -509,67 +485,27 @@ public class GameLoop implements Runnable {
     	if (remainingCreaturesALIVE <= 0) 
     		for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++)
     			mCreatures[x].setAllDead(true);
-		// Update the status, displaying how many creatures that are still alive
-    	//gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
-    	/*
-    	if (!gui.guiHandler.hasMessages(gui.GUI_CREATURELEFT_ID)) {
-    	//if (SystemClock.uptimeMillis() > msgCreatureLeftTime + 1000) {
-    		msgCreatureLeftTime = SystemClock.uptimeMillis();
-    		
-    		msgCreatureLeft = Message.obtain();
-    		msgCreatureLeft.what = gui.GUI_CREATURELEFT_ID;
-    		msgCreatureLeft.arg1 = remainingCreaturesALIVE;
-    		gui.pushMessage(msgCreatureLeft);
-    		
-    		//Log.d("GAMELOOP", "push'd msgCreatureLeft");
-    	}
-    	*/
-    	
     	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
     
     public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
-		//gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int)(100*(currentCreatureHealth/startCreatureHealth)), 0);
 
     	/* Henk visar hur det ska gå till:
-    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/2);
+    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
     	public int lastPorgress 
     	if (test != lastpro)
     	*/
-    	
-    	
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-    	if (SystemClock.uptimeMillis() > msgProgressbarTime + 1000) {
-    		msgProgressbarTime = SystemClock.uptimeMillis();
 
-    		msgProgressbar = Message.obtain();
-    		msgProgressbar.what = gui.GUI_PROGRESSBAR_ID;
-    		msgProgressbar.arg1 = (int) (100*(currentCreatureHealth/startCreatureHealth));
-    		gui.pushMessage(msgProgressbar);
-    		
-    		Log.d("GAMELOOP", "push'd msgProgressbar");
+    		// Only send this if there are no updates in the queue, saves on performance.
+    	if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
+    		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, (int) (100*(currentCreatureHealth/startCreatureHealth)), 0);
     	}
     }
     
     // Update the status when the players money increases.
     public void updateCurrency(int currency) {
-		//gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PLAYERMONEY_ID)) {
-    	/*
-    	if (SystemClock.uptimeMillis() > msgMoneyTime + 1000) {
-    		msgMoneyTime = SystemClock.uptimeMillis();
-
-    		msgMoney = Message.obtain();
-    		msgMoney.what = gui.GUI_PLAYERMONEY_ID;
-    		msgMoney.arg1 = player.getMoney();
-    		gui.pushMessage(msgMoney);
-    		
-    		//Log.d("GAMELOOP", "push'd msgMoney");
-    	}
-    	*/
-    	
     	gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
     }
     
