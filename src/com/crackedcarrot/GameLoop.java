@@ -176,11 +176,12 @@ public class GameLoop implements Runnable {
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
-	    	Coords tmpCoord = mScaler.scale(14,0);
+	    	//This is defined by the scale of this current lvl
+			Coords tmpCoord = mScaler.scale(14,0);
 	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
+	    	
     	}
 		try {
-			
 			//Finally send of the sprites to the render to be allocated
 			//And after that drawn.
 			renderHandle.finalizeSprites();
@@ -314,8 +315,8 @@ public class GameLoop implements Runnable {
 
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
-	            if (timeDelta <= 15) {
-	            	int naptime = (int)(15-timeDelta);
+	            if (timeDelta <= 16) {
+	            	int naptime = (int)(16-timeDelta);
 		            try {
 						Thread.sleep(naptime);
 					} catch (InterruptedException e) {
@@ -588,12 +589,19 @@ public class GameLoop implements Runnable {
 		}
 		Coords tmpC = mScaler.getGridXandY(x,y);
 		
-		int[] rData = new int[3];
+		int[] rData = new int[5];
 		
 		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x;
 		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y;
 		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
+		rData[3] = (int)mTowerGrid[tmpC.x][tmpC.y].getWidth();
+		rData[4] = (int)mTowerGrid[tmpC.x][tmpC.y].getHeight();
+
 		return rData;
+	}
+	
+	public Tower getTower(int towerid) {
+			return mTTypes[towerid];			
 	}
 
 }

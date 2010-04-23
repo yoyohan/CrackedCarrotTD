@@ -113,7 +113,7 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-									Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+									Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX())) , 2) + 
 									Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance < range){ // Is the creature within tower range?
 					if (targetCreature == null) 
@@ -143,7 +143,7 @@ public class Tower extends Sprite {
 		for(int i = 0;i < nbrCreatures; i++ ){
 			if(mCreatures[i].draw == true && mCreatures[i].health > 0){ // Is the creature still alive?
 				double distance = Math.sqrt(
-						Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX()))  , 2) + 
+						Math.pow((this.relatedShot.x - (mCreatures[i].getScaledX())) , 2) + 
 						Math.pow((this.relatedShot.y - (mCreatures[i].getScaledY())) , 2)  );
 				if(distance <= range){ 
 					float randomInt;
@@ -173,14 +173,14 @@ public class Tower extends Sprite {
 			if (this.tmpCoolDown <= this.coolDown/2) {
 				this.relatedShot.draw = false;
 				this.esplodeGIB = false;
-				this.resetShotCordinates();
+				this.relatedShot.resetShotCordinates();
 				this.relatedShot.scale = 1;
 				this.relatedShot.cFrame = 0;
 			}
 			else {
 				this.relatedShot.x = this.targetCreature.getScaledX();
 				this.relatedShot.y = this.targetCreature.getScaledY();
-		    	relatedShot.scale(this.rangeAOE);
+		    	relatedShot.scaleSprite(this.rangeAOE);
 
 				//this.relatedShot.cFrame = (int)
 				//	(2*(this.relatedShot.getNbrOfFrames()-1)
@@ -238,7 +238,7 @@ public class Tower extends Sprite {
 	    	esplodeGIB = true;
 		}
 		else {
-			this.resetShotCordinates();
+			this.relatedShot.resetShotCordinates();
 			this.relatedShot.draw = false;
 		}
 	}
@@ -253,7 +253,7 @@ public class Tower extends Sprite {
 	private void createPureAOEDamage(int nbrCreatures){
 		if (this.tmpCoolDown <= this.coolDown/2) {
 			this.relatedShot.draw = false;
-			this.resetShotCordinates();
+			this.relatedShot.resetShotCordinates();
 		}
 		else if (this.relatedShot.draw && this.tmpCoolDown-this.coolDown/2 <= 1f) {
 	    	this.relatedShot.opacity = this.tmpCoolDown-this.coolDown/2;
@@ -263,8 +263,8 @@ public class Tower extends Sprite {
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-				this.resetShotCordinates();
-				relatedShot.scale(this.range);
+				this.relatedShot.resetShotCordinates();
+				relatedShot.scaleSprite(this.range);
 			}
 		}
 	}	
@@ -300,15 +300,6 @@ public class Tower extends Sprite {
 	 */	
 	public int getPrice() {
 		return price;
-	}
-	
-	/**
-	 * Method that places the tower related shot back to 
-	 * the start position
-	 */
-	public void resetShotCordinates() {
-		relatedShot.x = this.x + getWidth()/2;
-		relatedShot.y = this.y + getHeight()/2;	
 	}
 
 	/**
@@ -412,9 +403,8 @@ public class Tower extends Sprite {
 		this.draw = true;
 		this.x = towerPlacement.x;
 		this.y = towerPlacement.y;
-		this.resetShotCordinates();//Same location of Shot as midpoint of Tower
+		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
-		
 	}
 	
 	public int getTowerTypeId() {
@@ -424,5 +414,14 @@ public class Tower extends Sprite {
 	public float getRange() {
 		return this.range;
 	}
-
+	public float getMinDamage() {
+		return this.minDamage;
+	}
+	public float getMaxDamage() {
+		return this.maxDamage;
+	}
+	public String getTitle() {
+		return this.title;
+	}
+	
 }

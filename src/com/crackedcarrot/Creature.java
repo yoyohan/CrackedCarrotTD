@@ -170,12 +170,13 @@ public class Creature extends Sprite{
 		float cen_y = wayP[i].getY() + newsize;
 		return (cen_y/this.scale);
 	}
+	
 	public float getScaledX() {
-		float cen_x  = x + this.scale*(this.getWidth()/2);
+		float cen_x  = x + this.getWidth()/2;
 		return (cen_x*this.scale);
 	}
 	public float getScaledY() {
-		float cen_y  = y + this.scale*(this.getHeight()/2);
+		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
 

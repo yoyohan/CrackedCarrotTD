@@ -41,7 +41,7 @@ public class SurfaceView extends GLSurfaceView {
 				
 				int[] data = gameLoop.getTowerCoordsAndRange((int)me.getX(), magicValue - (int) me.getY());
 				if(data != null){
-					hud.showRangeIndicator(data[0], data[1], data[2]);
+					hud.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
 					test = true;
 				}
 				else{
