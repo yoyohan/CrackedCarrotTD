@@ -223,6 +223,8 @@ public class GameLoop implements Runnable {
 
 		// And set the progressbar with creature health to full again.
 		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, 100, 0);
+		// And reset our internal counter for the creature health progress bar ^^
+		progressbarLastSent = 100;
 		
 		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
@@ -261,6 +263,8 @@ public class GameLoop implements Runnable {
 	}
 
     public void run() {
+
+    	Log.d("GAMELOOP","INIT GAMELOOP");
    	
 	    initializeDataStructures();
 
@@ -276,8 +280,6 @@ public class GameLoop implements Runnable {
 	    	}
 	    }
         
-	    Log.d("GAMELOOP","INIT GAMELOOP");
-
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
@@ -285,14 +287,9 @@ public class GameLoop implements Runnable {
     		initializeLvl();
 
     		// This is used to know when the time has changed or not
-    		int lastTime = 0;
-    		
-    			// hack to stop sending hundreds of msgs' every second...
-    		boolean betweenLevels = true;
-    		
-    		progressbarLastSent = 100;
+    		int lastTime = (int) player.getTimeUntilNextLevel();
 
-    		// The LEVEL loop. Will run until all creatures are dead or done or player are dead.
+    		// The LEVEL loop. Will run until all creatures are dead or done or player is dead.
     		while(remainingCreaturesALL > 0 && run){
     			
     			//Systemclock. Used to help determine speed of the game. 
@@ -323,26 +320,31 @@ public class GameLoop implements Runnable {
 						e.printStackTrace();
 					}
 	            }
-	            // Shows how long it is left until next level
-	            if (player.getTimeUntilNextLevel() > 0 && betweenLevels) {
-	            	if ((player.getTimeUntilNextLevel() - timeDeltaSeconds) < 0) {
+	            
+	            
+	            // Displays the Countdown-to-next-wave text.
+	            if (player.getTimeUntilNextLevel() > 0) {
+	            	
+		    		// So we eventually reach the end of the countdown...
+	        		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
+	            	
+	            	if (player.getTimeUntilNextLevel() < 0) {
 		            	// Show healthbar again.
 	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
-	            	    
-	            		// Tell the creature counter to stop showing time and start showing nbr of creatures
-	            		// TODO: fix this, we dont need to call it at all times really do we?
+	
+	            			// Force the GUI to repaint the #-of-creatures-alive-counter.
 	            		creatureDiesOnMap(0);
-	            		
-	            		betweenLevels = false;
-	            	}
-	            	else 
-	            		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
-	            	if (lastTime != (int) player.getTimeUntilNextLevel()) {
-	            		lastTime = (int) player.getTimeUntilNextLevel();
-	            		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, lastTime, 0);
-
+	
+	            		player.setTimeUntilNextLevel(0);
+	            	} else {
+		        		// Update the displayed text on the countdown.
+		            	if (lastTime - player.getTimeUntilNextLevel() > 0.5) {
+		            		lastTime = (int) player.getTimeUntilNextLevel();
+		            		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, lastTime, 0);
+		            	}
 	            	}
 	            }
+
 	            
 	            //Calls the method that moves the creature.
 	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {

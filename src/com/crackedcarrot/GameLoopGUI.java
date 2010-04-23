@@ -638,7 +638,7 @@ public class GameLoopGUI {
 	
 	protected void sendMessage(int i, int j, int k) {
 		// TODO: remove this when done debugging msgs.
-		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
 		Message msg = Message.obtain();
 		msg.what = i;
