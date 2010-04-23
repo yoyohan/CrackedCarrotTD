@@ -125,7 +125,7 @@ public class Sprite{
 
 		// Find center of the submitted sprite
 		float cen_x = x + (this.width/2);
-		float cen_y = y + (this.height/2)/(this.scale/scale2);
+		float cen_y = y + (this.height*(this.scale/scale2))/2;
 
 		// Calculate the real position without scaling 
 		float new_x = cen_x - newSize;
