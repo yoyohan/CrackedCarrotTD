@@ -1,4 +1,3 @@
-
 package com.crackedcarrot;
 
 import java.util.concurrent.Semaphore;
@@ -190,8 +189,6 @@ public class GameInit extends Activity {
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
         
-        // BEGONE!
-        // Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }
