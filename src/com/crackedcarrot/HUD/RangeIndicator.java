@@ -17,9 +17,9 @@ public class RangeIndicator extends Sprite{
 	
 	public RangeIndicator(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
-		super(R.drawable.range_indicator, HUD, 1);
+		super(R.drawable.range_indicator, OVERLAY, 1);
 		this.x = 0; this.y = 0; this.z = 0;
-		Coords co = s.scale(60, 60);
+		Coords co = s.scale(128, 128);
 		this.setWidth(co.getX());
         this.setHeight(co.getY());
         this.draw = false;

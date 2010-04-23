@@ -11,11 +11,12 @@ public class Sprite{
 	//they can share the same VBO.
 	
 	public	static final int BACKGROUND = 0;
-	public 	static final int SHOT		= 1;
-	public  static final int EFFECT		= 2;
-	public 	static final int CREATURE	= 3;
-	public  static final int HUD		= 4;
+	public  static final int EFFECT		= 1;
+	public 	static final int CREATURE	= 2;
+	public 	static final int SHOT		= 3;
+	public  static final int OVERLAY	= 4;
 	public	static final int TOWER		= 5;
+	public  static final int UI			= 6;
 	
 	private int type;
 	private int subType;

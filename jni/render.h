@@ -7,11 +7,11 @@
 
 enum spriteType {
 	BACKGROUND = 0,
-	SHOT = 1,
-	EFFECT = 2,
-	CREATURE = 3,
-	GRID = 4,
-	TOWER = 5
+	EFFECT     = 1,
+	CREATURE   = 2,
+	SHOT       = 3,
+	OVERLAY    = 4,
+	TOWER      = 5
 };
 
 typedef struct {

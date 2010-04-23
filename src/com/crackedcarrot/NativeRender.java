@@ -63,7 +63,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
         this.texLib = texLib;
 		this.mContext = context;
 		this.view = view;
-		this.sprites[Sprite.HUD] = HUDObjects;
+		this.sprites[Sprite.OVERLAY] = HUDObjects;
 		System.loadLibrary("render");
 	}
 
