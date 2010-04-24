@@ -39,8 +39,8 @@ public class HUDHandler extends Thread{
 
 	}
 	
-	public void showRangeIndicator(int towerX, int towerY, int towerRange){
-		range.setSizeAndPos(towerX, towerY, towerRange);
+	public void showRangeIndicator(int towerX, int towerY, int towerRange, int width, int height){
+		range.scaleSprite( towerX, towerY, towerRange, width, height);
 		this.mHandler.post(range.getShowRunner());
 	}
 	

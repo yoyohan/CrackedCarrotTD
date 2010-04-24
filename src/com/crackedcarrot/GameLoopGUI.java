@@ -76,11 +76,27 @@ public class GameLoopGUI {
     final int GUI_SHOWHEALTHBAR_ID   = 17;
     final int GUI_HIDEHEALTHBAR_ID   = 18;
     
+    final LinearLayout towerbutton1;
+    final LinearLayout towerbutton2;
+    final LinearLayout towerbutton3;
+    final LinearLayout towerbutton4;
+    final LinearLayout towertext;
+    final LinearLayout exButton;
+    final TextView towerInformation;
+
     
-    	// Constructor. A good place to initiate all our different GUI-components.
+   	// Constructor. A good place to initiate all our different GUI-components.
     public GameLoopGUI(GameInit gi, final HUDHandler hud) {
     	gameInit = gi;
     	this.hud = hud;
+    	
+    	towerbutton1 = (LinearLayout) gameInit.findViewById(R.id.tbutton1);
+        towerbutton2 = (LinearLayout) gameInit.findViewById(R.id.tbutton2);
+        towerbutton3 = (LinearLayout) gameInit.findViewById(R.id.tbutton3);
+        towerbutton4 = (LinearLayout) gameInit.findViewById(R.id.tbutton4);
+        towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
+        exButton = (LinearLayout) gameInit.findViewById(R.id.exbutton);
+        towerInformation = (TextView) gameInit.findViewById(R.id.towerInformation);
     	
     	// Register on ScoreNinja.
         scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
@@ -114,12 +130,6 @@ public class GameLoopGUI {
         // Create the instruction view
         //instructionView = (InstructionView)findViewById(R.id.instruction_view);
         
-        final LinearLayout towerbutton1 = (LinearLayout) gameInit.findViewById(R.id.tbutton1);
-        final LinearLayout towerbutton2 = (LinearLayout) gameInit.findViewById(R.id.tbutton2);
-        final LinearLayout towerbutton3 = (LinearLayout) gameInit.findViewById(R.id.tbutton3);
-        final LinearLayout towerbutton4 = (LinearLayout) gameInit.findViewById(R.id.tbutton4);
-        final LinearLayout towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
-        final LinearLayout exButton = (LinearLayout) gameInit.findViewById(R.id.exbutton);
 
         /** Listeners for the six icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
@@ -133,23 +143,16 @@ public class GameLoopGUI {
         	}
         });
 
-        final TextView towerInformation = (TextView) gameInit.findViewById(R.id.towerInformation);
-        
         final Button inMenu2 = (Button) gameInit.findViewById(R.id.inmenu2);
         inMenu2.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(0);
-           		towerInformation.setText("ArrowTower Lvl1 etc etc");
-        		towerbutton1.setVisibility(View.GONE);
-        		towerbutton2.setVisibility(View.GONE);
-        		towerbutton3.setVisibility(View.GONE);
-        		towerbutton4.setVisibility(View.GONE);
-        		towertext.setVisibility(View.VISIBLE);
+        		openTowerBuildMenu(0);
         		hud.showGrid();
-
         	}
+
         });
         Button inMenu3 = (Button) gameInit.findViewById(R.id.inmenu3);
         inMenu3.setOnClickListener(new OnClickListener() {
@@ -157,12 +160,7 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 2 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(1);
-        		towerInformation.setText("CannonTower Lvl1 etc etc");
-        		towerbutton1.setVisibility(View.GONE);
-        		towerbutton2.setVisibility(View.GONE);
-        		towerbutton3.setVisibility(View.GONE);
-        		towerbutton4.setVisibility(View.GONE);
-        		towertext.setVisibility(View.VISIBLE);
+        		openTowerBuildMenu(1);
         		hud.showGrid();
 
         	}
@@ -173,12 +171,7 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 3 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(2);
-        		towerInformation.setText("AOE Tower Lvl1 etc etc");
-        		towerbutton1.setVisibility(View.GONE);
-        		towerbutton2.setVisibility(View.GONE);
-        		towerbutton3.setVisibility(View.GONE);
-        		towerbutton4.setVisibility(View.GONE);
-        		towertext.setVisibility(View.VISIBLE);
+        		openTowerBuildMenu(2);
         		hud.showGrid();
         	}
         });
@@ -188,12 +181,7 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		// A tower of type 4 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(3);
-        		towerInformation.setText("Ultimate Tower Lvl1 etc etc");
-        		towerbutton1.setVisibility(View.GONE);
-        		towerbutton2.setVisibility(View.GONE);
-        		towerbutton3.setVisibility(View.GONE);
-        		towerbutton4.setVisibility(View.GONE);
-        		towertext.setVisibility(View.VISIBLE);
+        		openTowerBuildMenu(3);
         		hud.showGrid();
         	}
         });
@@ -204,7 +192,6 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		gameInit.mGLSurfaceView.setTowerType(-1);
-           		towerInformation.setText("ArrowTower Lvl1 etc etc");
         		towertext.setVisibility(View.GONE);
            		towerbutton1.setVisibility(View.VISIBLE);
         		towerbutton2.setVisibility(View.VISIBLE);
@@ -473,7 +460,7 @@ public class GameLoopGUI {
 	    	String titleText ="<b>Level " + currLvlnbr + "</b><br>" + currLvl.creepTitle +"<br>";
 		    CharSequence styledText = Html.fromHtml(titleText);
 	    	title.setText(styledText);
-
+	    	
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
 	    	image.setImageResource(currLvl.getDisplayResourceId());
@@ -600,6 +587,7 @@ public class GameLoopGUI {
 		    			break;
 	        	 case GUI_SHOWHEALTHBAR_ID:
 	        		 //If we want to switch back to healthbar
+        		 	 nrCreText.setText("");
 	        		 healthProgressBar.setVisibility(View.VISIBLE);
 	        		 enImView.setVisibility(View.VISIBLE);
 	        		 break;
@@ -640,5 +628,18 @@ public class GameLoopGUI {
 		msg.arg2 = k;
 		guiHandler.sendMessage(msg);
 	}
-	
+
+	private void openTowerBuildMenu(int towerId) {
+		Tower info = gameInit.gameLoop.getTower(towerId);
+		String text =  info.getTitle() + "<b> Price:</b>" + info.getPrice() + "<br>";
+		text		+= "<b>Speed:</b> Fast <b>Range:</b> " + (int)info.getRange() + "<br>";
+   		text 		+= "<b> Damage:</b>" + (int)info.getMinDamage() + "-" + (int)info.getMaxDamage();
+	    CharSequence styledText = Html.fromHtml(text);
+	    towerInformation.setText(styledText);
+   		towerbutton1.setVisibility(View.GONE);
+		towerbutton2.setVisibility(View.GONE);
+		towerbutton3.setVisibility(View.GONE);
+		towerbutton4.setVisibility(View.GONE);
+		towertext.setVisibility(View.VISIBLE);
+	}	
 }

@@ -71,6 +71,7 @@ public class RangeIndicator extends Sprite{
 			}
 			opacity = 0.0f;
 			draw = false;
+			
 		}
 	};
 	
@@ -87,9 +88,4 @@ public class RangeIndicator extends Sprite{
 		}
 	}
 
-	public void setSizeAndPos(int x, int y, int towerRange) {
-		this.x = x;
-		this.y = y;
-		this.scale(towerRange);
-	};
 }
