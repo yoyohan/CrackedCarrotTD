@@ -79,7 +79,7 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 6
-Texture animate::mrcat
+Texture animate::mrcat_animate
 Texture display::mrcat
 Texture dead::mrcatdead
 scale::1
@@ -105,7 +105,7 @@ poison resistant::true
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 8
-Texture animate::mrbear
+Texture animate::mrbear_animate
 Texture display::mrbear
 Texture dead::mrbeardead
 scale::1
