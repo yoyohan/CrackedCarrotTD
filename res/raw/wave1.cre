@@ -66,7 +66,7 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 5
-Texture animate::mrlion
+Texture animate::mrlion_animate
 Texture display::mrlion
 Texture dead::mrliondead
 scale::1
