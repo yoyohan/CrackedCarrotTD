@@ -26,10 +26,6 @@ frost resistant::false
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
 /////////////////////////////// level 3
 Texture animate::mrbear_animate
 Texture display::mrbear
@@ -96,8 +92,6 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 8
-<<<<<<< HEAD
->>>>>>> 1da3cadbfdc88d9501ab4b495d554a4ba9d17c01
 Texture animate::mrbear_animate
 Texture display::mrbear
 Texture dead::mrbeardead
@@ -105,7 +99,6 @@ Texture dead::mrbeardead
 Texture animate::mrmonkey_animate
 Texture display::mrmonkey
 Texture dead::mrmonkeydead
->>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
 scale::1
 Wave title::Mr Monkey
 health::135
@@ -128,12 +121,6 @@ frost resistant::false
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
-<<<<<<< HEAD
-<<<<<<< HEAD
-// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
-=======
-=======
->>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
 /////////////////////////////// level 10
 Texture animate::mrpingu_animate
 Texture display::mrpingu
@@ -159,11 +146,5 @@ fire resistant::false
 frost resistant::false
 poison resistant::false
 goldValue::1
-<<<<<<< HEAD
 nbrOfCreaturs::1
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
->>>>>>> 1da3cadbfdc88d9501ab4b495d554a4ba9d17c01
-=======
-nbrOfCreaturs::20
-// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
->>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
