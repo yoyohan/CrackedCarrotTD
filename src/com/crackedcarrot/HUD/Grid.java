@@ -1,7 +1,6 @@
 package com.crackedcarrot.HUD;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;

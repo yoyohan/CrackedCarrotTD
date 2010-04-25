@@ -273,13 +273,10 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
-<<<<<<< HEAD
 	    
 	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
-=======
-        
 	    Log.d("GAMELOOP","INIT GAMELOOP");
->>>>>>> 5be03d847823ad03fa437dec56420c39c5024422
+
 
 	    while(run){
 	    	

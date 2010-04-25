@@ -11,12 +11,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-<<<<<<< HEAD
-=======
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
->>>>>>> 5be03d847823ad03fa437dec56420c39c5024422
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -201,11 +198,8 @@ public class GameInit extends Activity {
             		gameLoopGui,new SoundManager(getBaseContext()));
     	}
         
-<<<<<<< HEAD
+
         // Resuming old game. Prepare GameLoop for this...
-=======
-        	// Resuming old game? Prepare GameLoop for this...
->>>>>>> 5be03d847823ad03fa437dec56420c39c5024422
         if (resume > 0) {
         	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
         	gameLoop.resumeSetTowers(resumeTowers);
