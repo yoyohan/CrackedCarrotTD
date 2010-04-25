@@ -68,6 +68,7 @@ public class GameInit extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
     		showDialog(gameLoopGui.DIALOG_QUIT_ID);
     		return true;
        	}
