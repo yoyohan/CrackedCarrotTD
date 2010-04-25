@@ -33,7 +33,7 @@ public class MapOp extends Activity implements ViewFactory {
 	/** References to our images */
     private Integer[] mmaps = {
     		R.drawable.map1,
-    		R.drawable.button_pause_128,
+    		R.drawable.map2,
     		R.drawable.background,
     };
     
@@ -69,14 +69,21 @@ public class MapOp extends Activity implements ViewFactory {
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it
+<<<<<<< HEAD
         		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
         		StartGame2.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		startActivity(StartGame2);
         		finish();
+=======
+        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
+        		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
+        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
+        		startActivity(StartGame);
+                finish();
+>>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
         	}
         });
-        
         
         // Difficulty listeners.
         radioEasy = (RadioButton) findViewById(R.id.radioEasy);
@@ -166,7 +173,6 @@ public class MapOp extends Activity implements ViewFactory {
 	public View makeView() {
         ImageView imageView = new ImageView(this);
         imageView.setBackgroundResource(R.drawable.gallery);
-        //imageView.setBackgroundColor(0xFF000000);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new 
                 ImageSwitcher.LayoutParams(
@@ -187,7 +193,7 @@ public class MapOp extends Activity implements ViewFactory {
 					break;
 				case 1: 
 					mapSelected = 2;
-					tv.setText("Map 2: The field of grass.");
+					tv.setText("Map 2: The field of very cold grass.");
 					break;	
 				case 2: 
 					mapSelected = 3;

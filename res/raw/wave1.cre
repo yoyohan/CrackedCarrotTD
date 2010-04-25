@@ -1,5 +1,5 @@
-// Name: waweSet1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::3
+// Name: wawe1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
+Total number of levels::11
 ////////////////////////////// level 1
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
@@ -27,36 +27,10 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 <<<<<<< HEAD
-/////////////////////////////// level 3
+<<<<<<< HEAD
 =======
-/////////////////////////////// level 6
-Texture animate::mrcat_animate
-Texture display::mrcat
-Texture dead::mrcatdead
-scale::1
-Wave title::Mr Cat
-health::250
-fast level::true
-fire resistant::false
-frost resistant::false
-poison resistant::false
-goldValue::1
-nbrOfCreaturs::20
-/////////////////////////////// level 7
-Texture animate::skate1
-Texture display::skate1
-Texture dead::skate1
-scale::1
-Wave title::Not done
-health::295
-fast level::false
-fire resistant::false
-frost resistant::false
-poison resistant::true
-goldValue::1
-nbrOfCreaturs::20
-/////////////////////////////// level 8
->>>>>>> 1da3cadbfdc88d9501ab4b495d554a4ba9d17c01
+>>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
+/////////////////////////////// level 3
 Texture animate::mrbear_animate
 Texture display::mrbear
 Texture dead::mrbeardead
@@ -69,21 +43,127 @@ frost resistant::false
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
-<<<<<<< HEAD
-// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
-=======
-/////////////////////////////// level 10
-Texture animate::misspiggy
+/////////////////////////////// level 4
+Texture animate::misspiggy_animate
 Texture display::misspiggy
 Texture dead::misspiggydead
 scale::1
-Wave title::Miss Piggy(Boss)
-health::10000
+Wave title::Miss Piggy
+health::135
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
 goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 5
+Texture animate::mrbully_animate
+Texture display::mrbully
+Texture dead::mrbullydead
+scale::1
+Wave title::Mr Bully
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 6
+Texture animate::mrcat_animate
+Texture display::mrcat
+Texture dead::mrcatdead
+scale::1
+Wave title::Mr Cat
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 7
+Texture animate::mrelephant_animate
+Texture display::mrelephant
+Texture dead::mrelephantdead
+scale::1
+Wave title::Mr Elephant
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 8
+<<<<<<< HEAD
+>>>>>>> 1da3cadbfdc88d9501ab4b495d554a4ba9d17c01
+Texture animate::mrbear_animate
+Texture display::mrbear
+Texture dead::mrbeardead
+=======
+Texture animate::mrmonkey_animate
+Texture display::mrmonkey
+Texture dead::mrmonkeydead
+>>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
+scale::1
+Wave title::Mr Monkey
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 9
+Texture animate::mrmouse_animate
+Texture display::mrmouse
+Texture dead::mrmousedead
+scale::1
+Wave title::Mr Mouse
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+<<<<<<< HEAD
+<<<<<<< HEAD
+// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
+=======
+=======
+>>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
+/////////////////////////////// level 10
+Texture animate::mrpingu_animate
+Texture display::mrpingu
+Texture dead::mrpingudead
+scale::1
+Wave title::Mr Pingu
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+nbrOfCreaturs::20
+/////////////////////////////// level 11
+Texture animate::mrsakib_animate
+Texture display::mrsakib
+Texture dead::mrsakibdead
+scale::1
+Wave title::Mr Sakib
+health::135
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+goldValue::1
+<<<<<<< HEAD
 nbrOfCreaturs::1
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
 >>>>>>> 1da3cadbfdc88d9501ab4b495d554a4ba9d17c01
+=======
+nbrOfCreaturs::20
+// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
+>>>>>>> b29f4883c4d2c5562b01d14cebb972bbf73cb42e
