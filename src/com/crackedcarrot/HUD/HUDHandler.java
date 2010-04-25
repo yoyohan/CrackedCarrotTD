@@ -2,12 +2,9 @@ package com.crackedcarrot.HUD;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
-
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
-import com.crackedcarrot.menu.R;
 
 public class HUDHandler extends Thread{
 	
@@ -42,8 +39,8 @@ public class HUDHandler extends Thread{
 
 	}
 	
-	public void showRangeIndicator(int towerCenterX, int towerCenterY, int towerRange){
-		range.setSizeAndPos(towerCenterX, towerCenterY, towerRange);
+	public void showRangeIndicator(int towerX, int towerY, int towerRange, int width, int height){
+		range.scaleSprite( towerX, towerY, towerRange, width, height);
 		this.mHandler.post(range.getShowRunner());
 	}
 	

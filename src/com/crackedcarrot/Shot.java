@@ -12,4 +12,13 @@ public class Shot extends Sprite{
 		this.tower = tower;
 		super.draw = false;
 	}
+
+	/**
+	 * Method that places a shot back to 
+	 * the start position
+	 */
+	public void resetShotCordinates() {
+		x = tower.x + tower.getWidth()/2;
+		y = tower.y + tower.getHeight()/2;
+	}
 }

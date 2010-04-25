@@ -33,7 +33,7 @@ public class MapOp extends Activity implements ViewFactory {
 	/** References to our images */
     private Integer[] mmaps = {
     		R.drawable.map1,
-    		R.drawable.button_pause_128,
+    		R.drawable.map2,
     		R.drawable.background,
     };
     
@@ -73,9 +73,9 @@ public class MapOp extends Activity implements ViewFactory {
         		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		startActivity(StartGame);
+                finish();
         	}
         });
-        
         
         // Difficulty listeners.
         radioEasy = (RadioButton) findViewById(R.id.radioEasy);
@@ -165,7 +165,6 @@ public class MapOp extends Activity implements ViewFactory {
 	public View makeView() {
         ImageView imageView = new ImageView(this);
         imageView.setBackgroundResource(R.drawable.gallery);
-        //imageView.setBackgroundColor(0xFF000000);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new 
                 ImageSwitcher.LayoutParams(
@@ -186,7 +185,7 @@ public class MapOp extends Activity implements ViewFactory {
 					break;
 				case 1: 
 					mapSelected = 2;
-					tv.setText("Map 2: The field of grass.");
+					tv.setText("Map 2: The field of very cold grass.");
 					break;	
 				case 2: 
 					mapSelected = 3;

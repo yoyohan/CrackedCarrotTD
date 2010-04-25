@@ -2,7 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -24,7 +23,6 @@ public class GameLoop implements Runnable {
     private GameLoopGUI  gui;
     private Scaler       mScaler;
     private Semaphore    dialogSemaphore = new Semaphore(1);
-    private Tracker      mTracker;
 
     private Map mGameMap;
     private Player player;
@@ -66,7 +64,6 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.mTracker = new Tracker(mScaler.getGridWidth(),mScaler.getGridHeight(), 20);
     }
     
 	private void initializeDataStructures() {
@@ -78,7 +75,7 @@ public class GameLoop implements Runnable {
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 
-	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager,mTracker);
+	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
@@ -97,8 +94,8 @@ public class GameLoop implements Runnable {
 	    								0,1,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
-	    								i,
-	    								mTracker);
+	    								i
+	    								);
 
 	    	mCreatures[i].draw = false;
 	    	int tmpOffset = rand.nextInt(10) - 5;
@@ -179,11 +176,12 @@ public class GameLoop implements Runnable {
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
-	    	Coords tmpCoord = mScaler.scale(14,0);
+	    	//This is defined by the scale of this current lvl
+			Coords tmpCoord = mScaler.scale(14,0);
 	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
+	    	
     	}
 		try {
-			
 			//Finally send of the sprites to the render to be allocated
 			//And after that drawn.
 			renderHandle.finalizeSprites();
@@ -294,11 +292,13 @@ public class GameLoop implements Runnable {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
-
-    			try {
-    	    		GameInit.pauseSemaphore.acquire();
-    			} catch (InterruptedException e1) {}
-    			GameInit.pauseSemaphore.release();
+    			
+				if(GameInit.pause){
+	    			try {
+	    	    		GameInit.pauseSemaphore.acquire();
+	    			} catch (InterruptedException e1) {}
+	    			GameInit.pauseSemaphore.release();
+				}
     			
     			//Get the time after an eventual pause and add this to the mLastTime variable
     			final long time2 = SystemClock.uptimeMillis();
@@ -312,8 +312,8 @@ public class GameLoop implements Runnable {
 
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
-	            if (timeDelta <= 15) {
-	            	int naptime = (int)(15-timeDelta);
+	            if (timeDelta <= 16) {
+	            	int naptime = (int)(16-timeDelta);
 		            try {
 						Thread.sleep(naptime);
 					} catch (InterruptedException e) {
@@ -505,7 +505,7 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
 
-    	/* Henk visar hur det ska gå till:
+    	/* Henk visar hur det ska gï¿½ till:
     	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
     	public int lastPorgress 
     	if (test != lastpro)
@@ -591,13 +591,19 @@ public class GameLoop implements Runnable {
 		}
 		Coords tmpC = mScaler.getGridXandY(x,y);
 		
-		int[] rData = new int[3];
+		int[] rData = new int[5];
 		
-		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x - (int)mTowerGrid[tmpC.x][tmpC.y].getWidth() / 2;
-		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y - (int)mTowerGrid[tmpC.x][tmpC.y].getHeight() / 2;
+		rData[0] = (int)mTowerGrid[tmpC.x][tmpC.y].x;
+		rData[1] = (int)mTowerGrid[tmpC.x][tmpC.y].y;
 		rData[2] = (int)mTowerGrid[tmpC.x][tmpC.y].getRange();
-		
+		rData[3] = (int)mTowerGrid[tmpC.x][tmpC.y].getWidth();
+		rData[4] = (int)mTowerGrid[tmpC.x][tmpC.y].getHeight();
+
 		return rData;
+	}
+	
+	public Tower getTower(int towerid) {
+			return mTTypes[towerid];			
 	}
 
 }

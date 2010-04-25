@@ -72,7 +72,7 @@
         
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/exbutton"
 			android:gravity="center_horizontal"
 			android:background="@drawable/button_normal"
@@ -89,7 +89,7 @@
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/tbutton1"
 			android:gravity="center_horizontal"
 			android:background="@drawable/button_normal"
@@ -106,7 +106,7 @@
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/tbutton2"
 			android:gravity="center_horizontal"
 			android:background="@drawable/button_normal"
@@ -124,7 +124,7 @@
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/tbutton3"
 			android:gravity="center_horizontal"
 			android:background="@drawable/button_normal"
@@ -140,7 +140,7 @@
 
 		<LinearLayout
 			android:layout_width="64dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/tbutton4"
 			android:gravity="center_horizontal"
 			android:background="@drawable/button_normal"
@@ -156,7 +156,7 @@
     	</LinearLayout>    		
 		<LinearLayout
 			android:layout_width="256dp"
-			android:layout_height="48dp"
+			android:layout_height="50dp"
 			android:id="@+id/ttext"
 			android:gravity="center_horizontal"
 			android:visibility="gone"
@@ -164,9 +164,9 @@
 	    >
 			
 			<LinearLayout
-				android:layout_width="192dp"
-				android:layout_height="48dp"
-				android:padding="6dp"
+				android:layout_width="206dp"
+				android:layout_height="50dp"
+				android:padding="4dp"
 				android:gravity="center_horizontal"
 				android:background="@drawable/button_normal"
 		    >
@@ -174,7 +174,7 @@
 	        <TextView
 				android:textColor="#000000"
 				android:textStyle="bold"
-				android:textSize="12sp"
+				android:textSize="11sp"
 				android:id="@+id/towerInformation"
 				android:layout_width="fill_parent" 
 				android:layout_height="fill_parent" >
@@ -183,8 +183,8 @@
 			</LinearLayout>    
 			
 			<LinearLayout
-				android:layout_width="64dp"
-				android:layout_height="48dp"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
 				android:gravity="center_horizontal"
 				android:background="@drawable/button_normal"
 		    >
@@ -215,6 +215,7 @@
 			android:paddingTop="5dp"
 			android:layout_width="25dp" 
 			android:layout_height="25dp"
+			android:paddingRight="3dp"
 			android:src="@drawable/coin" >
 		</ImageView>
 		
@@ -224,7 +225,6 @@
 			android:textSize="12sp"
 			android:id="@+id/currency"
 			android:paddingTop="5dp" 
-			android:paddingLeft="3dp"
 			android:paddingRight="7dp"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" >

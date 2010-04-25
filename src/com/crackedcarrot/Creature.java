@@ -2,8 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
-import android.util.Log;
-
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining creature in the game
@@ -55,10 +53,8 @@ public class Creature extends Sprite{
 	protected float rDefault = 1;
 	protected float gDefault = 1;
 	protected float bDefault = 1;
-	// Data used by tracker
-	protected int currentGridPos;
+	// Creature id
 	protected int creatureIndex;
-	protected Tracker mTracker;
 
 	// Variables used for animation
     private Random rand;
@@ -78,8 +74,8 @@ public class Creature extends Sprite{
 					SoundManager soundMan, 
 					Coords[] wayP, 
 					GameLoop loop, 
-					int creatureIndex, 
-					Tracker mTracker){
+					int creatureIndex
+					){
 		
 		super(resourceId, CREATURE, type);
 		this.draw = false;
@@ -89,7 +85,6 @@ public class Creature extends Sprite{
 		this.wayP = wayP;
 		this.GL = loop;
 		this.creatureIndex = creatureIndex;
-		this.mTracker = mTracker;
 	
 		rand = new Random();
 		double randomDouble = (rand.nextDouble());
@@ -175,12 +170,13 @@ public class Creature extends Sprite{
 		float cen_y = wayP[i].getY() + newsize;
 		return (cen_y/this.scale);
 	}
+	
 	public float getScaledX() {
-		float cen_x  = x + this.scale*(this.getWidth()/2);
+		float cen_x  = x + this.getWidth()/2;
 		return (cen_x*this.scale);
 	}
 	public float getScaledY() {
-		float cen_y  = y + this.scale*(this.getHeight()/2);
+		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
 
@@ -193,8 +189,6 @@ public class Creature extends Sprite{
 				draw = true;
 				spawnWayPointX = 0;
 				spawnWayPointY = 0;
-				// TODO: TRACKER
-				//prepareTracker();
 			}
 		}
 		
@@ -223,9 +217,6 @@ public class Creature extends Sprite{
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
 		GL.creatureDiesOnMap(1);
-		
-		// TODO Remove creature from tracker
-		// mTracker.removeCreature(this, creatureIndex, currentGridPos);
 	}
 	
 	private void move(float movement){
@@ -240,14 +231,6 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
-    		
-    		// TODO: USED BY CREATURE TO LET TRACKER KNOW CREATURE HAS ENTERED A NEW GRIDPOS
-    		//Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
-    		//int gridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
-    		//if (gridPos != currentGridPos) {
-    		//	mTracker.UpdatePosition(this, creatureIndex, currentGridPos, gridPos);
-    		//	currentGridPos = gridPos;
-    		//}
 		}
 
 	}
@@ -374,15 +357,6 @@ public class Creature extends Sprite{
 	public void setDead(boolean b) {
 		this.dead = b;
 	}
-
-	// TODO:
-	// This is used by the tracker to make sure the creature is placed in the tracker before game starts
-	//private void prepareTracker() {
-	//	Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
-	//	currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
-	//	mTracker.addCreature(this,creatureIndex,currentGridPos);
-	//}
-	
 
 	// This setters is used by the waveloader. Needed to show correct creature
 	public void setDisplayResourceId(int resID) {

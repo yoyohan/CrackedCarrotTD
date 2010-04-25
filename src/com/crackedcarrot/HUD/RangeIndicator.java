@@ -1,8 +1,8 @@
 package com.crackedcarrot.HUD;
 
 import android.os.SystemClock;
-import android.util.Log;
 
+import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.menu.R;
@@ -17,10 +17,11 @@ public class RangeIndicator extends Sprite{
 	
 	public RangeIndicator(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
-		super(R.drawable.range_indicator, HUD, 1);
+		super(R.drawable.range_indicator, OVERLAY, 1);
 		this.x = 0; this.y = 0; this.z = 0;
-		this.setWidth(128);
-        this.setHeight(128);
+		Coords co = s.scale(128, 128);
+		this.setWidth(co.getX());
+        this.setHeight(co.getY());
         this.draw = false;
         
         this.r = 1.0f;
@@ -41,7 +42,7 @@ public class RangeIndicator extends Sprite{
 	}
 
 	private class Show implements Runnable{
-		@Override
+		//@Override
 		public void run() {
 			if(draw == true)
 				return;
@@ -60,19 +61,6 @@ public class RangeIndicator extends Sprite{
 				currentTime = SystemClock.uptimeMillis();
 			}
 			opacity = 0.5f;
-		}
-	};
-	
-	private class Hide implements Runnable{
-		@Override
-		public void run() {
-			if(draw == false)
-				return;
-			
-			opacity = 0.5f;
-			startTime = SystemClock.uptimeMillis();
-			currentTime = SystemClock.uptimeMillis();
-			lastUpdateTime = currentTime;
 			while((currentTime - startTime) < 500){
 				if((currentTime - lastUpdateTime) > 50){
 					opacity -= 0.05f;
@@ -83,13 +71,21 @@ public class RangeIndicator extends Sprite{
 			}
 			opacity = 0.0f;
 			draw = false;
+			
+		}
+	};
+	
+	private class Hide implements Runnable{
+		//@Override
+		public void run() {
+			if(draw == false)
+				return;
+			
+			opacity = 0.5f;
+			startTime = SystemClock.uptimeMillis();
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = currentTime;
 		}
 	}
 
-	public void setSizeAndPos(int towerCenterX, int towerCenterY, int towerRange) {
-		
-		this.x = towerCenterX - towerRange;
-		this.y = towerCenterY - towerRange;
-		this.scale = ((float)(towerRange*2)) / (float)getHeight();		
-	};
 }

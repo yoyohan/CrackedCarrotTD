@@ -9,11 +9,15 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.crackedcarrot.HUD.HUDHandler;
 import com.crackedcarrot.fileloader.Level;
@@ -22,6 +26,7 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
@@ -35,6 +40,7 @@ public class GameInit extends Activity {
     private MapLoader   mapLoad;
     
     public static Semaphore pauseSemaphore = new Semaphore(1);
+    public static boolean pause = false;
     
     
     /*
@@ -54,6 +60,19 @@ public class GameInit extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) { return gameLoopGui.onPrepareOptionsMenu(menu); }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { return gameLoopGui.onOptionsItemSelected(item); }
+    
+    /*
+     * This will have to live in GameInit.java for now - havent figured out how to move it correctly yet,
+     * there might be problems with the key-input to the application/gameLoop... /Fredrik
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		showDialog(gameLoopGui.DIALOG_QUIT_ID);
+    		return true;
+       	}
+    	return super.onKeyDown(keyCode, event);
+    } 
     
     
     /** Called when the activity is first created. */
@@ -206,8 +225,7 @@ public class GameInit extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
     	super.onConfigurationChanged(newConfig);
     }
-    
-    
+
     protected void onDestroy() {
     	super.onDestroy();
     	Log.d("GAMEINIT", "onDestroy");
@@ -273,5 +291,48 @@ public class GameInit extends Activity {
     		editor.commit();
     	}
     }
+    
+    /** This is the multiplayer part, will move this to the GameLoopGUI as soon as it works */
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+    
+    private MultiplayerService mMultiplayerService;
+    
+    // Message types sent from the MultiplayerService Handler
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_WRITE = 2;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final int MESSAGE_TOAST = 4;
+    
+    // The Handler that gets information back from the MultiplayerService
+    private final Handler mMultiPlayerHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_WRITE:
+                byte[] writeBuf = (byte[]) msg.obj;
+                // construct a string from the buffer
+                String writeMessage = new String(writeBuf);
+                //mConversationArrayAdapter.add("Me:  " + writeMessage);
+                break;
+            case MESSAGE_READ:
+                byte[] readBuf = (byte[]) msg.obj;
+                // construct a string from the valid bytes in the buffer
+                String readMessage = new String(readBuf, 0, msg.arg1);
+                //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
+                break;
+            case MESSAGE_DEVICE_NAME:
+                // save the connected device's name
+                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                //Toast.makeText(getApplicationContext(), "Connected to "
+                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                break;
+            case MESSAGE_TOAST:
+                Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
+                               Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+    };
     
 }

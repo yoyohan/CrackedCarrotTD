@@ -30,9 +30,6 @@ public class Scaler {
 		if (res_x == FX && res_y == FY) {
 			return new Coords(currX,currY);
 		}
-		if (res_x > FX || res_y > FY) {
-			Log.e("Scaler", "Resolution not supported");
-		}
 		
 		float rX = 0;
 		float rY = 0;
