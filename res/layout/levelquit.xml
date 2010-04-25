@@ -5,13 +5,13 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:padding="10dp"
-              android:orientation="vertical" android:minHeight="160px" android:minWidth="240px">
+              android:orientation="vertical" android:minHeight="120px" android:minWidth="240px">
 
     <TextView
               android:layout_width="wrap_content"
               android:layout_height="fill_parent"
               android:textColor="#FFF"
-              android:text="A winner is you!!" android:textStyle="bold"/>
+              android:text="Quit" android:textStyle="bold" />
 
 			  <LinearLayout
                             android:orientation="horizontal"
@@ -30,7 +30,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
                             android:textColor="#FFF"
-                            android:text="Congratulations! You've defeated the vile rabbit!"/>
+                            android:text="Do you really want to quit?"/>
               
               </LinearLayout>
               

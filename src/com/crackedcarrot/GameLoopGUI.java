@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,6 +66,7 @@ public class GameLoopGUI {
     final int DIALOG_WON_ID       = 2;
     final int DIALOG_LOST_ID      = 3;
     final int DIALOG_HIGHSCORE_ID = 4;
+    final int DIALOG_QUIT_ID      = 5;
     
     final int GUI_PLAYERMONEY_ID     = 10;
     final int GUI_PLAYERHEALTH_ID    = 11;
@@ -82,7 +84,7 @@ public class GameLoopGUI {
     final LinearLayout towerbutton4;
     final LinearLayout towertext;
     final LinearLayout exButton;
-    final TextView towerInformation;
+    final TextView     towerInformation;
 
     
    	// Constructor. A good place to initiate all our different GUI-components.
@@ -269,6 +271,7 @@ public class GameLoopGUI {
         });
 
     }
+    
 
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
@@ -294,6 +297,10 @@ public class GameLoopGUI {
     			gameInit.gameLoop.soundManager.playSound = false;
     		else
     			gameInit.gameLoop.soundManager.playSound = true;
+    	} else if (item.getTitle().toString().startsWith("Quit")) {
+    			// User clicked Quit.
+    			// Doesnt save or prompt or anything, this just quits.
+    		gameInit.finish();
     	}
 
         return false;
@@ -388,6 +395,32 @@ public class GameLoopGUI {
 	    	dialog = alertDialog;
 	    	
 	    	break;
+	    case DIALOG_QUIT_ID:
+	    	mContext = gameInit;
+	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    	layout = inflater.inflate(R.layout.levelquit,
+	    	                               (ViewGroup) gameInit.findViewById(R.id.layout_root));
+
+	    	builder = new AlertDialog.Builder(mContext);
+	    	builder.setView(layout)
+	    	       .setCancelable(true)
+	    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	        	   gameInit.finish();
+	    	           }
+	    	       })
+	    	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	    	    	   public void onClick(DialogInterface dialog, int id) {
+	    	    		   // TODO: do nothing?
+	    	    	   }
+	    	       });
+
+	    	alertDialog = builder.create();
+
+	    	dialog = alertDialog;
+	    	//dialog.setOwnerActivity(this);
+	    	break;
+
 	    case 255: // TODO: This is the old UpgradeTower-dialog, remove???
 	    	mContext = gameInit;
 	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
