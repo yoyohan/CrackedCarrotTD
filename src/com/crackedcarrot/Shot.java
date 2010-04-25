@@ -8,8 +8,17 @@ public class Shot extends Sprite{
     public Tower tower;
     
 	public Shot(int resourceId,  int type, Tower tower){
-		super(resourceId, NativeRender.SHOT, type);
+		super(resourceId, SHOT, type);
 		this.tower = tower;
 		super.draw = false;
+	}
+
+	/**
+	 * Method that places a shot back to 
+	 * the start position
+	 */
+	public void resetShotCordinates() {
+		x = tower.x + tower.getWidth()/2;
+		y = tower.y + tower.getHeight()/2;
 	}
 }

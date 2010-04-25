@@ -3,7 +3,6 @@ package com.crackedcarrot.menu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -39,10 +38,10 @@ public class MapOp extends Activity implements ViewFactory {
     };
     
     /** The index for our "maps" array */
-    public int difficulty = 1;
-    private int resume;
-    private TextView  tv;
+    private int difficulty = 1;
     private int mapSelected;
+
+    private TextView    tv;
     private RadioButton radioEasy;
     private RadioButton radioNormal;
     private RadioButton radioHard;
@@ -77,11 +76,6 @@ public class MapOp extends Activity implements ViewFactory {
         		finish();
         	}
         });
-        
-        
-        // See if there's any old game saved that can be resumed.
-        SharedPreferences settings = getSharedPreferences("Resume", 0);
-        resume = settings.getInt("Resume", 0);
         
         
         // Difficulty listeners.
@@ -162,21 +156,11 @@ public class MapOp extends Activity implements ViewFactory {
     @Override
     public void onRestart() {
         super.onRestart();
-        
-        // See if there's any old game saved that can be resumed.
-        SharedPreferences settings = getSharedPreferences("Resume", 0);
-        resume = settings.getInt("Resume", 0);
-        
-        	// If we have a possible resume show it directly.
-		if (resume == -1 || resume > 2) {
-        	//indexMaps = 1;
-        	tv.setText("Map 1: The field of grass.");
-        } else {
-        	//indexMaps = 0;
-        	tv.setText("You have " + (3 - resume) + " resumes left.");
-        }
-       	// and update the Map-Image.
-        //im.setImageResource(mmaps[indexMaps]);
+
+        		// TODO: Ta bort allt detta?
+        	// Reset the selected map?
+        // mapSelected = 1;
+       	// tv.setText("Map 1: The field of grass.");
     }
 
 	public View makeView() {
@@ -257,8 +241,5 @@ public class MapOp extends Activity implements ViewFactory {
             return imageView;
         }
    }
-    
-    
-    
     
 }

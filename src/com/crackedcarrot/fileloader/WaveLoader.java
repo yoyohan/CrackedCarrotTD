@@ -106,9 +106,9 @@ public class WaveLoader {
 			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
 
 			            	// Define creature size
-			            	Coords recalc = scaler.scale(60,0);
+			            	Coords recalc = scaler.scale(60,60);
 			            	tmpLvl.setWidth(recalc.getX());
-			            	tmpLvl.setHeight(recalc.getX());
+			            	tmpLvl.setHeight(recalc.getY());
 
 			            	// I will put velocity here
 			            	recalc = scaler.scale(50,0);

@@ -53,15 +53,18 @@ public class Creature extends Sprite{
 	protected float rDefault = 1;
 	protected float gDefault = 1;
 	protected float bDefault = 1;
-	// Data used by tracker
-	protected int currentGridPos;
+	// Creature id
 	protected int creatureIndex;
-	protected Tracker mTracker;
 
 	// Variables used for animation
     private Random rand;
 	protected float animationTime;
 	protected float tmpAnimationTime;
+	// Next waypoint location
+	private float wayPointX;
+	private float wayPointY;
+	private float spawnWayPointX;
+	private float spawnWayPointY;
 	
     
 	public Creature(int resourceId, 
@@ -71,19 +74,17 @@ public class Creature extends Sprite{
 					SoundManager soundMan, 
 					Coords[] wayP, 
 					GameLoop loop, 
-					int creatureIndex, 
-					Tracker mTracker){
+					int creatureIndex
+					){
 		
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 		this.player = player;
-		this.setNextWayPoint(0);
 		this.soundManager = soundMan;
 		this.wayP = wayP;
 		this.GL = loop;
 		this.creatureIndex = creatureIndex;
-		this.mTracker = mTracker;
 	
 		rand = new Random();
 		double randomDouble = (rand.nextDouble());
@@ -93,14 +94,19 @@ public class Creature extends Sprite{
 	
 	//This is only used by the level constructor.
 	public Creature(int resourceId, int type){
-		super(resourceId, NativeRender.CREATURE, type);
+		super(resourceId, CREATURE, type);
 		this.draw = false;
 		this.dead = false;
 
 	}
 
 	public void updateWayPoint (){
-		setNextWayPoint(getNextWayPoint() + 1);
+    	// Creature has reached is destination without being killed
+    	if (getNextWayPoint() +1 >= wayP.length){
+    		score();
+    	}
+    	else 		
+    		setNextWayPoint(getNextWayPoint() + 1);
 	}
 
 	public void damage(float dmg){
@@ -154,40 +160,41 @@ public class Creature extends Sprite{
 		}
 	}
 
-	public float getWayX(int i) {
+	private float getWayX(int i) {
 		float newsize = (this.getWidth()/2 - this.scale*this.getWidth()/2);
 		float cen_x = wayP[i].getX() + newsize;
 		return (cen_x/this.scale);
 	}
-	public float getWayY(int i) {
+	private float getWayY(int i) {
 		float newsize = (this.getHeight() - this.scale*this.getHeight());
 		float cen_y = wayP[i].getY() + newsize;
 		return (cen_y/this.scale);
 	}
+	
 	public float getScaledX() {
-		float cen_x  = x + this.scale*(this.getWidth()/2);
+		float cen_x  = x + this.getWidth()/2;
 		return (cen_x*this.scale);
 	}
 	public float getScaledY() {
-		float cen_y  = y + this.scale*(this.getHeight()/2);
+		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
 
 	public void update(float timeDeltaSeconds){
 	
 		//Time to spawn.
-		if (getWayX(0) == this.x && getWayY(0) == this.y) {
+		if (spawnWayPointX == this.x && spawnWayPointY == this.y) {
 			spawndelay -= timeDeltaSeconds;
 			if (spawndelay <= 0) {
 				draw = true;
-				// TODO: TRACKER
-				//prepareTracker();
+				spawnWayPointX = 0;
+				spawnWayPointY = 0;
 			}
 		}
 		
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0 && nextWayPoint < wayP.length) {
+		if (draw && health > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
 			move(movement);
@@ -209,17 +216,12 @@ public class Creature extends Sprite{
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
-		GL.creaturDiesOnMap(1);
-		
-		// TODO Remove creature from tracker
-		// mTracker.removeCreature(this, creatureIndex, currentGridPos);
+		GL.creatureDiesOnMap(1);
 	}
 	
 	private void move(float movement){
-		//Coords co = wayP[getNextWayPoint()];
-		
-		float yDistance = this.getWayY(getNextWayPoint()) - this.y+yoffset;
-		float xDistance = this.getWayX(getNextWayPoint()) - this.x+xoffset;
+		float yDistance = this.wayPointY - this.y+yoffset;
+		float xDistance = this.wayPointX - this.x+xoffset;
 			
 		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
 			// We have reached our destination!!!
@@ -229,19 +231,8 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
-    		
-    		// TODO: USED BY CREATURE TO LET TRACKER KNOW CREATURE HAS ENTERED A NEW GRIDPOS
-    		//Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
-    		//int gridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
-    		//if (gridPos != currentGridPos) {
-    		//	mTracker.UpdatePosition(this, creatureIndex, currentGridPos, gridPos);
-    		//	currentGridPos = gridPos;
-    		//}
 		}
-    	// Creature has reached is destination without being killed
-    	if (getNextWayPoint() >= wayP.length){
-    		score();
-    	}
+
 	}
 	
 	private float applyEffects(float timeDeltaSeconds){
@@ -295,7 +286,7 @@ public class Creature extends Sprite{
 		//GL.subtractCreature(1);
 		// Testar hur spelet blir om en creature som inte har d�tt b�rjar om l�ngst upp
 		moveToWaypoint(0);
-		nextWayPoint = 1;
+		setNextWayPoint(1);
 	}
 	
 	public void SetWayPoints(Coords[] waypoints){
@@ -309,6 +300,8 @@ public class Creature extends Sprite{
 
 	public void setNextWayPoint(int nextWayPoint) {
 		this.nextWayPoint = nextWayPoint;
+		this.wayPointX = this.getWayX(nextWayPoint);
+		this.wayPointY = this.getWayY(nextWayPoint);
 	}
 
 	public int getNextWayPoint() {
@@ -346,12 +339,15 @@ public class Creature extends Sprite{
 		}
 	}
 
+	// Set rgb to new value
 	public void setRGB(float rDefault, float gDefault, float bDefault) {
 		this.rDefault = rDefault;
 		this.gDefault = gDefault;
 		this.bDefault = bDefault;
 	
 	}
+	
+	// Needed to reset rgb to default value
 	private void resetRGB() {
 		this.r = this.rDefault;
 		this.g = this.gDefault;
@@ -362,15 +358,6 @@ public class Creature extends Sprite{
 		this.dead = b;
 	}
 
-	// TODO:
-	// This is used by the tracker to make sure the creature is placed in the tracker before game starts
-	//private void prepareTracker() {
-	//	Coords tmp = mScaler.getGridXandY((int)this.x,(int)this.y);
-	//	currentGridPos = tmp.x + (tmp.y*mScaler.getGridWidth());
-	//	mTracker.addCreature(this,creatureIndex,currentGridPos);
-	//}
-	
-
 	// This setters is used by the waveloader. Needed to show correct creature
 	public void setDisplayResourceId(int resID) {
 		this.mDisplayResourceId = resID;
@@ -379,12 +366,18 @@ public class Creature extends Sprite{
 		return this.mDisplayResourceId;
 	}
 
-	// Defines animation
+	// Defines animationtime for the walk of a creature
 	public void setAnimationTime(boolean fast) {
 		if (fast)
 			this.animationTime = 0.15f;
 		else
 			this.animationTime = 0.3f;
+	}
+
+	//This is the spawnpoint of a creature
+	public void setSpawnPoint() {
+		this.spawnWayPointX = this.getWayX(0);
+		this.spawnWayPointY = this.getWayY(0);
 	}
 
 }

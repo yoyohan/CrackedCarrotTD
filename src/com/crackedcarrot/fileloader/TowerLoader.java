@@ -98,9 +98,9 @@ public class TowerLoader {
 			            	mResourceId = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 
 			            	// Tower size ALWAYS 60
-			            	Coords recalc = scaler.scale(60,0);
+			            	Coords recalc = scaler.scale(60,60);
 			            	width = recalc.getX();
-			            	height =  recalc.getX();
+			            	height =  recalc.getY();
 			            	break;
 			            case 5:  
 			            	// Tower title(name)
@@ -184,16 +184,16 @@ public class TowerLoader {
 			            	// Shot texture
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	// Shot size
-			            	recalc = scaler.scale(8,0);
+			            	recalc = scaler.scale(8,8);
 			            	towerList[twrNbr] = new Tower(mResourceId, 0);
-			            	towerList[twrNbr].setTowerTypeId(twrNbr);
 			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
-			            	relatedShot.setHeight(recalc.getX());
+			            	relatedShot.setHeight(recalc.getY());
 			            	relatedShot.setWidth(recalc.getX());
 			            	towerList[twrNbr].relatedShot = relatedShot;
 			            	towerList[twrNbr].cloneTower(
 			            			mResourceId,
 			            			towerType,
+			            			twrNbr,
 					            	range,
 					            	rangeAOE,
 					            	title,

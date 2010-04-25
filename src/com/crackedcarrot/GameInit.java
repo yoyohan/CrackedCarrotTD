@@ -11,6 +11,12 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.os.Debug;
+import android.os.Handler;
+import android.os.Message;
+>>>>>>> 5be03d847823ad03fa437dec56420c39c5024422
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -30,13 +36,13 @@ import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
 
-	public GameLoop    gameLoop;
+	public GameLoop     gameLoop;
+    public SurfaceView  mGLSurfaceView;
 	private GameLoopGUI gameLoopGui;
-    public SurfaceView mGLSurfaceView;
     private HUDHandler  hudHandler;
     
-    private Thread     gameLoopThread;
-    private MapLoader  mapLoad;
+    private Thread      gameLoopThread;
+    private MapLoader   mapLoad;
     
     public static Semaphore pauseSemaphore = new Semaphore(1);
     public static boolean pause = false;
@@ -74,6 +80,8 @@ public class GameInit extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	
+    	Log.d("GAMEINIT", "onCreate");
+    	
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
@@ -92,7 +100,7 @@ public class GameInit extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
-        hudHandler = new HUDHandler(R.drawable.grid4px, res);
+        hudHandler = new HUDHandler(res);
         hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
@@ -109,11 +117,11 @@ public class GameInit extends Activity {
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
         Bundle extras  = getIntent().getExtras();
-        int levelChoice = 0;
+        int mapChoice = 0;
         int difficulty = 0;
         int reference = 0;
         if(extras != null) {
-        	levelChoice = extras.getInt("com.crackedcarrot.menu.map");
+        	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         	reference = extras.getInt("com.crackedcarrot.classreference");
         }
@@ -121,51 +129,58 @@ public class GameInit extends Activity {
         	// Are we resuming an old saved game?
         int resume = 0;
         int resumeLevelNumber = 0;
+        int resumeMap = 0;
         int resumePlayerDifficulty = 0;
         int resumePlayerHealth = 0;
         int resumePlayerMoney = 0;
         String resumeTowers = null;
-        if (levelChoice == 0) {
-            // Restore preferences
+        if (mapChoice == 0) {
+            // Restore saved preferences
             SharedPreferences settings = getSharedPreferences("Resume", 0);
             resume                 = settings.getInt("Resume", 0) + 1;
             resumeLevelNumber      = settings.getInt("LevelNumber", 0);
+            resumeMap              = settings.getInt("Map", 0);
             resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
             resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
             resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
             resumeTowers           = settings.getString("Towers", "");
+        } else {
+        		// We are not resuming anything, clear the old flag(s). Prepare for a new Save.
+    		SharedPreferences settings = getSharedPreferences("Resume", 0);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putInt("Resume", -1);
+    		editor.putInt("Map", mapChoice);
+    		editor.commit();
         }
-        // TODO:
-        // �r detta n�dv�ndigt?
-        //   difficulty = resumePlayerDIfficulty;
-        // Det anv�nds i WaveLoadern?
         
         // Create the map requested by the player
-        // TODO: resume needs to load the correct map aswell.
+
+       	// resume needs to load the correct map aswell.
+       	if (mapChoice == 0)
+       		mapChoice = resumeMap;
+        
         mapLoad = new MapLoader(this,res);
         Map gameMap = null;
-        if (levelChoice == 1) 
+        if (mapChoice == 1) 
         	gameMap = mapLoad.readLevel("level1");
-        else if (levelChoice == 2)
+        else if (mapChoice == 2)
         	gameMap = mapLoad.readLevel("level2");
-        else
+        else if (mapChoice == 3)
         	gameMap = mapLoad.readLevel("level3");
 
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 0) {
-        	p = new Player(difficulty, 60, 100, 13);
+        	p = new Player(difficulty, 60, 100, 10);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 50, 100, 13);
+        	p = new Player(difficulty, 50, 100, 10);
         }
         else if (difficulty == 2) {
-        	p = new Player(difficulty, 40, 100, 13);
+        	p = new Player(difficulty, 40, 100, 10);
         }
         else { // resume.
-        	// TODO: set difficulty variable to this as well, so we load the correct
-        	//       difficulty level on resume.
-        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 1);
+        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 10);
         }
         
         //Load the creature waves and apply the correct difficulty
@@ -186,7 +201,11 @@ public class GameInit extends Activity {
             		gameLoopGui,new SoundManager(getBaseContext()));
     	}
         
+<<<<<<< HEAD
         // Resuming old game. Prepare GameLoop for this...
+=======
+        	// Resuming old game? Prepare GameLoop for this...
+>>>>>>> 5be03d847823ad03fa437dec56420c39c5024422
         if (resume > 0) {
         	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
         	gameLoop.resumeSetTowers(resumeTowers);
@@ -197,11 +216,12 @@ public class GameInit extends Activity {
         mGLSurfaceView.setRenderer(nativeRenderer);        
         
         mGLSurfaceView.setSimulationRuntime(gameLoop);
+        mGLSurfaceView.setHUDHandler(hudHandler);
         
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
         
-        //Debug.startMethodTracing();
+        Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }
@@ -219,24 +239,40 @@ public class GameInit extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
     	super.onConfigurationChanged(newConfig);
     }
-    
-    protected void onStop() {
-    	gameLoop.stopGameLoop();
-    	
-    	//You also need to stop the trace when you are done!
-    	
-    	//Debug.stopMethodTracing();
-    	super.onStop();
+
+    protected void onDestroy() {
+		Debug.stopMethodTracing();
+    	super.onDestroy();
+    	Log.d("GAMEINIT", "onDestroy");
     }
     
     protected void onPause() {
     	super.onPause();
-    	Log.d("ONPAUSE NOW", "onPause");
+    	Log.d("GAMEINIT", "onPause");
+    }
+    
+    protected void onRestart() {
+    	super.onRestart();
+    	Log.d("GAMEINIT", "onRestart");
     }
     
     protected void onResume() {
     	super.onResume();
-    	Log.d("ONPAUSE NOW", "onPause");
+    	Log.d("GAMEINIT", "onResume");
+    }
+    
+    protected void onStart() {
+    	super.onStart();
+    	Log.d("GAMEINIT", "onStart");
+    }
+    
+    protected void onStop() {
+    	super.onStop();
+    	gameLoop.stopGameLoop();
+    	Log.d("GAMEINIT", "onStop");
+
+    	//You also need to stop the trace when you are done!
+    	//Debug.stopMethodTracing();
     }
 
     
@@ -252,8 +288,11 @@ public class GameInit extends Activity {
     			// Save everything.
     		SharedPreferences settings = getSharedPreferences("Resume", 0);
     		SharedPreferences.Editor editor = settings.edit();
+    			// Increase the counter of # of resumes the player has used.
     		editor.putInt("Resume", settings.getInt("Resume", 0) + 1);
     		editor.putInt("LevelNumber", gameLoop.getLevelNumber());
+    		//editor.putInt("Map",... <- this is saved above, at the if (mapChoice == 0) check.
+    		// this comment added to keep people from going nuts looking for it.
     		editor.putInt("PlayerDifficulty", gameLoop.getPlayerData().getDifficulty());
     		editor.putInt("PlayerHealth", gameLoop.getPlayerData().getHealth());
     		editor.putInt("PlayerMoney", gameLoop.getPlayerData().getMoney());
