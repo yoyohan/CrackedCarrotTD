@@ -466,6 +466,7 @@ public class GameLoop implements Runnable {
 				
 				totalNumberOfTowers++;
 				soundManager.playSound(20);
+				updateCurrency();
 				
 				return true;
 			} else {
@@ -526,7 +527,7 @@ public class GameLoop implements Runnable {
     }
     
     // Update the status when the players money increases.
-    public void updateCurrency(int currency) {
+    public void updateCurrency() {
     	gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
     }
     
