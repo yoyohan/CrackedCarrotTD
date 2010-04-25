@@ -74,6 +74,7 @@ public class MapOp extends Activity implements ViewFactory {
         		StartGame2.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		startActivity(StartGame2);
+        		finish();
         	}
         });
         

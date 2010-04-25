@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
@@ -29,8 +31,11 @@ public class Server extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     
+    public BluetoothSocket socket = null;
+    
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
     private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
+    private final int REFERENCE = 1; // GameInit started from: 1 = Server, 2 = Client
 	
 	/** Called when the activity is first created. */
     @Override
@@ -40,7 +45,7 @@ public class Server extends Activity {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+        /**
     	// Get the local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
@@ -51,6 +56,8 @@ public class Server extends Activity {
             finish();
             return;
         }
+        */
+        showDialog(1);
   
     }
     
@@ -60,13 +67,13 @@ public class Server extends Activity {
         super.onStart();
         
         /** Request that Bluetooth will be activated if not on.
-         *  setupServer() will then be called during onActivityResult */
+         *  setupServer() will then be called during onActivityResult 
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
         } else {
             setupServer();
-        }
+        } */
     }
     
     private void setupServer() {
@@ -122,7 +129,6 @@ public class Server extends Activity {
                 // Connection accepted?
                 if (socket != null) {
                 	Log.d("SERVER", "anlutning klar!");
-                    // manageConnectedSocket(socket);
                 	startGame();
                 	try{
                 		mmServerSocket.close();
@@ -134,9 +140,30 @@ public class Server extends Activity {
     }
     
     private void startGame(){
-    	Intent StartGame = new Intent(this ,GameInit.class);
+    	GameInit.setMultiplayer(socket);
+    	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		StartGame.putExtra("com.crackedcarrot.classreference", REFERENCE);
 		startActivity(StartGame);
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case 1: {
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("Waiting for client to connect...");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(true);
+                return dialog;
+            }
+        }
+        return null;
+    }
+    
+    protected void onStop() {
+    	super.onStop();
+    	super.onDestroy();
     }
 }

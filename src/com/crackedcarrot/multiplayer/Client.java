@@ -33,6 +33,9 @@ public class Client extends Activity {
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
     private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
+    private final int REFERENCE = 2; // GameInit started from: 1 = Server, 2 = Client
+    
+    public BluetoothSocket mmClientSocket = null;
 
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
@@ -124,7 +127,6 @@ public class Client extends Activity {
     }
     
     private class ConnectThread extends Thread {
-        private final BluetoothSocket mmClientSocket;
         private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
@@ -156,8 +158,6 @@ public class Client extends Activity {
                 return;
             }
 
-            // Do work to manage the connection (in a separate thread)
-            // manageConnectedSocket(mmClientSocket);
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
 
@@ -172,9 +172,11 @@ public class Client extends Activity {
     }
 
     private void startGame(){
+    	GameInit.setMultiplayer(mmClientSocket);
     	Intent StartGame = new Intent(this ,GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		StartGame.putExtra("com.crackedcarrot.classreference", REFERENCE);
 		startActivity(StartGame);
     }
     

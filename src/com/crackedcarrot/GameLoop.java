@@ -281,7 +281,7 @@ public class GameLoop implements Runnable {
 	    	}
 	    }
 	    
-	    Log.d("GAMELOOP","INIT GAMELOOP");
+	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
 
 	    while(run){
 	    	
