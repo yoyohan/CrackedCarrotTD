@@ -36,7 +36,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
     private Semaphore lock1 = new Semaphore(0);
     private Semaphore lock2 = new Semaphore(0);
     
-	private Sprite[][] sprites = new Sprite[6][];
+	private Sprite[][] sprites = new Sprite[7][];
 	//private Sprite[] renderList;
 	
 	private int[] mCropWorkspace;
@@ -51,7 +51,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private TextureLibrary texLib;
 	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
 	
-	public NativeRender(Context context, GLSurfaceView view, TextureLibrary texLib, Sprite[] HUDObjects) {
+	public NativeRender(Context context, GLSurfaceView view, 
+						TextureLibrary texLib, Sprite[] OverlayObjects, Sprite[] UIObjects) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -63,7 +64,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
         this.texLib = texLib;
 		this.mContext = context;
 		this.view = view;
-		this.sprites[Sprite.OVERLAY] = HUDObjects;
+		this.sprites[Sprite.OVERLAY] = OverlayObjects;
+		this.sprites[Sprite.UI] = UIObjects;
 		System.loadLibrary("render");
 	}
 

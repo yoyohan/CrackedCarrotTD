@@ -10,12 +10,14 @@ public class HUDHandler extends Thread{
 	
 	private Grid g;
 	private RangeIndicator range;
+	private TowerUpgrade   upgrade;
 	
 	private Handler mHandler;
 	
 	public HUDHandler(Scaler s){
 		g = new Grid(s);
 		range = new RangeIndicator(s);
+		upgrade = new TowerUpgrade(s);
 	}
 	
 	public void run(){
@@ -48,11 +50,18 @@ public class HUDHandler extends Thread{
 		this.mHandler.post(range.getShowRunner());
 	}
 	
-	public Sprite[] getObjectsToRender(){
+	public void showTowerUpgrade(){
+		this.mHandler.post(upgrade);
+	}
+	
+	public Sprite[] getOverlayObjectsToRender(){
 		Sprite [] rArray = new Sprite[2];
 		rArray[0] = g;
 		rArray[1] = range;
 		return rArray;
+	}
+	public Sprite[] getUIObjectsToRender(){
+		return upgrade.getUISpritesToRender();
 	}
 	
 }
