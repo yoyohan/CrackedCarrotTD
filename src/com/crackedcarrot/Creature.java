@@ -211,7 +211,7 @@ public class Creature extends Sprite{
 		setCurrentTexture(this.mDeadTextureData);
 		resetRGB();
 		player.moneyFunction(this.goldValue);
-		GL.updateCurrency(player.getMoney());
+		GL.updateCurrency();
 		// play died1.mp3
 		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
