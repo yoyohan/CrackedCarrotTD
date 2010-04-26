@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.crackedcarrot.HUD.HUDHandler;
+import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.fileloader.MapLoader;
@@ -34,7 +34,7 @@ public class GameInit extends Activity {
 	public GameLoop     gameLoop;
     public SurfaceView  mGLSurfaceView;
 	private GameLoopGUI gameLoopGui;
-    private HUDHandler  hudHandler;
+    private UIHandler  hudHandler;
     
     private Thread      gameLoopThread;
     private MapLoader   mapLoad;
@@ -101,12 +101,12 @@ public class GameInit extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
         
-        hudHandler = new HUDHandler(res);
+        hudHandler = new UIHandler(res);
         hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),
-        		hudHandler.getObjectsToRender());
+        		hudHandler.getOverlayObjectsToRender(), hudHandler.getUIObjectsToRender());
 
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
 

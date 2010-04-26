@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.crackedcarrot.HUD.HUDHandler;
+import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
@@ -56,7 +56,7 @@ public class GameLoopGUI {
     private TextView     currencyView;
     private TextView     nrCreText;
     private TextView     playerHealthView;
-    private HUDHandler	 hud;
+    private UIHandler	 hud;
 	
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -88,7 +88,7 @@ public class GameLoopGUI {
 
     
    	// Constructor. A good place to initiate all our different GUI-components.
-    public GameLoopGUI(GameInit gi, final HUDHandler hud) {
+    public GameLoopGUI(GameInit gi, final UIHandler hud) {
     	gameInit = gi;
     	this.hud = hud;
     	
@@ -497,6 +497,8 @@ public class GameLoopGUI {
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
 	    	image.setImageResource(currLvl.getDisplayResourceId());
+
+	    	
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
@@ -537,7 +539,29 @@ public class GameLoopGUI {
 		    }
 		    styledText = Html.fromHtml(lvlText);
 		    text.setText(styledText);
-	    	break;
+
+		    if (currLvl.creaturePoisonResistant && !currLvl.creatureFireResistant && !currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(178, 255, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && currLvl.creatureFireResistant && !currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(255, 178, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && !currLvl.creatureFireResistant && currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(178, 178, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (currLvl.creaturePoisonResistant && currLvl.creatureFrostResistant && !currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(178, 255, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (currLvl.creaturePoisonResistant && !currLvl.creatureFrostResistant && currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(255, 255, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && currLvl.creatureFrostResistant && currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(255, 178, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else 
+		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
+		    
+		    break;
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;

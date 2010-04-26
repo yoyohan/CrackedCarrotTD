@@ -256,7 +256,7 @@ public class GameLoop implements Runnable {
 			int special = 1;
     		if (mCreatures[z].isCreatureFast())
     			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse/special)*1.5f)));
+    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
 	}
 
@@ -605,6 +605,16 @@ public class GameLoop implements Runnable {
 	
 	public Tower getTower(int towerid) {
 			return mTTypes[towerid];			
+	}
+
+	public void upgradeTowerInGrid(int x, int y, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void destroyTowerInGrid(int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

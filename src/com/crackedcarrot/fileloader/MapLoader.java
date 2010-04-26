@@ -6,7 +6,6 @@ import java.io.InputStream;
 import android.content.Context;
 
 import com.crackedcarrot.Coords;
-import com.crackedcarrot.NativeRender;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.Tower;
@@ -60,6 +59,8 @@ public class MapLoader {
 		in = context.getResources().openRawResource(resID);
 		int i = 0;
 		int lineNo = 0;
+		int nbrWayP = 0;
+		int nbrObs = 0;
 		
 		try {
 			String buf = "";
@@ -91,9 +92,10 @@ public class MapLoader {
 					}
 					else if(lineNo == 5){
 						// Nbr of waypoints
-						wps = new Waypoints(Integer.parseInt(buf.trim()), s);
+						nbrWayP = Integer.parseInt(buf.trim());
+						wps = new Waypoints(nbrWayP, s);
 					}
-					else{
+					else if (lineNo >= 6 && lineNo <= 5+nbrWayP){
 						//Each waypoint
 						String[] wp = buf.split(",");
 						int tmpgridx = Integer.parseInt(wp[0].trim());
@@ -123,6 +125,17 @@ public class MapLoader {
 							}
 						}
 					}
+					else if (lineNo == 7+nbrWayP){
+						// Nbr of obstacle
+						nbrObs = Integer.parseInt(buf.trim());
+					}
+					else if (lineNo >= 7+nbrWayP && lineNo <= 7+nbrWayP+nbrObs) {
+						String[] wp = buf.split(",");
+						int tmpgridx = Integer.parseInt(wp[0].trim());
+						int tmpgridy = Integer.parseInt(wp[1].trim());
+						twg[tmpgridx][tmpgridy] = null;
+					}
+					
 					buf = "";
 				}
 			}

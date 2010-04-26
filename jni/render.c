@@ -48,7 +48,7 @@ void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env, jobject t
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	for(j = 0; j < 6; j++){
+	for(j = 0; j < 7; j++){
 	    if(j == CREATURE){
             //First we draw the dead creatures.
             //Hopefully this 2n loop dont ad to mutch overhead.

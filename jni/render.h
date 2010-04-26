@@ -11,7 +11,8 @@ enum spriteType {
 	CREATURE   = 2,
 	SHOT       = 3,
 	OVERLAY    = 4,
-	TOWER      = 5
+	TOWER      = 5,
+	UI         = 6
 };
 
 typedef struct {
@@ -48,9 +49,9 @@ typedef struct {
 } GLSprite;
 
 //The number of idividual sprites.
-int noOfSprites[6];
+int noOfSprites[7];
 //Array with pointers to GLSprites.
-GLSprite* renderSprites[6];
+GLSprite* renderSprites[7];
 //Array with pointers to textuerData structures for saveing all data related
 //to a certain textures
 textureData* texData;
