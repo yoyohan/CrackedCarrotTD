@@ -112,7 +112,7 @@ public class WaveLoader {
 
 			            	// I will put velocity here
 			            	recalc = scaler.scale(50,0);
-			        		if (tmpLvl.isCreatureFast())
+			        		if (fast)
 				            	tmpLvl.setVelocity(recalc.getX()* 2);
 			        		else tmpLvl.setVelocity(recalc.getX());
 							break;

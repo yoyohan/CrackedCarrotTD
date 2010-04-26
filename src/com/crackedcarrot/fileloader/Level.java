@@ -27,26 +27,26 @@ public class Level extends Creature {
 		this.gDefault = 1;
 		this.bDefault = 1;
 
-		if (poisonResistant) {
-			this.rDefault = this.rDefault*0.7f;
-			this.bDefault = this.bDefault*0.7f;
+		if (poisonResistant && !frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
+			this.bDefault = 0.7f;
 		}
-		else if (frostResistant) {
-			this.rDefault = this.rDefault*0.7f;
-			this.gDefault = this.gDefault*0.7f;
+		if (!poisonResistant && frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
+			this.gDefault = 0.7f;
 		}
-		else if (fireResistant) {
-			this.gDefault = this.gDefault*0.7f;
-			this.bDefault = this.bDefault*0.7f;
+		if (!poisonResistant && !frostResistant && fireResistant) {
+			this.gDefault = 0.7f;
+			this.bDefault = 0.7f;
 		}
-		else if (fast) {
-			this.bDefault = 0f;
+		if (poisonResistant && frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
 		}
-
-		if (poisonResistant && frostResistant && fireResistant && fast) {
-			this.rDefault = 0.1f;
-			this.gDefault = 0.1f;
-			this.gDefault = 0.1f;
+		if (poisonResistant && !frostResistant && fireResistant) {
+			this.bDefault = 0.7f;
+		}
+		if (!poisonResistant && frostResistant && fireResistant) {
+			this.gDefault = 0.7f;
 		}
 	}
 	

@@ -74,7 +74,7 @@ public class TowerUpgrade implements Runnable{
 		background.opacity = 1.0f;
 	}
 	
-	@Override
+	//@Override
 	public void run() {
 		showUI();
 	}

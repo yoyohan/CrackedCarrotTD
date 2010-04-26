@@ -497,6 +497,8 @@ public class GameLoopGUI {
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
 	    	image.setImageResource(currLvl.getDisplayResourceId());
+
+	    	
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
@@ -537,7 +539,29 @@ public class GameLoopGUI {
 		    }
 		    styledText = Html.fromHtml(lvlText);
 		    text.setText(styledText);
-	    	break;
+
+		    if (currLvl.creaturePoisonResistant && !currLvl.creatureFireResistant && !currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(178, 255, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && currLvl.creatureFireResistant && !currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(255, 178, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && !currLvl.creatureFireResistant && currLvl.creatureFrostResistant) {
+		    	image.setColorFilter(Color.rgb(178, 178, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (currLvl.creaturePoisonResistant && currLvl.creatureFrostResistant && !currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(178, 255, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (currLvl.creaturePoisonResistant && !currLvl.creatureFrostResistant && currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(255, 255, 178),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else if (!currLvl.creaturePoisonResistant && currLvl.creatureFrostResistant && currLvl.creatureFireResistant) {
+		    	image.setColorFilter(Color.rgb(255, 178, 255),PorterDuff.Mode.MULTIPLY);
+		    }
+		    else 
+		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
+		    
+		    break;
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
