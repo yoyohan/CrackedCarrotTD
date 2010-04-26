@@ -56,7 +56,8 @@ public class HUDHandler extends Thread{
 		this.mHandler.post(range.getShowRunner());
 	}
 	
-	public void showTowerUpgrade(){
+	public void showTowerUpgrade(int x, int y){
+		upgrade.moveUI(x, y);
 		this.mHandler.post(upgrade);
 	}
 	

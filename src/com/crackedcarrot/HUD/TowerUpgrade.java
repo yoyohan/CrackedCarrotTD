@@ -69,14 +69,13 @@ public class TowerUpgrade implements Runnable{
 		background.y = CenterY - background.getHeight() / 2;
 	}
 	
-	public void showUI(){
+	private void showUI(){
 		background.draw = true;
 		background.opacity = 1.0f;
 	}
 	
 	@Override
 	public void run() {
-
 		showUI();
 	}
 }
