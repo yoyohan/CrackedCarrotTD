@@ -607,4 +607,14 @@ public class GameLoop implements Runnable {
 			return mTTypes[towerid];			
 	}
 
+	public void upgradeTowerInGrid(int x, int y, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void destroyTowerInGrid(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

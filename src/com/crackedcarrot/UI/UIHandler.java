@@ -1,4 +1,4 @@
-package com.crackedcarrot.HUD;
+package com.crackedcarrot.UI;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 
-public class HUDHandler extends Thread{
+public class UIHandler extends Thread{
 	
 	private Grid g;
 	private RangeIndicator range;
@@ -14,7 +14,7 @@ public class HUDHandler extends Thread{
 	
 	private Handler mHandler;
 	
-	public HUDHandler(Scaler s){
+	public UIHandler(Scaler s){
 		g = new Grid(s);
 		range = new RangeIndicator(s);
 		upgrade = new TowerUpgrade(s);
@@ -58,7 +58,11 @@ public class HUDHandler extends Thread{
 	
 	public void showTowerUpgrade(int x, int y){
 		upgrade.moveUI(x, y);
-		this.mHandler.post(upgrade);
+		this.mHandler.post(upgrade.getShowRunner());
+	}
+	
+	public void hideTowerUpgrade(){
+		this.mHandler.post(upgrade.getHideRunner());
 	}
 	
 	public Sprite[] getOverlayObjectsToRender(){
@@ -69,6 +73,22 @@ public class HUDHandler extends Thread{
 	}
 	public Sprite[] getUIObjectsToRender(){
 		return upgrade.getUISpritesToRender();
+	}
+
+	public boolean upgradeAClicked(int x, int y) {
+		return upgrade.upgradeAClicked(x, y);
+	}
+
+	public boolean upgradeBClicked(int x, int y) {
+		return upgrade.upgradeBClicked(x, y);
+	}
+
+	public boolean infoClicked(int x, int y) {
+		return upgrade.infoClicked(x, y);
+	}
+
+	public boolean destroyClicked(int x, int y) {
+		return upgrade.destroyClicked(x, y);
 	}
 
 }
