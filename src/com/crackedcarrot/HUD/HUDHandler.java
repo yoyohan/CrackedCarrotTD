@@ -29,7 +29,6 @@ public class HUDHandler extends Thread{
 
 	}
 	
-	
 	public void showGrid(){
 		Log.d("HUD","Showing grid.");
 		this.mHandler.post(g.getShowRunner());
@@ -40,13 +39,20 @@ public class HUDHandler extends Thread{
 		this.mHandler.post(g.getHideRunner());
 
 	}
+
+	public void blinkRedGrid(){
+		this.mHandler.removeCallbacks(g.getBlinRedRunner());
+		this.mHandler.post(g.getBlinRedRunner());
+	}
 	
 	public void showRangeIndicator(int towerX, int towerY, int towerRange, int width, int height){
+		this.mHandler.removeCallbacks(range.getShowRunner());
 		range.scaleSprite( towerX, towerY, towerRange, width, height);
 		this.mHandler.post(range.getShowRunner());
 	}
 	
 	public void hideRangeIndicator(){
+		this.mHandler.removeCallbacks(range.getShowRunner());
 		this.mHandler.post(range.getShowRunner());
 	}
 	
@@ -63,5 +69,5 @@ public class HUDHandler extends Thread{
 	public Sprite[] getUIObjectsToRender(){
 		return upgrade.getUISpritesToRender();
 	}
-	
+
 }

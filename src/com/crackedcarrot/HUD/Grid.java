@@ -1,7 +1,6 @@
 package com.crackedcarrot.HUD;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
@@ -15,6 +14,7 @@ public class Grid extends Sprite{
 	
 	private Show showRunner;
 	private Hide hideRunner;
+	private BlinkRed blinkR;
 	
 	public Grid(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
@@ -27,6 +27,7 @@ public class Grid extends Sprite{
 		
 		showRunner = new Show();
 		hideRunner = new Hide();
+		blinkR = new BlinkRed();
 	}
 
 	public Show getShowRunner() {
@@ -37,6 +38,10 @@ public class Grid extends Sprite{
 		return hideRunner;
 	}
 
+	public BlinkRed getBlinRedRunner() {
+		return blinkR;
+	}
+	
 	private class Show implements Runnable{
 		//@Override
 		public void run() {
@@ -49,14 +54,14 @@ public class Grid extends Sprite{
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
 			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
+				if((currentTime - lastUpdateTime) > 100){
 					opacity += 0.1f;
 					lastUpdateTime = currentTime;
 				}
 				SystemClock.sleep(10);
 				currentTime = SystemClock.uptimeMillis();
 			}
-			opacity = 1.0f;
+			opacity = 0.5f;
 		}
 	};
 	
@@ -66,12 +71,12 @@ public class Grid extends Sprite{
 			if(draw == false)
 				return;
 			
-			opacity = 1.0f;
+			opacity = 0.5f;
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
 			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
+				if((currentTime - lastUpdateTime) > 100){
 					opacity -= 0.1f;
 					lastUpdateTime = currentTime;
 				}
@@ -82,4 +87,37 @@ public class Grid extends Sprite{
 			draw = false;
 		}
 	};
+	
+	private class BlinkRed implements Runnable{
+		//@Override
+		public void run() {
+			if(draw == false)
+				return;
+			g = 1.0f;
+			b = 1.0f;
+
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = 400;
+			
+			while(lastUpdateTime > 0){
+				startTime = SystemClock.uptimeMillis();
+				lastUpdateTime -= startTime - currentTime;
+				currentTime = SystemClock.uptimeMillis();
+
+				if(lastUpdateTime > 200) {
+					g = (((lastUpdateTime/2)-100)/100);
+					b = (((lastUpdateTime/2)-100)/100);
+				}
+				else {
+					g = 1-(((lastUpdateTime/2)-100)/100);
+					b = 1-(((lastUpdateTime/2)-100)/100);
+				}
+				SystemClock.sleep(10);
+			}
+
+			g = 1.0f;
+			b = 1.0f;
+		}
+	};
+
 }

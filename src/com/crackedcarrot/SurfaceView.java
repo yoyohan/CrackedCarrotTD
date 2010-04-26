@@ -27,14 +27,13 @@ public class SurfaceView extends GLSurfaceView {
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
 			
 			boolean test = false;
-			Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
+			//Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
 			
 			// We need to do this because Java and our grid counts backwards.
 			// 480 - clickedYValue = the correct Y-value, for example, on a 
 			// screen with a 480 Y-resolution.
 			if(buildTower){
 				test = gameLoop.createTower(new Coords((int) me.getX(), magicValue - (int) me.getY()), towerType);
-				//Log.d("SURFACEVIEW", "Create tower: " + test);
 			}
 			
 			if(hud != null && gameLoop.gridOcupied((int)me.getX(), magicValue - (int) me.getY())){
@@ -47,11 +46,11 @@ public class SurfaceView extends GLSurfaceView {
 				else{
 					Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
 				}
+			} if (buildTower &&	!test && hud != null) {
+				//You are not allowed to place tower here
+				hud.blinkRedGrid();
 			}
-			
-			else{
-				Log.d("SURFACEVIEW", "The edge of the map, here be dragons!");
-			}
+			else Log.d("SURFACEVIEW", "The edge of the map, here be dragons! Or maybe road or a snowman, maybe a bush to =)");
 			
 			return test;
 		}
