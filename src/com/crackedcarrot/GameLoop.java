@@ -277,15 +277,11 @@ public class GameLoop implements Runnable {
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
 	    }
-<<<<<<< HEAD
 	    
 	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 
-=======
-        
->>>>>>> f9d4154d42de7caabe202d596228913ae09a15d7
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
