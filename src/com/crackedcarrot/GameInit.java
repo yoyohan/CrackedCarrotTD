@@ -1,4 +1,3 @@
-
 package com.crackedcarrot;
 
 import java.util.concurrent.Semaphore;
@@ -10,11 +9,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -61,6 +60,20 @@ public class GameInit extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) { return gameLoopGui.onPrepareOptionsMenu(menu); }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { return gameLoopGui.onOptionsItemSelected(item); }
+    
+    /*
+     * This will have to live in GameInit.java for now - havent figured out how to move it correctly yet,
+     * there might be problems with the key-input to the application/gameLoop... /Fredrik
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
+    		showDialog(gameLoopGui.DIALOG_QUIT_ID);
+    		return true;
+       	}
+    	return super.onKeyDown(keyCode, event);
+    } 
     
     
     /** Called when the activity is first created. */
@@ -196,7 +209,6 @@ public class GameInit extends Activity {
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
         
-        Debug.startMethodTracing();
         // Start GameLoop
         gameLoopThread.start();
     }
@@ -216,7 +228,6 @@ public class GameInit extends Activity {
     }
 
     protected void onDestroy() {
-		Debug.stopMethodTracing();
     	super.onDestroy();
     	Log.d("GAMEINIT", "onDestroy");
     }

@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/layout_root"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:padding="10dp"
               android:orientation="vertical" android:minHeight="160px" android:minWidth="240px">
 
-    <TextView android:id="@+id/NextLevelTitle"
+    <TextView
               android:layout_width="wrap_content"
               android:layout_height="fill_parent"
               android:textColor="#FFF"
-              android:text="A loser is you!!" android:textStyle="bold"/>
+              android:text="A loser is you!!"
+              android:textStyle="bold" />
 
-			  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:padding="10dp"
-                            >
+                            android:padding="10dp">
 
-				  <ImageView android:id="@+id/image"
+				  <ImageView
     	                     android:layout_width="wrap_content"
         	                 android:layout_height="fill_parent"
             	             android:layout_marginRight="10dp"
-                	         android:src="@drawable/mrlion"/>
+                	         android:src="@drawable/mrlion" />
 
-			      <TextView android:id="@+id/NextLevelText"
+			      <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
                             android:textColor="#FFF"
-                            android:text="You lost...the evil rabbids have conquered the earth!"/>
+                            android:text="You lost...the evil rabbids have conquered the earth!" />
               
               </LinearLayout>
               
