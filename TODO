@@ -17,7 +17,7 @@ Tower upgrade ui is super important
 --Albin
 
 Tower range indicator is missing.
---Albin
+--Albin --DONE!
 
 The game never really ends, no highscore nothing.
 --FREDRIK - DONE, scoreninja works on phones and crashes on emulator, this is normal.
@@ -50,7 +50,7 @@ It would be really nice if the timer is shown instead of progress bar until lvl 
 MEDIUM PRIORITY:
 
 Ljud Inspelning. Helg hemma hos albin med en mic och ett gäng öl.
---ALLA
+--ALLA --DONE!
 
 Support for animated sprites, explosions etc..
 --Albin DONE!.
