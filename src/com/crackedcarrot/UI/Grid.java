@@ -1,36 +1,33 @@
-package com.crackedcarrot.HUD;
+package com.crackedcarrot.UI;
 
 import android.os.SystemClock;
 
-import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 import com.crackedcarrot.menu.R;
 
-public class RangeIndicator extends Sprite{
+public class Grid extends Sprite{
+	
 	private long startTime;
 	private long currentTime;
 	private long lastUpdateTime;
 	
 	private Show showRunner;
 	private Hide hideRunner;
+	private BlinkRed blinkR;
 	
-	public RangeIndicator(Scaler s){
+	public Grid(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
-		super(R.drawable.range_indicator, OVERLAY, 1);
+		super(R.drawable.grid, OVERLAY, 0);
 		this.x = 0; this.y = 0; this.z = 0;
-		Coords co = s.scale(128, 128);
-		this.setWidth(co.getX());
-        this.setHeight(co.getY());
+		this.setWidth(s.getScreenResolutionX());
+        this.setHeight(s.getScreenResolutionY());
         this.draw = false;
-        
-        this.r = 1.0f;
-        this.g = 0.0f;
-        this.b = 0.0f;
         this.opacity = 0.0f;
-                
+		
 		showRunner = new Show();
 		hideRunner = new Hide();
+		blinkR = new BlinkRed();
 	}
 
 	public Show getShowRunner() {
@@ -41,6 +38,10 @@ public class RangeIndicator extends Sprite{
 		return hideRunner;
 	}
 
+	public BlinkRed getBlinRedRunner() {
+		return blinkR;
+	}
+	
 	private class Show implements Runnable{
 		//@Override
 		public void run() {
@@ -53,25 +54,14 @@ public class RangeIndicator extends Sprite{
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
 			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
-					opacity += 0.05f;
+				if((currentTime - lastUpdateTime) > 100){
+					opacity += 0.1f;
 					lastUpdateTime = currentTime;
 				}
 				SystemClock.sleep(10);
 				currentTime = SystemClock.uptimeMillis();
 			}
 			opacity = 0.5f;
-			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
-					opacity -= 0.05f;
-					lastUpdateTime = currentTime;
-				}
-				SystemClock.sleep(10);
-				currentTime = SystemClock.uptimeMillis();
-			}
-			opacity = 0.0f;
-			draw = false;
-			
 		}
 	};
 	
@@ -85,7 +75,49 @@ public class RangeIndicator extends Sprite{
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
+			while((currentTime - startTime) < 500){
+				if((currentTime - lastUpdateTime) > 100){
+					opacity -= 0.1f;
+					lastUpdateTime = currentTime;
+				}
+				SystemClock.sleep(10);
+				currentTime = SystemClock.uptimeMillis();
+			}
+			opacity = 0.0f;
+			draw = false;
 		}
-	}
+	};
+	
+	private class BlinkRed implements Runnable{
+		//@Override
+		public void run() {
+			if(draw == false)
+				return;
+			g = 1.0f;
+			b = 1.0f;
+
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = 400;
+			
+			while(lastUpdateTime > 0){
+				startTime = SystemClock.uptimeMillis();
+				lastUpdateTime -= startTime - currentTime;
+				currentTime = SystemClock.uptimeMillis();
+
+				if(lastUpdateTime > 200) {
+					g = (((lastUpdateTime/2)-100)/100);
+					b = (((lastUpdateTime/2)-100)/100);
+				}
+				else {
+					g = 1-(((lastUpdateTime/2)-100)/100);
+					b = 1-(((lastUpdateTime/2)-100)/100);
+				}
+				SystemClock.sleep(10);
+			}
+
+			g = 1.0f;
+			b = 1.0f;
+		}
+	};
 
 }
