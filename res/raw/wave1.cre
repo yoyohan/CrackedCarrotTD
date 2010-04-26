@@ -92,10 +92,6 @@ poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 8
-Texture animate::mrbear_animate
-Texture display::mrbear
-Texture dead::mrbeardead
-=======
 Texture animate::mrmonkey_animate
 Texture display::mrmonkey
 Texture dead::mrmonkeydead
@@ -146,5 +142,5 @@ fire resistant::false
 frost resistant::false
 poison resistant::false
 goldValue::1
-nbrOfCreaturs::1
+nbrOfCreaturs::20
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
