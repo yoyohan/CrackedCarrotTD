@@ -4,12 +4,12 @@ Total number of levels::11
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
-scale::0.8
+scale::0.6
 Wave title::Mr Baby Rabbit
 health::115
-fast level::false
+fast level::true
 fire resistant::false
-frost resistant::false
+frost resistant::true
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20

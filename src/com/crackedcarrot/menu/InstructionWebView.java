@@ -60,15 +60,31 @@ public class InstructionWebView extends Activity {
         	   }
         	 });
 
-        //mWebView.canGoBack();
-        
         
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setSavePassword(false);
         webSettings.setSaveFormData(false);
         webSettings.setJavaScriptEnabled(false);
         webSettings.setSupportZoom(false);
+
         
-        mWebView.loadUrl("file:///android_asset/instructions.html");
+        // Fetch information from previous intent. The information will contain the
+        // tower decided by the player.
+        Bundle extras  = getIntent().getExtras();
+        String url = "file:///android_asset/instructions.html";
+        int tower = 0;
+        if(extras != null) {
+        	tower =  extras.getInt("com.crackedcarrot.menu.tower");
+        	if (tower == 0) 
+                url = "file:///android_asset/t1.html";
+        	if (tower == 1) 
+                url = "file:///android_asset/t2.html";
+        	if (tower == 2) 
+                url = "file:///android_asset/t3.html";
+        	if (tower == 3) 
+                url = "file:///android_asset/t4.html";
+        		
+        }
+        mWebView.loadUrl(url);
 	}	
 }

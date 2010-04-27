@@ -57,9 +57,11 @@ public class GameLoopGUI {
     private TextView     nrCreText;
     private TextView     playerHealthView;
     private UIHandler	 hud;
+
+    // Used when we ask for the instruction view
+    private int 		currentSelectedTower;
 	
     private ScoreNinjaAdapter scoreNinjaAdapter;
-
     
     	// For readability-reasons.
     final int DIALOG_NEXTLEVEL_ID = 1;
@@ -78,13 +80,12 @@ public class GameLoopGUI {
     final int GUI_SHOWHEALTHBAR_ID   = 17;
     final int GUI_HIDEHEALTHBAR_ID   = 18;
     
-    final LinearLayout towerbutton1;
-    final LinearLayout towerbutton2;
-    final LinearLayout towerbutton3;
-    final LinearLayout towerbutton4;
+    final Button towerbutton1;
+    final Button towerbutton2;
+    final Button towerbutton3;
+    final Button towerbutton4;
     final LinearLayout towertext;
-    final LinearLayout exButton;
-    final TextView     towerInformation;
+    final Button tower2Information;
 
     
    	// Constructor. A good place to initiate all our different GUI-components.
@@ -92,15 +93,27 @@ public class GameLoopGUI {
     	gameInit = gi;
     	this.hud = hud;
     	
-    	towerbutton1 = (LinearLayout) gameInit.findViewById(R.id.tbutton1);
-        towerbutton2 = (LinearLayout) gameInit.findViewById(R.id.tbutton2);
-        towerbutton3 = (LinearLayout) gameInit.findViewById(R.id.tbutton3);
-        towerbutton4 = (LinearLayout) gameInit.findViewById(R.id.tbutton4);
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
-        exButton = (LinearLayout) gameInit.findViewById(R.id.exbutton);
-        towerInformation = (TextView) gameInit.findViewById(R.id.towerInformation);
-    	
-    	// Register on ScoreNinja.
+        towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
+        towerbutton2 = (Button) gameInit.findViewById(R.id.t2);
+        towerbutton3 = (Button) gameInit.findViewById(R.id.t3);
+        towerbutton4 = (Button) gameInit.findViewById(R.id.t4);
+        
+        // Tower information. Clicking this will open information about this tower
+        tower2Information = (Button) gameInit.findViewById(R.id.t2info);
+        tower2Information.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		try {
+    	    		GameInit.pauseSemaphore.acquire();
+    	    		GameInit.pause = true;
+    			} catch (InterruptedException e1) {}
+        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
+        		ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
+        		gameInit.startActivity(ShowInstr);
+        	}
+        });
+        
+        // Register on ScoreNinja.
         scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
     	
         // Create an pointer to the statusbar
@@ -137,39 +150,44 @@ public class GameLoopGUI {
          *  When clicked on, it's possible to place a tower
          *  on an empty space on the map. The first button
          *  expands the menu. */
-        Button inMenu1 = (Button) gameInit.findViewById(R.id.inmenu1);
-        inMenu1.setOnClickListener(new OnClickListener() {
-        	
+        final Button forward = (Button) gameInit.findViewById(R.id.forward);
+        final Button play = (Button) gameInit.findViewById(R.id.play);
+
+        forward.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		expandMenu.switchMenu();
+        		forward.setVisibility(View.GONE);
+        		gameInit.gameLoop.setGameSpeed(4);
+        		play.setVisibility(View.VISIBLE);
+        		//expandMenu.switchMenu();
         	}
         });
 
-        final Button inMenu2 = (Button) gameInit.findViewById(R.id.inmenu2);
-        inMenu2.setOnClickListener(new OnClickListener() {
-        	
+        play.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		play.setVisibility(View.GONE);
+        		gameInit.gameLoop.setGameSpeed(1);
+        		forward.setVisibility(View.VISIBLE);
+        		//expandMenu.switchMenu();
+        	}
+        });
+
+        towerbutton1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(0);
         		openTowerBuildMenu(0);
         		hud.showGrid();
         	}
-
         });
-        Button inMenu3 = (Button) gameInit.findViewById(R.id.inmenu3);
-        inMenu3.setOnClickListener(new OnClickListener() {
-        	
+        towerbutton2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 2 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(1);
         		openTowerBuildMenu(1);
         		hud.showGrid();
-
         	}
         });
-        Button inMenu4 = (Button) gameInit.findViewById(R.id.inmenu4);
-        inMenu4.setOnClickListener(new OnClickListener() {
-        	
+        towerbutton3.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 3 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(2);
@@ -177,9 +195,7 @@ public class GameLoopGUI {
         		hud.showGrid();
         	}
         });
-        Button inMenu5 = (Button) gameInit.findViewById(R.id.inmenu5);
-        inMenu5.setOnClickListener(new OnClickListener() {
-        	
+        towerbutton4.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 4 has been chosen, where to put it?
         		gameInit.mGLSurfaceView.setTowerType(3);
@@ -212,7 +228,6 @@ public class GameLoopGUI {
 	    	
 	    	public void onClick(View v) {
 	    		expandMenu.switchMenu(false);
-        		exButton.setBackgroundResource(R.drawable.button_normal);
 	    	}
 	    });
 	    
@@ -224,7 +239,6 @@ public class GameLoopGUI {
 	    		gameInit.gameLoop.setGameSpeed(1);
 	    		// And den remove menu
 	    		expandMenu.switchMenu(false);
-        		exButton.setBackgroundResource(R.drawable.button_normal);
 	    	}
 	    });
 
@@ -669,7 +683,6 @@ public class GameLoopGUI {
 	    }
 	};
 	
-	
 	public ScoreNinjaAdapter getScoreNinjaAdapter() {
 		return this.scoreNinjaAdapter;
 	}
@@ -687,12 +700,18 @@ public class GameLoopGUI {
 	}
 
 	private void openTowerBuildMenu(int towerId) {
-		Tower info = gameInit.gameLoop.getTower(towerId);
-		String text =  info.getTitle() + "<b> Price:</b>" + info.getPrice() + "<br>";
-		text		+= "<b>Speed:</b> Fast <b>Range:</b> " + (int)info.getRange() + "<br>";
-   		text 		+= "<b> Damage:</b>" + (int)info.getMinDamage() + "-" + (int)info.getMaxDamage();
-	    CharSequence styledText = Html.fromHtml(text);
-	    towerInformation.setText(styledText);
+		//Tower info = gameInit.gameLoop.getTower(towerId);
+		//String text =  info.getTitle() + "<b> Price:</b>" + info.getPrice() + "<br>";
+		//text		+= "<b>Speed:</b> Fast <b>Range:</b> " + (int)info.getRange() + "<br>";
+   		//text 		+= "<b> Damage:</b>" + (int)info.getMinDamage() + "-" + (int)info.getMaxDamage();
+	    //CharSequence styledText = Html.fromHtml(text);
+	    //if (towerId == 0) {
+		    //tower1Information.setVisibility(View.GONE);
+		    tower2Information.setVisibility(View.VISIBLE);
+		    //tower3Information.setVisibility(View.GONE);
+		    //tower4Information.setVisibility(View.GONE);
+	    //}
+		this.currentSelectedTower = towerId;
    		towerbutton1.setVisibility(View.GONE);
 		towerbutton2.setVisibility(View.GONE);
 		towerbutton3.setVisibility(View.GONE);
