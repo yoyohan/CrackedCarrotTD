@@ -62,11 +62,12 @@ public class GameLoopGUI {
 
     
     	// For readability-reasons.
-    final int DIALOG_NEXTLEVEL_ID = 1;
-    final int DIALOG_WON_ID       = 2;
-    final int DIALOG_LOST_ID      = 3;
-    final int DIALOG_HIGHSCORE_ID = 4;
-    final int DIALOG_QUIT_ID      = 5;
+    final int DIALOG_NEXTLEVEL_ID   = 1;
+    final int DIALOG_WON_ID         = 2;
+    final int DIALOG_LOST_ID        = 3;
+    final int DIALOG_HIGHSCORE_ID   = 4;
+    final int DIALOG_QUIT_ID        = 5;
+    final int DIALOG_RESUMESLEFT_ID = 6;
     
     final int GUI_PLAYERMONEY_ID     = 10;
     final int GUI_PLAYERHEALTH_ID    = 11;
@@ -358,25 +359,20 @@ public class GameLoopGUI {
 						}
 	    			});
 	    	break;
+	    	
 	    case DIALOG_WON_ID:
-	    	mContext = gameInit;
-	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    	layout = inflater.inflate(R.layout.levelwon,
-	    	                               (ViewGroup) gameInit.findViewById(R.id.layout_root));
-
-	    	builder = new AlertDialog.Builder(mContext);
-	    	builder.setView(layout)
-	    	       .setCancelable(true)
-	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	        	   gameInit.gameLoop.dialogClick();
-	    	           }
-	    	       });
-	    	alertDialog = builder.create();
-
-	    	dialog = alertDialog;
-	    	//dialog.setOwnerActivity(this);
+	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialog.setContentView(R.layout.levelwon);
+	    	dialog.setCancelable(true);
+	    	// First button
+	    	Button buttonWon = (Button) dialog.findViewById(R.id.LevelWon_OK);
+	        buttonWon.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		gameInit.gameLoop.dialogClick();
+	        	}
+	        });
 	    	break;
+	    	
 	    case DIALOG_LOST_ID:
 	    	mContext = gameInit;
 	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -393,78 +389,38 @@ public class GameLoopGUI {
 	    	       });
 	    	alertDialog = builder.create();
 	    	dialog = alertDialog;
-	    	
 	    	break;
+	    	
 	    case DIALOG_QUIT_ID:
-	    	mContext = gameInit;
-	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    	layout = inflater.inflate(R.layout.levelquit,
-	    	                               (ViewGroup) gameInit.findViewById(R.id.layout_root));
-
-	    	builder = new AlertDialog.Builder(mContext);
-	    	builder.setView(layout)
-	    	       .setCancelable(true)
-	    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	        	   gameInit.finish();
-	    	           }
-	    	       })
-	    	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-	    	    	   public void onClick(DialogInterface dialog, int id) {
-	    	    		   // TODO: do nothing?
-	    	    	   }
-	    	       });
-
-	    	alertDialog = builder.create();
-
-	    	dialog = alertDialog;
-	    	//dialog.setOwnerActivity(this);
+	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialog.setContentView(R.layout.levelquit);
+	    	dialog.setCancelable(true);
+	    	// First button
+	    	Button quitYes = (Button) dialog.findViewById(R.id.LevelQuit_Yes);
+	        quitYes.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		gameInit.finish();
+	        	}
+	        });
+	    	
+	    	// Second button
+	    	Button quitNo = (Button) dialog.findViewById(R.id.LevelQuit_No);
+	    	quitNo.setOnClickListener(
+	    			new View.OnClickListener() {
+	    				public void onClick(View v) {
+	    					dialog.dismiss();
+				    }
+				});
+	    	
+	    	// Dismiss-listener
+	    	dialog.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							// do nothing.
+						}
+	    			});
 	    	break;
 
-	    case 255: // TODO: This is the old UpgradeTower-dialog, remove???
-	    	mContext = gameInit;
-	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    	layout = inflater.inflate(R.layout.upgradetower,
-	    	                               (ViewGroup) gameInit.findViewById(R.id.layout_root));
-
-	    	builder = new AlertDialog.Builder(mContext);
-	    	builder.setView(layout)
-	    	       .setCancelable(true)
-	    	       ;
-
-	    	/*
-	        Button upgradeButton1 = (Button) findViewById(R.id.UpgradeTower1);
-	        upgradeButton1.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		Log.d("TEST", "test");
-	        	}
-	        });
-
-	        Button upgradeButton2 = (Button) findViewById(R.id.UpgradeTower2);
-	        upgradeButton2.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		simulationRuntime.upgradeTower(1);
-	        	}
-	        });
-	        
-	        Button upgradeButton3 = (Button) findViewById(R.id.UpgradeTower3);
-	        upgradeButton3.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		//dialog.cancel();
-	        	}
-	        });
-	        */
-	    	
-	    	alertDialog = builder.create();
-	    	dialog = alertDialog;
-
-	    		// This will remove the fading effect of the dialog.
-	    		// It's not suitable for upgrading towers to dim the screen...
-	    	WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-	    	dialog.getWindow().setAttributes(lp); // sets the updated windows attributes
-	    	dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-	    	
-	    	break;
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
