@@ -103,7 +103,7 @@ public class TowerUpgrade{
 	}
 	
 	private class ShowUI implements Runnable{
-		@Override
+		//@Override
 		public void run() {
 			
 			if(background.draw == true)
@@ -149,7 +149,7 @@ public class TowerUpgrade{
 		}
 	}
 	private class HideUI implements Runnable{
-		@Override
+		//@Override
 		public void run() {
 			
 			if(background.draw == false)
