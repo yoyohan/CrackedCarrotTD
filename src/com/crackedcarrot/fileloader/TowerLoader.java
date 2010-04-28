@@ -129,7 +129,7 @@ public class TowerLoader {
 			            	break;
 				        case 11:
 			            	//Cooldown between each shot
-			            	coolDown = Integer.parseInt(tmpStr[1].trim());
+			            	coolDown = Float.valueOf(tmpStr[1].trim());
 				        case 12:
 			            	// has tower frost damage?
 			            	hasFrostDamage = Boolean.parseBoolean(tmpStr[1].trim());
