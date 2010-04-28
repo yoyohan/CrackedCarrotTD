@@ -37,9 +37,11 @@ import com.scoreninja.adapter.ScoreNinjaAdapter;
 public class GameLoopGUI {
 	
 	private GameInit gameInit;
-	
-	private Dialog dialog = null;
 
+	private Dialog dialog = null;
+	
+	private Dialog dialogNextLevel = null;
+	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
     private Drawable     healthBarDrawable;
@@ -326,12 +328,12 @@ public class GameLoopGUI {
 	protected Dialog onCreateDialog(int id) {
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.nextlevel);
+	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogNextLevel.setContentView(R.layout.nextlevel);
 	    	//dialog.setOwnerActivity(this);	    	
-	    	dialog.setCancelable(true);
+	    	dialogNextLevel.setCancelable(true);
 	    	// Info button
-	    	Button infoButton2 = (Button) dialog.findViewById(R.id.infobutton2);
+	    	Button infoButton2 = (Button) dialogNextLevel.findViewById(R.id.infobutton2);
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
@@ -345,22 +347,23 @@ public class GameLoopGUI {
 	        });
 	    	
 	    	// A button	    	
-	    	Button butt = (Button) dialog.findViewById(R.id.NextLevelButton);
+	    	Button butt = (Button) dialogNextLevel.findViewById(R.id.NextLevelButton);
 	    	butt.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
-	    					dialog.dismiss();
+	    					dialogNextLevel.dismiss();
 
 				    }
 				});
 	    	
-	    	dialog.setOnDismissListener(
+	    	dialogNextLevel.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
 							gameInit.gameLoop.dialogClick();
 						}
 	    			});
-	    	break;
+	    	return dialogNextLevel;
+	    	//break;
 	    	
 	    case DIALOG_WON_ID:
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
