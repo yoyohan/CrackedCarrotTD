@@ -63,9 +63,9 @@ public class GameLoopGUI {
     
     	// For readability-reasons.
     final int DIALOG_NEXTLEVEL_ID = 1;
-    final int DIALOG_WON_ID       = 2;
-    final int DIALOG_LOST_ID      = 3;
-    final int DIALOG_HIGHSCORE_ID = 4;
+    public final int DIALOG_WON_ID       = 2;
+    public final int DIALOG_LOST_ID      = 3;
+    public final int DIALOG_HIGHSCORE_ID = 4;
     final int DIALOG_QUIT_ID      = 5;
     
     final int GUI_PLAYERMONEY_ID     = 10;
@@ -73,9 +73,9 @@ public class GameLoopGUI {
     final int GUI_CREATUREVIEW_ID    = 12;
     final int GUI_CREATURELEFT_ID    = 13;
     final int GUI_PROGRESSBAR_ID     = 14;
-    final int GUI_NEXTLEVELINTEXT_ID = 15;
+    public final int GUI_NEXTLEVELINTEXT_ID = 15;
     final int GUI_SHOWSTATUSBAR_ID   = 16;
-    final int GUI_SHOWHEALTHBAR_ID   = 17;
+    public final int GUI_SHOWHEALTHBAR_ID   = 17;
     final int GUI_HIDEHEALTHBAR_ID   = 18;
     
     final LinearLayout towerbutton1;
@@ -675,7 +675,7 @@ public class GameLoopGUI {
 	}
 	
 	
-	protected void sendMessage(int i, int j, int k) {
+	public void sendMessage(int i, int j, int k) {
 		// TODO: remove this when done debugging msgs.
 		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		

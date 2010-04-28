@@ -83,7 +83,6 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		Intent Multiplayer = new Intent(MainMenu.this,MultiplayerOp.class);
         		startActivity(Multiplayer);
-        		finish();
         	}
         });
         

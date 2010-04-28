@@ -9,10 +9,12 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.crackedcarrot.GameInit;
@@ -37,6 +39,17 @@ public class Server extends Activity {
     private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
     private final int REFERENCE = 1; // GameInit started from: 1 = Server, 2 = Client
 	
+    /** if user presses back button, this activity will finish */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		Log.d("Server", "onKeyDown KEYCODE_BACK");
+    		finish();
+    		return true;
+       	}
+    	return super.onKeyDown(keyCode, event);
+    } 
+    
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +58,7 @@ public class Server extends Activity {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        /**
+        
     	// Get the local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
@@ -56,7 +69,8 @@ public class Server extends Activity {
             finish();
             return;
         }
-        */
+        
+    	
         showDialog(1);
   
     }
@@ -67,13 +81,13 @@ public class Server extends Activity {
         super.onStart();
         
         /** Request that Bluetooth will be activated if not on.
-         *  setupServer() will then be called during onActivityResult 
+         *  setupServer() will then be called during onActivityResult */
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
         } else {
             setupServer();
-        } */
+        } 
     }
     
     private void setupServer() {
@@ -156,6 +170,13 @@ public class Server extends Activity {
                 dialog.setMessage("Waiting for client to connect...");
                 dialog.setIndeterminate(true);
                 dialog.setCancelable(true);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+                	
+                	public void onCancel(DialogInterface dialog){
+                		Server.this.finish();
+                	}
+                	
+                });
                 return dialog;
             }
         }
@@ -165,5 +186,9 @@ public class Server extends Activity {
     protected void onStop() {
     	super.onStop();
     	super.onDestroy();
+    }
+    
+    protected void onResume(){
+    	super.onResume();
     }
 }

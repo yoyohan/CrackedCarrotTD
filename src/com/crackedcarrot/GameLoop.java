@@ -20,35 +20,35 @@ public class GameLoop implements Runnable {
     public  NativeRender renderHandle;
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
     
-    private GameLoopGUI  gui;
-    private Scaler       mScaler;
-    private Semaphore    dialogSemaphore = new Semaphore(1);
+    protected GameLoopGUI  gui;
+    protected Scaler       mScaler;
+    protected Semaphore    dialogSemaphore = new Semaphore(1);
 
-    private Map mGameMap;
-    private Player player;
+    protected Map mGameMap;
+    protected Player player;
 
-    private boolean run = true;
+    protected boolean run = true;
     
-    private long mLastTime;
+    protected long mLastTime;
     
     	// TODO: Maybe we can remove this string thingie-completely...?
     private String resumeTowers = null;
 
-    private float startCreatureHealth;
-    private float currentCreatureHealth;
+    protected float startCreatureHealth;
+    protected float currentCreatureHealth;
     
-    private int lvlNbr = 0;
-    private int gameSpeed;
-    private int remainingCreaturesALIVE;
-    private int remainingCreaturesALL;
-    private int totalNumberOfTowers = 0;
+    protected int lvlNbr = 0;
+    protected int gameSpeed;
+    protected int remainingCreaturesALIVE;
+    protected int remainingCreaturesALL;
+    protected int totalNumberOfTowers = 0;
 
-    private Creature[] mCreatures;
-    private Level[]    mLvl;
-    private Shot[]     mShots;
-    private Tower[]    mTower;
-    private Tower[][]  mTowerGrid;
-    private Tower[]    mTTypes;
+    protected Creature[] mCreatures;
+    protected Level[]    mLvl;
+    protected Shot[]     mShots;
+    protected Tower[]    mTower;
+    protected Tower[][]  mTowerGrid;
+    protected Tower[]    mTTypes;
     
     private int progressbarLastSent = 0;
     
@@ -66,7 +66,7 @@ public class GameLoop implements Runnable {
     	this.gui = gui;
     }
     
-	private void initializeDataStructures() {
+	protected void initializeDataStructures() {
 		//this allocates the space we need for shots towers and creatures.
 	    this.mTower = new Tower[60];
 	    this.mShots = new Shot[60];
@@ -157,7 +157,7 @@ public class GameLoop implements Runnable {
 		
 	}
     
-	private void initializeLvl() {
+	protected void initializeLvl() {
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
