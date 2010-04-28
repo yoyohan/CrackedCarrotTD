@@ -288,6 +288,10 @@ public class GameLoopGUI {
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
     	sound.setIcon(R.drawable.button_sound_on);
+    	
+    	MenuItem pause = menu.add(0, Menu.NONE, 0, "Pause");
+    	pause.setIcon(R.drawable.button_pause_48);
+    	
         MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
         quit.setIcon(R.drawable.button_quit);
         return true;
@@ -309,6 +313,14 @@ public class GameLoopGUI {
     			gameInit.gameLoop.soundManager.playSound = false;
     		else
     			gameInit.gameLoop.soundManager.playSound = true;
+    	} else if (item.getTitle().toString().startsWith("Pause")) {
+    		try {
+	    		GameInit.pauseSemaphore.acquire();
+	    		GameInit.pause = true;
+			} catch (InterruptedException e1) {}
+    		gameInit.onPause();
+    		Intent ShowInstr = new Intent(gameInit, PauseView.class);
+    		gameInit.startActivity(ShowInstr);
     	} else if (item.getTitle().toString().startsWith("Quit")) {
     			// User clicked Quit.
     			// Doesnt save or prompt or anything, this just quits.

@@ -199,11 +199,6 @@ public class GameLoop implements Runnable {
 				
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
-    	try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
 		
     	// This is a good time to save the current progress of the game.
@@ -243,12 +238,7 @@ public class GameLoop implements Runnable {
 		gui.sendMessage(gui.GUI_SHOWSTATUSBAR_ID, 0, 0);
 		
 		// Code to wait for the user to click ok on NextLevel-dialog.
-		try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		dialogSemaphore.release();
+		waitForDialogClick();
 
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
@@ -266,15 +256,17 @@ public class GameLoop implements Runnable {
    	
 	    initializeDataStructures();
 
-	    	// Resuming an old game? Rebuild all the old towers.
-	    if ((resumeTowers != null) && (resumeTowers.compareTo("") != 0)) {
+	    	// Resuming an old game? Rebuild all the old towers and show dialog.
+	    if (resumeTowers != null) {
 	    	String[] towers = resumeTowers.split("-");
 	    	
-	    	for (int i = 0; i < towers.length; i ++) {
-	    		String[] tower = towers[i].split(",");
-	    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
-	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-	    		createTower(c, Integer.parseInt(tower[0]));
+	    	if (resumeTowers != "") {
+		    	for (int i = 0; i < towers.length; i ++) {
+		    		String[] tower = towers[i].split(",");
+		    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
+		    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
+		    		createTower(c, Integer.parseInt(tower[0]));
+		    	}
 	    	}
 	    	
 	    	gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, 0, 0);
