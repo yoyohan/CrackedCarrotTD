@@ -41,6 +41,7 @@ public class GameLoopGUI {
 	private Dialog dialog = null;
 	
 	private Dialog dialogNextLevel = null;
+	private Dialog dialogQuit = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
@@ -330,7 +331,6 @@ public class GameLoopGUI {
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogNextLevel.setContentView(R.layout.nextlevel);
-	    	//dialog.setOwnerActivity(this);	    	
 	    	dialogNextLevel.setCancelable(true);
 	    	// Info button
 	    	Button infoButton2 = (Button) dialogNextLevel.findViewById(R.id.infobutton2);
@@ -368,7 +368,7 @@ public class GameLoopGUI {
 	    case DIALOG_WON_ID:
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.levelwon);
-	    	dialog.setCancelable(true);
+	    	dialog.setCancelable(false);
 	    	// First button
 	    	Button buttonWon = (Button) dialog.findViewById(R.id.LevelWon_OK);
 	        buttonWon.setOnClickListener(new OnClickListener() {
@@ -381,7 +381,7 @@ public class GameLoopGUI {
 	    case DIALOG_LOST_ID:
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.levellost);
-	    	dialog.setCancelable(true);
+	    	dialog.setCancelable(false);
 	    	// First button
 	    	Button buttonLost = (Button) dialog.findViewById(R.id.LevelLost_OK);
 	        buttonLost.setOnClickListener(new OnClickListener() {
@@ -392,11 +392,11 @@ public class GameLoopGUI {
 	    	break;
 	    	
 	    case DIALOG_QUIT_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levelquit);
-	    	dialog.setCancelable(true);
+	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogQuit.setContentView(R.layout.levelquit);
+	    	dialogQuit.setCancelable(true);
 	    	// First button
-	    	Button quitYes = (Button) dialog.findViewById(R.id.LevelQuit_Yes);
+	    	Button quitYes = (Button) dialogQuit.findViewById(R.id.LevelQuit_Yes);
 	        quitYes.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.finish();
@@ -404,21 +404,38 @@ public class GameLoopGUI {
 	        });
 	    	
 	    	// Second button
-	    	Button quitNo = (Button) dialog.findViewById(R.id.LevelQuit_No);
+	    	Button quitNo = (Button) dialogQuit.findViewById(R.id.LevelQuit_No);
 	    	quitNo.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
-	    					dialog.dismiss();
+	    					dialogQuit.dismiss();
 				    }
 				});
 	    	
 	    	// Dismiss-listener
-	    	dialog.setOnDismissListener(
+	    	dialogQuit.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
 							// do nothing.
 						}
 	    			});
+	    	return dialogQuit;
+	    	//break;
+	    	
+	    case DIALOG_RESUMESLEFT_ID:
+	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialog.setContentView(R.layout.levelresume);
+	    	dialog.setCancelable(false);
+	    	// First button
+	    	Button button = (Button) dialog.findViewById(R.id.LevelResume_OK);
+	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
+	    		// TODO: we need a correct counter on this.
+	        button.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		gameInit.gameLoop.dialogClick();
+	        		dialog.dismiss();
+	        	}
+	        });
 	    	break;
 
 	    default:
@@ -548,6 +565,9 @@ public class GameLoopGUI {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
 	        	    	 scoreNinjaAdapter.show(msg.arg1);
 	        	     }
+	        		 break;
+	        	 case DIALOG_RESUMESLEFT_ID:
+	        		 gameInit.showDialog(DIALOG_RESUMESLEFT_ID);
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:

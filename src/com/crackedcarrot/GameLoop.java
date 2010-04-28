@@ -276,6 +276,12 @@ public class GameLoop implements Runnable {
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
+	    	
+	    	gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, 0, 0);
+	    	
+    		// Code to wait for the user to click ok on Resume-dialog.
+    		waitForDialogClick();
+	    	
 	    }
         
 	    while(run){
@@ -377,18 +383,7 @@ public class GameLoop implements Runnable {
             	gui.sendMessage(-2, 2, 0);
             	
         		// Code to wait for the user to click ok on YouLost-dialog.
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		dialogSemaphore.release();
+        		waitForDialogClick();
 
             	run = false;
         	} 
@@ -413,18 +408,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		dialogSemaphore.release();
+            		waitForDialogClick();
 
         			run = false;
         		}
@@ -537,6 +521,22 @@ public class GameLoop implements Runnable {
     
     public void dialogClick() {
     	dialogSemaphore.release();
+    }
+    
+    private void waitForDialogClick() {
+		// Code to wait for the user to click ok on a dialog.
+		try {
+			dialogSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			dialogSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		dialogSemaphore.release();
     }
     
     public Level getLevelData() {
