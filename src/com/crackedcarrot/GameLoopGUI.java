@@ -1,8 +1,6 @@
 package com.crackedcarrot;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,13 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -316,12 +310,6 @@ public class GameLoopGUI {
 	 *  
 	 */
 	protected Dialog onCreateDialog(int id) {
-	    AlertDialog alertDialog;
-    	AlertDialog.Builder builder;
-    	Context mContext;
-    	LayoutInflater inflater;
-    	View layout;
-    	
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -374,21 +362,16 @@ public class GameLoopGUI {
 	    	break;
 	    	
 	    case DIALOG_LOST_ID:
-	    	mContext = gameInit;
-	    	inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    	layout = inflater.inflate(R.layout.levellost,
-	    	                               (ViewGroup) gameInit.findViewById(R.id.layout_root));
-
-	    	builder = new AlertDialog.Builder(mContext);
-	    	builder.setView(layout)
-	    	       .setCancelable(true)
-	    	       .setPositiveButton("Yeah!", new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	        	   gameInit.gameLoop.dialogClick();
-	    	           }
-	    	       });
-	    	alertDialog = builder.create();
-	    	dialog = alertDialog;
+	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialog.setContentView(R.layout.levellost);
+	    	dialog.setCancelable(true);
+	    	// First button
+	    	Button buttonLost = (Button) dialog.findViewById(R.id.LevelLost_OK);
+	        buttonLost.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		gameInit.gameLoop.dialogClick();
+	        	}
+	        });
 	    	break;
 	    	
 	    case DIALOG_QUIT_ID:
