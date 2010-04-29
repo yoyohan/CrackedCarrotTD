@@ -7,6 +7,7 @@
 	<item name="android:backgroundDimEnabled">true</item>
 	<item name="android:layout_width">200dp</item> 
   </style>
+  
   <!-- This theme is for the dialog showing the "how to play"-instructions -->
   <style name="InstructionDialog" parent="@android:style/Theme.Dialog">
 	<item name="android:windowNoTitle">true</item>
@@ -14,4 +15,9 @@
 	<item name="android:backgroundDimEnabled">true</item>
 	<item name="android:layout_width">200dp</item>
   </style>
+  
+  <!-- Used for the InGameMenu when the MENU button is pressed.  -->
+  <style name="InGameMenu" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+  </style>
+  
 </resources>
