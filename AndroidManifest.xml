@@ -38,10 +38,11 @@
     	<activity android:theme="@android:style/Theme.Translucent.NoTitleBar"
     		android:screenOrientation="portrait"
     		android:configChanges="keyboardHidden|orientation" android:name="InstructionWebView"></activity>
+    	<!-- Gjorde om den till en dialog istället:
     	<activity android:name="com.crackedcarrot.PauseView"
     		android:theme="@android:style/Theme.Translucent.NoTitleBar"
     		android:screenOrientation="portrait"
-    		android:configChanges="keyboardHidden|orientation"></activity>
+    		android:configChanges="keyboardHidden|orientation"></activity> -->
     	<activity android:name="com.crackedcarrot.multiplayer.MultiplayerOp"
 			android:screenOrientation="portrait"></activity>
 		<activity android:name="com.crackedcarrot.multiplayer.Server"

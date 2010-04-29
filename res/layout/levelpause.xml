@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="200dp"
-    android:layout_height="120dp">
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center" >
 
- 	<LinearLayout
-    	android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+	<LinearLayout
+    	android:orientation="vertical"
+    	android:gravity="center"
+    	android:layout_width="200dp"
+    	android:layout_height="240dp" >
 
 		<ImageView
 			android:src="@drawable/bunny_pink_alive"
@@ -18,35 +18,35 @@
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 		<TextView
-			android:text="Do you really want to quit?"
+			android:text="PAUSED ! ! !"
 			android:textColor="#000000"
 			android:textStyle="bold"
 			android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
-	</LinearLayout>
-	
- 	<LinearLayout
-    	android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
-	
+            
 		<Button
-			android:text="Yes"
-			android:id="@+id/LevelQuit_Yes"
+			android:text="Continue"
+			android:id="@+id/LevelPause_Continue"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
-			
+            
 		<Button
-			android:text="No"
-			android:id="@+id/LevelQuit_No"
+			android:text="Help"
+			android:id="@+id/LevelPause_Help"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
+            
+		<Button
+			android:text="QUIT"
+			android:id="@+id/LevelPause_Quit"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
+		    
 	</LinearLayout>
-		
+
 </LinearLayout>
-	

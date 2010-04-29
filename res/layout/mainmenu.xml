@@ -4,16 +4,16 @@
 	android:id="@+id/relLay1"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/background"
-	xmlns:android="http://schemas.android.com/apk/res/android"> 
+	android:background="@drawable/mainmenu"
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 <TableLayout
 	android:layout_width="200dp"
-    android:layout_height="320dp"
+    android:layout_height="380dp"
     android:gravity="center"
 	android:layout_alignParentTop="true"
 	android:layout_centerHorizontal="true"
-	android:paddingTop="40dp"
+	android:paddingTop="90dp"
 	android:background="#00000000">
 	/** the first two hex digits, represent
     the alpha channel which is used to define 
@@ -24,7 +24,7 @@
 		android:id="@+id/StartGame"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/startgame_button">
+		android:background="@drawable/xml_button_startgame">
 		</Button>
     </TableRow>
 
@@ -40,7 +40,7 @@
 		android:id="@+id/Resume"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/resume_button">
+		android:background="@drawable/xml_button_resume">
 		</Button>
     </TableRow>
     
@@ -57,7 +57,7 @@
 		android:id="@+id/Options"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/options_button">
+		android:background="@drawable/xml_button_options">
 		</Button>
     </TableRow>
 
@@ -73,7 +73,7 @@
 		android:id="@+id/Help"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/help_button">
+		android:background="@drawable/xml_button_help">
 		</Button>
     </TableRow>
 
@@ -89,7 +89,7 @@
 		android:id="@+id/Multiplayer"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/multiplayer_button">
+		android:background="@drawable/xml_button_multiplayer">
 		</Button>
     </TableRow>
 
