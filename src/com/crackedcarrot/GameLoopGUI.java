@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -431,6 +432,16 @@ public class GameLoopGUI {
 							// do nothing.
 						}
 	    			});
+	    	
+	          // This is kinda cool, it makes the view behind the dialog blurred
+	          // instead of faded out.
+	          // TODO: Check on phone how this works, lags the game on emulator...
+	        WindowManager.LayoutParams lp = dialogQuit.getWindow().getAttributes();
+	        dialogQuit.getWindow().setAttributes(lp);
+	        dialogQuit.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+	        //dialogQuit.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+	        //    WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+	    	
 	    	return dialogQuit;
 	    	//break;
 	    	
