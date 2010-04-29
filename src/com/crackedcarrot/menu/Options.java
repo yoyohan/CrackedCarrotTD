@@ -42,15 +42,13 @@ public class Options extends Activity {
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
         optionsHighscore = settings.getBoolean("optionsHighscore", false);
-        optionsNextLevel = settings.getBoolean("optionsNextLevel", false);
-        optionsSound     = settings.getBoolean("optionsSound", false);
+        optionsNextLevel = settings.getBoolean("optionsNextLevel", true);
+        optionsSound     = settings.getBoolean("optionsSound", true);
         
         
         imageButton1 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton1);
         imageButton1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		Log.d("OPTIONS", "Clicked button 1");
-        		
         			// Toggles sound on or off
         		if (optionsSound) {
         			setSound(false);

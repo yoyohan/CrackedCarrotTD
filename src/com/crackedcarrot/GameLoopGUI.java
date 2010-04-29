@@ -26,7 +26,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -612,7 +611,7 @@ public class GameLoopGUI {
 	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	     if (settings.getBoolean("optionsNextLevel", true)) {
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
