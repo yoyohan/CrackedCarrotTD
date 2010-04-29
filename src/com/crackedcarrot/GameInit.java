@@ -125,37 +125,25 @@ public class GameInit extends Activity {
 
         
         	// Are we resuming an old saved game?
-        int resume = 0;
-        int resumeLevelNumber = 0;
-        int resumeMap = 0;
-        int resumePlayerDifficulty = 0;
-        int resumePlayerHealth = 0;
-        int resumePlayerMoney = 0;
-        String resumeTowers = null;
+        SharedPreferences resume = getSharedPreferences("resume", 0);
+        int               resumes = 0;
         if (mapChoice == 0) {
-            // Restore saved preferences
-            SharedPreferences settings = getSharedPreferences("Resume", 0);
-            resume                 = settings.getInt("Resume", 0) + 1;
-            resumeLevelNumber      = settings.getInt("LevelNumber", 0);
-            resumeMap              = settings.getInt("Map", 0);
-            resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
-            resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
-            resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
-            resumeTowers           = settings.getString("Towers", "");
+        		// Increase the resumes-counter, keep people from cheating.
+            resumes = resume.getInt("resumes", 0) + 1;
         } else {
-        		// We are not resuming anything, clear the old flag(s). Prepare for a new Save.
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", -1);
-    		editor.putInt("Map", mapChoice);
+        		// We are not resuming anything, clear the old flag(s) and
+        		// prepare for a new save. Saves the chosen map directly.
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("map", mapChoice);
+    		editor.putInt("resumes", -1);
     		editor.commit();
         }
         
         // Create the map requested by the player
 
        	// resume needs to load the correct map aswell.
-       	if (mapChoice == 0)
-       		mapChoice = resumeMap;
+       	if (resumes > 0)
+       		mapChoice = resume.getInt("map", 0);
         
         mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
@@ -183,7 +171,7 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 10);
         }
         else { // resume.
-        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 10);
+        	p = new Player(resume.getInt("difficulty", 0), resume.getInt("health", 0), resume.getInt("money", 0), 10);
         }
         
         //Load the creature waves and apply the correct difficulty
@@ -198,8 +186,8 @@ public class GameInit extends Activity {
         gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui,new SoundManager(getBaseContext()));
         
         	// Resuming old game? Prepare GameLoop for this...
-        if (resume > 0) {
-        	gameLoop.resume(resume, resumeLevelNumber, resumeTowers);
+        if (resumes > 0) {
+        	gameLoop.resume(resumes, resume.getInt("level", 0), resume.getString("towers", null));
         }
         
         gameLoopThread = new Thread(gameLoop);
@@ -275,23 +263,22 @@ public class GameInit extends Activity {
     	
     	if (i == 1) {
     			// Save everything.
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
+    		SharedPreferences resume = getSharedPreferences("resume", 0);
+    		SharedPreferences.Editor editor = resume.edit();
+    		//editor.putInt("map",... <- this is saved above, at the if (mapChoice == 0) check.
+    		editor.putInt("difficulty", gameLoop.getPlayerData().getDifficulty());
+    		editor.putInt("health", gameLoop.getPlayerData().getHealth());
+    		editor.putInt("level", gameLoop.getLevelNumber());
+    		editor.putInt("money", gameLoop.getPlayerData().getMoney());
     			// Increase the counter of # of resumes the player has used.
-    		editor.putInt("Resume", settings.getInt("Resume", 0) + 1);
-    		editor.putInt("LevelNumber", gameLoop.getLevelNumber());
-    		//editor.putInt("Map",... <- this is saved above, at the if (mapChoice == 0) check.
-    		// this comment added to keep people from going nuts looking for it.
-    		editor.putInt("PlayerDifficulty", gameLoop.getPlayerData().getDifficulty());
-    		editor.putInt("PlayerHealth", gameLoop.getPlayerData().getHealth());
-    		editor.putInt("PlayerMoney", gameLoop.getPlayerData().getMoney());
-    		editor.putString("Towers", gameLoop.resumeGetTowers());
+    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
+    		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
     	} else {
     			// Dont allow resume. Clears the main resume flag!
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", -1);
+    		SharedPreferences resume = getSharedPreferences("resume", 0);
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("resumes", -1);
     		editor.commit();
     	}
     }

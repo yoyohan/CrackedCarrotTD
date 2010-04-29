@@ -31,8 +31,7 @@ public class GameLoop implements Runnable {
     
     private long mLastTime;
     
-    	// TODO: Maybe we can remove this string thingie-completely...?
-    private int    resume;
+    private int    resumes;
     private String resumeTowers = null;
 
     private float startCreatureHealth;
@@ -203,9 +202,9 @@ public class GameLoop implements Runnable {
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
 			// Show resumes-left dialog.
-	    	if (resume > 0) {
-	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resume, 0);
-	    		resume = 0;
+	    	if (resumes > 0) {
+	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resumes, 0);
+	    		resumes = 0;
 	    		waitForDialogClick();
 	    	}
 		
@@ -272,15 +271,13 @@ public class GameLoop implements Runnable {
 	    if (resumeTowers != null) {
 	    	String[] towers = resumeTowers.split("-");
 	    	
-	    	if (resumeTowers != "") {
-		    	for (int i = 0; i < towers.length; i ++) {
-		    		String[] tower = towers[i].split(",");
-		    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
-		    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-		    		createTower(c, Integer.parseInt(tower[0]));
-		    	}
+	    	for (int i = 0; i < towers.length; i ++) {
+	    		String[] tower = towers[i].split(",");
+	    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
+	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
+	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
-	    	
+
 	    }
         
 	    while(run){
@@ -562,9 +559,9 @@ public class GameLoop implements Runnable {
     	return s;
     }
     
-    public void resume(int resume, int levelNumber, String towers) {
-    	this.resume = resume;
-    	this.lvlNbr = levelNumber;
+    public void resume(int resumes, int level, String towers) {
+    	this.resumes = resumes;
+    	this.lvlNbr = level;
     	this.resumeTowers = towers;
     }
     
