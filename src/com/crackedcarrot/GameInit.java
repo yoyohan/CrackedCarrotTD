@@ -129,13 +129,16 @@ public class GameInit extends Activity {
         int               resumes = 0;
         if (mapChoice == 0) {
         		// Increase the resumes-counter, keep people from cheating.
-            resumes = resume.getInt("resumes", 0) + 1;
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
+    		editor.commit();
+    		resumes = resume.getInt("resumes", 0);
         } else {
         		// We are not resuming anything, clear the old flag(s) and
         		// prepare for a new save. Saves the chosen map directly.
     		SharedPreferences.Editor editor = resume.edit();
     		editor.putInt("map", mapChoice);
-    		editor.putInt("resumes", -1);
+    		editor.putInt("resumes", 0);
     		editor.commit();
         }
         
@@ -270,8 +273,7 @@ public class GameInit extends Activity {
     		editor.putInt("health", gameLoop.getPlayerData().getHealth());
     		editor.putInt("level", gameLoop.getLevelNumber());
     		editor.putInt("money", gameLoop.getPlayerData().getMoney());
-    			// Increase the counter of # of resumes the player has used.
-    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
+    		editor.putInt("resumes", resume.getInt("resumes", 0));
     		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
     	} else {

@@ -55,7 +55,7 @@ public class MainMenu extends Activity {
         	SharedPreferences resume = getSharedPreferences("resume", 0);
         	int resumes = resume.getInt("resumes", 0);
 
-       	if (resumes > -1 && resumes < 4) {
+       	if (resumes > -1 && resumes < 3) {
 	        ResumeButton.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		//Send the level variable to the game loop and start it

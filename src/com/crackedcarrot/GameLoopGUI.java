@@ -448,7 +448,7 @@ public class GameLoopGUI {
 	    	// First button
 	    	Button button = (Button) dialog.findViewById(R.id.LevelResume_OK);
 	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
-	    	textView.setText("You have " + (3 - resume) + " resumes left.");
+	    	textView.setText("You have " + (3 - resume) + " resume(s) left.");
 	        button.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
