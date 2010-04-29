@@ -326,6 +326,9 @@ public class GameLoopGUI {
 	 *  
 	 */
 	protected Dialog onCreateDialog(int id) {
+		
+		WindowManager.LayoutParams lp;
+		
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -419,7 +422,7 @@ public class GameLoopGUI {
 	          // This is kinda cool, it makes the view behind the dialog blurred
 	          // instead of faded out.
 	          // TODO: Check on phone how this works, lags the game on emulator...
-	        WindowManager.LayoutParams lp = dialogQuit.getWindow().getAttributes();
+	        lp = dialogQuit.getWindow().getAttributes();
 	        dialogQuit.getWindow().setAttributes(lp);
 	        dialogQuit.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 	        //dialogQuit.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
@@ -445,7 +448,7 @@ public class GameLoopGUI {
 	    	break;
 	    	
 	    case DIALOG_PAUSE_ID:
-	    	dialogPause = new Dialog(gameInit);
+	    	dialogPause = new Dialog(gameInit, R.style.InGameMenu);
 	        dialogPause.setContentView(R.layout.levelpause);
 	    	dialogPause.setCancelable(true);
 	    	
@@ -457,6 +460,25 @@ public class GameLoopGUI {
 	    				dialogPause.dismiss();
 	    			}
 	    		});
+	    	
+	    	// Help button
+	    	Button buttonPauseHelp = (Button) dialogPause.findViewById(R.id.LevelPause_Help);
+	    	buttonPauseHelp.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    	       		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
+	            		gameInit.startActivity(ShowInstr);
+	    			}
+	    		});
+	    	
+	    	// Quit button
+	    	Button buttonPauseQuit = (Button) dialogPause.findViewById(R.id.LevelPause_Quit);
+	    	buttonPauseQuit.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    	       		gameInit.showDialog(DIALOG_QUIT_ID);
+	    			}
+	    		});
 	        
 	    	// Dismiss-listener
 	    	dialogPause.setOnDismissListener(
@@ -465,6 +487,12 @@ public class GameLoopGUI {
 						gameInit.gameLoop.unPause();
 					}
 	    		});
+	    	
+	    		// Makes the background of the dialog blurred.
+	        lp = dialogPause.getWindow().getAttributes();
+	        dialogPause.getWindow().setAttributes(lp);
+	        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
 	    	return dialogPause;
 

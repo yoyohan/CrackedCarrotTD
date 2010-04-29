@@ -34,7 +34,7 @@
             android:layout_weight="1" />
             
 		<Button
-			android:text="Help/Instructions"
+			android:text="Help"
 			android:id="@+id/LevelPause_Help"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
