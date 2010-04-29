@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -204,7 +203,6 @@ public class GameLoopGUI {
         });
 
         // Button that removes towerInformation
-        /*
         final Button inMenu6 = (Button) gameInit.findViewById(R.id.inmenu6);
         inMenu6.setOnClickListener(new OnClickListener() {
         	
@@ -218,13 +216,11 @@ public class GameLoopGUI {
         		hud.hideGrid();
         	}
         });
-        */
         
 	    ////////////////////////////////////////////////////////////////
 	    // First button in Expand Menu
 	    ////////////////////////////////////////////////////////////////
 	    
-        /*
 	    Button removeExpand = (Button) gameInit.findViewById(R.id.removeExpand);
 	    removeExpand.setOnClickListener(new OnClickListener() {
 	    	
@@ -232,7 +228,6 @@ public class GameLoopGUI {
 	    		expandMenu.switchMenu(false);
 	    	}
 	    });
-	    */
 	    
 	    // Second set normal gameSpeed
 	    Button normalSpeed = (Button) gameInit.findViewById(R.id.normalSpeed);
@@ -328,7 +323,7 @@ public class GameLoopGUI {
     		gameInit.startActivity(ShowInstr);
     	} else if (item.getTitle().toString().startsWith("Quit")) {
     			// User clicked Quit.
-    			// Doesnt save or prompt or anything, it just quits.
+    			// Doesnt save or prompt or anything, this just quits.
     		gameInit.finish();
     	}
 
@@ -436,16 +431,6 @@ public class GameLoopGUI {
 							// do nothing.
 						}
 	    			});
-	    	
-	    		// This is kinda cool, it makes the view behind the dialog blurred
-	    		// instead of faded out.
-	    		// TODO: Check on phone how this works, lags the game on emulator...
-	    	WindowManager.LayoutParams lp = dialogQuit.getWindow().getAttributes();
-	    	dialogQuit.getWindow().setAttributes(lp);
-	    	dialogQuit.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-	    	//dialogQuit.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-	    	//		WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-	    	
 	    	return dialogQuit;
 	    	//break;
 	    	

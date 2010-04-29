@@ -23,6 +23,14 @@
 		android:layout_alignParentBottom="true">
 		
 		<Button
+        	android:id="@+id/removeExpand"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
+        	android:layout_marginRight="7dp"
+        	android:layout_marginLeft="7dp"
+        	android:background="@drawable/inmenu6_button" />
+        	
+		<Button
         	android:id="@+id/normalSpeed"
         	android:layout_width="50dp"
         	android:layout_height="50dp"       	
