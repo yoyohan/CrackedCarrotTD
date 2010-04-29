@@ -46,6 +46,7 @@ public class GameLoopGUI {
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
+    private int          resume;
     private Drawable     healthBarDrawable;
     private ExpandMenu   expandMenu = null;
     private ImageView    enImView;
@@ -59,7 +60,6 @@ public class GameLoopGUI {
     // Used when we ask for the instruction view
     private int 		currentSelectedTower;
 	
-    private ScoreNinjaAdapter scoreNinjaAdapter;
     
     	// For readability-reasons.
     final int DIALOG_NEXTLEVEL_ID   = 1;
@@ -103,8 +103,8 @@ public class GameLoopGUI {
         tower2Information.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
+    	    		gameInit.gameLoop.pauseSemaphore.acquire();
+    	    		gameInit.gameLoop.pause = true;
     			} catch (InterruptedException e1) {}
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
@@ -112,8 +112,6 @@ public class GameLoopGUI {
         	}
         });
         
-        // Register on ScoreNinja.
-        scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
@@ -260,8 +258,8 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
+    	    		gameInit.gameLoop.pauseSemaphore.acquire();
+    	    		gameInit.gameLoop.pause = true;
     			} catch (InterruptedException e1) {}
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
@@ -274,8 +272,8 @@ public class GameLoopGUI {
         	
         	public void onClick(View v) {
         		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
+    	    		gameInit.gameLoop.pauseSemaphore.acquire();
+    	    		gameInit.gameLoop.pause = true;
     			} catch (InterruptedException e1) {}
         		gameInit.onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
@@ -292,10 +290,8 @@ public class GameLoopGUI {
     	
     	MenuItem pause = menu.add(0, Menu.NONE, 0, "Pause");
     	pause.setIcon(R.drawable.button_pause_48);
-    	
-        MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
-        quit.setIcon(R.drawable.button_quit);
-        return true;
+
+    	return true;
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -316,8 +312,8 @@ public class GameLoopGUI {
     			gameInit.gameLoop.soundManager.playSound = true;
     	} else if (item.getTitle().toString().startsWith("Pause")) {
     		try {
-	    		GameInit.pauseSemaphore.acquire();
-	    		GameInit.pause = true;
+	    		GameLoop.pauseSemaphore.acquire();
+	    		GameLoop.pause = true;
 			} catch (InterruptedException e1) {}
     		gameInit.onPause();
     		Intent ShowInstr = new Intent(gameInit, PauseView.class);
@@ -351,8 +347,8 @@ public class GameLoopGUI {
 	        	
 	        	public void onClick(View v) {
 	        		try {
-	    	    		GameInit.pauseSemaphore.acquire();
-	    	    		GameInit.pause = true;
+	    	    		GameLoop.pauseSemaphore.acquire();
+	    	    		GameLoop.pause = true;
 	    			} catch (InterruptedException e1) {}
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
@@ -452,7 +448,7 @@ public class GameLoopGUI {
 	    	// First button
 	    	Button button = (Button) dialog.findViewById(R.id.LevelResume_OK);
 	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
-	    		// TODO: we need a correct counter on this.
+	    	textView.setText("You have " + (3 - resume) + " resumes left.");
 	        button.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
@@ -571,10 +567,18 @@ public class GameLoopGUI {
 	
 	    @Override
 	    public void handleMessage(Message msg) {
-	
+
+	    		// TODO: having this here is a fucking stupid idea.
+	    	SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
+	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        		 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
+	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
+	        	     } else {
+	        	    	 	// Simulate clicking the dialog.
+	        	    	 gameInit.gameLoop.dialogClick();
+	        	     }
 	        		 break;
 	        	 case DIALOG_WON_ID:
 	        		 gameInit.showDialog(DIALOG_WON_ID);
@@ -583,13 +587,13 @@ public class GameLoopGUI {
 	        		 gameInit.showDialog(DIALOG_LOST_ID);
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
-	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings.getBoolean("optionsHighscore", false)) {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
-	        	    	 scoreNinjaAdapter.show(msg.arg1);
+	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
 	        	 case DIALOG_RESUMESLEFT_ID:
+	        		 resume = msg.arg1;
 	        		 gameInit.showDialog(DIALOG_RESUMESLEFT_ID);
 	        		 break;
 	        		 
@@ -667,11 +671,6 @@ public class GameLoopGUI {
 	        }
 	    }
 	};
-	
-	public ScoreNinjaAdapter getScoreNinjaAdapter() {
-		return this.scoreNinjaAdapter;
-	}
-	
 	
 	protected void sendMessage(int i, int j, int k) {
 		// TODO: remove this when done debugging msgs.

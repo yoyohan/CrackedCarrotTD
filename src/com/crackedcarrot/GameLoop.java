@@ -32,6 +32,7 @@ public class GameLoop implements Runnable {
     private long mLastTime;
     
     	// TODO: Maybe we can remove this string thingie-completely...?
+    private int    resume;
     private String resumeTowers = null;
 
     private float startCreatureHealth;
@@ -51,6 +52,10 @@ public class GameLoop implements Runnable {
     private Tower[]    mTTypes;
     
     private int progressbarLastSent = 0;
+    
+    	// These need to be static so PauseView can reach them.
+    public static boolean   pause = false;
+    public static Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -197,6 +202,13 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the creature image
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
+			// Show resumes-left dialog.
+	    	if (resume > 0) {
+	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resume, 0);
+	    		resume = 0;
+	    		waitForDialogClick();
+	    	}
+		
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
 		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
@@ -269,11 +281,6 @@ public class GameLoop implements Runnable {
 		    	}
 	    	}
 	    	
-	    	gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, 0, 0);
-	    	
-    		// Code to wait for the user to click ok on Resume-dialog.
-    		waitForDialogClick();
-	    	
 	    }
         
 	    while(run){
@@ -281,7 +288,7 @@ public class GameLoop implements Runnable {
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-
+    		
     		// This is used to know when the time has changed or not
     		int lastTime = (int) player.getTimeUntilNextLevel();
 
@@ -291,11 +298,10 @@ public class GameLoop implements Runnable {
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
     			
-				if(GameInit.pause){
-	    			try {
-	    	    		GameInit.pauseSemaphore.acquire();
-	    			} catch (InterruptedException e1) {}
-	    			GameInit.pauseSemaphore.release();
+				if(pause){
+	    			try { pauseSemaphore.acquire(); }
+	    			catch (InterruptedException e1) {}
+	    			pauseSemaphore.release();
 				}
     			
     			//Get the time after an eventual pause and add this to the mLastTime variable
@@ -541,10 +547,6 @@ public class GameLoop implements Runnable {
     	return lvlNbr;
     }
     
-    public void resumeSetLevelNumber(int i) {
-    	this.lvlNbr = i;
-    }
-
     	// This is used by the savegame-function to remember all the towers.
     	// TODO: We need to get the correct "version" of the tower too, e.g.
     	// any upgrades purchased, etc....
@@ -560,8 +562,10 @@ public class GameLoop implements Runnable {
     	return s;
     }
     
-    public void resumeSetTowers(String s) {
-    	this.resumeTowers = s;
+    public void resume(int resume, int levelNumber, String towers) {
+    	this.resume = resume;
+    	this.lvlNbr = levelNumber;
+    	this.resumeTowers = towers;
     }
     
 	public void setGameSpeed(int i) {

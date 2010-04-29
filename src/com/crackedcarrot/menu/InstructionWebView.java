@@ -1,6 +1,6 @@
 package com.crackedcarrot.menu;
 
-import com.crackedcarrot.GameInit;
+import com.crackedcarrot.GameLoop;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -32,8 +32,8 @@ public class InstructionWebView extends Activity {
     	close.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
-    					GameInit.pause = false;
-    					GameInit.pauseSemaphore.release();
+    					GameLoop.pause = false;
+    					GameLoop.pauseSemaphore.release();
     					finish();
     				}
     			});

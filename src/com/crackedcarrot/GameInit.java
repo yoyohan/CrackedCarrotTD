@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -28,20 +26,20 @@ import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
 import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 
 	public GameLoop     gameLoop;
     public SurfaceView  mGLSurfaceView;
+
 	private GameLoopGUI gameLoopGui;
-    private UIHandler  hudHandler;
-    
     private Thread      gameLoopThread;
-    private MapLoader   mapLoad;
+    private UIHandler   hudHandler;
+    private MapLoader   mapLoader;
     
-    public static Semaphore pauseSemaphore = new Semaphore(1);
-    public static boolean pause = false;
-    
+    public ScoreNinjaAdapter scoreNinjaAdapter;
+
     
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
@@ -99,9 +97,9 @@ public class GameInit extends Activity {
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        Scaler scaler = new Scaler(dm.widthPixels, dm.heightPixels);
         
-        hudHandler = new UIHandler(res);
+        hudHandler = new UIHandler(scaler);
         hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
@@ -109,12 +107,12 @@ public class GameInit extends Activity {
         		hudHandler.getOverlayObjectsToRender(), hudHandler.getUIObjectsToRender());
 
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
-
+        
         
     	// We need this to communicate with our GUI.
         gameLoopGui = new GameLoopGUI(this, hudHandler);
         
-        
+
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
         Bundle extras  = getIntent().getExtras();
@@ -124,6 +122,7 @@ public class GameInit extends Activity {
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         }
+
         
         	// Are we resuming an old saved game?
         int resume = 0;
@@ -158,14 +157,19 @@ public class GameInit extends Activity {
        	if (mapChoice == 0)
        		mapChoice = resumeMap;
         
-        mapLoad = new MapLoader(this,res);
+        mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
-        if (mapChoice == 1) 
-        	gameMap = mapLoad.readLevel("level1");
-        else if (mapChoice == 2)
-        	gameMap = mapLoad.readLevel("level2");
-        else if (mapChoice == 3)
-        	gameMap = mapLoad.readLevel("level3");
+        if (mapChoice == 1) {
+        	gameMap = mapLoader.readLevel("level1");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
+        } else if (mapChoice == 2) {
+        	gameMap = mapLoader.readLevel("level2");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
+        } else if (mapChoice == 3) {
+        	gameMap = mapLoader.readLevel("level3");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+        }
+        
 
         //Define player specific variables depending on difficulty.
         Player p;
@@ -183,11 +187,11 @@ public class GameInit extends Activity {
         }
         
         //Load the creature waves and apply the correct difficulty
-        WaveLoader waveLoad = new WaveLoader(this,res);
+        WaveLoader waveLoad = new WaveLoader(this, scaler);
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
-        TowerLoader towerLoad = new TowerLoader(this,res);
+        TowerLoader towerLoad = new TowerLoader(this, scaler);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
     	// Sending data to GAMELOOP
@@ -195,8 +199,7 @@ public class GameInit extends Activity {
         
         	// Resuming old game? Prepare GameLoop for this...
         if (resume > 0) {
-        	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
-        	gameLoop.resumeSetTowers(resumeTowers);
+        	gameLoop.resume(resume, resumeLevelNumber, resumeTowers);
         }
         
         gameLoopThread = new Thread(gameLoop);
@@ -218,7 +221,7 @@ public class GameInit extends Activity {
     // Unfortunate API, but you must notify ScoreNinja onActivityResult.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      gameLoopGui.getScoreNinjaAdapter().onActivityResult(
+      scoreNinjaAdapter.onActivityResult(
           requestCode, resultCode, data);
     }
 
@@ -292,6 +295,7 @@ public class GameInit extends Activity {
     		editor.commit();
     	}
     }
+    
     
     /** This is the multiplayer part, will move this to the GameLoopGUI as soon as it works */
     /////////////////////////////////////////////////////////////////////////////////////////
