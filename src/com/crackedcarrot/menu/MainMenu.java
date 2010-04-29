@@ -37,15 +37,6 @@ public class MainMenu extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
-    	
-    		// FREDRIK HACK!!!
-    	Log.d("MAINMENU", " *** DEBUG DEBUG DEBUG *** Setting FirstRun to true!");
-        SharedPreferences hack = getSharedPreferences("hack", 0);
-    	SharedPreferences.Editor hackEditor = hack.edit();
-    	hackEditor.putBoolean("FirstRun", true);
-    	hackEditor.commit();
-
-        
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
@@ -61,10 +52,10 @@ public class MainMenu extends Activity {
     	View ResumeWrap = (View) findViewById(R.id.ResumeWrap);
 
         	// See if there's any old game saved that can be resumed.
-        	SharedPreferences settings = getSharedPreferences("Resume", 0);
-        	int resume = settings.getInt("Resume", 0);
+        	SharedPreferences resume = getSharedPreferences("resume", 0);
+        	int resumes = resume.getInt("resumes", 0);
 
-       	if (resume > -1 && resume < 4) {
+       	if (resumes > -1 && resumes < 4) {
 	        ResumeButton.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		//Send the level variable to the game loop and start it

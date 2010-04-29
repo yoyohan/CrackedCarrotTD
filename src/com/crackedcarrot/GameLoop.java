@@ -234,8 +234,8 @@ public class GameLoop implements Runnable {
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
 		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
-		// Reset gamespeed between levels?
-		gameSpeed = 1;
+		// Reset gamespeed between levels? <- NO!
+		//gameSpeed = 1;
     	
 		// Remove healthbar until game begins.
 		gui.sendMessage(gui.GUI_HIDEHEALTHBAR_ID, 0, 0);
@@ -267,7 +267,7 @@ public class GameLoop implements Runnable {
    	
 	    initializeDataStructures();
 
-	    	// Resuming an old game? Rebuild all the old towers and show dialog.
+	    	// Resuming an old game? Rebuild all the old towers.
 	    if (resumeTowers != null) {
 	    	String[] towers = resumeTowers.split("-");
 	    	
@@ -290,14 +290,14 @@ public class GameLoop implements Runnable {
     		int lastTime = (int) player.getTimeUntilNextLevel();
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player is dead.
-    		while(remainingCreaturesALL > 0 && run){
+    		while (remainingCreaturesALL > 0 && run) {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
     			
-				if(pause){
+				if (pause) {
 	    			try { pauseSemaphore.acquire(); }
-	    			catch (InterruptedException e1) {}
+	    			catch (InterruptedException e1) { }
 	    			pauseSemaphore.release();
 				}
     			
@@ -314,7 +314,7 @@ public class GameLoop implements Runnable {
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
-	            	int naptime = (int)(16-timeDelta);
+	            	int naptime = (int) (16 - timeDelta);
 		            try {
 						Thread.sleep(naptime);
 					} catch (InterruptedException e) {
