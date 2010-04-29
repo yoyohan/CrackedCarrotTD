@@ -29,7 +29,7 @@
 					android:layout_width="40dp" 
 		    		android:layout_height="60dp"
 		    		android:layout_gravity="center"
-					android:background="@drawable/arrow_left" >
+					android:background="@drawable/xml_button_game_back" >
 				</Button>
 			</TableRow>
 					
