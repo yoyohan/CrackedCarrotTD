@@ -32,7 +32,7 @@ public class MainMenu extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.mainmenu);
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

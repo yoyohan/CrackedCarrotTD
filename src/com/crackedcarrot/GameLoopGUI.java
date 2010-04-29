@@ -42,6 +42,7 @@ public class GameLoopGUI {
 	private Dialog dialog = null;
 	
 	private Dialog dialogNextLevel = null;
+	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
 	
     private int          healthBarState = 3;
@@ -68,6 +69,7 @@ public class GameLoopGUI {
     final int DIALOG_HIGHSCORE_ID   = 4;
     final int DIALOG_QUIT_ID        = 5;
     final int DIALOG_RESUMESLEFT_ID = 6;
+    final int DIALOG_PAUSE_ID       = 7;
     
     final int GUI_PLAYERMONEY_ID     = 10;
     final int GUI_PLAYERHEALTH_ID    = 11;
@@ -102,10 +104,7 @@ public class GameLoopGUI {
         tower2Information = (Button) gameInit.findViewById(R.id.t2info);
         tower2Information.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		try {
-    	    		gameInit.gameLoop.pauseSemaphore.acquire();
-    	    		gameInit.gameLoop.pause = true;
-    			} catch (InterruptedException e1) {}
+   	    		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
         		gameInit.startActivity(ShowInstr);
@@ -257,10 +256,7 @@ public class GameLoopGUI {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		try {
-    	    		gameInit.gameLoop.pauseSemaphore.acquire();
-    	    		gameInit.gameLoop.pause = true;
-    			} catch (InterruptedException e1) {}
+        		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
         	}
@@ -271,13 +267,12 @@ public class GameLoopGUI {
         pauseButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		try {
-    	    		gameInit.gameLoop.pauseSemaphore.acquire();
-    	    		gameInit.gameLoop.pause = true;
-    			} catch (InterruptedException e1) {}
-        		gameInit.onPause();
+        		gameInit.gameLoop.pause();
+    			Log.d("GAMELOOPGUI", "denna koden skall ALDRIG köras? anropar System.exit(0) nu. bananapa");
+    			System.exit(0);
+        		/* gameInit.onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
-        		gameInit.startActivity(ShowInstr);
+        		gameInit.startActivity(ShowInstr); */
         	}
         });
 
@@ -311,13 +306,8 @@ public class GameLoopGUI {
     		else
     			gameInit.gameLoop.soundManager.playSound = true;
     	} else if (item.getTitle().toString().startsWith("Pause")) {
-    		try {
-	    		GameLoop.pauseSemaphore.acquire();
-	    		GameLoop.pause = true;
-			} catch (InterruptedException e1) {}
-    		gameInit.onPause();
-    		Intent ShowInstr = new Intent(gameInit, PauseView.class);
-    		gameInit.startActivity(ShowInstr);
+    		gameInit.gameLoop.pause();
+			gameInit.showDialog(this.DIALOG_PAUSE_ID);
     	} else if (item.getTitle().toString().startsWith("Quit")) {
     			// User clicked Quit.
     			// Doesnt save or prompt or anything, this just quits.
@@ -346,10 +336,7 @@ public class GameLoopGUI {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
-	        		try {
-	    	    		GameLoop.pauseSemaphore.acquire();
-	    	    		GameLoop.pause = true;
-	    			} catch (InterruptedException e1) {}
+	        		gameInit.gameLoop.pause();
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
 	        	}
@@ -456,6 +443,30 @@ public class GameLoopGUI {
 	        	}
 	        });
 	    	break;
+	    	
+	    case DIALOG_PAUSE_ID:
+	    	dialogPause = new Dialog(gameInit);
+	        dialogPause.setContentView(R.layout.levelpause);
+	    	dialogPause.setCancelable(true);
+	    	
+	    	// Continue button
+	    	Button buttonPauseContinue = (Button) dialogPause.findViewById(R.id.LevelPause_Continue);
+	    	buttonPauseContinue.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    				dialogPause.dismiss();
+	    			}
+	    		});
+	        
+	    	// Dismiss-listener
+	    	dialogPause.setOnDismissListener(
+	    		new DialogInterface.OnDismissListener() {
+					public void onDismiss(DialogInterface dialog) {
+						gameInit.gameLoop.unPause();
+					}
+	    		});
+
+	    	return dialogPause;
 
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);

@@ -32,7 +32,7 @@ public class GameLoop implements Runnable {
     private long mLastTime;
     
     private int    resumes;
-    private String resumeTowers = null;
+    private String resumeTowers = "";
 
     private float startCreatureHealth;
     private float currentCreatureHealth;
@@ -52,9 +52,8 @@ public class GameLoop implements Runnable {
     
     private int progressbarLastSent = 0;
     
-    	// These need to be static so PauseView can reach them.
-    public static boolean   pause = false;
-    public static Semaphore pauseSemaphore = new Semaphore(1);
+    private boolean   pause = false;
+    private Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -268,7 +267,7 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
-	    if (resumeTowers != null) {
+	    if (resumeTowers != "") {
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
@@ -279,6 +278,8 @@ public class GameLoop implements Runnable {
 	    	}
 
 	    }
+	    
+	    gameSpeed = 1;
         
 	    while(run){
 	    	
@@ -608,6 +609,17 @@ public class GameLoop implements Runnable {
 	public void destroyTowerInGrid(int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void pause() {
+		try { pauseSemaphore.acquire(); }
+		catch (InterruptedException e) { e.printStackTrace(); }
+		pause = true;
+	}
+	
+	public void unPause() {
+		pause = false;
+		pauseSemaphore.release();
 	}
 
 }

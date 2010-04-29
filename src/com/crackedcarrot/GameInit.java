@@ -69,6 +69,11 @@ public class GameInit extends Activity {
     		Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
     		showDialog(gameLoopGui.DIALOG_QUIT_ID);
     		return true;
+       	} else if (keyCode == KeyEvent.KEYCODE_MENU) {
+       		Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
+       		gameLoop.pause();
+       		showDialog(gameLoopGui.DIALOG_PAUSE_ID);
+       		return true;
        	}
     	return super.onKeyDown(keyCode, event);
     } 
