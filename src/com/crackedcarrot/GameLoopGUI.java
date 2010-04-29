@@ -42,10 +42,12 @@ public class GameLoopGUI {
 	private Dialog dialog = null;
 	
 	private Dialog dialogNextLevel = null;
+	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
+    private int          resume;
     private Drawable     healthBarDrawable;
     private ExpandMenu   expandMenu = null;
     private ImageView    enImView;
@@ -59,7 +61,6 @@ public class GameLoopGUI {
     // Used when we ask for the instruction view
     private int 		currentSelectedTower;
 	
-    private ScoreNinjaAdapter scoreNinjaAdapter;
     
     	// For readability-reasons.
     final int DIALOG_NEXTLEVEL_ID   = 1;
@@ -68,6 +69,7 @@ public class GameLoopGUI {
     final int DIALOG_HIGHSCORE_ID   = 4;
     final int DIALOG_QUIT_ID        = 5;
     final int DIALOG_RESUMESLEFT_ID = 6;
+    final int DIALOG_PAUSE_ID       = 7;
     
     final int GUI_PLAYERMONEY_ID     = 10;
     final int GUI_PLAYERHEALTH_ID    = 11;
@@ -102,18 +104,13 @@ public class GameLoopGUI {
         tower2Information = (Button) gameInit.findViewById(R.id.t2info);
         tower2Information.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
-    			} catch (InterruptedException e1) {}
+   	    		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
         		gameInit.startActivity(ShowInstr);
         	}
         });
         
-        // Register on ScoreNinja.
-        scoreNinjaAdapter = new ScoreNinjaAdapter(gi, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
@@ -259,10 +256,7 @@ public class GameLoopGUI {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
-    			} catch (InterruptedException e1) {}
+        		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
         	}
@@ -273,13 +267,12 @@ public class GameLoopGUI {
         pauseButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		try {
-    	    		GameInit.pauseSemaphore.acquire();
-    	    		GameInit.pause = true;
-    			} catch (InterruptedException e1) {}
-        		gameInit.onPause();
+        		gameInit.gameLoop.pause();
+    			Log.d("GAMELOOPGUI", "denna koden skall ALDRIG köras? anropar System.exit(0) nu. bananapa");
+    			System.exit(0);
+        		/* gameInit.onPause();
         		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
-        		gameInit.startActivity(ShowInstr);
+        		gameInit.startActivity(ShowInstr); */
         	}
         });
 
@@ -292,10 +285,8 @@ public class GameLoopGUI {
     	
     	MenuItem pause = menu.add(0, Menu.NONE, 0, "Pause");
     	pause.setIcon(R.drawable.button_pause_48);
-    	
-        MenuItem quit = menu.add(0, Menu.NONE, 0, "Quit");
-        quit.setIcon(R.drawable.button_quit);
-        return true;
+
+    	return true;
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -315,13 +306,8 @@ public class GameLoopGUI {
     		else
     			gameInit.gameLoop.soundManager.playSound = true;
     	} else if (item.getTitle().toString().startsWith("Pause")) {
-    		try {
-	    		GameInit.pauseSemaphore.acquire();
-	    		GameInit.pause = true;
-			} catch (InterruptedException e1) {}
-    		gameInit.onPause();
-    		Intent ShowInstr = new Intent(gameInit, PauseView.class);
-    		gameInit.startActivity(ShowInstr);
+    		gameInit.gameLoop.pause();
+			gameInit.showDialog(this.DIALOG_PAUSE_ID);
     	} else if (item.getTitle().toString().startsWith("Quit")) {
     			// User clicked Quit.
     			// Doesnt save or prompt or anything, this just quits.
@@ -340,6 +326,9 @@ public class GameLoopGUI {
 	 *  
 	 */
 	protected Dialog onCreateDialog(int id) {
+		
+		WindowManager.LayoutParams lp;
+		
 	    switch(id) {
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -350,10 +339,7 @@ public class GameLoopGUI {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
-	        		try {
-	    	    		GameInit.pauseSemaphore.acquire();
-	    	    		GameInit.pause = true;
-	    			} catch (InterruptedException e1) {}
+	        		gameInit.gameLoop.pause();
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
 	        	}
@@ -436,7 +422,7 @@ public class GameLoopGUI {
 	          // This is kinda cool, it makes the view behind the dialog blurred
 	          // instead of faded out.
 	          // TODO: Check on phone how this works, lags the game on emulator...
-	        WindowManager.LayoutParams lp = dialogQuit.getWindow().getAttributes();
+	        lp = dialogQuit.getWindow().getAttributes();
 	        dialogQuit.getWindow().setAttributes(lp);
 	        dialogQuit.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 	        //dialogQuit.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
@@ -452,7 +438,7 @@ public class GameLoopGUI {
 	    	// First button
 	    	Button button = (Button) dialog.findViewById(R.id.LevelResume_OK);
 	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
-	    		// TODO: we need a correct counter on this.
+	    	textView.setText("You have " + (3 - resume) + " resume(s) left.");
 	        button.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
@@ -460,6 +446,55 @@ public class GameLoopGUI {
 	        	}
 	        });
 	    	break;
+	    	
+	    case DIALOG_PAUSE_ID:
+	    	dialogPause = new Dialog(gameInit, R.style.InGameMenu);
+	        dialogPause.setContentView(R.layout.levelpause);
+	    	dialogPause.setCancelable(true);
+	    	
+	    	// Continue button
+	    	Button buttonPauseContinue = (Button) dialogPause.findViewById(R.id.LevelPause_Continue);
+	    	buttonPauseContinue.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    				dialogPause.dismiss();
+	    			}
+	    		});
+	    	
+	    	// Help button
+	    	Button buttonPauseHelp = (Button) dialogPause.findViewById(R.id.LevelPause_Help);
+	    	buttonPauseHelp.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    	       		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
+	            		gameInit.startActivity(ShowInstr);
+	    			}
+	    		});
+	    	
+	    	// Quit button
+	    	Button buttonPauseQuit = (Button) dialogPause.findViewById(R.id.LevelPause_Quit);
+	    	buttonPauseQuit.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    	       		gameInit.showDialog(DIALOG_QUIT_ID);
+	    			}
+	    		});
+	        
+	    	// Dismiss-listener
+	    	dialogPause.setOnDismissListener(
+	    		new DialogInterface.OnDismissListener() {
+					public void onDismiss(DialogInterface dialog) {
+						gameInit.gameLoop.unPause();
+					}
+	    		});
+	    	
+	    		// Makes the background of the dialog blurred.
+	        lp = dialogPause.getWindow().getAttributes();
+	        dialogPause.getWindow().setAttributes(lp);
+	        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+
+	    	return dialogPause;
 
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
@@ -571,10 +606,18 @@ public class GameLoopGUI {
 	
 	    @Override
 	    public void handleMessage(Message msg) {
-	
+
+	    		// TODO: having this here is a fucking stupid idea.
+	    	SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
+	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        		 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
+	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
+	        	     } else {
+	        	    	 	// Simulate clicking the dialog.
+	        	    	 gameInit.gameLoop.dialogClick();
+	        	     }
 	        		 break;
 	        	 case DIALOG_WON_ID:
 	        		 gameInit.showDialog(DIALOG_WON_ID);
@@ -583,13 +626,13 @@ public class GameLoopGUI {
 	        		 gameInit.showDialog(DIALOG_LOST_ID);
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
-	        	     SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings.getBoolean("optionsHighscore", false)) {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
-	        	    	 scoreNinjaAdapter.show(msg.arg1);
+	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
 	        	 case DIALOG_RESUMESLEFT_ID:
+	        		 resume = msg.arg1;
 	        		 gameInit.showDialog(DIALOG_RESUMESLEFT_ID);
 	        		 break;
 	        		 
@@ -667,11 +710,6 @@ public class GameLoopGUI {
 	        }
 	    }
 	};
-	
-	public ScoreNinjaAdapter getScoreNinjaAdapter() {
-		return this.scoreNinjaAdapter;
-	}
-	
 	
 	protected void sendMessage(int i, int j, int k) {
 		// TODO: remove this when done debugging msgs.
