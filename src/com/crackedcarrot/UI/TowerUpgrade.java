@@ -8,11 +8,10 @@ import com.crackedcarrot.Sprite;
 import com.crackedcarrot.menu.R;
 
 public class TowerUpgrade{
-	private UIBackground background;
-	private UIButton	 upgradeLeft;
-	private UIButton	 upgradeRight;
-	private UIButton	 info;
-	private UIButton     destroyTower;
+	private Sprite background;
+	private Sprite upgradeLeft;
+	private Sprite upgradeRight;
+	private Sprite destroyTower;
 
 	private long startTime;
 	private long currentTime;
@@ -22,12 +21,56 @@ public class TowerUpgrade{
 	private HideUI hideRunner;
 	
 	public TowerUpgrade(Scaler s){
-		background = new UIBackground(s);
-		upgradeLeft = new UIButton(s,R.drawable.tower1);
-		upgradeRight = new UIButton(s, R.drawable.tower1);
-		info = new UIButton(s, R.drawable.bunny_pink_dead);
-		destroyTower = new UIButton(s, R.drawable.destroy_tower);
+		background   = new Sprite(R.drawable.upgrade_ui_background, Sprite.UI, 0);
+		background.x = 0; background.y = 0; background.z = 0;
+		Coords co = s.scale(256, 256);
+		background.setWidth(co.getX());
+        background.setHeight(co.getY());
+        background.draw = false;
+        
+        background.r = 0.0f;
+        background.g = 0.0f;
+        background.b = 0.0f;
+        background.opacity = 0.0f;
 		
+		upgradeLeft  = new Sprite(R.drawable.tower1, Sprite.UI, 1);
+		upgradeLeft.x = 0; upgradeLeft.y = 0; upgradeLeft.z = 0;
+		co = s.scale(60, 60);
+		upgradeLeft.setWidth(co.getX());
+		upgradeLeft.setHeight(co.getY());
+		upgradeLeft.draw = false;
+        
+		upgradeLeft.r = 1.0f;
+		upgradeLeft.g = 1.0f;
+		upgradeLeft.b = 1.0f;
+		upgradeLeft.opacity = 0.0f;
+        
+		
+		upgradeRight = new Sprite(R.drawable.tower1, Sprite.UI, 1);
+		upgradeRight.x = 0; upgradeRight.y = 0; upgradeRight.z = 0;
+		co = s.scale(60, 60);
+		upgradeRight.setWidth(co.getX());
+		upgradeRight.setHeight(co.getY());
+		upgradeRight.draw = false;
+        
+		upgradeRight.r = 1.0f;
+		upgradeRight.g = 1.0f;
+		upgradeRight.b = 1.0f;
+		upgradeRight.opacity = 0.0f;
+		
+		
+		destroyTower = new Sprite(R.drawable.bunny_pink_dead, Sprite.UI, 1);
+		destroyTower.x = 0; destroyTower.y = 0; destroyTower.z = 0;
+		co = s.scale(60, 60);
+		destroyTower.setWidth(co.getX());
+		destroyTower.setHeight(co.getY());
+		destroyTower.draw = false;
+        
+		destroyTower.r = 1.0f;
+		destroyTower.g = 1.0f;
+		destroyTower.b = 1.0f;
+		destroyTower.opacity = 0.0f;
+				
 		showRunner = new ShowUI();
 		hideRunner = new HideUI();
 		
@@ -39,22 +82,6 @@ public class TowerUpgrade{
 	
 	public HideUI getHideRunner(){
 		return hideRunner;
-	}
-	
-	private class UIBackground extends Sprite{
-		public UIBackground(Scaler s){
-			super(R.drawable.upgrade_ui_background, UI, 0);
-			this.x = 0; this.y = 0; this.z = 0;
-			Coords co = s.scale(256, 256);
-			this.setWidth(co.getX());
-	        this.setHeight(co.getY());
-	        this.draw = false;
-	        
-	        this.r = 0.0f;
-	        this.g = 0.0f;
-	        this.b = 0.0f;
-	        this.opacity = 0.0f;
-		}
 	}
 	
 	private class UIButton extends Sprite{
@@ -74,12 +101,11 @@ public class TowerUpgrade{
 	}
 	
 	public Sprite[] getUISpritesToRender(){
-		Sprite[] rArray = new Sprite[5];
+		Sprite[] rArray = new Sprite[4];
 		rArray[0] = background;
 		rArray[1] = upgradeLeft;
 		rArray[2] = upgradeRight;
-		rArray[3] = info;
-		rArray[4] = destroyTower;
+		rArray[3] = destroyTower;
 
 		return rArray;
 	}
@@ -93,9 +119,6 @@ public class TowerUpgrade{
 		
 		upgradeRight.x = background.x + background.getWidth() / 2;
 		upgradeRight.y = background.y + background.getHeight() / 2;
-		
-		info.x = background.x;
-		info.y = background.y;
 		
 		destroyTower.x = background.x + background.getWidth() / 2;
 		destroyTower.y = background.y;
@@ -117,10 +140,7 @@ public class TowerUpgrade{
 			
 			upgradeRight.draw = true;
 			upgradeRight.opacity = 0.0f;
-			
-			info.draw = true;
-			info.opacity = 0.0f;
-			
+					
 			destroyTower.draw = true;
 			destroyTower.opacity = 0.0f;
 
@@ -132,7 +152,6 @@ public class TowerUpgrade{
 					background.opacity += 0.1f;
 					upgradeLeft.opacity += 0.1f;
 					upgradeRight.opacity += 0.1f;
-					info.opacity += 0.1f;
 					destroyTower.opacity += 0.1f;
 
 					lastUpdateTime = currentTime;
@@ -144,7 +163,6 @@ public class TowerUpgrade{
 			background.opacity = 1.0f;
 			upgradeLeft.opacity = 1.0f;
 			upgradeRight.opacity = 1.0f;
-			info.opacity = 1.0f;
 			destroyTower.opacity = 1.0f;
 		}
 	}
@@ -163,7 +181,6 @@ public class TowerUpgrade{
 					background.opacity -= 0.1f;
 					upgradeLeft.opacity -= 0.1f;
 					upgradeRight.opacity -= 0.1f;
-					info.opacity -= 0.1f;
 					destroyTower.opacity -= 0.1f;
 
 					lastUpdateTime = currentTime;
@@ -175,13 +192,11 @@ public class TowerUpgrade{
 			background.opacity = 0.0f;
 			upgradeLeft.opacity = 0.0f;
 			upgradeRight.opacity = 0.0f;
-			info.opacity = 0.0f;
 			destroyTower.opacity = 0.0f;
 			
 			background.draw = false;
 			upgradeLeft.draw = false;
 			upgradeRight.draw = false;			
-			info.draw = false;
 			destroyTower.draw = false;
 
 		}
@@ -197,11 +212,6 @@ public class TowerUpgrade{
 		
 		return x >= upgradeRight.x && x <= upgradeRight.x + upgradeRight.getWidth() &&
 		       y >= upgradeRight.y && y <= upgradeRight.y + upgradeRight.getHeight();
-	}
-
-	public boolean infoClicked(int x, int y) {
-		return x >= info.x && x <= info.x + info.getWidth() &&
-		       y >= info.y && y <= info.y + info.getHeight();
 	}
 
 	public boolean destroyClicked(int x, int y) {
