@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -12,18 +14,29 @@ import android.widget.Button;
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.multiplayer.*;
 
-
 public class MainMenu extends Activity {
+	
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		Log.d("MAINMENU", "onKeyDown KEYCODE_BACK");
+    		Log.d("MAINMENU", "Calling System.exit(0)");
+    		System.exit(0);
+    		return true;
+       	}
+    	return super.onKeyDown(keyCode, event);
+    } 
+
 
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.mainmenu);
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+    	
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
@@ -39,10 +52,10 @@ public class MainMenu extends Activity {
     	View ResumeWrap = (View) findViewById(R.id.ResumeWrap);
 
         	// See if there's any old game saved that can be resumed.
-        	SharedPreferences settings = getSharedPreferences("Resume", 0);
-        	int resume = settings.getInt("Resume", 0);
+        	SharedPreferences resume = getSharedPreferences("resume", 0);
+        	int resumes = resume.getInt("resumes", 0);
 
-       	if (resume > -1 && resume < 4) {
+       	if (resumes > -1 && resumes < 3) {
 	        ResumeButton.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		//Send the level variable to the game loop and start it

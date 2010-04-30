@@ -170,7 +170,7 @@ public class MapOp extends Activity implements ViewFactory {
 
 	public View makeView() {
         ImageView imageView = new ImageView(this);
-        imageView.setBackgroundResource(R.drawable.gallery);
+        imageView.setBackgroundResource(R.drawable.xml_gallery);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new 
                 ImageSwitcher.LayoutParams(
@@ -241,7 +241,7 @@ public class MapOp extends Activity implements ViewFactory {
             imageView.setImageResource(mmaps[this.position]);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setLayoutParams(new Gallery.LayoutParams(x,y));
-            imageView.setBackgroundResource(R.drawable.gallery);
+            imageView.setBackgroundResource(R.drawable.xml_gallery);
             return imageView;
         }
    }

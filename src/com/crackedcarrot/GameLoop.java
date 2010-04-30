@@ -31,8 +31,8 @@ public class GameLoop implements Runnable {
     
     protected long mLastTime;
     
-    	// TODO: Maybe we can remove this string thingie-completely...?
-    private String resumeTowers = null;
+    private int    resumes;
+    private String resumeTowers = "";
 
     protected float startCreatureHealth;
     protected float currentCreatureHealth;
@@ -51,6 +51,9 @@ public class GameLoop implements Runnable {
     protected Tower[]    mTTypes;
     
     public int progressbarLastSent = 0;
+    
+    private boolean   pause = false;
+    private Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -197,13 +200,15 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the creature image
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
+			// Show resumes-left dialog.
+	    	if (resumes > 0) {
+	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resumes, 0);
+	    		resumes = 0;
+	    		waitForDialogClick();
+	    	}
+		
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
-    	try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
 		
     	// This is a good time to save the current progress of the game.
@@ -228,8 +233,8 @@ public class GameLoop implements Runnable {
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
 		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
-		// Reset gamespeed between levels?
-		gameSpeed = 1;
+		// Reset gamespeed between levels? <- NO!
+		//gameSpeed = 1;
     	
 		// Remove healthbar until game begins.
 		gui.sendMessage(gui.GUI_HIDEHEALTHBAR_ID, 0, 0);
@@ -243,12 +248,7 @@ public class GameLoop implements Runnable {
 		gui.sendMessage(gui.GUI_SHOWSTATUSBAR_ID, 0, 0);
 		
 		// Code to wait for the user to click ok on NextLevel-dialog.
-		try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		dialogSemaphore.release();
+		waitForDialogClick();
 
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
@@ -267,7 +267,7 @@ public class GameLoop implements Runnable {
 	    initializeDataStructures();
 
 	    	// Resuming an old game? Rebuild all the old towers.
-	    if ((resumeTowers != null) && (resumeTowers.compareTo("") != 0)) {
+	    if (resumeTowers != "") {
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
@@ -276,32 +276,37 @@ public class GameLoop implements Runnable {
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
+
 	    }
 	    
+<<<<<<< HEAD
 	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
 
+=======
+	    gameSpeed = 1;
+        
+>>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
     		//OR they will be infinitely small.
     		initializeLvl();
-
+    		
     		// This is used to know when the time has changed or not
     		int lastTime = (int) player.getTimeUntilNextLevel();
 
     		// The LEVEL loop. Will run until all creatures are dead or done or player is dead.
-    		while(remainingCreaturesALL > 0 && run){
+    		while (remainingCreaturesALL > 0 && run) {
     			
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
     			
-				if(GameInit.pause){
-	    			try {
-	    	    		GameInit.pauseSemaphore.acquire();
-	    			} catch (InterruptedException e1) {}
-	    			GameInit.pauseSemaphore.release();
+				if (pause) {
+	    			try { pauseSemaphore.acquire(); }
+	    			catch (InterruptedException e1) { }
+	    			pauseSemaphore.release();
 				}
     			
     			//Get the time after an eventual pause and add this to the mLastTime variable
@@ -317,7 +322,7 @@ public class GameLoop implements Runnable {
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
-	            	int naptime = (int)(16-timeDelta);
+	            	int naptime = (int) (16 - timeDelta);
 		            try {
 						Thread.sleep(naptime);
 					} catch (InterruptedException e) {
@@ -381,18 +386,7 @@ public class GameLoop implements Runnable {
             	gui.sendMessage(-2, 2, 0);
             	
         		// Code to wait for the user to click ok on YouLost-dialog.
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		dialogSemaphore.release();
+        		waitForDialogClick();
 
             	run = false;
         	} 
@@ -417,18 +411,7 @@ public class GameLoop implements Runnable {
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		dialogSemaphore.release();
+            		waitForDialogClick();
 
         			run = false;
         		}
@@ -543,6 +526,22 @@ public class GameLoop implements Runnable {
     	dialogSemaphore.release();
     }
     
+    private void waitForDialogClick() {
+		// Code to wait for the user to click ok on a dialog.
+		try {
+			dialogSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			dialogSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		dialogSemaphore.release();
+    }
+    
     public Level getLevelData() {
     	return mLvl[lvlNbr];
     }
@@ -553,10 +552,6 @@ public class GameLoop implements Runnable {
     	return lvlNbr;
     }
     
-    public void resumeSetLevelNumber(int i) {
-    	this.lvlNbr = i;
-    }
-
     	// This is used by the savegame-function to remember all the towers.
     	// TODO: We need to get the correct "version" of the tower too, e.g.
     	// any upgrades purchased, etc....
@@ -572,8 +567,10 @@ public class GameLoop implements Runnable {
     	return s;
     }
     
-    public void resumeSetTowers(String s) {
-    	this.resumeTowers = s;
+    public void resume(int resumes, int level, String towers) {
+    	this.resumes = resumes;
+    	this.lvlNbr = level;
+    	this.resumeTowers = towers;
     }
     
 	public void setGameSpeed(int i) {
@@ -619,6 +616,17 @@ public class GameLoop implements Runnable {
 	public void destroyTowerInGrid(int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void pause() {
+		try { pauseSemaphore.acquire(); }
+		catch (InterruptedException e) { e.printStackTrace(); }
+		pause = true;
+	}
+	
+	public void unPause() {
+		pause = false;
+		pauseSemaphore.release();
 	}
 
 }

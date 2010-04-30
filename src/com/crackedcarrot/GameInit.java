@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothSocket;
@@ -29,20 +27,19 @@ import com.crackedcarrot.menu.R;
 import com.crackedcarrot.multiplayer.MultiplayerGameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 
 	public GameLoop     gameLoop;
     public SurfaceView  mGLSurfaceView;
+
 	private GameLoopGUI gameLoopGui;
-    private UIHandler  hudHandler;
-    
     private Thread      gameLoopThread;
-    private MapLoader   mapLoad;
+    private UIHandler   hudHandler;
+    private MapLoader   mapLoader;
     
-    public static Semaphore pauseSemaphore = new Semaphore(1);
-    public static boolean pause = false;
-    
+<<<<<<< HEAD
     ///////////////// Multiplayer ////////////////////////////
     private MultiplayerService mMultiplayerService;
     private static BluetoothSocket multiplayerSocket = null;
@@ -51,6 +48,10 @@ public class GameInit extends Activity {
         multiplayerSocket = socket;
     }
     //////////////////////////////////////////////////////////
+=======
+    public ScoreNinjaAdapter scoreNinjaAdapter;
+
+>>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
     
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
@@ -80,6 +81,11 @@ public class GameInit extends Activity {
     		Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
     		showDialog(gameLoopGui.DIALOG_QUIT_ID);
     		return true;
+       	} else if (keyCode == KeyEvent.KEYCODE_MENU) {
+       		Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
+       		gameLoop.pause();
+       		showDialog(gameLoopGui.DIALOG_PAUSE_ID);
+       		return true;
        	}
     	return super.onKeyDown(keyCode, event);
     } 
@@ -108,9 +114,9 @@ public class GameInit extends Activity {
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Scaler res= new Scaler(dm.widthPixels, dm.heightPixels);
+        Scaler scaler = new Scaler(dm.widthPixels, dm.heightPixels);
         
-        hudHandler = new UIHandler(res);
+        hudHandler = new UIHandler(scaler);
         hudHandler.start();
         
         NativeRender nativeRenderer = new NativeRender(this, 
@@ -118,12 +124,12 @@ public class GameInit extends Activity {
         		hudHandler.getOverlayObjectsToRender(), hudHandler.getUIObjectsToRender());
 
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
-
+        
         
     	// We need this to communicate with our GUI.
         gameLoopGui = new GameLoopGUI(this, hudHandler);
         
-        
+
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
         Bundle extras  = getIntent().getExtras();
@@ -135,48 +141,45 @@ public class GameInit extends Activity {
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         	reference = extras.getInt("com.crackedcarrot.classreference");
         }
+
         
         	// Are we resuming an old saved game?
-        int resume = 0;
-        int resumeLevelNumber = 0;
-        int resumeMap = 0;
-        int resumePlayerDifficulty = 0;
-        int resumePlayerHealth = 0;
-        int resumePlayerMoney = 0;
-        String resumeTowers = null;
+        SharedPreferences resume = getSharedPreferences("resume", 0);
+        int               resumes = 0;
         if (mapChoice == 0) {
-            // Restore saved preferences
-            SharedPreferences settings = getSharedPreferences("Resume", 0);
-            resume                 = settings.getInt("Resume", 0) + 1;
-            resumeLevelNumber      = settings.getInt("LevelNumber", 0);
-            resumeMap              = settings.getInt("Map", 0);
-            resumePlayerDifficulty = settings.getInt("PlayerDifficulty", 0);
-            resumePlayerHealth     = settings.getInt("PlayerHealth", 0);
-            resumePlayerMoney      = settings.getInt("PlayerMoney", 0);
-            resumeTowers           = settings.getString("Towers", "");
+        		// Increase the resumes-counter, keep people from cheating.
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
+    		editor.commit();
+    		resumes = resume.getInt("resumes", 0);
         } else {
-        		// We are not resuming anything, clear the old flag(s). Prepare for a new Save.
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", -1);
-    		editor.putInt("Map", mapChoice);
+        		// We are not resuming anything, clear the old flag(s) and
+        		// prepare for a new save. Saves the chosen map directly.
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("map", mapChoice);
+    		editor.putInt("resumes", 0);
     		editor.commit();
         }
         
         // Create the map requested by the player
 
        	// resume needs to load the correct map aswell.
-       	if (mapChoice == 0)
-       		mapChoice = resumeMap;
+       	if (resumes > 0)
+       		mapChoice = resume.getInt("map", 0);
         
-        mapLoad = new MapLoader(this,res);
+        mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
-        if (mapChoice == 1) 
-        	gameMap = mapLoad.readLevel("level1");
-        else if (mapChoice == 2)
-        	gameMap = mapLoad.readLevel("level2");
-        else if (mapChoice == 3)
-        	gameMap = mapLoad.readLevel("level3");
+        if (mapChoice == 1) {
+        	gameMap = mapLoader.readLevel("level1");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
+        } else if (mapChoice == 2) {
+        	gameMap = mapLoader.readLevel("level2");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
+        } else if (mapChoice == 3) {
+        	gameMap = mapLoader.readLevel("level3");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+        }
+        
 
         //Define player specific variables depending on difficulty.
         Player p;
@@ -190,15 +193,15 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 40, 100, 10);
         }
         else { // resume.
-        	p = new Player(resumePlayerDifficulty, resumePlayerHealth, resumePlayerMoney, 10);
+        	p = new Player(resume.getInt("difficulty", 0), resume.getInt("health", 0), resume.getInt("money", 0), 10);
         }
         
         //Load the creature waves and apply the correct difficulty
-        WaveLoader waveLoad = new WaveLoader(this,res);
+        WaveLoader waveLoad = new WaveLoader(this, scaler);
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
-        TowerLoader towerLoad = new TowerLoader(this,res);
+        TowerLoader towerLoad = new TowerLoader(this, scaler);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
         if(multiplayerSocket != null){
@@ -211,11 +214,17 @@ public class GameInit extends Activity {
             		gameLoopGui,new SoundManager(getBaseContext()));
     	}
         
+<<<<<<< HEAD
 
         // Resuming old game. Prepare GameLoop for this...
         if (resume > 0) {
         	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
         	gameLoop.resumeSetTowers(resumeTowers);
+=======
+        	// Resuming old game? Prepare GameLoop for this...
+        if (resumes > 0) {
+        	gameLoop.resume(resumes, resume.getInt("level", 0), resume.getString("towers", null));
+>>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
         }
         
         gameLoopThread = new Thread(gameLoop);
@@ -237,7 +246,7 @@ public class GameInit extends Activity {
     // Unfortunate API, but you must notify ScoreNinja onActivityResult.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      gameLoopGui.getScoreNinjaAdapter().onActivityResult(
+      scoreNinjaAdapter.onActivityResult(
           requestCode, resultCode, data);
     }
 
@@ -291,24 +300,71 @@ public class GameInit extends Activity {
     	
     	if (i == 1) {
     			// Save everything.
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
-    			// Increase the counter of # of resumes the player has used.
-    		editor.putInt("Resume", settings.getInt("Resume", 0) + 1);
-    		editor.putInt("LevelNumber", gameLoop.getLevelNumber());
-    		//editor.putInt("Map",... <- this is saved above, at the if (mapChoice == 0) check.
-    		// this comment added to keep people from going nuts looking for it.
-    		editor.putInt("PlayerDifficulty", gameLoop.getPlayerData().getDifficulty());
-    		editor.putInt("PlayerHealth", gameLoop.getPlayerData().getHealth());
-    		editor.putInt("PlayerMoney", gameLoop.getPlayerData().getMoney());
-    		editor.putString("Towers", gameLoop.resumeGetTowers());
+    		SharedPreferences resume = getSharedPreferences("resume", 0);
+    		SharedPreferences.Editor editor = resume.edit();
+    		//editor.putInt("map",... <- this is saved above, at the if (mapChoice == 0) check.
+    		editor.putInt("difficulty", gameLoop.getPlayerData().getDifficulty());
+    		editor.putInt("health", gameLoop.getPlayerData().getHealth());
+    		editor.putInt("level", gameLoop.getLevelNumber());
+    		editor.putInt("money", gameLoop.getPlayerData().getMoney());
+    		editor.putInt("resumes", resume.getInt("resumes", 0));
+    		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
     	} else {
     			// Dont allow resume. Clears the main resume flag!
-    		SharedPreferences settings = getSharedPreferences("Resume", 0);
-    		SharedPreferences.Editor editor = settings.edit();
-    		editor.putInt("Resume", -1);
+    		SharedPreferences resume = getSharedPreferences("resume", 0);
+    		SharedPreferences.Editor editor = resume.edit();
+    		editor.putInt("resumes", -1);
     		editor.commit();
     	}
+<<<<<<< HEAD
     }   
+=======
+    }
+    
+    
+    /** This is the multiplayer part, will move this to the GameLoopGUI as soon as it works */
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+    
+    private MultiplayerService mMultiplayerService;
+    
+    // Message types sent from the MultiplayerService Handler
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_WRITE = 2;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final int MESSAGE_TOAST = 4;
+    
+    // The Handler that gets information back from the MultiplayerService
+    private final Handler mMultiPlayerHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_WRITE:
+                byte[] writeBuf = (byte[]) msg.obj;
+                // construct a string from the buffer
+                String writeMessage = new String(writeBuf);
+                //mConversationArrayAdapter.add("Me:  " + writeMessage);
+                break;
+            case MESSAGE_READ:
+                byte[] readBuf = (byte[]) msg.obj;
+                // construct a string from the valid bytes in the buffer
+                String readMessage = new String(readBuf, 0, msg.arg1);
+                //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
+                break;
+            case MESSAGE_DEVICE_NAME:
+                // save the connected device's name
+                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                //Toast.makeText(getApplicationContext(), "Connected to "
+                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                break;
+            case MESSAGE_TOAST:
+                Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
+                               Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+    };
+    
+>>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
 }
