@@ -177,11 +177,11 @@ public class MultiplayerGameLoop extends GameLoop {
     			
 				final long time = SystemClock.uptimeMillis();
 
-				if(GameInit.pause){
+				if(pause){
 	    			try {
-	    	    		GameInit.pauseSemaphore.acquire();
+	    	    		pauseSemaphore.acquire();
 	    			} catch (InterruptedException e1) {}
-	    			GameInit.pauseSemaphore.release();
+	    			pauseSemaphore.release();
 				}
     			
 				//Get the time after an eventual pause and add this to the mLastTime variable

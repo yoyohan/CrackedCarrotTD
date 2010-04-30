@@ -39,7 +39,7 @@ public class GameInit extends Activity {
     private UIHandler   hudHandler;
     private MapLoader   mapLoader;
     
-<<<<<<< HEAD
+
     ///////////////// Multiplayer ////////////////////////////
     private MultiplayerService mMultiplayerService;
     private static BluetoothSocket multiplayerSocket = null;
@@ -48,11 +48,9 @@ public class GameInit extends Activity {
         multiplayerSocket = socket;
     }
     //////////////////////////////////////////////////////////
-=======
+
     public ScoreNinjaAdapter scoreNinjaAdapter;
 
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
-    
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
      *  
@@ -213,18 +211,10 @@ public class GameInit extends Activity {
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
             		gameLoopGui,new SoundManager(getBaseContext()));
     	}
-        
-<<<<<<< HEAD
 
-        // Resuming old game. Prepare GameLoop for this...
-        if (resume > 0) {
-        	gameLoop.resumeSetLevelNumber(resumeLevelNumber);
-        	gameLoop.resumeSetTowers(resumeTowers);
-=======
         	// Resuming old game? Prepare GameLoop for this...
         if (resumes > 0) {
         	gameLoop.resume(resumes, resume.getInt("level", 0), resume.getString("towers", null));
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
         }
         
         gameLoopThread = new Thread(gameLoop);
@@ -317,54 +307,5 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", -1);
     		editor.commit();
     	}
-<<<<<<< HEAD
     }   
-=======
-    }
-    
-    
-    /** This is the multiplayer part, will move this to the GameLoopGUI as soon as it works */
-    /////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////
-    
-    private MultiplayerService mMultiplayerService;
-    
-    // Message types sent from the MultiplayerService Handler
-    public static final int MESSAGE_READ = 1;
-    public static final int MESSAGE_WRITE = 2;
-    public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
-    
-    // The Handler that gets information back from the MultiplayerService
-    private final Handler mMultiPlayerHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
-                //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                break;
-            case MESSAGE_READ:
-                byte[] readBuf = (byte[]) msg.obj;
-                // construct a string from the valid bytes in the buffer
-                String readMessage = new String(readBuf, 0, msg.arg1);
-                //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
-                break;
-            case MESSAGE_DEVICE_NAME:
-                // save the connected device's name
-                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                //Toast.makeText(getApplicationContext(), "Connected to "
-                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                break;
-            case MESSAGE_TOAST:
-                Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
-                               Toast.LENGTH_SHORT).show();
-                break;
-            }
-        }
-    };
-    
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
 }

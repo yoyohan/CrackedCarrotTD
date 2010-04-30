@@ -52,8 +52,8 @@ public class GameLoop implements Runnable {
     
     public int progressbarLastSent = 0;
     
-    private boolean   pause = false;
-    private Semaphore pauseSemaphore = new Semaphore(1);
+    protected boolean   pause = false;
+    protected Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -279,15 +279,11 @@ public class GameLoop implements Runnable {
 
 	    }
 	    
-<<<<<<< HEAD
 	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
 	    Log.d("GAMELOOP","INIT GAMELOOP");
 
-
-=======
 	    gameSpeed = 1;
-        
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
+
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!

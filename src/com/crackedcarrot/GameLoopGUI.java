@@ -63,21 +63,14 @@ public class GameLoopGUI {
 	
     
     	// For readability-reasons.
-<<<<<<< HEAD
     public final int DIALOG_NEXTLEVEL_ID = 1;
     public final int DIALOG_WON_ID       = 2;
     public final int DIALOG_LOST_ID      = 3;
     public final int DIALOG_HIGHSCORE_ID = 4;
     final int DIALOG_QUIT_ID	= 5;
-=======
-    final int DIALOG_NEXTLEVEL_ID   = 1;
-    final int DIALOG_WON_ID         = 2;
-    final int DIALOG_LOST_ID        = 3;
-    final int DIALOG_HIGHSCORE_ID   = 4;
-    final int DIALOG_QUIT_ID        = 5;
     final int DIALOG_RESUMESLEFT_ID = 6;
     final int DIALOG_PAUSE_ID       = 7;
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
+
     
     public final int GUI_PLAYERMONEY_ID     = 10;
     public final int GUI_PLAYERHEALTH_ID    = 11;
@@ -723,16 +716,8 @@ public class GameLoopGUI {
 	    }
 	};
 	
-<<<<<<< HEAD
-	public ScoreNinjaAdapter getScoreNinjaAdapter() {
-		return this.scoreNinjaAdapter;
-	}
-	
-	
 	public void sendMessage(int i, int j, int k) {
-=======
-	protected void sendMessage(int i, int j, int k) {
->>>>>>> 50533a4d8bc00368f82f138ac08934d938303c24
+
 		// TODO: remove this when done debugging msgs.
 		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
