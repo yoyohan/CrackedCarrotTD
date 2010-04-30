@@ -83,10 +83,6 @@ public class UIHandler extends Thread{
 		return upgrade.upgradeBClicked(x, y);
 	}
 
-	public boolean infoClicked(int x, int y) {
-		return upgrade.infoClicked(x, y);
-	}
-
 	public boolean destroyClicked(int x, int y) {
 		return upgrade.destroyClicked(x, y);
 	}

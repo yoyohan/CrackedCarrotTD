@@ -17,11 +17,12 @@ import android.widget.TextView;
 public class Options extends Activity {
 
 	private boolean optionsHighscore;
+	private boolean optionsNextLevel;
 	private boolean optionsSound;
 	
 	private ImageButton imageButton1;
 	private ImageButton imageButton2;
-	private TextView    textView2;
+	private ImageButton imageButton4;
 
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -41,6 +42,7 @@ public class Options extends Activity {
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
         optionsHighscore = settings.getBoolean("optionsHighscore", false);
+        optionsNextLevel = settings.getBoolean("optionsNextLevel", false);
         optionsSound     = settings.getBoolean("optionsSound", false);
         
         
@@ -62,7 +64,6 @@ public class Options extends Activity {
 
         
         imageButton2 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton2);
-        textView2    = (TextView) findViewById(R.id.MainMenuOptionsTextView2);
         imageButton2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         			// Toggles highscore on or off
@@ -84,6 +85,21 @@ public class Options extends Activity {
         		scoreNinjaAdapter.show();
         	}
         });
+        
+        	// Enable/disable NextLevel-dialog.
+        imageButton4 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton4);
+        imageButton4.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        			// Toggles highscore on or off
+        		if (optionsNextLevel) {
+        			setNextLevel(false);
+        		} else {
+        			setNextLevel(true);
+        		}
+        	}
+        });
+        	// Update highscore-image
+        setNextLevel(optionsNextLevel);
         
         
         ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonOk);
@@ -109,6 +125,7 @@ public class Options extends Activity {
       SharedPreferences settings = getSharedPreferences("Options", 0);
       SharedPreferences.Editor editor = settings.edit();
       editor.putBoolean("optionsHighscore", optionsHighscore);
+      editor.putBoolean("optionsNextLevel", optionsNextLevel);
       editor.putBoolean("optionsSound", optionsSound);
 
       editor.commit();
@@ -120,10 +137,18 @@ public class Options extends Activity {
     	
     	if (b) {
 			imageButton2.setImageResource(R.drawable.button_highscore_on);
-			textView2.setText("Use ScoreNinja to keep highscores. [Requires Internet Connection]");
     	} else {
 			imageButton2.setImageResource(R.drawable.button_highscore_off);
-			textView2.setText("Use nothing to not keep highscores. [Requires No Internet Connection]");
+    	}
+    }
+    
+    public void setNextLevel(boolean b) {
+    	this.optionsNextLevel = b;
+    	
+    	if (b) {
+			imageButton4.setImageResource(R.drawable.button_yes);
+    	} else {
+			imageButton4.setImageResource(R.drawable.button_no);
     	}
     }
     

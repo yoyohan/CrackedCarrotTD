@@ -1,36 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:padding="10dp"
-              android:orientation="vertical" android:minHeight="160px" android:minWidth="240px">
+    android:orientation="vertical"
+    android:layout_width="240dp"
+    android:layout_height="240dp">
 
-    <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="fill_parent"
-              android:textColor="#FFF"
-              android:text="A loser is you!!"
-              android:textStyle="bold" />
+ 	<LinearLayout
+    	android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
 
-			  <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:padding="10dp">
+		<ImageView
+			android:src="@drawable/mrlion"
+			android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
+		<TextView
+			android:text="You lost."
+			android:textColor="#000000"
+			android:textStyle="bold"
+			android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
+	</LinearLayout>
+	
+ 	<LinearLayout
+    	android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        <TextView
+			android:text="The vile rabbits have conquered your pitiful backgarden, and worse, the world!"
+			android:textColor="#000000"
+			android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
+	</LinearLayout>
+	
+ 	<LinearLayout
+    	android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+	
+		<Button
+			android:text="Oh noes..."
+			android:id="@+id/LevelLost_OK"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
 
-				  <ImageView
-    	                     android:layout_width="wrap_content"
-        	                 android:layout_height="fill_parent"
-            	             android:layout_marginRight="10dp"
-                	         android:src="@drawable/mrlion" />
-
-			      <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="fill_parent"
-                            android:textColor="#FFF"
-                            android:text="You lost...the evil rabbids have conquered the earth!" />
-              
-              </LinearLayout>
-              
+	</LinearLayout>
+		
 </LinearLayout>

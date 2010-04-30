@@ -75,7 +75,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-       		android:background="@drawable/forward" />
+       		android:background="@drawable/xml_button_forward" />
 
        	<Button
        		android:id="@+id/play"
@@ -83,7 +83,7 @@
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
 			android:visibility="gone"
-       		android:background="@drawable/play" />
+       		android:background="@drawable/xml_button_play" />
 
         <Button
        		android:id="@+id/t1"
@@ -134,7 +134,7 @@
 				android:layout_width="51dp"
 				android:layout_height="51dp"
 				android:scaleType="fitXY"
-        		android:background="@drawable/back_0" />
+        		android:background="@drawable/xml_button_game_back" />
     	</LinearLayout>    		
 
     </LinearLayout>
@@ -228,7 +228,7 @@
 					        
 	        <ProgressBar 
 	        	android:id="@+android:id/health_progress"
-	        	android:progressDrawable="@drawable/healthbar"
+	        	android:progressDrawable="@drawable/xml_healthbar"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	style="?android:attr/progressBarStyleHorizontal"
