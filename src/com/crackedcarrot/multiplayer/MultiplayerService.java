@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class MultiplayerService extends Thread {
@@ -20,11 +20,15 @@ public class MultiplayerService extends Thread {
     private final OutputStream mmOutStream;
     private Handler mMultiplayerHandler;
     
-    // Message types sent from the MultiplayerService Handler
+    // Message types sent to the MultiplayerService Handler
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_WRITE = 2;
     public static final int MESSAGE_DEVICE_NAME = 3;
     public static final int MESSAGE_TOAST = 4;
+    
+    // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
+    private final String SYNCH_LEVEL = "synchLevel";
+    private final String SHOW_SCORE = "showScore";
 
     public MultiplayerService(BluetoothSocket socket) {
         Log.d("MultiplayerService", "create ConnectedThread");
@@ -63,13 +67,20 @@ public class MultiplayerService extends Thread {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
+                    if(readMessage.equals(SYNCH_LEVEL)){
+                    	MultiplayerGameLoop.synchLevelClick();
+                    }
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     //Toast.makeText(getApplicationContext(), "Connected to "
                     //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                case MESSAGE_TOAST:
+                	//Do something to inform user that connection is lost
+                    //Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
+                    //               Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
@@ -79,17 +90,17 @@ public class MultiplayerService extends Thread {
 
         // Keep listening to the InputStream while connected
         while (true) {
-          /**  try {
+            try {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
 
                 // Send the obtained bytes to the UI Activity
-                mHandler.obtainMessage(BluetoothChat.MESSAGE_READ, bytes, -1, buffer)
+                mMultiplayerHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 connectionLost();
                 break;
-            } */
+            } 
         }
            
     }
@@ -105,10 +116,6 @@ public class MultiplayerService extends Thread {
     public void write(byte[] buffer) {
        try {
             mmOutStream.write(buffer);
-            
-            // Share the sent message back to the UI Activity
-            //mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
-            //        .sendToTarget();
         } catch (IOException e) {
             Log.e("MultiplayerService", "Exception during write", e);
         }
@@ -126,4 +133,13 @@ public class MultiplayerService extends Thread {
         msg.setData(bundle);
         mHandler.sendMessage(msg); */
     }
+    
+    /**
+     * Indicate that the connection was lost and notify the UI Activity.
+     */
+    private void connectionLost() {
+        // Send a failure message back to the Activity
+        mMultiplayerHandler.obtainMessage(MESSAGE_TOAST).sendToTarget();
+    }
+    
 }

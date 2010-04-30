@@ -64,21 +64,22 @@ public class GameLoopGUI {
     private ScoreNinjaAdapter scoreNinjaAdapter;
     
     	// For readability-reasons.
-    final int DIALOG_NEXTLEVEL_ID = 1;
+    public final int DIALOG_NEXTLEVEL_ID = 1;
     public final int DIALOG_WON_ID       = 2;
     public final int DIALOG_LOST_ID      = 3;
     public final int DIALOG_HIGHSCORE_ID = 4;
-    final int DIALOG_QUIT_ID      = 5;
+    final int DIALOG_QUIT_ID	= 5;
     
-    final int GUI_PLAYERMONEY_ID     = 10;
-    final int GUI_PLAYERHEALTH_ID    = 11;
-    final int GUI_CREATUREVIEW_ID    = 12;
+    public final int GUI_PLAYERMONEY_ID     = 10;
+    public final int GUI_PLAYERHEALTH_ID    = 11;
+    public final int GUI_CREATUREVIEW_ID    = 12;
     final int GUI_CREATURELEFT_ID    = 13;
-    final int GUI_PROGRESSBAR_ID     = 14;
+    public final int GUI_PROGRESSBAR_ID     = 14;
     public final int GUI_NEXTLEVELINTEXT_ID = 15;
-    final int GUI_SHOWSTATUSBAR_ID   = 16;
+    public final int GUI_SHOWSTATUSBAR_ID   = 16;
     public final int GUI_SHOWHEALTHBAR_ID   = 17;
-    final int GUI_HIDEHEALTHBAR_ID   = 18;
+    public final int GUI_HIDEHEALTHBAR_ID   = 18;
+    public final int WAIT_OPPONENT_ID 		= 19;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -666,6 +667,9 @@ public class GameLoopGUI {
 	        		 //If we want to use space in statusbar to show time to next level counter
 	        		 healthProgressBar.setVisibility(View.GONE);
 	        		 enImView.setVisibility(View.GONE);
+	        		 break;
+	        	 case WAIT_OPPONENT_ID:
+	        		 gameInit.showDialog(WAIT_OPPONENT_ID);
 	        		 break;
 	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.

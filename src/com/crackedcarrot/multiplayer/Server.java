@@ -69,10 +69,7 @@ public class Server extends Activity {
             finish();
             return;
         }
-        
-    	
         showDialog(1);
-  
     }
     
     /** When the activity first starts, do following */

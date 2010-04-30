@@ -50,7 +50,7 @@ public class GameLoop implements Runnable {
     protected Tower[][]  mTowerGrid;
     protected Tower[]    mTTypes;
     
-    private int progressbarLastSent = 0;
+    public int progressbarLastSent = 0;
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,

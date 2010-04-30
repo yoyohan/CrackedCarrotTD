@@ -204,7 +204,7 @@ public class GameInit extends Activity {
         if(multiplayerSocket != null){
     		mMultiplayerService = new MultiplayerService(multiplayerSocket);
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-    				gameLoopGui,new SoundManager(getBaseContext()));
+    				gameLoopGui,new SoundManager(getBaseContext()), mMultiplayerService);
     	}else{
     		// Sending data to GAMELOOP
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
