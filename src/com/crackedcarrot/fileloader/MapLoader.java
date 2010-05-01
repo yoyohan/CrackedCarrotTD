@@ -40,7 +40,7 @@ public class MapLoader {
 				//At the moment all towers are the same size.
 				//Number of frames can be changed together with the
 				//Texture.
-				twg[x][y] = new Tower(R.drawable.tower1,0);
+				twg[x][y] = new Tower(R.drawable.tower1,0, null, null);
 				twg[x][y].draw = false;
 			}
 		}
