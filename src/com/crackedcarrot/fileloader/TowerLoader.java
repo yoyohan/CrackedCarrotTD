@@ -2,7 +2,9 @@
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import android.content.Context;
+
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Shot;
@@ -40,6 +42,7 @@ public class TowerLoader {
     private Shot relatedShot;
 	private float width;
 	private float height;
+	private float animationTime;
 	/**
 	 * Constructor 
 	 * 
@@ -181,14 +184,19 @@ public class TowerLoader {
 			            	aoeDamage = Integer.parseInt(tmpStr[1].trim());
 			            	break;
 						case 24:
+			            	// Shot animation time
+			            	animationTime = Float.parseFloat(tmpStr[1].trim());
+			            	break;
+						case 25:
 			            	// Shot texture
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	// Shot size
 			            	recalc = scaler.scale(8,8);
-			            	towerList[twrNbr] = new Tower(mResourceId, 0);
+			            	towerList[twrNbr] = new Tower(mResourceId, 0, null, null);
 			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
 			            	relatedShot.setHeight(recalc.getY());
 			            	relatedShot.setWidth(recalc.getX());
+			            	relatedShot.setAnimationTime(animationTime);
 			            	towerList[twrNbr].relatedShot = relatedShot;
 			            	towerList[twrNbr].cloneTower(
 			            			mResourceId,

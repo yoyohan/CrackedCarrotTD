@@ -27,7 +27,7 @@
 						android:id="@+id/MainMenuOptionsImageButton1"
 						android:src="@drawable/button_sound_on" />
 					<TextView
-						android:text="Turn on or off the sound effects in the game."
+						android:text="Play sounds during the game?"
 						android:textColor="#000000"
 						android:layout_gravity="center"
 						android:layout_width="175dp"
@@ -39,8 +39,7 @@
 						android:id="@+id/MainMenuOptionsImageButton2"
 						android:src="@drawable/button_highscore_on" />
 					<TextView
-						android:id="@+id/MainMenuOptionsTextView2"
-						android:text="Use ScoreNinja to keep highscores. [Requires Internet Connection]"
+						android:text="Use ScoreNinja to keep highscores? [Requires Internet Connection]"
 						android:textColor="#000000"
 						android:layout_width="175dp"
 						android:layout_gravity="center"
@@ -58,11 +57,23 @@
 						android:layout_width="175dp"
 						android:gravity="center" />
 				</TableRow>
+				
+				<TableRow>
+					<ImageButton
+						android:id="@+id/MainMenuOptionsImageButton4"
+						android:src="@drawable/button_yes" />
+					<TextView
+						android:text="Show NextLevel-dialog between waves?"
+						android:textColor="#000000"
+						android:layout_gravity="center"
+						android:layout_width="175dp"
+						android:gravity="center" />
+				</TableRow>
 			</TableLayout>
 		</TableRow>
 		
 		<TableRow>
-			<View android:layout_height="60dp" />
+			<View android:layout_height="40dp" />
 		</TableRow>
 		
 		<TableRow>

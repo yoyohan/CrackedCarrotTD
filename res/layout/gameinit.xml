@@ -23,6 +23,14 @@
 		android:layout_alignParentBottom="true">
 		
 		<Button
+        	android:id="@+id/removeExpand"
+        	android:layout_width="50dp"
+        	android:layout_height="50dp"
+        	android:layout_marginRight="7dp"
+        	android:layout_marginLeft="7dp"
+        	android:background="@drawable/inmenu6_button" />
+        	
+		<Button
         	android:id="@+id/normalSpeed"
         	android:layout_width="50dp"
         	android:layout_height="50dp"       	
@@ -202,8 +210,8 @@
 	        <ImageView
 				android:id="@+id/enemyImVi"
 				android:paddingTop="0dp"
-				android:layout_width="35dp" 
-				android:layout_height="35dp"
+				android:layout_width="30dp" 
+				android:layout_height="30dp"
 				android:src="@drawable/bunny_pink_alive" >
 			</ImageView>
 
