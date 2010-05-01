@@ -64,10 +64,7 @@ public class SurfaceView extends GLSurfaceView {
 					Log.d("SURFACEVIEW","Upgrade B clicked");
 					gameLoop.upgradeTowerInGrid(x,y, 1);
 				}
-				else if(ui.infoClicked(x,y)){
-					Log.d("SURFACEVIEW","Info clicked");
-					//Do info thingy.
-				}
+				
 				else if(ui.destroyClicked(x,y)){
 					Log.d("SURFACEVIEW","Destroy clicked");
 					gameLoop.destroyTowerInGrid(x,y);
