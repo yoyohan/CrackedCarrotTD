@@ -26,7 +26,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -256,7 +255,6 @@ public class GameLoopGUI {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
         	}
@@ -339,7 +337,6 @@ public class GameLoopGUI {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
-	        		gameInit.gameLoop.pause();
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
 	        	}
@@ -612,7 +609,7 @@ public class GameLoopGUI {
 	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	     if (settings.getBoolean("optionsNextLevel", true)) {
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
