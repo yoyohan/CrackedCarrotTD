@@ -94,7 +94,7 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mCreatures.length; i++) {
 
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
-	    								0,1,player, soundManager, 
+	    								0,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
 	    								i
