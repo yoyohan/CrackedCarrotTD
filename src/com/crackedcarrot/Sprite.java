@@ -44,60 +44,38 @@ public class Sprite{
     // The id of the original resource that the firstCurrTexName is based on.
     private int mResourceId;
     
-    public Sprite() {
-    }
-    
+    /**
+     * Empy constructor for a sprite object
+     */
+    public Sprite() {}
+
+    /**
+     * Main constructor of a sprite object. Needs texture resource id
+     * ,sprite type and subtype.
+     * @param resourceId
+     * @param type
+     * @param subType
+     */
     public Sprite(int resourceId, int type, int subType) {
         mResourceId = resourceId;
         this.type = type;
         this.subType = subType;
     }
     
-    public void setResourceId(int id) {
-        mResourceId = id;
-    }
-    
-    public int getResourceId() {
-        return mResourceId;
-    }
-
-	public void setCurrentTexture(TextureData texture) {
-		this.cFrame = 0;
-		this.texData = texture;
-		this.currTexName = this.texData.mTextureName;
-	}
-
-	public TextureData getCurrentTexture() {
-		return this.texData;
-	}
-
-	public void setWidth(float width) {
-		this.width = width;
-	}
-	public float getWidth() {
-		return width;
-	}
-
-	public void setHeight(float height) {
-		this.height = height;
-	}
-
-	public float getHeight() {
-		return height;
-	}
-    
-	public void setType(int type, int subType){
-		this.type = type;
-		this.subType = subType;
-	}
+	/**
+	 * Change frames. Each time this method is called
+	 * sprite will pick next frame of sprite. When
+	 * end is reached the method will start over.
+	 */
 	public void animate(){
 		cFrame = (cFrame +1) % this.texData.nFrames;
 	}
-
-	public int getSubType() {
-		return this.subType;
-	}
 	
+	/**
+	 * Will compare to sprites to each other and return true if equal.
+	 * @param sprite
+	 * @return
+	 */
 	public boolean equals(Object sprite){
 		if(Sprite.class.isInstance(sprite)){
 			Sprite testSprite = (Sprite) sprite;
@@ -168,7 +146,86 @@ public class Sprite{
 		y = new_y/this.scale;				
 	}
 	
-	public int getNbrOfFrames() {
-		return texData.nFrames;
+	/////////////////////////////////////////////
+	// Getters
+	/////////////////////////////////////////////
+	
+	/**
+	 * Return the number of frame this Sprite contains
+	 * @return
+	 */
+	public int getNbrOfFrames() { return texData.nFrames; }
+
+	/**
+	 * Return subtype of Sprite
+	 * @return
+	 */
+	public int getSubType() { return this.subType; }
+
+	/**
+	 * Get height of sprite
+	 * @return
+	 */
+	public float getHeight() { return height; }
+
+	/**
+	 * return width of sprite
+	 * @return
+	 */
+	public float getWidth() { return width;	}
+
+	/**
+	 * Return current TextureData for this sprite
+	 * @return
+	 */
+	public TextureData getCurrentTexture() { return this.texData; }
+
+    /**
+     * Return texture resource for this sprite.
+     * @return resource id (int)
+     */
+    public int getResourceId() { return mResourceId; }
+
+    
+	/////////////////////////////////////////////
+	// Setters
+	/////////////////////////////////////////////
+    
+    /**
+     * Set texture resource for this sprite.
+     * @param id
+     */
+    public void setResourceId(int id) { mResourceId = id; }
+    
+    /**
+     * Change current texture to a new one.
+     * @param texture
+     */
+	public void setCurrentTexture(TextureData texture) {
+		this.cFrame = 0;
+		this.texData = texture;
+		this.currTexName = this.texData.mTextureName;
+	}
+
+	/**
+	 * Set width of sprite
+	 * @param width
+	 */
+	public void setWidth(float width) { this.width = width; }
+
+	/**
+	 * Set height of sprite
+	 * @param height
+	 */
+	public void setHeight(float height) { this.height = height;	}
+	
+	/**
+	 * Set type and subtype
+	 * @param type
+	 * @param subType
+	 */
+	public void setType(int type, int subType){
+		this.type = type;
+		this.subType = subType;
 	}
 }
