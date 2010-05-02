@@ -68,10 +68,10 @@
         		android:layout_gravity="bottom|left"
         		android:layout_marginRight="20dp"
         		android:background="@drawable/info" />
-			
+
 		    <Button	android:id="@+id/NextLevelButton"
+				android:text="Start"
 				android:layout_width="wrap_content"
-				android:background="@drawable/xml_button_startgame" 
 				android:layout_height="wrap_content"
 				android:layout_gravity="bottom|right">
 			</Button>
