@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.crackedcarrot.GameInit;
+import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.*;
 
 public class MainMenu extends Activity {
@@ -87,6 +88,7 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
+        		GameLoop.pause();
         	}
         });
         

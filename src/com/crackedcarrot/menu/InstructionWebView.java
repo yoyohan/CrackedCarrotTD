@@ -9,6 +9,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import com.crackedcarrot.GameLoop;
+
 /**
  * Class that functions as the instruction view. It creates the
  * dialog consisting of the level instructions.
@@ -30,6 +32,7 @@ public class InstructionWebView extends Activity {
     	close.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
+    					GameLoop.unPause();
     					finish();
     				}
     			});

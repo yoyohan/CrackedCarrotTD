@@ -614,10 +614,13 @@ public class GameLoopGUI {
 	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	     if (settings.getBoolean("optionsNextLevel", false) 
+	        	    		 || GameInit.multiplayerMode() ) {
+	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
+	        	    	 Log.d("GAMELOOPGUI", "Simulate next level dialog");
 	        	    	 gameInit.gameLoop.dialogClick();
 	        	     }
 	        		 break;

@@ -44,8 +44,18 @@ public class GameInit extends Activity {
     private MultiplayerService mMultiplayerService;
     private static BluetoothSocket multiplayerSocket = null;
    
+    /** Makes the Bluetooth socket available from GameInit */
     public static void setMultiplayer(BluetoothSocket socket){
         multiplayerSocket = socket;
+    }
+    
+    /** Used by next level dialog to check if it should be shown */
+    public static boolean multiplayerMode(){
+    	if(multiplayerSocket != null){
+    		return true;
+    	} else{
+    		return false;
+    	}
     }
     //////////////////////////////////////////////////////////
 
@@ -133,11 +143,9 @@ public class GameInit extends Activity {
         Bundle extras  = getIntent().getExtras();
         int mapChoice = 0;
         int difficulty = 0;
-        int reference = 0;
         if(extras != null) {
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
-        	reference = extras.getInt("com.crackedcarrot.classreference");
         }
 
         
@@ -203,11 +211,14 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
         if(multiplayerSocket != null){
+        	Log.d("GAMEINIT", "Create multiplayerGameLoop");
     		mMultiplayerService = new MultiplayerService(multiplayerSocket);
+    		mMultiplayerService.start();
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,new SoundManager(getBaseContext()), mMultiplayerService);
     	}else{
     		// Sending data to GAMELOOP
+        	Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
             		gameLoopGui,new SoundManager(getBaseContext()));
     	}

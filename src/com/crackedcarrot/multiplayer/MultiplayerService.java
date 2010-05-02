@@ -18,7 +18,7 @@ public class MultiplayerService extends Thread {
 	private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-    private Handler mMultiplayerHandler;
+    //private Handler mMultiplayerHandler;
     
     // Message types sent to the MultiplayerService Handler
     public static final int MESSAGE_READ = 1;
@@ -45,64 +45,69 @@ public class MultiplayerService extends Thread {
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
     }
+    
+    public Handler mMultiplayerHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_WRITE:
+                byte[] writeBuf = (byte[]) msg.obj;
+                // construct a string from the buffer
+                String writeMessage = new String(writeBuf);
+                //mConversationArrayAdapter.add("Me:  " + writeMessage);
+                break;
+            case MESSAGE_READ:
+            	Log.d("GUIHANDLER", "Message read");
+                byte[] readBuf = (byte[]) msg.obj;
+                // construct a string from the valid bytes in the buffer
+                String readMessage = new String(readBuf);
+                if(readMessage.equals(SYNCH_LEVEL)){
+                	Log.d("GUIHANDLER", "Release synchSemaphore");
+                	MultiplayerGameLoop.synchLevelClick();
+                }
+                break;
+            case MESSAGE_DEVICE_NAME:
+                // save the connected device's name
+                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                //Toast.makeText(getApplicationContext(), "Connected to "
+                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                break;
+            case MESSAGE_TOAST:
+            	//Do something to inform user that connection is lost
+                //Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
+                //               Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+    };
 
     public void run() {
         Log.d("MultiplayerService", "BEGIN MultiplayerService");
         byte[] buffer = new byte[1024];
         int bytes;
         
-        Looper.prepare();
+        //Looper.prepare();
 		
-		mMultiplayerHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    if(readMessage.equals(SYNCH_LEVEL)){
-                    	MultiplayerGameLoop.synchLevelClick();
-                    }
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    //Toast.makeText(getApplicationContext(), "Connected to "
-                    //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case MESSAGE_TOAST:
-                	//Do something to inform user that connection is lost
-                    //Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
-                    //               Toast.LENGTH_SHORT).show();
-                    break;
-                }
-            }
-        };
+		
 
-		Looper.loop();
+		//Looper.loop();
 
         // Keep listening to the InputStream while connected
         while (true) {
             try {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
-
+                
                 // Send the obtained bytes to the UI Activity
-                mMultiplayerHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
+                mMultiplayerHandler.obtainMessage(MESSAGE_READ, buffer)
                         .sendToTarget();
+         	   Log.d("MPSERVICE LOOP", "Send to handler");
             } catch (IOException e) {
+            	Log.d("MPSERVICE LOOP", "Connection lost");
                 connectionLost();
                 break;
             } 
-        }
-           
+        }    
     }
     
     public synchronized void connected() {
@@ -115,11 +120,14 @@ public class MultiplayerService extends Thread {
      */
     public void write(byte[] buffer) {
        try {
+    	   Log.d("MPSERVICE Write", "Write to OutputStream");
             mmOutStream.write(buffer);
         } catch (IOException e) {
             Log.e("MultiplayerService", "Exception during write", e);
         }
     }
+    
+    
     
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.

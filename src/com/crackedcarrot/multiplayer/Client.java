@@ -32,8 +32,7 @@ public class Client extends Activity {
     private static final int REQUEST_CONNECT_DEVICE = 2;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
-    private final int REFERENCE = 2; // GameInit started from: 1 = Server, 2 = Client
+    private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
     
     public BluetoothSocket mmClientSocket = null;
 
@@ -172,12 +171,13 @@ public class Client extends Activity {
     }
 
     private void startGame(){
+    	Log.d("CLIENT", "Start game");
     	GameInit.setMultiplayer(mmClientSocket);
     	Intent StartGame = new Intent(this ,GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
-		StartGame.putExtra("com.crackedcarrot.classreference", REFERENCE);
 		startActivity(StartGame);
+		finish();
     }
     
 }

@@ -36,8 +36,7 @@ public class Server extends Activity {
     public BluetoothSocket socket = null;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
-    private final int REFERENCE = 1; // GameInit started from: 1 = Server, 2 = Client
+    private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
 	
     /** if user presses back button, this activity will finish */
     @Override
@@ -140,7 +139,7 @@ public class Server extends Activity {
                 // Connection accepted?
                 if (socket != null) {
                 	Log.d("SERVER", "anlutning klar!");
-                	startGame();
+                	startGame(socket);
                 	try{
                 		mmServerSocket.close();
                 	} catch (Exception e){}
@@ -150,13 +149,14 @@ public class Server extends Activity {
         }
     }
     
-    private void startGame(){
+    private void startGame(BluetoothSocket socket){
+    	Log.d("SERVER", "Start game");
     	GameInit.setMultiplayer(socket);
     	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
-		StartGame.putExtra("com.crackedcarrot.classreference", REFERENCE);
 		startActivity(StartGame);
+		finish();
     }
     
     @Override
@@ -172,7 +172,6 @@ public class Server extends Activity {
                 	public void onCancel(DialogInterface dialog){
                 		Server.this.finish();
                 	}
-                	
                 });
                 return dialog;
             }

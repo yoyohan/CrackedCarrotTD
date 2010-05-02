@@ -81,6 +81,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		
 		//Also wait for the opponent to click ok via semaphore
 		try {
+			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 1st time");
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
@@ -142,10 +143,12 @@ public class MultiplayerGameLoop extends GameLoop {
 		
 		// Wait for the opponent to click on the NextLevel-dialog.
 		try {
+			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 2nd time");
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		Log.d("MultiPLAYERGAMELOOP", "And then release");
 		synchLevelSemaphore.release();
 		
 		//Close "Waiting for opponent" message
