@@ -8,12 +8,12 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 <TableLayout
-	android:layout_width="200dp"
+	android:layout_width="140dp"
     android:layout_height="380dp"
     android:gravity="center"
 	android:layout_alignParentTop="true"
 	android:layout_centerHorizontal="true"
-	android:paddingTop="90dp"
+	android:paddingTop="20dp"
 	android:background="#00000000">
 	/** the first two hex digits, represent
     the alpha channel which is used to define 
@@ -22,8 +22,9 @@
     <TableRow>
         <Button
 		android:id="@+id/StartGame"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="64dp"
+		android:layout_height="34dp"
+	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_startgame">
 		</Button>
     </TableRow>
@@ -38,9 +39,10 @@
 	<TableRow>
         <Button
 		android:id="@+id/Resume"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:background="@drawable/xml_button_resume">
+		android:layout_width="64dp"
+		android:layout_height="34dp"
+	    android:scaleType="fitXY"
+	    android:background="@drawable/xml_button_resume">
 		</Button>
     </TableRow>
     
@@ -55,8 +57,9 @@
     <TableRow>
         <Button
 		android:id="@+id/Options"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="64dp"
+		android:layout_height="34dp"
+	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_options">
 		</Button>
     </TableRow>
@@ -71,8 +74,9 @@
     <TableRow>
         <Button
 		android:id="@+id/Help"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="64dp"
+		android:layout_height="34dp"
+	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_help">
 		</Button>
     </TableRow>
@@ -87,8 +91,9 @@
     <TableRow>
         <Button
 		android:id="@+id/Multiplayer"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="64dp"
+		android:layout_height="34dp"
+	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_multiplayer">
 		</Button>
     </TableRow>

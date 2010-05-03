@@ -1,8 +1,8 @@
 package com.crackedcarrot;
 
 /**
-* Class defining a shot in the game
-*/
+* Class defining a shot in the game. This can be both a projectile and a aoen
+* */
 public class Shot extends Sprite{
     // The tower object which the shot belongs to
     public Tower tower;
@@ -25,6 +25,15 @@ public class Shot extends Sprite{
 		y = tower.y + tower.getHeight()/2;
 	}
 	
+
+	/**
+	 * Shows the animation for a shot. Requiers system time, size of animation
+	 * and target creature if any.
+	 * @param timeDeltaSeconds
+	 * @param size
+	 * @param targetCreature
+	 * @return false if animateShot dont need to be run again
+	 */
 	public boolean animateShot(float timeDeltaSeconds, float size, Creature targetCreature) {
 		tmpAnimationTime -= timeDeltaSeconds;
 		
@@ -37,19 +46,30 @@ public class Shot extends Sprite{
 			return false;
 		}
 		else {
-			this.x = targetCreature.getScaledX();
-			this.y = targetCreature.getScaledY();
+			if (targetCreature != null) {
+				this.x = targetCreature.getScaledX();
+				this.y = targetCreature.getScaledY();
+			}
+			else
+				this.resetShotCordinates();
 			scaleSprite(size);
     		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()-1)))+1;
-    		
 			return true;
 		}
 	}
 
+	/**
+	 * Will return how long time a animation from this shot runs 
+	 * @return time(float)
+	 */
 	public float getAnimationTime() {
 		return animationTime;
 	}
 
+	/**
+	 * Set how long time a animation from this shot runs 
+	 * @param animationTime
+	 */
 	public void setAnimationTime(float animationTime) {
 		this.animationTime = animationTime;
 		this.tmpAnimationTime = animationTime;
