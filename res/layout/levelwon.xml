@@ -21,7 +21,7 @@
 			android:text="Congratulations!"
 			android:textColor="#000000"
 			android:textStyle="bold"
-			android:gravity="center_horizontal"
+			android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
@@ -35,7 +35,7 @@
         <TextView
 			android:text="You've slain all the vile rabbits and their evil companions and saved your precious carrots!"
 			android:textColor="#000000"
-			android:gravity="center_horizontal"
+			android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
