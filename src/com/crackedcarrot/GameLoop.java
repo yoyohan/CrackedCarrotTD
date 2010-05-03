@@ -522,7 +522,7 @@ public class GameLoop implements Runnable {
     	dialogSemaphore.release();
     }
     
-    private void waitForDialogClick() {
+    protected void waitForDialogClick() {
 		// Code to wait for the user to click ok on a dialog.
 		try {
 			dialogSemaphore.acquire();

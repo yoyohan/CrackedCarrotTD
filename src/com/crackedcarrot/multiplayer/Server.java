@@ -33,6 +33,8 @@ public class Server extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     
+    private final int PROGRESS_DIALOG = 1;
+    
     public BluetoothSocket socket = null;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
@@ -68,7 +70,7 @@ public class Server extends Activity {
             finish();
             return;
         }
-        showDialog(1);
+        showDialog(PROGRESS_DIALOG);
     }
     
     /** When the activity first starts, do following */
@@ -162,7 +164,7 @@ public class Server extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-            case 1: {
+            case PROGRESS_DIALOG: {
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setMessage("Waiting for client to connect...");
                 dialog.setIndeterminate(true);

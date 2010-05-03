@@ -29,6 +29,8 @@ public class MultiplayerService extends Thread {
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
     private final String SHOW_SCORE = "showScore";
+    
+    public MultiplayerHandler mpHandler;
 
     public MultiplayerService(BluetoothSocket socket) {
         Log.d("MultiplayerService", "create ConnectedThread");
@@ -44,53 +46,19 @@ public class MultiplayerService extends Thread {
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
+        mpHandler = new MultiplayerHandler();
+        mpHandler.start();
     }
     
-    public Handler mMultiplayerHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
-                //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                break;
-            case MESSAGE_READ:
-            	Log.d("GUIHANDLER", "Message read");
-                byte[] readBuf = (byte[]) msg.obj;
-                // construct a string from the valid bytes in the buffer
-                String readMessage = new String(readBuf);
-                if(readMessage.equals(SYNCH_LEVEL)){
-                	Log.d("GUIHANDLER", "Release synchSemaphore");
-                	MultiplayerGameLoop.synchLevelClick();
-                }
-                break;
-            case MESSAGE_DEVICE_NAME:
-                // save the connected device's name
-                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                //Toast.makeText(getApplicationContext(), "Connected to "
-                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                break;
-            case MESSAGE_TOAST:
-            	//Do something to inform user that connection is lost
-                //Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
-                //               Toast.LENGTH_SHORT).show();
-                break;
-            }
-        }
-    };
+    
 
     public void run() {
         Log.d("MultiplayerService", "BEGIN MultiplayerService");
         byte[] buffer = new byte[1024];
         int bytes;
         
-        //Looper.prepare();
-		
-		
-
-		//Looper.loop();
+        StringBuffer sb = new StringBuffer();
+        String message; 
 
         // Keep listening to the InputStream while connected
         while (true) {
@@ -98,10 +66,26 @@ public class MultiplayerService extends Thread {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
                 
-                // Send the obtained bytes to the UI Activity
-                mMultiplayerHandler.obtainMessage(MESSAGE_READ, buffer)
-                        .sendToTarget();
-         	   Log.d("MPSERVICE LOOP", "Send to handler");
+                /**
+                sb.setLength(0);
+                sb.append(new String(buffer, 0, bytes));
+                message = sb.toString();
+                Log.d("MPSERVICE-MESSAGE:", "The message is: " + message); */
+                
+                if(bytes > 0){
+	                // construct a string from the valid bytes in the buffer
+	                String readMessage = new String(buffer);
+	                readMessage = readMessage.substring(0, bytes);
+	                Log.d("XXXXX", readMessage);
+	                Log.d("XXXXX", "BIG: " + bytes);
+	                if(readMessage.equals(SYNCH_LEVEL)){
+	                	Log.d("XXXXX", "Eye! THIS IS RIGHT");
+	                	 // Send the obtained bytes to the UI Activity
+	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, bytes, buffer)
+	                            .sendToTarget();
+	                }
+                }
+         	   //Log.d("MPSERVICE LOOP", "Send to handler");
             } catch (IOException e) {
             	Log.d("MPSERVICE LOOP", "Connection lost");
                 connectionLost();
@@ -147,7 +131,7 @@ public class MultiplayerService extends Thread {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        mMultiplayerHandler.obtainMessage(MESSAGE_TOAST).sendToTarget();
+        mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_TOAST).sendToTarget();
     }
     
 }

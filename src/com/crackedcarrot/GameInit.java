@@ -169,7 +169,7 @@ public class GameInit extends Activity {
         
         // Create the map requested by the player
 
-       	// resume needs to load the correct map aswell.
+       	// resume needs to load the correct map as well.
        	if (resumes > 0)
        		mapChoice = resume.getInt("map", 0);
         

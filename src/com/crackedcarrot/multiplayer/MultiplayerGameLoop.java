@@ -82,6 +82,8 @@ public class MultiplayerGameLoop extends GameLoop {
 		//Also wait for the opponent to click ok via semaphore
 		try {
 			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 1st time");
+	    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
+
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
@@ -107,12 +109,9 @@ public class MultiplayerGameLoop extends GameLoop {
 		// And reset our internal counter for the creature health progress bar ^^
 		progressbarLastSent = 100;
 		
-		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
-		// If we dont reset this variable each wave. The timeDelta will be fucked up
-		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
 		// Reset gamespeed between levels?
-		gameSpeed = 1;
+		// gameSpeed = 1;
     	
 		// Remove healthbar until game begins.
 		gui.sendMessage(gui.GUI_HIDEHEALTHBAR_ID, 0, 0);
@@ -139,11 +138,13 @@ public class MultiplayerGameLoop extends GameLoop {
 		mMultiplayerService.write(send);
 		
 		//Show "Waiting for opponent" message
-		//gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
 		
 		// Wait for the opponent to click on the NextLevel-dialog.
 		try {
 			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 2nd time");
+	    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
+
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -152,6 +153,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		synchLevelSemaphore.release();
 		
 		//Close "Waiting for opponent" message
+		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
 
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
@@ -166,11 +168,11 @@ public class MultiplayerGameLoop extends GameLoop {
 	/** Overriding the run method from super class GameLoop */
     public void run() {
 
-    	Log.d("GAMELOOP","INIT GAMELOOP");
-   	
+    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
+    	
 	    initializeDataStructures();
 	    
-	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
+	    gameSpeed = 1;
 
 	    while(run){
     		initializeLvl();
@@ -300,18 +302,7 @@ public class MultiplayerGameLoop extends GameLoop {
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		
-            		try {
-            			dialogSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		dialogSemaphore.release();
+            		waitForDialogClick();
 
         			run = false;
         		}

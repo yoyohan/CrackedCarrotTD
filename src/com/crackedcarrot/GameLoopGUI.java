@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -44,6 +44,7 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
+	private ProgressDialog dialogWait = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
@@ -70,7 +71,8 @@ public class GameLoopGUI {
     final int DIALOG_QUIT_ID	= 5;
     final int DIALOG_RESUMESLEFT_ID = 6;
     final int DIALOG_PAUSE_ID       = 7;
-
+    public final int WAIT_OPPONENT_ID = 8;
+    public final int CLOSE_WAIT_OPPONENT = 9;
     
     public final int GUI_PLAYERMONEY_ID     = 10;
     public final int GUI_PLAYERHEALTH_ID    = 11;
@@ -81,7 +83,7 @@ public class GameLoopGUI {
     public final int GUI_SHOWSTATUSBAR_ID   = 16;
     public final int GUI_SHOWHEALTHBAR_ID   = 17;
     public final int GUI_HIDEHEALTHBAR_ID   = 18;
-    public final int WAIT_OPPONENT_ID 		= 19;
+
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -497,7 +499,15 @@ public class GameLoopGUI {
 	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
 	    	return dialogPause;
-
+	    	
+	    case WAIT_OPPONENT_ID:
+	    	dialogWait = new ProgressDialog(gameInit);
+	    	dialogWait.setMessage("Waiting for opponent...");
+	    	dialogWait.setIndeterminate(true);
+	    	dialogWait.setCancelable(false);
+	    	
+	    	return dialogWait;
+	    	
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -702,6 +712,9 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case WAIT_OPPONENT_ID:
 	        		 gameInit.showDialog(WAIT_OPPONENT_ID);
+	        		 break;
+	        	 case CLOSE_WAIT_OPPONENT:
+	        		 dialogWait.hide();
 	        		 break;
 	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
