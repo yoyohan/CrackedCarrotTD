@@ -8,11 +8,11 @@ import java.util.Random;
 public class Tower extends Sprite {
 	private SoundManager soundManager;
 	private Creature[] mCreatures;
-	
 	//different towertypes
-	private final int PROJECTILEAOE = 1;
-	private final int PUREAOE = 2;
-	private final int PROJECTILE = 3;
+	protected final static int CANNON = 1;
+	protected final static int AOE = 2;
+	protected final static int BUNKER = 3;
+	protected final static int TELSA = 4;
 	//towertype
 	private int towerType;
 	// The current range of a tower
@@ -59,25 +59,30 @@ public class Tower extends Sprite {
     private Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
-    
    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
-
-    private boolean esplodeGIB = false;
+    private boolean ImpactdAnimate = false;
     
+    /**
+     * Constructor used when defining a new tower in the game. Needs the texture resource,
+     * subtype, list of creatures and soundmanager.
+     * @param resourceId
+     * @param type
+     * @param mCreatures
+     * @param soundManager
+     */
 	public Tower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager){
 		super(resourceId, TOWER, type);
 		this.soundManager = soundManager;
 		this.mCreatures = mCreatures;
 		rand = new Random();
 	}
-	public Tower(int resourceId, int type){
-		super(resourceId,TOWER, type);
-		rand = new Random();
-	}
 	
 	/**
 	 * Calculates special damage. Used by all towers that have frost,posion or fire damage
+     * @param tmpCreature
+     * @param aoeTower
+ 	 * @return damage factor
 	 */
 	private float specialDamage(Creature tmpCreature, boolean aoeTower) {
 		//If tower has frostdamage
@@ -104,7 +109,8 @@ public class Tower extends Sprite {
 	/**
 	 * Method that tracks a creature. It iterates over a list of creatures and picks
 	 * the first creature in the list that is within the range of the tower 
-	 * @param null 
+	 * @param nbrCreatures
+	 * @return nearest creature
 	 */
 	private Creature trackNearestEnemy(int nbrCreatures) {
 		Creature targetCreature = null;
@@ -131,6 +137,8 @@ public class Tower extends Sprite {
 	/**
 	 * Method that tracks all creatures that are in range of tower. It iterates over a list of creatures and 
 	 * picks all creatures in range.
+	 * @param nbrCreatures
+	 * @param doFullDamage
 	 */
 	private int trackAllNearbyEnemies(int nbrCreatures, boolean doFullDamage) {
 		int nbrOfHits = 0;
@@ -166,32 +174,15 @@ public class Tower extends Sprite {
 	 * Method that calculates the damage for a specific tower
 	 * depending on the upgrade level and a random integer
 	 * so the damage wont be predictable during game play
+	 * @param timeDeltaSeconds
+	 * @param nbrCreatures
 	 */
 	private void createProjectileDamage(float timeDeltaSeconds, int nbrCreatures){
-		// AOE tower uses this to create animate
-		if (esplodeGIB) {
-			if (this.tmpCoolDown <= this.coolDown/2) {
-				this.relatedShot.draw = false;
-				this.esplodeGIB = false;
-				this.relatedShot.resetShotCordinates();
-				this.relatedShot.scale = 1;
-				this.relatedShot.cFrame = 0;
-			}
-			else {
-				this.relatedShot.x = this.targetCreature.getScaledX();
-				this.relatedShot.y = this.targetCreature.getScaledY();
-		    	relatedShot.scaleSprite(this.rangeAOE);
-
-				//this.relatedShot.cFrame = (int)
-				//	(2*(this.relatedShot.getNbrOfFrames()-1)
-				//			* (1-tmpCoolDown/coolDown)) + 1;
-				this.relatedShot.cFrame = (int)
-					(
-							(this.relatedShot.getNbrOfFrames() - 1)*((coolDown-tmpCoolDown)/(coolDown/2))
-					);
-				this.relatedShot.cFrame++;
-				
-			}
+		if (ImpactdAnimate) {
+			float size = this.relatedShot.getWidth();
+			if (this.towerType == Tower.CANNON)
+				size = this.rangeAOE;
+			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, targetCreature);
 		}
 		//First we have to check if the tower is ready to fire
 		else if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
@@ -208,6 +199,8 @@ public class Tower extends Sprite {
 
 	/**
 	 * Method that updates the shot for the current tower
+	 * @param timeDeltaSeconds
+	 * @param nbrCreatures
 	 */
 	private void updateProjectile(float timeDeltaSeconds, int nbrCreatures) {
 
@@ -226,20 +219,18 @@ public class Tower extends Sprite {
 		}
 	}
 
+	/**
+	 * This runs when a tower hits a creature
+	 * @param nbrCreatures
+	 */
 	private void projectileHitsTarget(int nbrCreatures) {
 		this.tmpCoolDown = this.coolDown;
-
 		float damageFactor = specialDamage(this.targetCreature,false);
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 		targetCreature.damage(randomInt);
-		//IF A PROJECTILEAOE tower fires a shot we also have to damage surrounding creatures
-		if (this.towerType == this.PROJECTILEAOE){
+    	this.ImpactdAnimate = true;
+    	if (this.towerType == Tower.CANNON){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);
-	    	esplodeGIB = true;
-		}
-		else {
-			this.relatedShot.resetShotCordinates();
-			this.relatedShot.draw = false;
 		}
 	}
 	
@@ -250,42 +241,45 @@ public class Tower extends Sprite {
 	 * This method is only used by towers with direct aoe damage.
 	 * Not to be confused with towers that have projectiledamage
 	 */
-	private void createPureAOEDamage(int nbrCreatures){
-		if (this.tmpCoolDown <= this.coolDown/2) {
-			this.relatedShot.draw = false;
-			this.relatedShot.resetShotCordinates();
+	private void createPureAOEDamage(int nbrCreatures, float timeDeltaSeconds){
+		if (ImpactdAnimate) {
+			float size = this.range;
+			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, null);
 		}
-		else if (this.relatedShot.draw && this.tmpCoolDown-this.coolDown/2 <= 1f) {
-	    	this.relatedShot.opacity = this.tmpCoolDown-this.coolDown/2;
-		}
-		if (this.tmpCoolDown <= 0) {
+		else if (this.tmpCoolDown <= 0) {
 			if (trackAllNearbyEnemies(nbrCreatures,true) > 0) {
 				soundManager.playSound(0);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-				this.relatedShot.resetShotCordinates();
-				relatedShot.scaleSprite(this.range);
+				//relatedShot.scaleSprite(this.range);
+				ImpactdAnimate = true;
 			}
 		}
 	}	
 	
 
+	/**
+	 * Main function of the tower class. Find and kill creatures
+	 * @param timeDeltaSeconds
+	 * @param nbrCreatures
+	 */
 	public void attackCreatures(float timeDeltaSeconds, int nbrCreatures) {
 		// Decrease the coolDown variable
 		this.tmpCoolDown = this.tmpCoolDown - timeDeltaSeconds;
 
 		// This code is used by towers firing pure aoe damage.
-		if (this.towerType == this.PUREAOE) {
-			createPureAOEDamage(nbrCreatures);
+		if (this.towerType == Tower.AOE) {
+			createPureAOEDamage(nbrCreatures,timeDeltaSeconds);
 		}
-		else if (this.towerType == this.PROJECTILE || this.towerType == this.PROJECTILEAOE) {
+		else if (this.towerType == Tower.BUNKER || this.towerType == Tower.CANNON) {
 			createProjectileDamage(timeDeltaSeconds, nbrCreatures);
 		}
 	}
 	
 	/**
-	 * Make sound when projectile leaves tower
-	 */		
+	 * Init fire sequence. Show projectile and play sound
+	 * @param targetCreature
+	 */
 	private void towerStartFireSequence(Creature targetCreature) {
 		if (targetCreature != null) {
 			// play shot1.mp3
@@ -295,13 +289,6 @@ public class Tower extends Sprite {
 		}
 	}
 	
-	/**
-	 * Returns the cost of this tower
-	 */	
-	public int getPrice() {
-		return price;
-	}
-
 	/**
 	 * Given all variable this method will create a exaxt copy of
 	 * another tower
@@ -359,11 +346,14 @@ public class Tower extends Sprite {
 			this.relatedShot.setWidth(copyShot.getWidth());
 			this.relatedShot.setHeight(copyShot.getHeight());
 			this.relatedShot.setResourceId(copyShot.getResourceId());
+			this.relatedShot.setAnimationTime(copyShot.getAnimationTime());
 	}
-
+	
 	/**
-	 * Given a tower this method will create a new tower with the same
-	 * variables as the given one
+	 * Create new tower and place on map
+	 * @param clone
+	 * @param towerPlacement
+	 * @param mScaler
 	 */
 	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler) {
 		//Use the textureNames that we preloaded into the towerTypes at startup
@@ -393,35 +383,52 @@ public class Tower extends Sprite {
 				clone.getHeight(),
 		    	clone.relatedShot
 			);
-		
-		// This cannot be in the cloneTower function because
-		// then it breaks with TowerLoader.java
-
-		//this.setCurrentTexture(clone.getCurrentTexture());
-		//this.relatedShot.setCurrentTexture(clone.relatedShot.getCurrentTexture());
-		
 		this.draw = true;
 		this.x = towerPlacement.x;
 		this.y = towerPlacement.y;
 		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
 	}
+
+	//////////////////////////////////////////////
+	// Getter for tower
+	//////////////////////////////////////////////
 	
-	public int getTowerTypeId() {
-		//Log.d("TOWER", "arg returned: " + towerTypeId);
-		return towerTypeId;
-	}
-	public float getRange() {
-		return this.range;
-	}
-	public float getMinDamage() {
-		return this.minDamage;
-	}
-	public float getMaxDamage() {
-		return this.maxDamage;
-	}
-	public String getTitle() {
-		return this.title;
-	}
+	/**
+	 * Given a tower this method will create a new tower with the same
+	 * variables as the given one
+	 * @return
+	 */
+	public int getTowerTypeId() { return towerTypeId; }
+	
+	/**
+	 * Return range of this tower
+	 * @return
+	 */
+	public float getRange() { return this.range; }
+	
+	/**
+	 * Return minimum damage
+	 * @return
+	 */
+	public float getMinDamage() { return this.minDamage; }
+	
+	/**
+	 * Return maximum damage
+	 * @return
+	 */
+	public float getMaxDamage() { return this.maxDamage; }
+	
+	/**
+	 * Return title of tower
+	 * @return
+	 */
+	public String getTitle() { return this.title; }
+
+	/**
+	 * Returns the cost of this tower
+	 * @return price
+	 */	
+	public int getPrice() { return price; }
 	
 }

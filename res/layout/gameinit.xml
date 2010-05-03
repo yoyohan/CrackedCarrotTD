@@ -124,15 +124,15 @@
 	    >
 	        <Button
 	       		android:id="@+id/t2info"
-				android:layout_width="205dp"
-				android:layout_height="51dp"
+				android:layout_width="192dp"
+				android:layout_height="50dp"
 				android:scaleType="fitXY"
 	       		android:background="@drawable/t2_info" />
 
 	        <Button
         		android:id="@+id/inmenu6"
-				android:layout_width="51dp"
-				android:layout_height="51dp"
+				android:layout_width="64dp"
+				android:layout_height="50dp"
 				android:scaleType="fitXY"
         		android:background="@drawable/xml_button_game_back" />
     	</LinearLayout>    		
@@ -210,8 +210,8 @@
 	        <ImageView
 				android:id="@+id/enemyImVi"
 				android:paddingTop="0dp"
-				android:layout_width="35dp" 
-				android:layout_height="35dp"
+				android:layout_width="30dp" 
+				android:layout_height="30dp"
 				android:src="@drawable/bunny_pink_alive" >
 			</ImageView>
 

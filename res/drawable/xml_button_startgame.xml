@@ -3,12 +3,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android"> 
     <item android:state_focused="true" 
     	android:state_pressed="false" 
-    	android:drawable="@drawable/startgame_highlighted" /> 
+    	android:drawable="@drawable/m_newgame_3" /> 
     <item android:state_focused="true"
 		android:state_pressed="true" 
-		android:drawable="@drawable/startgame_pressed" /> 
+		android:drawable="@drawable/m_newgame_2" /> 
     <item android:state_focused="false" 
     	android:state_pressed="true" 
-    	android:drawable="@drawable/startgame_pressed" /> 
-    <item android:drawable="@drawable/startgame" /> 
+    	android:drawable="@drawable/m_newgame_2" /> 
+    <item android:drawable="@drawable/m_newgame_1" /> 
 </selector>

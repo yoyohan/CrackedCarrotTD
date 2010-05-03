@@ -1,10 +1,9 @@
 package com.crackedcarrot;
 
 import java.util.Random;
-
 import com.crackedcarrot.textures.TextureData;
 /**
-* Class defining creature in the game
+* Class defining a creature in the game
 */
 public class Creature extends Sprite{
 	//Player Ref
@@ -55,7 +54,6 @@ public class Creature extends Sprite{
 	protected float bDefault = 1;
 	// Creature id
 	protected int creatureIndex;
-
 	// Variables used for animation
     private Random rand;
 	protected float animationTime;
@@ -66,10 +64,20 @@ public class Creature extends Sprite{
 	private float spawnWayPointX;
 	private float spawnWayPointY;
 	
-    
+    /**
+     * Constructor. When a new creature is definced we will also
+     * send texturenumber, creaturesubtype, playerdata, soundmanager,
+     * waypoints, gameloop(for message parsing), creature index.
+     * @param resourceId
+     * @param type
+     * @param player
+     * @param soundMan
+     * @param wayP
+     * @param loop
+     * @param creatureIndex
+     */
 	public Creature(int resourceId, 
 					int type, 
-					int frames, 
 					Player player, 
 					SoundManager soundMan, 
 					Coords[] wayP, 
@@ -85,30 +93,17 @@ public class Creature extends Sprite{
 		this.wayP = wayP;
 		this.GL = loop;
 		this.creatureIndex = creatureIndex;
-	
 		rand = new Random();
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
-	
-	}
-	
-	//This is only used by the level constructor.
-	public Creature(int resourceId, int type){
-		super(resourceId, CREATURE, type);
-		this.draw = false;
-		this.dead = false;
-
 	}
 
-	public void updateWayPoint (){
-    	// Creature has reached is destination without being killed
-    	if (getNextWayPoint() +1 >= wayP.length){
-    		score();
-    	}
-    	else 		
-    		setNextWayPoint(getNextWayPoint() + 1);
-	}
-
+	/**
+	 * Method used to applie damage to this creature.
+	 * Will also send the amount of damage inflicted to 
+	 * the gameloop.
+	 * @param dmg
+	 */
 	public void damage(float dmg){
 		if (health > 0) {
 			dmg = health >= dmg ? dmg : health; 
@@ -120,39 +115,11 @@ public class Creature extends Sprite{
 		}
 	}
 	
-	public void setHealth(float health){
-		this.health = health;
-	}
-	
-	public void setSpawndelay(float f) {
-		this.spawndelay = f;
-	}
-	
-	public void setDeadResourceId(int mDeadResourceId) {
-		this.mDeadResourceId = mDeadResourceId;
-	}
-    
-	public int getDeadResourceId() {
-		return mDeadResourceId;
-	}
-
-	public void setGoldValue(int goldValue) {
-		this.goldValue = goldValue;
-	}
-
-	public void setVelocity(float velocity){
-		this.velocity = velocity;
-	}
-	
-	public void setDeadTexture(TextureData mDeadTexture) {
-		this.mDeadTextureData = mDeadTexture;
-	}
-
-	public boolean isCreatureFast() {
-		return creatureFast;
-	}
-
-	public void animate(float timeDeltaSeconds) {
+	/**
+	 * Calculate movement animation
+	 * @param timeDeltaSeconds
+	 */
+	private void animate(float timeDeltaSeconds) {
 		this.tmpAnimationTime -= timeDeltaSeconds;
 		if (tmpAnimationTime <= 0f) {
 			this.tmpAnimationTime = this.animationTime;
@@ -160,28 +127,11 @@ public class Creature extends Sprite{
 		}
 	}
 
-	private float getWayX(int i) {
-		float newsize = (this.getWidth()/2 - this.scale*this.getWidth()/2);
-		float cen_x = wayP[i].getX() + newsize;
-		return (cen_x/this.scale);
-	}
-	private float getWayY(int i) {
-		float newsize = (this.getHeight() - this.scale*this.getHeight());
-		float cen_y = wayP[i].getY() + newsize;
-		return (cen_y/this.scale);
-	}
-	
-	public float getScaledX() {
-		float cen_x  = x + this.getWidth()/2;
-		return (cen_x*this.scale);
-	}
-	public float getScaledY() {
-		float cen_y  = y + this.getHeight()/2;
-		return (cen_y*this.scale);
-	}
-
+	/**
+	 * Main function of the creature. Used by the gameloop 
+	 * @param timeDeltaSeconds
+	 */
 	public void update(float timeDeltaSeconds){
-	
 		//Time to spawn.
 		if (spawnWayPointX == this.x && spawnWayPointY == this.y) {
 			spawndelay -= timeDeltaSeconds;
@@ -191,7 +141,6 @@ public class Creature extends Sprite{
 				spawnWayPointY = 0;
 			}
 		}
-		
 		//If still alive move the creature.
 		float movement = 0;
 		if (draw && health > 0) {
@@ -206,19 +155,11 @@ public class Creature extends Sprite{
 		}
 	}
 	
-	private void die() {
-		this.dead = true;
-		setCurrentTexture(this.mDeadTextureData);
-		resetRGB();
-		player.moneyFunction(this.goldValue);
-		GL.updateCurrency();
-		// play died1.mp3
-		soundManager.playSound(10);
-		//we dont remove the creature from the gameloop just yet
-		//that is done when it has faded completely, see the fade method.
-		GL.creatureDiesOnMap(1);
-	}
-	
+	/**
+	 * Calculate movement depending on
+	 * speed and other effects.
+	 * @param timeDeltaSeconds
+	 */
 	private void move(float movement){
 		float yDistance = this.wayPointY - this.y+yoffset;
 		float xDistance = this.wayPointX - this.x+xoffset;
@@ -232,9 +173,50 @@ public class Creature extends Sprite{
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
 		}
+	}
 
+	/**
+	 * This method i used when a creature has reached a waypoint
+	 * either the next avaible waypoint will be selected or the
+	 * player will loose a life.
+	 */
+	private void updateWayPoint (){
+    	// Creature has reached is destination without being killed
+    	if (getNextWayPoint() +1 >= wayP.length){
+    		score();
+    		moveToWaypoint(0);
+    		setNextWayPoint(1);
+    	}
+    	else { 		
+    		moveToWaypoint(getNextWayPoint());
+    		setNextWayPoint(getNextWayPoint() + 1);
+    	}
+    }
+
+	/**
+	 * When a creature is killed by a tower this function
+	 * will be called.
+	 */
+	private void die() {
+		this.dead = true;
+		setCurrentTexture(this.mDeadTextureData);
+		this.setRGB();
+		player.moneyFunction(this.goldValue);
+		GL.updateCurrency();
+		// play died1.mp3
+		soundManager.playSound(10);
+		//we dont remove the creature from the gameloop just yet
+		//that is done when it has faded completely, see the fade method.
+		GL.creatureDiesOnMap(1);
 	}
 	
+	/**
+	 * Method to check if creature is affected by any tower effects
+	 * For example if creature is hit by a frost bolt we want to make
+	 * the creature walk slower and turn blue.
+	 * @param timeDeltaSeconds
+	 * @return movement speed
+	 */
 	private float applyEffects(float timeDeltaSeconds){
 		float tmpR = this.rDefault;
 		float tmpG = this.gDefault;
@@ -244,7 +226,7 @@ public class Creature extends Sprite{
 		int slowAffected = 1;
 		if (creatureFrozenTime > 0) {
 			slowAffected = 2;
-    		creatureFrozenTime = creatureFrozenTime - (timeDeltaSeconds);
+    		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
     		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
     		tmpR = tmpR*tmpRGB;
     		tmpG = tmpG*tmpRGB;
@@ -270,6 +252,11 @@ public class Creature extends Sprite{
 		return movement;
 	}
 	
+	/**
+	 * Reduce opacity until creature is invisible and
+	 * then notify gameloop.
+	 * @param reduceOpacity
+	 */
 	private void fade(float reduceOpacity){
 		this.opacity -= reduceOpacity;
 		if (opacity <= 0.0f) {
@@ -279,56 +266,39 @@ public class Creature extends Sprite{
 		}
 	}
 	
+	/**
+	 * A creature has reached the last waypoint and therefore we
+	 * will remove one life from player
+	 */
 	private void score(){
-		//draw = false;
 		player.damage(1);
 		GL.updatePlayerHealth();
-		//GL.subtractCreature(1);
-		// Testar hur spelet blir om en creature som inte har d�tt b�rjar om l�ngst upp
-		moveToWaypoint(0);
-		setNextWayPoint(1);
 	}
-	
-	public void SetWayPoints(Coords[] waypoints){
-		this.wayP = waypoints;
-	}
-	
+
+	/**
+	 * When we want to teleport a creature to a specific waypoint. Used when creature needs 
+	 * to restart
+	 * @param p
+	 */
 	public void moveToWaypoint(int p){
 		this.x = this.getWayX(p);
 		this.y = this.getWayY(p);
 	}
 
-	public void setNextWayPoint(int nextWayPoint) {
-		this.nextWayPoint = nextWayPoint;
-		this.wayPointX = this.getWayX(nextWayPoint);
-		this.wayPointY = this.getWayY(nextWayPoint);
-	}
-
-	public int getNextWayPoint() {
-		return nextWayPoint;
-	}
-
-	public TextureData getDeadTexture() {
-		return mDeadTextureData;
-	}
-
-	public void setXOffset(int xoffset) {
-		this.xoffset = xoffset;
-	}
-
-	public void setYOffset(int yoffset) {
-		this.yoffset = yoffset;
-	}
-
-	public void setAllDead(boolean allDead) {
-		this.allDead = allDead;
-	}
-
+	/**
+	 * Affect this creature if possible with frost for the submitted time
+	 * @param time
+	 */
 	public void affectWithFrost(int time) {
 		if (!this.creatureFrostResistant)
 			this.creatureFrozenTime = time;
 	}
 
+	/**
+	 * Affect this creature if possible with poisondamage for the submitted time
+	 * @param poisontime
+	 * @param poisonDamage
+	 */
 	public void affectWithPoison(int poisonTime, int poisonDamage) {
 		if (!this.creaturePoisonResistant) {
 			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
@@ -338,35 +308,57 @@ public class Creature extends Sprite{
 			this.creaturePoisonTime = poisonTime;
 		}
 	}
-
-	// Set rgb to new value
-	public void setRGB(float rDefault, float gDefault, float bDefault) {
-		this.rDefault = rDefault;
-		this.gDefault = gDefault;
-		this.bDefault = bDefault;
 	
-	}
+	//////////////////////////////////////////////
+	//Below are all setters for the creature class
+	//////////////////////////////////////////////
+
+	/**
+	 * Setter for health variable
+	 * @param health
+	 */
+	public void setHealth(float health){ this.health = health; }
 	
-	// Needed to reset rgb to default value
-	private void resetRGB() {
-		this.r = this.rDefault;
-		this.g = this.gDefault;
-		this.b = this.bDefault;
-	}
+	/**
+	 * Setter for spawndelay. Time between each creature enters the map
+	 * @param delay
+	 */
+	public void setSpawndelay(float delay) { this.spawndelay = delay; }
+	
+	/**
+	 * Setter for texture of a dead creature
+	 * @param mDeadResourceId
+	 */
+	public void setDeadResourceId(int mDeadResourceId) { this.mDeadResourceId = mDeadResourceId; }
 
-	public void setDead(boolean b) {
-		this.dead = b;
-	}
+	/**
+	 * Setter for TextureData object for an creature.
+	 * @param mDeadTexture
+	 */
+	public void setDeadTexture(TextureData mDeadTexture) { this.mDeadTextureData = mDeadTexture; }
 
-	// This setters is used by the waveloader. Needed to show correct creature
-	public void setDisplayResourceId(int resID) {
-		this.mDisplayResourceId = resID;
-	}
-	public int getDisplayResourceId() {
-		return this.mDisplayResourceId;
-	}
+	/**
+	 * Setter for the gained gold when this creaute dies. 
+	 * @param goldValue
+	 */
+	public void setGoldValue(int goldValue) { this.goldValue = goldValue; }
 
-	// Defines animationtime for the walk of a creature
+	/**
+	 * Function to set speed for this creature
+	 * @param velocity
+	 */
+	public void setVelocity(float velocity){ this.velocity = velocity; }
+
+	/**
+	 * This setters is needed to show creature between levels
+	 * @param resID
+	 */
+	public void setDisplayResourceId(int resID) { this.mDisplayResourceId = resID; }
+
+	/**
+	 * Defines time for walkanimation of a creature depending on speed.
+	 * @param fast
+	 */
 	public void setAnimationTime(boolean fast) {
 		if (fast)
 			this.animationTime = 0.15f;
@@ -374,10 +366,157 @@ public class Creature extends Sprite{
 			this.animationTime = 0.3f;
 	}
 
-	//This is the spawnpoint of a creature
+	/**
+	 * This setter is used by the renderer when a creature dies
+	 * @param dead
+	 */
+	public void setDead(boolean dead) { this.dead = dead; }
+	
+	/**
+	 * Define the default rgb. When a creature is frost or poisonresistant
+	 * the color of the creature will be different.
+	 * @param rDefault
+	 * @param gDefault
+	 * @param bDefault
+	 */
+	public void setRGB(float rDefault, float gDefault, float bDefault) {
+		this.rDefault = rDefault;
+		this.gDefault = gDefault;
+		this.bDefault = bDefault;
+	}
+
+	/**
+	 * Needed to reset rgb to default value
+	 */
+	private void setRGB() {
+		this.r = this.rDefault;
+		this.g = this.gDefault;
+		this.b = this.bDefault;
+	}
+
+	/**
+	 * To make the walking of creatures more intresting
+	 * we have a this setter to change standard position
+	 * of a creature
+	 * @param xoffset
+	 */
+	public void setXOffset(int xoffset) { this.xoffset = xoffset; }
+
+	/**
+	 * To make the walking of creatures more intresting
+	 * we have a this setter to change standard position
+	 * of a creature
+	 * @param yoffset
+	 */
+	public void setYOffset(int yoffset) { this.yoffset = yoffset; }
+	
+	/**
+	 * When all creatures are dead we will set this
+	 * varibale and then start fading the corpses away.
+	 * @param allDead
+	 */
+	public void setAllDead(boolean allDead) { this.allDead = allDead; }
+	
+	/**
+	 * Given a waypoint number we will set next target for this creature
+	 * @param nextWayPoint
+	 */
+	public void setNextWayPoint(int nextWayPoint) {
+		this.nextWayPoint = nextWayPoint;
+		this.wayPointX = this.getWayX(nextWayPoint);
+		this.wayPointY = this.getWayY(nextWayPoint);
+	}
+
+	/**
+	 * This is the spawnpoint of a creature 
+	 */
 	public void setSpawnPoint() {
 		this.spawnWayPointX = this.getWayX(0);
 		this.spawnWayPointY = this.getWayY(0);
 	}
+	
+	/**
+	 * Set all waypoints this creature will travel through
+	 * @param waypoints
+	 */
+	public void SetWayPoints(Coords[] waypoints){
+		this.wayP = waypoints;
+	}
+	
+	////////////////////////////////
+	// All getters
+	////////////////////////////////
+	
+	/**
+	 * Get resource id of dead texture
+	 * @return resource id
+	 */
+	public int getDeadResourceId() { return mDeadResourceId; }
 
+	/**
+	 * Get resource id of display texture
+	 * @return resource id
+	 */
+	public int getDisplayResourceId() {	return this.mDisplayResourceId;	}
+
+	/**
+	 * Get resource id of display texture
+	 * @return waypoint number
+	 */
+	public int getNextWayPoint() { return nextWayPoint;	}
+
+	/**
+	 * @return TextureData object of dead creauture
+	 */
+	public TextureData getDeadTexture() { return mDeadTextureData; }
+
+	/**
+	 * Returns the x coordinat for the requested waypoint
+	 * @param i
+	 * @return x pos
+	 */
+	private float getWayX(int i) {
+		float newsize = (this.getWidth()/2 - this.scale*this.getWidth()/2);
+		float cen_x = wayP[i].getX() + newsize;
+		return (cen_x/this.scale);
+	}
+
+	/**
+	 * Returns the y coordinat for the requested waypoint
+	 * @param i
+	 * @return y pos
+	 */
+	private float getWayY(int i) {
+		float newsize = (this.getHeight() - this.scale*this.getHeight());
+		float cen_y = wayP[i].getY() + newsize;
+		return (cen_y/this.scale);
+	}
+
+	/**
+	 * When a tower asks for creature position this method will return the position
+	 * of this creature in a way that the tower can use
+	 * @return scaled x pos
+	 */
+	public float getScaledX() {
+		float cen_x  = x + this.getWidth()/2;
+		return (cen_x*this.scale);
+	}
+
+	/**
+	 * When a tower asks for creature position this method will return the position
+	 * of this creature in a way that the tower can use
+	 * @return scaled y pos
+	 */
+	public float getScaledY() {
+		float cen_y  = y + this.getHeight()/2;
+		return (cen_y*this.scale);
+	}
+	
+	/**
+	 * Return if this creature is fast or not
+	 * @return true if fast
+	 */
+	public boolean isCreatureFast() {
+		return creatureFast;
+	}
 }

@@ -3,14 +3,14 @@ Total number of towers::4
 ////////////////////////////////////
 // Bunker
 ////////////////////////////////////
-texture::bunker2
+texture::bunker1
 title::Bunker Lvl 1
 price::10
 resell value::8
-minDamage::2
-maxDamage::5
-Shot-velocity::700
-cooldown between shots::0.2
+minDamage::10
+maxDamage::12
+Shot-velocity::400
+cooldown between shots::0.3
 hasFrostDamage::false
 frostTime(sec)::5
 hasFireDamage::false
@@ -23,7 +23,8 @@ upgradelink2::-1
 range::100
 aoe range:: 0
 aoe damage::0
-Shot texture::cannonball
+Shot animation time::0.2
+Shot texture::throwingstar
 ////////////////////////////////////
 // Cannon tower
 ////////////////////////////////////
@@ -47,7 +48,8 @@ upgradelink2::-1
 range::150
 aoe range:: 70
 aoe damage::10 
-Shot texture::animate
+Shot animation time::0.4
+Shot texture::cannonshot
 ////////////////////////////////////
 // Posiontower
 ////////////////////////////////////
@@ -58,7 +60,7 @@ resell value::8
 minDamage::20
 maxDamage::50
 Shot-velocity::250
-cooldown between shots::2
+cooldown between shots::2.5
 hasFrostDamage::false
 frostTime(sec)::5
 hasFireDamage::false
@@ -71,7 +73,8 @@ upgradelink2::-1
 range::100
 aoe range::0
 aoe damage::0 
-Shot texture::poison
+Shot animation time::0.4
+Shot texture::poisoncloud
 ////////////////////////////////////
 // Magic tower
 ////////////////////////////////////
@@ -95,5 +98,6 @@ upgradelink2::-1
 range::400
 aoe range:: 0
 aoe damage::0 
-Shot texture::cannonball
+Shot animation time::0.1
+Shot texture::lightningball
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
