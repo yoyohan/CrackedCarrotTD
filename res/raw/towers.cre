@@ -7,7 +7,7 @@ texture::bunker1
 title::Bunker Lvl 1
 price::10
 resell value::8
-minDamage::8
+minDamage::10
 maxDamage::12
 Shot-velocity::400
 cooldown between shots::0.3
@@ -48,7 +48,7 @@ upgradelink2::-1
 range::150
 aoe range:: 70
 aoe damage::10 
-Shot animation time::0.7
+Shot animation time::0.4
 Shot texture::cannonshot
 ////////////////////////////////////
 // Posiontower
@@ -73,8 +73,8 @@ upgradelink2::-1
 range::100
 aoe range::0
 aoe damage::0 
-Shot animation time::0.9
-Shot texture::poison
+Shot animation time::0.4
+Shot texture::poisoncloud
 ////////////////////////////////////
 // Magic tower
 ////////////////////////////////////
@@ -98,6 +98,6 @@ upgradelink2::-1
 range::400
 aoe range:: 0
 aoe damage::0 
-Shot animation time::0.5
-Shot texture::cannonball
+Shot animation time::0.1
+Shot texture::lightningball
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
