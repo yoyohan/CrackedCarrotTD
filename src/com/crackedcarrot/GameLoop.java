@@ -31,7 +31,6 @@ public class GameLoop implements Runnable {
     
     private long mLastTime;
     
-    private int    resumes;
     private String resumeTowers = "";
 
     private float startCreatureHealth;
@@ -52,8 +51,8 @@ public class GameLoop implements Runnable {
     
     private int progressbarLastSent = 0;
     
-    private boolean   pause = false;
-    private Semaphore pauseSemaphore = new Semaphore(1);
+    private static boolean   pause = false;
+    private static Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -549,8 +548,7 @@ public class GameLoop implements Runnable {
     	return s;
     }
     
-    public void resume(int resumes, int level, String towers) {
-    	this.resumes = resumes;
+    public void resume(int level, String towers) {
     	this.lvlNbr = level;
     	this.resumeTowers = towers;
     }
@@ -606,7 +604,7 @@ public class GameLoop implements Runnable {
 		pause = true;
 	}
 	
-	public void unPause() {
+	public static void unPause() {
 		pause = false;
 		pauseSemaphore.release();
 	}
