@@ -295,10 +295,6 @@ public class GameLoop implements Runnable {
 	    			pauseSemaphore.release();
 				}
     			
-    			//Get the time after an eventual pause and add this to the mLastTime variable
-    			final long time2 = SystemClock.uptimeMillis();
-    			final long pauseTime = time2 - time;
-
 	            // Used to calculate creature movement.
 				long timeDelta = time - mLastTime;
 	            // To save some cpu we will sleep the
@@ -315,7 +311,7 @@ public class GameLoop implements Runnable {
 
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time + pauseTime;
+	            mLastTime = time;
 	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {
