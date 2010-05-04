@@ -200,13 +200,6 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the creature image
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
-			// Show resumes-left dialog.
-	    	if (resumes > 0) {
-	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resumes, 0);
-	    		resumes = 0;
-	    		waitForDialogClick();
-	    	}
-		
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
 		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
