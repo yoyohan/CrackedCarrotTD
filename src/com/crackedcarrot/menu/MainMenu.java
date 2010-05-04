@@ -1,6 +1,8 @@
 package com.crackedcarrot.menu;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -10,11 +12,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.multiplayer.*;
 
 public class MainMenu extends Activity {
+	
+	
+	Dialog dialog;
+	private int resumes;
+
 	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -25,7 +33,57 @@ public class MainMenu extends Activity {
     		return true;
        	}
     	return super.onKeyDown(keyCode, event);
-    } 
+    }
+    
+    
+    	// Shows the "New Game or Resume old game?"-dialog.
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	switch (id) {
+		    case 1:
+		    	dialog = new Dialog(this,R.style.NextlevelTheme);
+		        dialog.setContentView(R.layout.levelresume);
+		    	dialog.setCancelable(true);
+
+		    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
+		    	textView.setText("Resume last game? You have " + (3 - resumes) + " resume(s) left.");
+
+		    	Button buttonStartGame = (Button) dialog.findViewById(R.id.Resume_StartGame);
+		        buttonStartGame.setOnClickListener(new OnClickListener() {
+		        	public void onClick(View v) {
+		        		dialog.dismiss();
+		        		Intent StartGame = new Intent(v.getContext(),MapOp.class);
+		        		startActivity(StartGame);
+		        	}
+		        });
+
+		    	Button buttonResume = (Button) dialog.findViewById(R.id.Resume_Resume);
+		        buttonResume.setOnClickListener(new OnClickListener() {
+		        	public void onClick(View v) {
+		        		//Send the level variable to the game loop and start it
+		        		dialog.dismiss();
+		        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
+		        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
+		        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
+		        		startActivity(StartGame);
+		        	}
+		        });
+		        
+		        dialog.setOnDismissListener(
+		    		new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							// nothing. dialog is already closed.
+						}
+		    		});
+		        
+		    	break;
+		    	
+		    default:
+		    	Log.d("MAINMENU", "onCreateDialog got unknown dialog id: " + id);
+		        dialog = null;
+    	}
+    	return dialog;
+    }
 
 
 	/** Called when the activity is first created. */
@@ -41,37 +99,19 @@ public class MainMenu extends Activity {
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		//Intent StartGame = new Intent(MainMenu.this,StartGame.class);
-        		//startActivity(StartGame);
-        		Intent StartGame = new Intent(v.getContext(),MapOp.class);
-        		startActivity(StartGame);
+            	// See if there's any old game saved that can be resumed.
+            	SharedPreferences resume = getSharedPreferences("resume", 0);
+            	resumes = resume.getInt("resumes", 0);
+            	
+            	if (resumes > -1 && resumes < 3) {
+            		showDialog(1);
+            	} else {
+            		Intent StartGame = new Intent(v.getContext(),MapOp.class);
+            		startActivity(StartGame);
+            	}
         	}
         });
         
-        Button ResumeButton = (Button)findViewById(R.id.Resume);
-    	View ResumeWrap = (View) findViewById(R.id.ResumeWrap);
-
-        	// See if there's any old game saved that can be resumed.
-        	SharedPreferences resume = getSharedPreferences("resume", 0);
-        	int resumes = resume.getInt("resumes", 0);
-
-       	if (resumes > -1 && resumes < 3) {
-	        ResumeButton.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		//Send the level variable to the game loop and start it
-	        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
-	        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
-	        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
-	        		startActivity(StartGame);
-	        	}
-	        });
-        	ResumeButton.setEnabled(true);
-        } else {
-        	ResumeButton.setEnabled(false);
-        	ResumeButton.setVisibility(View.GONE);
-        	ResumeWrap.setVisibility(View.GONE);
-        }
-
         Button OptionsButton = (Button)findViewById(R.id.Options);
         OptionsButton.setOnClickListener(new OnClickListener() {
         	
@@ -106,33 +146,10 @@ public class MainMenu extends Activity {
     @Override
     public void onRestart() {
         super.onRestart();
-
-    	// See if there's any old game saved that can be resumed.
-    	SharedPreferences settings = getSharedPreferences("Resume", 0);
-    	int resume = settings.getInt("Resume", 0);
-
-        Button ResumeButton = (Button)findViewById(R.id.Resume);
-    	View   ResumeWrap = (View) findViewById(R.id.ResumeWrap);
-    	
-       	if (resume > -1 && resume < 4) {
-	        ResumeButton.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		//Send the level variable to the game loop and start it
-	        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
-	        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
-	        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
-	        		startActivity(StartGame);
-	        	}
-	        });
-        	ResumeButton.setEnabled(true);
-        	ResumeButton.setVisibility(View.VISIBLE);
-        	ResumeWrap.setVisibility(View.VISIBLE);
-        } else {
-        	ResumeButton.setEnabled(false);
-        	ResumeButton.setVisibility(View.GONE);
-        	ResumeWrap.setVisibility(View.GONE);
-        }
-    	
+        
+        	// Update the resumes variable in case it's changed.
+    	SharedPreferences resume = getSharedPreferences("resume", 0);
+    	resumes = resume.getInt("resumes", 0);
     }
     
 }
