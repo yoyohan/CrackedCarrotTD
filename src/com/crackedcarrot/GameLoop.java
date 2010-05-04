@@ -51,8 +51,8 @@ public class GameLoop implements Runnable {
     
     private int progressbarLastSent = 0;
     
-    private boolean   pause = false;
-    private Semaphore pauseSemaphore = new Semaphore(1);
+    private static boolean   pause = false;
+    private static Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -608,7 +608,7 @@ public class GameLoop implements Runnable {
 		pause = true;
 	}
 	
-	public void unPause() {
+	public static void unPause() {
 		pause = false;
 		pauseSemaphore.release();
 	}
