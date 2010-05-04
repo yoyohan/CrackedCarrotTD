@@ -300,11 +300,7 @@ public class GameLoop implements Runnable {
     			final long pauseTime = time2 - time;
 
 	            // Used to calculate creature movement.
-				final long timeDelta = time - mLastTime;
-	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time + pauseTime;
-
+				long timeDelta = time - mLastTime;
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
@@ -314,8 +310,12 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            }
-	            
+	            } else 				
+	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
+
+				final float timeDeltaSeconds = 
+	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
+	            mLastTime = time + pauseTime;
 	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {

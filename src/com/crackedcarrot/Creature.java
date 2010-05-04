@@ -188,7 +188,6 @@ public class Creature extends Sprite{
     		setNextWayPoint(1);
     	}
     	else { 		
-    		moveToWaypoint(getNextWayPoint());
     		setNextWayPoint(getNextWayPoint() + 1);
     	}
     }
