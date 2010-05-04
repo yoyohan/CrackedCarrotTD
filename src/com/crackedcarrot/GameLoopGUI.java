@@ -26,7 +26,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -68,7 +67,6 @@ public class GameLoopGUI {
     final int DIALOG_LOST_ID        = 3;
     final int DIALOG_HIGHSCORE_ID   = 4;
     final int DIALOG_QUIT_ID        = 5;
-    final int DIALOG_RESUMESLEFT_ID = 6;
     final int DIALOG_PAUSE_ID       = 7;
     
     final int GUI_PLAYERMONEY_ID     = 10;
@@ -256,7 +254,6 @@ public class GameLoopGUI {
         infoButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		gameInit.gameLoop.pause();
         		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
         		gameInit.startActivity(ShowInstr);
         	}
@@ -339,7 +336,6 @@ public class GameLoopGUI {
 	        infoButton2.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
-	        		gameInit.gameLoop.pause();
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
 	        		gameInit.startActivity(ShowInstr);
 	        	}
@@ -430,22 +426,6 @@ public class GameLoopGUI {
 	    	
 	    	return dialogQuit;
 	    	//break;
-	    	
-	    case DIALOG_RESUMESLEFT_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levelresume);
-	    	dialog.setCancelable(false);
-	    	// First button
-	    	Button button = (Button) dialog.findViewById(R.id.LevelResume_OK);
-	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
-	    	textView.setText("You have " + (3 - resume) + " resume(s) left.");
-	        button.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		gameInit.gameLoop.dialogClick();
-	        		dialog.dismiss();
-	        	}
-	        });
-	    	break;
 	    	
 	    case DIALOG_PAUSE_ID:
 	    	dialogPause = new Dialog(gameInit, R.style.InGameMenu);
@@ -612,7 +592,7 @@ public class GameLoopGUI {
 	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-	        	     if (settings.getBoolean("optionsNextLevel", false)) {
+	        	     if (settings.getBoolean("optionsNextLevel", true)) {
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
@@ -630,10 +610,6 @@ public class GameLoopGUI {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
 	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
-	        		 break;
-	        	 case DIALOG_RESUMESLEFT_ID:
-	        		 resume = msg.arg1;
-	        		 gameInit.showDialog(DIALOG_RESUMESLEFT_ID);
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:

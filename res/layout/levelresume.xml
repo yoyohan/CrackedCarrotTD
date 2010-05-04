@@ -1,45 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="200dp"
-    android:layout_height="120dp">
+	android:gravity="center"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
 
- 	<LinearLayout
-    	android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+	<LinearLayout
+    	android:orientation="vertical"
+    	android:gravity="center"
+    	android:layout_width="200dp"
+    	android:layout_height="150dp" >
 
-		<ImageView
-			android:src="@drawable/bunny_pink_alive"
-			android:gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" />
-		<TextView
-			android:id="@+id/LevelResume_Text"
-			android:text="You have xxx resume(s) left."
-			android:textColor="#000000"
-			android:textStyle="bold"
-			android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" />
-	</LinearLayout>
+		<LinearLayout
+    		android:orientation="horizontal"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="50dp" >
 	
- 	<LinearLayout
-    	android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+			<ImageView
+				android:src="@drawable/bunny_pink_alive"
+				android:gravity="center"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1" />
+			<TextView
+				android:id="@+id/LevelResume_Text"
+				android:text="You have xxx resume(s) left."
+				android:textColor="#000000"
+				android:textStyle="bold"
+				android:gravity="center"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1" />
+		</LinearLayout>
+		
+		<LinearLayout
+    		android:orientation="horizontal"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="50dp" >
+	        
+	        <Button
+	        	android:id="@+id/Resume_StartGame"
+	        	android:layout_width="128dp"
+				android:layout_height="34dp"
+		   		android:scaleType="fitXY"
+				android:background="@drawable/xml_button_startgame" />
 	
-		<Button
-			android:text="OK"
-			android:id="@+id/LevelResume_OK"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" />
+		</LinearLayout>
+	
+		<LinearLayout
+    		android:orientation="horizontal"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="50dp" >
+		
+			<Button
+				android:id="@+id/Resume_Resume"
+	            android:layout_width="128dp"
+				android:layout_height="34dp"
+			    android:scaleType="fitXY"
+		    	android:background="@drawable/xml_button_resume" />
+	            
+		</LinearLayout>
+		
 	</LinearLayout>
 		
 </LinearLayout>
