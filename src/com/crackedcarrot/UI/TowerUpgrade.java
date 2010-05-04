@@ -28,75 +28,45 @@ public class TowerUpgrade{
 	private Coords g;
 	
 	private ShowUI showRunner;
-	private HideUI hideRunner;
+	private boolean runShow;
 	private Coords coords;
 	
 	public TowerUpgrade(Scaler s){
-		this.s = s;
-
+		this.s = s;		
+		Coords co = this.s.scale(120, 120);
 		
-		currentTower   = new Sprite(R.drawable.tower1, Sprite.UI, 1);
-		currentTower.x = 0; currentTower.y = 0; currentTower.z = 0;		
-		Coords co = this.s.scale(60, 60);
+		currentBackground  = initSprite(R.drawable.upgrade_ui_background, 0, co, 0.5f, 0.5f, 0.5f);
+		upgradeABackground = initSprite(R.drawable.upgrade_ui_background, 0, co, 0.5f, 0.5f, 0.5f);
+		upgradeBBackground = initSprite(R.drawable.upgrade_ui_background, 0, co, 0.5f, 0.5f, 0.5f);
+		destroyBackground  = initSprite(R.drawable.upgrade_ui_background, 0, co, 0.5f, 0.5f, 0.5f);
 		
-		currentTower.setWidth(co.getX());
-        currentTower.setHeight(co.getY());
-        currentTower.draw = false;
-        
-        currentTower.r = 0.0f;
-        currentTower.g = 0.0f;
-        currentTower.b = 0.0f;
-        currentTower.opacity = 0.0f;
-		
-		upgradeA  = new Sprite(R.drawable.tower1, Sprite.UI, 1);
-		upgradeA.x = 0; upgradeA.y = 0; upgradeA.z = 0;
 		co = this.s.scale(60, 60);
-		upgradeA.setWidth(co.getX());
-		upgradeA.setHeight(co.getY());
-		upgradeA.draw = false;
-        
-		upgradeA.r = 1.0f;
-		upgradeA.g = 1.0f;
-		upgradeA.b = 1.0f;
-		upgradeA.opacity = 0.0f;
-        
+		currentTower = initSprite(R.drawable.tower1, 1, co, 1.0f, 1.0f, 1.0f);
+		upgradeA	 = initSprite(R.drawable.tower1, 1, co, 1.0f, 1.0f, 1.0f);
+		upgradeB 	 = initSprite(R.drawable.tower1, 1, co, 1.0f, 1.0f, 1.0f);
+		destroyTower = initSprite(R.drawable.destroy_tower, 1, co, 1.0f, 1.0f, 1.0f);
 		
-		upgradeB = new Sprite(R.drawable.tower1, Sprite.UI, 1);
-		upgradeB.x = 0; upgradeB.y = 0; upgradeB.z = 0;
-		co = this.s.scale(60, 60);
-		upgradeB.setWidth(co.getX());
-		upgradeB.setHeight(co.getY());
-		upgradeB.draw = false;
+		showRunner = new ShowUI();		
+	}
+	
+	private Sprite initSprite(int resource, int subtype, Coords size, float r, float g, float b){
+		Sprite rSprite   = new Sprite(resource, Sprite.UI, subtype);
+		rSprite.x = 0; rSprite.y = 0; rSprite.z = 0;		
+		
+		rSprite.setWidth(size.getX());
+        rSprite.setHeight(size.getY());
+        rSprite.draw = false;
         
-		upgradeB.r = 1.0f;
-		upgradeB.g = 1.0f;
-		upgradeB.b = 1.0f;
-		upgradeB.opacity = 0.0f;
-		
-		
-		destroyTower = new Sprite(R.drawable.destroy_tower, Sprite.UI, 1);
-		destroyTower.x = 0; destroyTower.y = 0; destroyTower.z = 0;
-		co = this.s.scale(60, 60);
-		destroyTower.setWidth(co.getX());
-		destroyTower.setHeight(co.getY());
-		destroyTower.draw = false;
+        rSprite.r = r;
+        rSprite.g = g;
+        rSprite.b = b;
+        rSprite.opacity = 0.0f;
         
-		destroyTower.r = 1.0f;
-		destroyTower.g = 1.0f;
-		destroyTower.b = 1.0f;
-		destroyTower.opacity = 0.0f;
-				
-		showRunner = new ShowUI();
-		hideRunner = new HideUI();
-		
+        return rSprite;
 	}
 	
 	public ShowUI getShowRunner(){
 		return showRunner;
-	}
-	
-	public HideUI getHideRunner(){
-		return hideRunner;
 	}
 	
 	public Sprite[] getUISpritesToRender(){
@@ -254,6 +224,16 @@ public class TowerUpgrade{
 			this.destroyTower.y = coords.y;
 			Log.d("TOWER UPGRADE","Centre, Centre, Away from the edges of the map");
 		}
+		
+		this.currentBackground.x = currentTower.x;
+		this.currentBackground.y = currentTower.y;
+		this.upgradeABackground.x = upgradeA.x;
+		this.upgradeABackground.y = upgradeA.y;
+		this.upgradeBBackground.x = upgradeB.x;
+		this.upgradeABackground.y = upgradeB.y;
+		this.destroyBackground.x = destroyTower.x;
+		this.destroyBackground.y = destroyTower.y;
+		
 	}
 	
 	private class ShowUI implements Runnable{
@@ -263,7 +243,7 @@ public class TowerUpgrade{
 			if(currentTower.draw == true)
 				return;
 			
-			int moveInc = (int) (currentTower.getWidth() / 10);
+			runShow = true;
 			
 			currentTower.draw = true;
 			currentTower.opacity = 0.0f;
@@ -276,17 +256,39 @@ public class TowerUpgrade{
 					
 			destroyTower.draw = true;
 			destroyTower.opacity = 0.0f;
-
+			
+			currentBackground.draw = true;
+			currentBackground.opacity = 0.0f;
+			
+			upgradeABackground.draw = true;
+			upgradeABackground.opacity = 0.0f;
+			
+			upgradeBBackground.draw = true;
+			upgradeBBackground.opacity = 0.0f;
+			
+			destroyBackground.draw = true;
+			destroyBackground.opacity = 0.0f;
+			
+			SystemClock.sleep(500);
+			
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
 			while((currentTime - startTime) < 500){
+				if(runShow == false)
+					return;
+				
 				if((currentTime - lastUpdateTime) > 50){
 					currentTower.opacity += 0.1f;
 					upgradeA.opacity += 0.1f;
 					upgradeB.opacity += 0.1f;
 					destroyTower.opacity += 0.1f;
-
+					
+					currentBackground.opacity += 0.1f;
+					upgradeABackground.opacity += 0.1f;
+					upgradeBBackground.opacity += 0.1f;
+					destroyBackground.opacity += 0.1f;
+					
 					lastUpdateTime = currentTime;
 				}
 				
@@ -298,58 +300,37 @@ public class TowerUpgrade{
 			upgradeA.opacity = 1.0f;
 			upgradeB.opacity = 1.0f;
 			destroyTower.opacity = 1.0f;
-		}
-	}
-	private class HideUI implements Runnable{
-		//@Override
-		public void run() {
 			
-			if(currentTower.draw == false)
-				return;
-
-			startTime = SystemClock.uptimeMillis();
-			currentTime = SystemClock.uptimeMillis();
-			lastUpdateTime = currentTime;
-			while((currentTime - startTime) < 500){
-				if((currentTime - lastUpdateTime) > 50){
-					currentTower.opacity -= 0.1f;
-					upgradeA.opacity -= 0.1f;
-					upgradeB.opacity -= 0.1f;
-					destroyTower.opacity -= 0.1f;
-
-					lastUpdateTime = currentTime;
-				}
-				SystemClock.sleep(10);
-				currentTime = SystemClock.uptimeMillis();
-			}
-			
-			currentTower.opacity = 0.0f;
-			upgradeA.opacity = 0.0f;
-			upgradeB.opacity = 0.0f;
-			destroyTower.opacity = 0.0f;
-			
-			currentTower.draw = false;
-			upgradeA.draw = false;
-			upgradeB.draw = false;
-			destroyTower.draw = false;
-
+			currentBackground.opacity = 1.0f;
+			upgradeABackground.opacity = 1.0f;
+			upgradeBBackground.opacity = 1.0f;
+			destroyBackground.opacity = 1.0f;
 		}
 	}
 
-	public boolean upgradeAClicked(int x, int y) {
+	public boolean onUpgradeA(int x, int y) {
 		
 		return x >= upgradeA.x && x <= upgradeA.x + upgradeA.getWidth() &&
 			   y >= upgradeA.y && y <= upgradeA.y + upgradeA.getHeight();
 	}
 
-	public boolean upgradeBClicked(int x, int y) {
+	public boolean onUpgradeB(int x, int y) {
 		
 		return x >= upgradeB.x && x <= upgradeB.x + upgradeB.getWidth() &&
 		       y >= upgradeB.y && y <= upgradeB.y + upgradeB.getHeight();
 	}
 
-	public boolean destroyClicked(int x, int y) {
+	public boolean onDestroy(int x, int y) {
 		return x >= destroyTower.x && x <= destroyTower.x + destroyTower.getWidth() &&
 		       y >= destroyTower.y && y <= destroyTower.y + destroyTower.getHeight();
+	}
+
+	public void hideUI() {
+		this.runShow = false;
+		
+		currentTower.draw = false;
+		upgradeA.draw = false;
+		upgradeB.draw = false;
+		destroyTower.draw = false;
 	}
 }

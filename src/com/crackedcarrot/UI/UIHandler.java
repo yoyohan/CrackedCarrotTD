@@ -62,7 +62,7 @@ public class UIHandler extends Thread{
 	}
 	
 	public void hideTowerUpgrade(){
-		this.mHandler.post(upgrade.getHideRunner());
+		upgrade.hideUI();
 	}
 	
 	public Sprite[] getOverlayObjectsToRender(){
@@ -76,15 +76,15 @@ public class UIHandler extends Thread{
 	}
 
 	public boolean upgradeAClicked(int x, int y) {
-		return upgrade.upgradeAClicked(x, y);
+		return upgrade.onUpgradeA(x, y);
 	}
 
 	public boolean upgradeBClicked(int x, int y) {
-		return upgrade.upgradeBClicked(x, y);
+		return upgrade.onUpgradeB(x, y);
 	}
 
 	public boolean destroyClicked(int x, int y) {
-		return upgrade.destroyClicked(x, y);
+		return upgrade.onDestroy(x, y);
 	}
 
 }

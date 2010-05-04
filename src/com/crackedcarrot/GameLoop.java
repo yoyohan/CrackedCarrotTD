@@ -576,7 +576,7 @@ public class GameLoop implements Runnable {
 			return false;
 		}
 		Coords tmpC = mScaler.getGridXandY(x,y);
-		return mTowerGrid[tmpC.x][tmpC.y] != null;
+		return mTowerGrid[tmpC.x][tmpC.y] != null && mTowerGrid[tmpC.x][tmpC.y].draw == true;
 	}
 
 	public int[] getTowerCoordsAndRange(int x, int y) {

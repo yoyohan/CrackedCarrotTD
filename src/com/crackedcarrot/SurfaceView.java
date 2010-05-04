@@ -24,26 +24,36 @@ public class SurfaceView extends GLSurfaceView {
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
 		int action = me.getAction();
+		int x = (int)me.getX();
+		int y = magicValue - (int)me.getY();
+		boolean test = false;
+		//Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
+		
+		// We need to do this because Java and our grid counts backwards.
+		// 480 - clickedYValue = the correct Y-value, for example, on a 
+		// screen with a 480 Y-resolution.
 		// we build where the user last touched the screen.
-		if (action == MotionEvent.ACTION_UP) {
-			int x = (int)me.getX();
-			int y = magicValue - (int)me.getY();
-			Log.d("SURFACEVIEW", "UP_EVENT: X " + x + "  Y " + y);
-			boolean test = false;
-			//Log.d("SURFACEVIEW", "onTouchEvent: X " + me.getX() + "  Y " + me.getY());
-			
-			// We need to do this because Java and our grid counts backwards.
-			// 480 - clickedYValue = the correct Y-value, for example, on a 
-			// screen with a 480 Y-resolution.
+		if(action == MotionEvent.ACTION_DOWN){
+			if(ui != null && gameLoop.gridOcupied(x, y)){
+				//SHOW TOWER UPGRADE!
+				ui.hideTowerUpgrade();
+				ui.showTowerUpgrade(x,y);
+			}
+		}
+		
+		else if (action == MotionEvent.ACTION_UP) {
+
 			if(buildTower){
 				test = gameLoop.createTower(new Coords(x, y), towerType);
+				ui.hideTowerUpgrade();
 			}
 			
-			if(ui != null && gameLoop.gridOcupied(x, y)){
+			if(ui != null && gameLoop.gridOcupied(x, y) && (me.getEventTime() - me.getDownTime()) < 200){
 				
 				int[] data = gameLoop.getTowerCoordsAndRange(x, y);
 				if(data != null){
 					ui.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
+					ui.hideTowerUpgrade();
 					test = true;
 				}
 				else{
@@ -53,6 +63,7 @@ public class SurfaceView extends GLSurfaceView {
 				
 				//You are not allowed to place tower here
 				ui.blinkRedGrid();
+				ui.hideTowerUpgrade();
 			}
 			
 			if (longClick = true){
@@ -85,11 +96,7 @@ public class SurfaceView extends GLSurfaceView {
 		
 		else if(!longClick && action == MotionEvent.ACTION_MOVE && (me.getEventTime() - me.getDownTime()) > 1000){
 			Log.d("SURFACEVIEW", "Long touch event: Down: "+ me.getDownTime() + "Current: " + me.getEventTime());
-			longClick = true;
-			
-			//SHOW TOWER UPGRADE!
-			ui.showTowerUpgrade((int)me.getX(), magicValue - (int)me.getY());
-			
+			//longClick = true;
 		}
 		
 		return true;
