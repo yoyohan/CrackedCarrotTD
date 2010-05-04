@@ -9,7 +9,7 @@
     	android:orientation="vertical"
     	android:gravity="center"
     	android:layout_width="200dp"
-    	android:layout_height="240dp" >
+    	android:layout_height="200dp" >
 
 		<LinearLayout
     		android:orientation="horizontal"
@@ -30,7 +30,7 @@
     		android:orientation="horizontal"
     		android:gravity="center"
     		android:layout_width="fill_parent"
-    		android:layout_height="80dp" >
+    		android:layout_height="60dp" >
 
 			<Button
 				android:text="Continue"
@@ -45,10 +45,9 @@
     		android:orientation="horizontal"
     		android:gravity="center"
     		android:layout_width="fill_parent"
-    		android:layout_height="80dp" >
+    		android:layout_height="60dp" >
     		
-			<Button
-				android:text="Sound on/off"
+			<ImageButton
 				android:id="@+id/LevelPause_Sound"
 	            android:layout_width="fill_parent"
 	            android:layout_height="fill_parent"

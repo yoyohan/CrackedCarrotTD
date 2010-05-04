@@ -31,7 +31,6 @@ public class GameLoop implements Runnable {
     
     private long mLastTime;
     
-    private int    resumes;
     private String resumeTowers = "";
 
     private float startCreatureHealth;
@@ -553,8 +552,7 @@ public class GameLoop implements Runnable {
     	return s;
     }
     
-    public void resume(int resumes, int level, String towers) {
-    	this.resumes = resumes;
+    public void resume(int level, String towers) {
     	this.lvlNbr = level;
     	this.resumeTowers = towers;
     }
