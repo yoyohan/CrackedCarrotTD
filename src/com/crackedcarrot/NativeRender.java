@@ -52,7 +52,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
 	
 	public NativeRender(Context context, GLSurfaceView view, 
-						TextureLibrary texLib, Sprite[] OverlayObjects, Sprite[] UIObjects) {
+						TextureLibrary texLib, Sprite[] OverlayObjects) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -65,7 +65,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		this.mContext = context;
 		this.view = view;
 		this.sprites[Sprite.OVERLAY] = OverlayObjects;
-		this.sprites[Sprite.UI] = UIObjects;
 		System.loadLibrary("render");
 	}
 

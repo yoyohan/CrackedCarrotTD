@@ -10,14 +10,12 @@ public class UIHandler extends Thread{
 	
 	private Grid g;
 	private RangeIndicator range;
-	private TowerUpgrade   upgrade;
 	
 	private Handler mHandler;
 	
 	public UIHandler(Scaler s){
 		g = new Grid(s);
 		range = new RangeIndicator(s);
-		upgrade = new TowerUpgrade(s);
 	}
 	
 	public void run(){
@@ -56,35 +54,10 @@ public class UIHandler extends Thread{
 		this.mHandler.post(range.getShowRunner());
 	}
 	
-	public void showTowerUpgrade(int x, int y){
-		upgrade.moveUI(x, y);
-		this.mHandler.post(upgrade.getShowRunner());
-	}
-	
-	public void hideTowerUpgrade(){
-		upgrade.hideUI();
-	}
-	
 	public Sprite[] getOverlayObjectsToRender(){
 		Sprite [] rArray = new Sprite[2];
 		rArray[0] = g;
 		rArray[1] = range;
 		return rArray;
 	}
-	public Sprite[] getUIObjectsToRender(){
-		return upgrade.getUISpritesToRender();
-	}
-
-	public boolean upgradeAClicked(int x, int y) {
-		return upgrade.onUpgradeA(x, y);
-	}
-
-	public boolean upgradeBClicked(int x, int y) {
-		return upgrade.onUpgradeB(x, y);
-	}
-
-	public boolean destroyClicked(int x, int y) {
-		return upgrade.onDestroy(x, y);
-	}
-
 }

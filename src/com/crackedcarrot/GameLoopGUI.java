@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,6 +43,7 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
+	private Dialog towerUpgrade = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
@@ -75,6 +77,7 @@ public class GameLoopGUI {
     final int GUI_SHOWSTATUSBAR_ID   = 16;
     final int GUI_SHOWHEALTHBAR_ID   = 17;
     final int GUI_HIDEHEALTHBAR_ID   = 18;
+    final int TOWER_UPGRADE 		 = 19;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -216,6 +219,19 @@ public class GameLoopGUI {
 		WindowManager.LayoutParams lp;
 		
 	    switch(id) {
+	    
+	    case TOWER_UPGRADE:
+	    	Context mContext = gameInit.getApplicationContext();
+	    	towerUpgrade = new Dialog(mContext);
+	    	
+	    	towerUpgrade.setContentView(R.layout.upgrade_layout);
+	    	towerUpgrade.setTitle("Select Upgrade");
+	    	towerUpgrade.setCancelable(true);
+	    	
+	    	
+	    	
+	    	break;
+	    
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogNextLevel.setContentView(R.layout.nextlevel);
