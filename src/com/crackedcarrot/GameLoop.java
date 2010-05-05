@@ -200,13 +200,6 @@ public class GameLoop implements Runnable {
 		// Initialize the status, displaying the creature image
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
 				
-			// Show resumes-left dialog.
-	    	if (resumes > 0) {
-	    		gui.sendMessage(gui.DIALOG_RESUMESLEFT_ID, resumes, 0);
-	    		resumes = 0;
-	    		waitForDialogClick();
-	    	}
-		
 		// Show the NextLevel-dialog and waits for user to click ok
 		// via the semaphore.
 		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
@@ -305,16 +298,8 @@ public class GameLoop implements Runnable {
 	    			pauseSemaphore.release();
 				}
     			
-    			//Get the time after an eventual pause and add this to the mLastTime variable
-    			final long time2 = SystemClock.uptimeMillis();
-    			final long pauseTime = time2 - time;
-
 	            // Used to calculate creature movement.
-				final long timeDelta = time - mLastTime;
-	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time + pauseTime;
-
+				long timeDelta = time - mLastTime;
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
@@ -324,8 +309,12 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            }
-	            
+	            } else 				
+	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
+
+				final float timeDeltaSeconds = 
+	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
+	            mLastTime = time;
 	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {
