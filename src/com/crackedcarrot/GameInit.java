@@ -318,5 +318,5 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", -1);
     		editor.commit();
     	}
-    }   
+    }
 }

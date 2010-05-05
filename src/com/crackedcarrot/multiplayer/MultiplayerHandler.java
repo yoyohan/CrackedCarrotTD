@@ -14,7 +14,7 @@ public class MultiplayerHandler extends Thread {
 	// Message types sent to the MultiplayerService Handler
     public static final int MESSAGE_SYNCH_LEVEL = 1;
     public static final int MESSAGE_PLAYER_SCORE = 2;
-    public static final int MESSAGE_WRITE = 20;
+    public static final int MESSAGE_PLAYER_DEAD = 3;
     public static final int MESSAGE_DEVICE_NAME = 30;
     public static final int MESSAGE_TOAST = 40;
     
@@ -54,11 +54,9 @@ public class MultiplayerHandler extends Thread {
                     opponentScore = Integer.parseInt(readMessage);
                     gameLoopGui.setOpponentScore(opponentScore);
                     break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    //Toast.makeText(getApplicationContext(), "Connected to "
-                    //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                case MESSAGE_PLAYER_DEAD:
+                	MultiplayerGameLoop mpGL = (MultiplayerGameLoop) gameLoopGui.getGameInit().gameLoop;
+                    mpGL.setOpponentLife(false);
                     break;
                 case MESSAGE_TOAST:
                 	//Do something to inform user that connection is lost

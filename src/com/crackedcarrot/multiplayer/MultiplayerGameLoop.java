@@ -20,6 +20,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	
 	private static Semaphore synchLevelSemaphore = new Semaphore(1);
 	private MultiplayerService mMultiplayerService;
+	private boolean opponentLife = true;
 
 	public MultiplayerGameLoop(NativeRender renderHandle, Map gameMap,
 			Level[] waveList, Tower[] tTypes, Player p, GameLoopGUI gui,
@@ -281,60 +282,93 @@ public class MultiplayerGameLoop extends GameLoop {
             if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
-
-            		// Show the You Lost-dialog.
-            	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
-            	// This is a good time clear all savegame data.
-            		// -2 = call the SaveGame-function.
-            		// 2  = ask SaveGame to clear all data.
-            		// 0  = not used.
-            	gui.sendMessage(-2, 2, 0);
             	
-        		// Code to wait for the user to click ok on YouLost-dialog.
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		
-        		try {
-        			dialogSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		dialogSemaphore.release();
-
-            	run = false;
+            	//Send info to opponent that player is dead
+            	String message = "Dead";
+    			byte[] send = message.getBytes();
+    			mMultiplayerService.write(send);
+            	
+            	// If it's the last level, send the synch message so opponent won't wait for eternity
+            	if(lvlNbr >= mLvl.length){
+            		String lastMessage = "synchLevel";
+            		byte[] sendMessage = lastMessage.getBytes();
+            		mMultiplayerService.write(sendMessage);
+            	}
+            	
+    			//Is the opponent still alive?
+    			if(this.opponentLife){
+    				// Show the "You Lost"-dialog.
+                	gui.sendMessage(gui.MULTIPLAYER_LOST, 0, 0);
+            		waitForDialogClick();
+                	run = false;
+    			} else {
+    				//The one who dies first is the looser, so this player has won
+    				gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+    				waitForDialogClick();
+    				run = false;
+    			}
         	} 
-        	else if (remainingCreaturesALL < 1) {
+            else if (remainingCreaturesALL < 1) {
         		//If you have survived the entire wave without dying. Proceed to next next level.
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
-        		// The game is not totally completed, send players score to opponent
-        		if (lvlNbr < mLvl.length) {
-        			String message = "Score" + player.getScore();
-        			byte[] send = message.getBytes();
-        			mMultiplayerService.write(send);
-        		}
-        		else {
-                	Log.d("GAMETHREAD", "You have completed this map");
-                	
-            		// Show the You Won-dialog.
-                	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
-
-                	// This is a good time clear all savegame data.
-            			// -2 = call the SaveGame-function.
-            			// 2  = ask SaveGame to clear all data.
-            			// 0  = not used.
-                	gui.sendMessage(-2, 2, 0);
-                	
-                	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
-                	
-            		// Code to wait for the user to click ok on YouWon-dialog.
-            		waitForDialogClick();
-
+        		
+        		Log.d("FFFFFF", "Opponentlife: " + opponentLife);
+        		//Is the opponent dead, in that case you've won the game
+        		if(!this.opponentLife){
+        			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+        			waitForDialogClick();
+        			Log.d("FFFFFF", "MULTIPLAYER WON");
         			run = false;
+        		} else {
+	        		// The game is not totally completed, send players score to opponent
+	        		if (lvlNbr < mLvl.length) {
+	        			String message = "Score" + player.getScore();
+	        			byte[] send = message.getBytes();
+	        			mMultiplayerService.write(send);
+	        		}
+	        		else {
+	                	Log.d("GAMETHREAD", "You have completed this map");
+	                	//When player completed the map, wait for opponent
+	                	
+	                	String mess = "Score" + player.getScore();
+	        			byte[] sendMess = mess.getBytes();
+	        			mMultiplayerService.write(sendMess);
+	            
+	            		String message = "synchLevel";
+	            		byte[] send = message.getBytes();
+	            		mMultiplayerService.write(send);
+	            		
+	            		//Show "Waiting for opponent" message
+	            		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+	            		
+	            		// Wait for the opponent
+	            		try {
+	            			synchLevelSemaphore.acquire();
+	            		} catch (InterruptedException e) {
+	            			e.printStackTrace();
+	            		}
+	            		try {
+	            			synchLevelSemaphore.acquire();
+	            		} catch (InterruptedException e) {
+	            			e.printStackTrace();
+	            		}
+	            		synchLevelSemaphore.release();
+	            		
+	            		//Close "Waiting for opponent" message
+	            		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+	                	
+	            		//if opponent now is dead, show the "You won"-dialog
+	            		if(!this.opponentLife){
+	            			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+	            			waitForDialogClick();
+	            			run = false;
+	            		} else {
+	            			gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
+	            			waitForDialogClick();
+	            			run = false;
+	            		}
+	        		}
         		}
         	}
 	    }
@@ -343,12 +377,14 @@ public class MultiplayerGameLoop extends GameLoop {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
     
-    private void synchLevel(){
-    	
-    }
-    
+    /** Release the synchronization semaphore from outside this class */
     public static void synchLevelClick() {
     	synchLevelSemaphore.release();
+    }
+    
+    /** When handler receives info about opponent life, update through this method */
+    public void setOpponentLife(boolean bool){
+    	this.opponentLife = bool;
     }
 
 }

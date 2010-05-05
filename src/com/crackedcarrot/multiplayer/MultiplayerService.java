@@ -20,13 +20,14 @@ public class MultiplayerService extends Thread {
     // Message types sent to the MultiplayerService Handler
     public static final int MESSAGE_SYNCH_LEVEL = 1;
     public static final int MESSAGE_PLAYER_SCORE = 2;
-    public static final int MESSAGE_WRITE = 20;
+    public static final int MESSAGE_PLAYER_DEAD = 3;
     public static final int MESSAGE_DEVICE_NAME = 30;
     public static final int MESSAGE_TOAST = 40;
     
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
     private final String PLAYER_SCORE = "Score";
+    private final String PLAYER_DEAD = "Dead";
     
     public MultiplayerHandler mpHandler;
     public GameLoopGUI gameLoopGui;
@@ -72,6 +73,11 @@ public class MultiplayerService extends Thread {
 	                	 // Send the obtained bytes to the UI Activity
 	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_SYNCH_LEVEL, 0, 
 	                    		bytes, buffer).sendToTarget();
+	                }
+	                else if(readMessage.equals(PLAYER_DEAD)){
+	                	Log.d("YYYYY", readMessage);
+	                	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_DEAD, 0, 
+                				bytes, buffer).sendToTarget();
 	                }
 	                // The data consists of the opponents score
 	                else {
