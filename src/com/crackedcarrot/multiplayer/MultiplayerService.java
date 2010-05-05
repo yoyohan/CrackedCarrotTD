@@ -5,12 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.bluetooth.BluetoothSocket;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
+import com.crackedcarrot.GameLoopGUI;
 
 
 public class MultiplayerService extends Thread {
@@ -21,22 +18,25 @@ public class MultiplayerService extends Thread {
     //private Handler mMultiplayerHandler;
     
     // Message types sent to the MultiplayerService Handler
-    public static final int MESSAGE_READ = 1;
-    public static final int MESSAGE_WRITE = 2;
-    public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_SYNCH_LEVEL = 1;
+    public static final int MESSAGE_PLAYER_SCORE = 2;
+    public static final int MESSAGE_WRITE = 20;
+    public static final int MESSAGE_DEVICE_NAME = 30;
+    public static final int MESSAGE_TOAST = 40;
     
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
-    private final String SHOW_SCORE = "showScore";
+    private final String PLAYER_SCORE = "Score";
     
     public MultiplayerHandler mpHandler;
+    public GameLoopGUI gameLoopGui;
 
-    public MultiplayerService(BluetoothSocket socket) {
+    public MultiplayerService(BluetoothSocket socket, GameLoopGUI glGui) {
         Log.d("MultiplayerService", "create ConnectedThread");
         mmSocket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
+        gameLoopGui = glGui;
 
         // Get the BluetoothSocket input and output streams
         try {
@@ -46,7 +46,7 @@ public class MultiplayerService extends Thread {
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
-        mpHandler = new MultiplayerHandler();
+        mpHandler = new MultiplayerHandler(gameLoopGui);
         mpHandler.start();
     }
     
@@ -56,9 +56,6 @@ public class MultiplayerService extends Thread {
         Log.d("MultiplayerService", "BEGIN MultiplayerService");
         byte[] buffer = new byte[1024];
         int bytes;
-        
-        StringBuffer sb = new StringBuffer();
-        String message; 
 
         // Keep listening to the InputStream while connected
         while (true) {
@@ -66,23 +63,25 @@ public class MultiplayerService extends Thread {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
                 
-                /**
-                sb.setLength(0);
-                sb.append(new String(buffer, 0, bytes));
-                message = sb.toString();
-                Log.d("MPSERVICE-MESSAGE:", "The message is: " + message); */
-                
                 if(bytes > 0){
 	                // construct a string from the valid bytes in the buffer
 	                String readMessage = new String(buffer);
 	                readMessage = readMessage.substring(0, bytes);
-	                Log.d("XXXXX", readMessage);
 	                Log.d("XXXXX", "BIG: " + bytes);
 	                if(readMessage.equals(SYNCH_LEVEL)){
-	                	Log.d("XXXXX", "Eye! THIS IS RIGHT");
 	                	 // Send the obtained bytes to the UI Activity
-	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, bytes, buffer)
-	                            .sendToTarget();
+	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_SYNCH_LEVEL, 0, 
+	                    		bytes, buffer).sendToTarget();
+	                }
+	                // The data consists of the opponents score
+	                else {
+	                	readMessage = readMessage.substring(0, 5);
+	                	Log.d("YYYYY", readMessage);
+	                	if(readMessage.equals(PLAYER_SCORE)){
+	                		mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_SCORE, 0, 
+	                				bytes, buffer).sendToTarget();
+	                	}
+	                	
 	                }
                 }
          	   //Log.d("MPSERVICE LOOP", "Send to handler");

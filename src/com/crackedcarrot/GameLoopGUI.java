@@ -27,6 +27,7 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.multiplayer.MultiplayerService;
 
 	/*
 	 * 
@@ -45,10 +46,13 @@ public class GameLoopGUI {
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
 	private ProgressDialog dialogWait = null;
+	private Dialog dialogScore = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
     private int          resume;
+    private int			 playerScore;
+    private int			 opponentScore;
     private Drawable     healthBarDrawable;
     private ExpandMenu   expandMenu = null;
     private ImageView    enImView;
@@ -73,16 +77,17 @@ public class GameLoopGUI {
     final int DIALOG_PAUSE_ID       = 7;
     public final int WAIT_OPPONENT_ID = 8;
     public final int CLOSE_WAIT_OPPONENT = 9;
+    public final int LEVEL_SCORE = 10;
     
-    public final int GUI_PLAYERMONEY_ID     = 10;
-    public final int GUI_PLAYERHEALTH_ID    = 11;
-    public final int GUI_CREATUREVIEW_ID    = 12;
-    final int GUI_CREATURELEFT_ID    = 13;
-    public final int GUI_PROGRESSBAR_ID     = 14;
-    public final int GUI_NEXTLEVELINTEXT_ID = 15;
-    public final int GUI_SHOWSTATUSBAR_ID   = 16;
-    public final int GUI_SHOWHEALTHBAR_ID   = 17;
-    public final int GUI_HIDEHEALTHBAR_ID   = 18;
+    public final int GUI_PLAYERMONEY_ID     = 20;
+    public final int GUI_PLAYERHEALTH_ID    = 21;
+    public final int GUI_CREATUREVIEW_ID    = 22;
+    final int GUI_CREATURELEFT_ID    = 23;
+    public final int GUI_PROGRESSBAR_ID     = 24;
+    public final int GUI_NEXTLEVELINTEXT_ID = 25;
+    public final int GUI_SHOWSTATUSBAR_ID   = 26;
+    public final int GUI_SHOWHEALTHBAR_ID   = 27;
+    public final int GUI_HIDEHEALTHBAR_ID   = 28;
 
     
     final Button towerbutton1;
@@ -505,8 +510,25 @@ public class GameLoopGUI {
 	    	dialogWait.setMessage("Waiting for opponent...");
 	    	dialogWait.setIndeterminate(true);
 	    	dialogWait.setCancelable(false);
-	    	
 	    	return dialogWait;
+	    case LEVEL_SCORE:
+	    	dialogScore = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialogScore.setContentView(R.layout.multiplayer_score);
+	    	dialogScore.setCancelable(false);
+	    	
+	    	Button closeScore = (Button) dialogScore.findViewById(R.id.scoreOK);
+	        closeScore.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		dialogScore.dismiss();
+	        	}
+	        });
+	        dialogScore.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							gameInit.gameLoop.dialogClick();
+						}
+	    			});
+	        return dialogScore;
 	    	
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
@@ -605,6 +627,15 @@ public class GameLoopGUI {
 		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
 		    
 		    break;
+	    case LEVEL_SCORE:
+	    	TextView tv = (TextView) dialogScore.findViewById(R.id.scoreText);
+	    	String scoreText = "<b>Score so far:</b> " + "<br>";
+	    	scoreText += 		"You: " + playerScore + "<br>";
+	    	scoreText += 		"Opponent: " + opponentScore + "<br>";
+	    	styledText = Html.fromHtml(scoreText);
+		    tv.setText(styledText);
+	        
+	        break;
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -716,6 +747,10 @@ public class GameLoopGUI {
 	        	 case CLOSE_WAIT_OPPONENT:
 	        		 dialogWait.hide();
 	        		 break;
+	        	 case LEVEL_SCORE:
+	        		 playerScore = msg.arg1;
+	        		 gameInit.showDialog(LEVEL_SCORE);
+	        		 break;
 	    			 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
@@ -762,5 +797,10 @@ public class GameLoopGUI {
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
-	}	
+	}
+	
+	public void setOpponentScore(int score){
+		this.opponentScore = score;
+	}
+	
 }

@@ -4,22 +4,27 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import com.crackedcarrot.GameLoopGUI;
 
 public class MultiplayerHandler extends Thread {
 	
 	public Handler mMultiplayerHandler;
+	private GameLoopGUI gameLoopGui;
 	
 	// Message types sent to the MultiplayerService Handler
-    public static final int MESSAGE_READ = 1;
-    public static final int MESSAGE_WRITE = 2;
-    public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_SYNCH_LEVEL = 1;
+    public static final int MESSAGE_PLAYER_SCORE = 2;
+    public static final int MESSAGE_WRITE = 20;
+    public static final int MESSAGE_DEVICE_NAME = 30;
+    public static final int MESSAGE_TOAST = 40;
+    
+    private int opponentScore;
     
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
 	
-	public MultiplayerHandler(){
-		
+	public MultiplayerHandler(GameLoopGUI glGui){
+		gameLoopGui = glGui;
 	}
 	
 	public void run(){
@@ -30,13 +35,7 @@ public class MultiplayerHandler extends Thread {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
-                case MESSAGE_READ:
+                case MESSAGE_SYNCH_LEVEL:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf);
@@ -45,6 +44,15 @@ public class MultiplayerHandler extends Thread {
                     	Log.d("GUIHANDLER", "Release synchSemaphore");
                     	MultiplayerGameLoop.synchLevelClick();
                     }
+                    break;
+                case MESSAGE_PLAYER_SCORE:
+                    byte[] readBuf2 = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage2 = new String(readBuf2);
+	                readMessage = readMessage2.substring(5, msg.arg2);
+                    Log.d("GUIHANDLER", "Opponents score: " + readMessage);
+                    opponentScore = Integer.parseInt(readMessage);
+                    gameLoopGui.setOpponentScore(opponentScore);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -62,6 +70,10 @@ public class MultiplayerHandler extends Thread {
         };
         
         Looper.loop();
+	}
+	
+	public int getOpponentScore(){
+		return this.opponentScore;
 	}
 	
 }

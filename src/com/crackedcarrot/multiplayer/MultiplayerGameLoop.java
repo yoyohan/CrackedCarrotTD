@@ -140,16 +140,41 @@ public class MultiplayerGameLoop extends GameLoop {
 		//Show "Waiting for opponent" message
 		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
 		
-		// Wait for the opponent to click on the NextLevel-dialog.
+		// Wait for the opponent
 		try {
-			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 2nd time");
-	    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
-
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Log.d("MultiPLAYERGAMELOOP", "And then release");
+		synchLevelSemaphore.release();
+		
+		//Close "Waiting for opponent" message
+		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+		
+		//The dialog showing the players score is shown right after next level dialog
+		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
+		
+		waitForDialogClick();
+		
+		//When player clicked ok, send message to opponent that it's done
+		String message2 = "synchLevel";
+		byte[] send2 = message2.getBytes();
+		mMultiplayerService.write(send2);
+		
+		//Show "Waiting for opponent" message
+		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+		
+		// Wait for the opponent
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		synchLevelSemaphore.release();
 		
 		//Close "Waiting for opponent" message
@@ -282,11 +307,16 @@ public class MultiplayerGameLoop extends GameLoop {
             	run = false;
         	} 
         	else if (remainingCreaturesALL < 1) {
-        		//If you have survied the entire wave without dying. Proceed to next next level.
+        		//If you have survived the entire wave without dying. Proceed to next next level.
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
-        		if (lvlNbr >= mLvl.length) {
-        			// You have completed this map
+        		// The game is not totally completed, send players score to opponent
+        		if (lvlNbr < mLvl.length) {
+        			String message = "Score" + player.getScore();
+        			byte[] send = message.getBytes();
+        			mMultiplayerService.write(send);
+        		}
+        		else {
                 	Log.d("GAMETHREAD", "You have completed this map");
                 	
             		// Show the You Won-dialog.
@@ -311,6 +341,10 @@ public class MultiplayerGameLoop extends GameLoop {
     	Log.d("GAMETHREAD", "dead thread");
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
+    }
+    
+    private void synchLevel(){
+    	
     }
     
     public static void synchLevelClick() {
