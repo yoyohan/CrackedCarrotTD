@@ -43,7 +43,6 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
-	private Dialog towerUpgrade = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
@@ -84,6 +83,13 @@ public class GameLoopGUI {
     final Button towerbutton3;
     final Button towerbutton4;
     final LinearLayout towertext;
+    
+    final LinearLayout towerUpgrade;
+    final Button upgradeA;
+    final Button upgradeB;
+    final Button sellTower;
+    final Button closeUpgrade;
+    
     final Button tower2Information;
 
     
@@ -91,6 +97,12 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi, final UIHandler hud) {
     	gameInit = gi;
     	this.hud = hud;
+    	
+    	towerUpgrade = (LinearLayout) gameInit.findViewById(R.id.upgrade_layout);
+    	upgradeA = (Button) gameInit.findViewById(R.id.upgrade_a);
+    	upgradeB = (Button) gameInit.findViewById(R.id.upgrade_b);
+    	sellTower = (Button) gameInit.findViewById(R.id.sell);
+    	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
     	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
@@ -155,7 +167,37 @@ public class GameLoopGUI {
         		forward.setVisibility(View.VISIBLE);
         	}
         });
+        
+        upgradeA.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Upgrade A clicked!");
+        	}
+        });
+        
+        upgradeB.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Upgrade B clicked!");
+        	}
+        });
+        
+        sellTower.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Sell Tower clicked!");
+        	}
+        });
+        
+        closeUpgrade.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Close Upgrade clicked!");
 
+        		towerUpgrade.setVisibility(View.GONE);
+           		towerbutton1.setVisibility(View.VISIBLE);
+        		towerbutton2.setVisibility(View.VISIBLE);
+        		towerbutton3.setVisibility(View.VISIBLE);
+        		towerbutton4.setVisibility(View.VISIBLE);
+        	}
+        });
+        
         towerbutton1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
@@ -219,18 +261,6 @@ public class GameLoopGUI {
 		WindowManager.LayoutParams lp;
 		
 	    switch(id) {
-	    
-	    case TOWER_UPGRADE:
-	    	Context mContext = gameInit.getApplicationContext();
-	    	towerUpgrade = new Dialog(mContext);
-	    	
-	    	towerUpgrade.setContentView(R.layout.upgrade_layout);
-	    	towerUpgrade.setTitle("Select Upgrade");
-	    	towerUpgrade.setCancelable(true);
-	    	
-	    	
-	    	
-	    	break;
 	    
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -645,5 +675,17 @@ public class GameLoopGUI {
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
-	}	
+	}
+
+
+	public void showTowerUpgrade(int typeResourceA, int typeResourceB, int x, int y) {
+		towerUpgrade.setVisibility(View.VISIBLE);
+		upgradeA.setBackgroundResource(typeResourceA);
+		upgradeB.setBackgroundResource(typeResourceB);
+		
+		towerbutton1.setVisibility(View.GONE);
+		towerbutton2.setVisibility(View.GONE);
+		towerbutton3.setVisibility(View.GONE);
+		towerbutton4.setVisibility(View.GONE);
+	}
 }

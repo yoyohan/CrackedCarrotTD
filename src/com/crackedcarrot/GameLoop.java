@@ -588,14 +588,12 @@ public class GameLoop implements Runnable {
 			return mTTypes[towerid];			
 	}
 
-	public void upgradeTowerInGrid(int x, int y, int i) {
-		// TODO Auto-generated method stub
-		
+	public void showTowerUpgradeUI(int x, int y) {
+		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3, x ,y);
 	}
 
 	public void destroyTowerInGrid(int x, int y) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void pause() {
@@ -608,5 +606,4 @@ public class GameLoop implements Runnable {
 		pause = false;
 		pauseSemaphore.release();
 	}
-
 }
