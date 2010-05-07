@@ -109,28 +109,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public void finalizeSprites() throws InterruptedException {
 		lock1.acquire();
-		//TODO verify that the data inside sprites are
-		//proper.
-		
-		/*int listSize = 0;
-		for(int i = 0; i < sprites.length; i++){
-			if(sprites[i] != null)
-				listSize += sprites[i].length;
-		}
-
-		renderList = new Sprite[listSize];
-
-		for(int i = 0, j = 0; i < sprites.length; i++){
-			if(sprites[i] != null){
-				for(int k = 0; k < sprites[i].length; k++){
-					renderList[j] = sprites[i][k];
-					j++;
-				}
-			}
-		}
-		*/
-		
-		//Do some simple verification of the data inside the sprites.
 		
 		for(int i = 0; i < sprites.length; i++){
 			

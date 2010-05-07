@@ -168,24 +168,6 @@ public class GameLoopGUI {
         	}
         });
         
-        upgradeA.setOnClickListener(new OnClickListener(){
-        	public void onClick(View v){
-        		Log.d("GUI", "Upgrade A clicked!");
-        	}
-        });
-        
-        upgradeB.setOnClickListener(new OnClickListener(){
-        	public void onClick(View v){
-        		Log.d("GUI", "Upgrade B clicked!");
-        	}
-        });
-        
-        sellTower.setOnClickListener(new OnClickListener(){
-        	public void onClick(View v){
-        		Log.d("GUI", "Sell Tower clicked!");
-        	}
-        });
-        
         closeUpgrade.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		Log.d("GUI", "Close Upgrade clicked!");
@@ -678,7 +660,7 @@ public class GameLoopGUI {
 	}
 
 
-	public void showTowerUpgrade(int typeResourceA, int typeResourceB, int x, int y) {
+	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
 		towerUpgrade.setVisibility(View.VISIBLE);
 		upgradeA.setBackgroundResource(typeResourceA);
 		upgradeB.setBackgroundResource(typeResourceB);
@@ -687,5 +669,15 @@ public class GameLoopGUI {
 		towerbutton2.setVisibility(View.GONE);
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
+	}
+	public void setUpgradeListeners(OnClickListener upgradeAListener,
+									OnClickListener upgradeBListener, 
+									OnClickListener sellListener){
+		
+		
+		upgradeA.setOnClickListener(upgradeAListener);
+		upgradeB.setOnClickListener(upgradeBListener);
+		sellTower.setOnClickListener(sellListener);
+		
 	}
 }
