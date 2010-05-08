@@ -273,12 +273,14 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", resume.getInt("resumes", 0));
     		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
+    		Log.d("GAMEINIT","resumes: " + resume.getInt("resumes", 0));
     	} else {
     			// Dont allow resume. Clears the main resume flag!
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
     		editor.putInt("resumes", -1);
     		editor.commit();
+    		Log.d("GAMEINIT","resumes: " + -1);
     	}
     }
     

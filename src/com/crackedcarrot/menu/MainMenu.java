@@ -101,7 +101,8 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
             	// See if there's any old game saved that can be resumed.
             	SharedPreferences resume = getSharedPreferences("resume", 0);
-            	resumes = resume.getInt("resumes", 0);
+            	resumes = resume.getInt("resumes", -1);
+            	Log.d("MAINMENU", "resumes: " + resumes);
             	
             	if (resumes > -1 && resumes < 3) {
             		showDialog(1);
@@ -148,8 +149,9 @@ public class MainMenu extends Activity {
         super.onRestart();
         
         	// Update the resumes variable in case it's changed.
+        // If you touch this please tell fredrik about it.
     	SharedPreferences resume = getSharedPreferences("resume", 0);
-    	resumes = resume.getInt("resumes", 0);
+    	resumes = resume.getInt("resumes", -1);
     }
     
 }
