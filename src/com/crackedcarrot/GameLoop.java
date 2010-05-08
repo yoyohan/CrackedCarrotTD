@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.net.http.SslCertificate;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
