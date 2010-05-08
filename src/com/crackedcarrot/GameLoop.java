@@ -2,8 +2,12 @@ package com.crackedcarrot;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;
+
+import android.net.http.SslCertificate;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -40,7 +44,7 @@ public class GameLoop implements Runnable {
     private int gameSpeed;
     private int remainingCreaturesALIVE;
     private int remainingCreaturesALL;
-    private int totalNumberOfTowers = 0;
+    //private int totalNumberOfTowers = 0;
 
     private Creature[] mCreatures;
     private Level[]    mLvl;
@@ -48,6 +52,7 @@ public class GameLoop implements Runnable {
     private Tower[]    mTower;
     private Tower[][]  mTowerGrid;
     private Tower[]    mTTypes;
+    private Coords selectedTower;
     
     private int progressbarLastSent = 0;
     
@@ -59,25 +64,28 @@ public class GameLoop implements Runnable {
 			Player p, GameLoopGUI gui, SoundManager sm){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
-   		this.mTowerGrid = gameMap.getTowerGrid();
+   		this.mTowerGrid = gameMap.get2DGrid();
+   		this.mTower = gameMap.getLinearGrid();
    		this.mScaler = gameMap.getScaler();
 		this.mTTypes = tTypes;
         this.mLvl = waveList;
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
+    	
+    	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
     }
     
 	private void initializeDataStructures() {
 		//this allocates the space we need for shots towers and creatures.
-	    this.mTower = new Tower[60];
-	    this.mShots = new Shot[60];
+	    //this.mTower = new Tower[60];
+	    this.mShots = new Shot[mTower.length];
 	    this.mCreatures = new Creature[50];
 		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
 
-	    	mTower[i] = new Tower(R.drawable.tower1, 0, mCreatures, soundManager);
+	    	mTower[i].initTower(R.drawable.tesla1, 0, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
@@ -294,16 +302,8 @@ public class GameLoop implements Runnable {
 	    			pauseSemaphore.release();
 				}
     			
-    			//Get the time after an eventual pause and add this to the mLastTime variable
-    			final long time2 = SystemClock.uptimeMillis();
-    			final long pauseTime = time2 - time;
-
 	            // Used to calculate creature movement.
-				final long timeDelta = time - mLastTime;
-	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time + pauseTime;
-
+				long timeDelta = time - mLastTime;
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
@@ -313,8 +313,12 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            }
-	            
+	            } else 				
+	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
+
+				final float timeDeltaSeconds = 
+	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
+	            mLastTime = time;
 	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {
@@ -345,8 +349,9 @@ public class GameLoop implements Runnable {
 	        		mCreatures[x].update(timeDeltaSeconds);
 	        	}       	
 	            //Calls the method that handles the monsterkilling.
-	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
-	        		mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
+	        	for (int x = 0; x < mTower.length; x++) {
+	        		if(mTower[x].draw == true)
+	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -408,12 +413,12 @@ public class GameLoop implements Runnable {
     }
 
     public boolean createTower(Coords TowerPos, int towerType) {
-		if (mTTypes.length > towerType && totalNumberOfTowers < mTower.length) {
+		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
 				//You are trying to place a tower on a spot outside the grid
 				return false;
 			}
-			if (player.getMoney() < mTower[totalNumberOfTowers].getPrice()) {
+			if (player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
 				return false;
 			}
@@ -421,22 +426,21 @@ public class GameLoop implements Runnable {
 			int tmpx = tmpC.x;
 			int tmpy = tmpC.y;
 			
-			if (mTowerGrid[tmpx][tmpy] != null && !mTowerGrid[tmpx][tmpy].draw) {
+			Tower t = mTowerGrid[tmpx][tmpy];
+			
+			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				mTower[totalNumberOfTowers].createTower(mTTypes[towerType], towerPlacement, mScaler);
-				mTowerGrid[tmpx][tmpy] = mTower[totalNumberOfTowers];
-				player.moneyFunction(-mTower[totalNumberOfTowers].getPrice());
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler);
+				player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {
-					TextureData tex = renderHandle.getTexture(mTower[totalNumberOfTowers].getResourceId());
-					mTower[totalNumberOfTowers].setCurrentTexture(tex);
-					TextureData tex2 = renderHandle.getTexture(mTower[totalNumberOfTowers].relatedShot.getResourceId());
-					mTower[totalNumberOfTowers].relatedShot.setCurrentTexture(tex2);
+					TextureData tex = renderHandle.getTexture(t.getResourceId());
+					t.setCurrentTexture(tex);
+					tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+					t.relatedShot.setCurrentTexture(tex);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
-				totalNumberOfTowers++;
 				soundManager.playSound(20);
 				updateCurrency();
 				
@@ -542,9 +546,11 @@ public class GameLoop implements Runnable {
     	// any upgrades purchased, etc....
     public String resumeGetTowers() {
     	String s = "";
-    	for (int i = 0; i < totalNumberOfTowers; i++) {
+    	for (int i = 0; i < mTower.length; i++) {
     		Tower t = mTower[i];
-    		s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
+    		if(t != null && t.draw){
+    			s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
+    		}
     	}
     	
     	Log.d("GAMELOOP", "resumeTowers: " + s);
@@ -567,7 +573,7 @@ public class GameLoop implements Runnable {
 			return false;
 		}
 		Coords tmpC = mScaler.getGridXandY(x,y);
-		return mTowerGrid[tmpC.x][tmpC.y] != null;
+		return mTowerGrid[tmpC.x][tmpC.y] != null && mTowerGrid[tmpC.x][tmpC.y].draw == true;
 	}
 
 	public int[] getTowerCoordsAndRange(int x, int y) {
@@ -592,14 +598,9 @@ public class GameLoop implements Runnable {
 			return mTTypes[towerid];			
 	}
 
-	public void upgradeTowerInGrid(int x, int y, int i) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void destroyTowerInGrid(int x, int y) {
-		// TODO Auto-generated method stub
-		
+	public void showTowerUpgradeUI(int x, int y) {
+		selectedTower = mScaler.getGridXandY(x, y);
+		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3);
 	}
 	
 	public void pause() {
@@ -612,5 +613,31 @@ public class GameLoop implements Runnable {
 		pause = false;
 		pauseSemaphore.release();
 	}
-
+	
+	private class UpgradeAListener implements OnClickListener{
+    	public void onClick(View v){
+    		Log.d("GUI", "Upgrade A clicked!");
+    	}
+    }
+    
+    private class UpgradeBListener implements OnClickListener{
+    	public void onClick(View v){
+    		Log.d("GUI", "Upgrade B clicked!");
+    	}
+    }
+    
+    private class SellListener implements OnClickListener{
+    	public void onClick(View v){
+    		Log.d("GameLoop", "Sell Tower clicked!");
+    		if(selectedTower != null){
+    			//Add monney to playr.
+    			mTowerGrid[selectedTower.x][selectedTower.y].relatedShot.draw = false;
+    			mTowerGrid[selectedTower.x][selectedTower.y].draw = false;
+    			
+    		}
+    		else{
+    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    		}
+    	}
+    }
 }

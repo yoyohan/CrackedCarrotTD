@@ -69,9 +69,8 @@
 			android:layout_height="50dp"
 			android:id="@+id/ttext"
 			android:gravity="center_horizontal"
-			android:visibility="gone"
 			android:background="#00000000"
-	    >
+	    android:visibility="gone">
 	        <Button
 	       		android:id="@+id/t2info"
 				android:layout_width="192dp"
@@ -85,7 +84,28 @@
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
         		android:background="@drawable/xml_button_game_back" />
-    	</LinearLayout>    		
+    	
+</LinearLayout><LinearLayout android:id="@+id/upgrade_layout" android:visibility="gone" android:layout_height="50dp" android:layout_width="256dp"><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:id="@+id/sell" android:background="@drawable/t3"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/t4" android:id="@+id/upgrade_a"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/t4" android:id="@+id/upgrade_b"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_game_back" android:id="@+id/close_upgrade"/>
+
+
+
+</LinearLayout>    		
 
     </LinearLayout>
     

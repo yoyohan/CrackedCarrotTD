@@ -1,5 +1,5 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::4
+Total number of towers::8
 ////////////////////////////////////
 // Bunker
 ////////////////////////////////////
@@ -18,7 +18,7 @@ hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
 PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::1
+upgradelink1::4
 upgradelink2::-1
 range::100
 aoe range:: 0
@@ -43,7 +43,7 @@ hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
 PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
-upgradelink1::1
+upgradelink1::5
 upgradelink2::-1
 range::150
 aoe range:: 70
@@ -68,7 +68,7 @@ hasPoisonDamage::true
 poisonDamage(per sec)::2
 poisonTime(sec)::5
 PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
-upgradelink1::1
+upgradelink1::6
 upgradelink2::-1
 range::100
 aoe range::0
@@ -93,7 +93,107 @@ hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
 PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::1
+upgradelink1::7
+upgradelink2::-1
+range::400
+aoe range:: 0
+aoe damage::0 
+Shot animation time::0.1
+Shot texture::lightningball
+////////////////////////////////////
+// Bunker LVL2
+////////////////////////////////////
+texture::bunker2
+title::Bunker Lvl 2
+price::70
+resell value::50
+minDamage::40
+maxDamage::62
+Shot-velocity::400
+cooldown between shots::0.3
+hasFrostDamage::false
+frostTime(sec)::5
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+upgradelink1::-1
+upgradelink2::-1
+range::100
+aoe range:: 0
+aoe damage::0
+Shot animation time::0.2
+Shot texture::throwingstar
+////////////////////////////////////
+// Cannon tower LVL2
+////////////////////////////////////
+texture::cannontower2
+title::Cannontower Lvl 2
+price::80
+resell value::67
+minDamage::70
+maxDamage::100
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::false
+frostTime(sec)::0
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
+upgradelink1::-1
+upgradelink2::-1
+range::150
+aoe range:: 70
+aoe damage::60 
+Shot animation time::0.4
+Shot texture::cannonshot
+////////////////////////////////////
+// Posiontower LVL2
+////////////////////////////////////
+texture::poisontower2
+title::Posiontower lvl 2
+price::50
+resell value::40
+minDamage::70
+maxDamage::100
+Shot-velocity::250
+cooldown between shots::2.5
+hasFrostDamage::false
+frostTime(sec)::5
+hasFireDamage::false
+hasPoisonDamage::true
+poisonDamage(per sec)::10
+poisonTime(sec)::5
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
+upgradelink1::-1
+upgradelink2::-1
+range::100
+aoe range::0
+aoe damage::0 
+Shot animation time::0.4
+Shot texture::poisoncloud
+////////////////////////////////////
+// Magic tower LVL 2
+////////////////////////////////////
+texture::tesla1
+title::Magic tower lvl 2
+price::150
+resell value::120
+minDamage::110
+maxDamage::190
+Shot-velocity::250
+cooldown between shots::6
+hasFrostDamage::false
+frostTime(sec)::0
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+upgradelink1::-1
 upgradelink2::-1
 range::400
 aoe range:: 0

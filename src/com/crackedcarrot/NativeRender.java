@@ -52,7 +52,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
 	
 	public NativeRender(Context context, GLSurfaceView view, 
-						TextureLibrary texLib, Sprite[] OverlayObjects, Sprite[] UIObjects) {
+						TextureLibrary texLib, Sprite[] OverlayObjects) {
         // Pre-allocate and store these objects so we can use them at runtime
         // without allocating memory mid-frame.
         mTextureNameWorkspace = new int[1];
@@ -65,7 +65,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		this.mContext = context;
 		this.view = view;
 		this.sprites[Sprite.OVERLAY] = OverlayObjects;
-		this.sprites[Sprite.UI] = UIObjects;
 		System.loadLibrary("render");
 	}
 
@@ -110,28 +109,6 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	public void finalizeSprites() throws InterruptedException {
 		lock1.acquire();
-		//TODO verify that the data inside sprites are
-		//proper.
-		
-		/*int listSize = 0;
-		for(int i = 0; i < sprites.length; i++){
-			if(sprites[i] != null)
-				listSize += sprites[i].length;
-		}
-
-		renderList = new Sprite[listSize];
-
-		for(int i = 0, j = 0; i < sprites.length; i++){
-			if(sprites[i] != null){
-				for(int k = 0; k < sprites[i].length; k++){
-					renderList[j] = sprites[i][k];
-					j++;
-				}
-			}
-		}
-		*/
-		
-		//Do some simple verification of the data inside the sprites.
 		
 		for(int i = 0; i < sprites.length; i++){
 			
