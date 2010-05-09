@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
 /** 
  * Class defining the relation between different screen resolutions
  */
