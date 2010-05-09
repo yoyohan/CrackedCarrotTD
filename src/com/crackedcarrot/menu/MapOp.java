@@ -69,12 +69,6 @@ public class MapOp extends Activity implements ViewFactory {
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it
-        		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
-        		StartGame2.putExtra("com.crackedcarrot.menu.map", mapSelected);
-        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
-        		startActivity(StartGame2);
-        		finish();
-
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
         		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);

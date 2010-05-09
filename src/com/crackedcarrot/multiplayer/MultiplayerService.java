@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import com.crackedcarrot.GameLoopGUI;
 
 
 public class MultiplayerService extends Thread {
@@ -14,27 +17,19 @@ public class MultiplayerService extends Thread {
 	private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
+    private final Handler mMultiplayerHandler;
     
-    // Message types sent to the MultiplayerService Handler
-    public static final int MESSAGE_READ = 10;
-    public static final int MESSAGE_SYNCH_LEVEL = 1;
-    public static final int MESSAGE_PLAYER_SCORE = 2;
-    public static final int MESSAGE_PLAYER_DEAD = 3;
-    public static final int MESSAGE_DEVICE_NAME = 30;
-    public static final int MESSAGE_TOAST = 40;
-    
-    private boolean runBluetooth = true;
-    
-    public MultiplayerHandler mpHandler;
-    public GameLoopGUI gameLoopGui;
+    // Constants that indicate the current connection state
+    public static final int STATE_NONE = 0;       // we're doing nothing
+    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
+    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-
-    public MultiplayerService(BluetoothSocket socket, GameLoopGUI glGui) {
+    public MultiplayerService(BluetoothSocket socket, Handler handler) {
         Log.d("MultiplayerService", "create ConnectedThread");
         mmSocket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
-        gameLoopGui = glGui;
 
         // Get the BluetoothSocket input and output streams
         try {
@@ -44,62 +39,32 @@ public class MultiplayerService extends Thread {
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
-        mpHandler = new MultiplayerHandler(gameLoopGui);
-        mpHandler.start();
+        mMultiplayerHandler = handler;
     }
-    
-    
-    /** This run method constantly read from the input stream */
+
     public void run() {
         Log.d("MultiplayerService", "BEGIN MultiplayerService");
         byte[] buffer = new byte[1024];
         int bytes;
 
         // Keep listening to the InputStream while connected
-        while (runBluetooth) {
-            try {
+        while (true) {
+          /**  try {
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
-                
-                if(bytes > 0){
-                	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, 
-                    		bytes, buffer).sendToTarget();
-                	/**
-	                // construct a string from the valid bytes in the buffer
-	                String readMessage = new String(buffer);
-	                readMessage = readMessage.substring(0, bytes);
-	                Log.d("XXXXX", "BIG: " + bytes);
-	                if(readMessage.equals(SYNCH_LEVEL)){
-	                	 // Send the obtained bytes to the UI Activity
-	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_SYNCH_LEVEL, 0, 
-	                    		bytes, buffer).sendToTarget();
-	                }
-	                else if(readMessage.equals(PLAYER_DEAD)){
-	                	Log.d("YYYYY", readMessage);
-	                	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_DEAD, 0, 
-                				bytes, buffer).sendToTarget();
-	                }
-	                // The data consists of the opponents score
-	                else {
-	                	readMessage = readMessage.substring(0, 5);
-	                	Log.d("YYYYY", readMessage);
-	                	if(readMessage.equals(PLAYER_SCORE)){
-	                		mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_SCORE, 0, 
-	                				bytes, buffer).sendToTarget();
-	                	}
-	                	
-	                }*/
-                }
-         	   //Log.d("MPSERVICE LOOP", "Send to handler");
+
+                // Send the obtained bytes to the UI Activity
+                mHandler.obtainMessage(BluetoothChat.MESSAGE_READ, bytes, -1, buffer)
+                        .sendToTarget();
             } catch (IOException e) {
-            	Log.d("MPSERVICE LOOP", "Connection lost", e);
                 connectionLost();
                 break;
-            } 
-        }    
+            } */
+        }
+           
     }
     
-    public synchronized void connected() {
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         this.start();
     }
     
@@ -109,31 +74,26 @@ public class MultiplayerService extends Thread {
      */
     public void write(byte[] buffer) {
        try {
-    	   Log.d("MPSERVICE Write", "Write to OutputStream");
             mmOutStream.write(buffer);
+            
+            // Share the sent message back to the UI Activity
+            //mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
+            //        .sendToTarget();
         } catch (IOException e) {
             Log.e("MultiplayerService", "Exception during write", e);
         }
     }
     
     /**
-     * Indicate that the connection was lost and notify the UI Activity.
+     * Indicate that the connection attempt failed and notify the UI Activity.
      */
-    private void connectionLost() {
+    private void connectionFailed() {
+    	/**
         // Send a failure message back to the Activity
-        mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_TOAST).sendToTarget();
+        Message msg = mHandler.obtainMessage(BluetoothChat.MESSAGE_TOAST);
+        Bundle bundle = new Bundle();
+        bundle.putString(BluetoothChat.TOAST, "Unable to connect device");
+        msg.setData(bundle);
+        mHandler.sendMessage(msg); */
     }
-    
-    /** Closes the Bluetooth socket and streams */
-    public void endBluetooth(){
-    	this.runBluetooth = false;
-    	try{
-    		this.mmSocket.close();
-    		this.mmInStream.close();
-    		this.mmOutStream.close();
-    	} catch (Exception e){
-    		Log.e("MultiplayerService", "Exception when closing socket and streams", e);
-    	}
-    }
-    
 }

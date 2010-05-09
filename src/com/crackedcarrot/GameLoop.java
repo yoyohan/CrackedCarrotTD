@@ -3,6 +3,7 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import android.net.http.SslCertificate;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -23,41 +24,40 @@ public class GameLoop implements Runnable {
     public  NativeRender renderHandle;
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
     
-    protected GameLoopGUI  gui;
-    protected Scaler       mScaler;
-    protected Semaphore    dialogSemaphore = new Semaphore(1);
+    private GameLoopGUI  gui;
+    private Scaler       mScaler;
+    private Semaphore    dialogSemaphore = new Semaphore(1);
 
-    protected Map mGameMap;
-    protected Player player;
+    private Map mGameMap;
+    private Player player;
 
-    protected boolean run = true;
+    private boolean run = true;
     
-    protected long mLastTime;
+    private long mLastTime;
     
     private String resumeTowers = "";
-    
-    protected Coords selectedTower;
 
-    protected float startCreatureHealth;
-    protected float currentCreatureHealth;
+    private float startCreatureHealth;
+    private float currentCreatureHealth;
     
-    protected int lvlNbr = 0;
-    protected int gameSpeed;
-    protected int remainingCreaturesALIVE;
-    protected int remainingCreaturesALL;
-    protected int totalNumberOfTowers = 0;
+    private int lvlNbr = 0;
+    private int gameSpeed;
+    private int remainingCreaturesALIVE;
+    private int remainingCreaturesALL;
+    //private int totalNumberOfTowers = 0;
 
-    protected Creature[] mCreatures;
-    protected Level[]    mLvl;
-    protected Shot[]     mShots;
-    protected Tower[]    mTower;
-    protected Tower[][]  mTowerGrid;
-    protected Tower[]    mTTypes;
+    private Creature[] mCreatures;
+    private Level[]    mLvl;
+    private Shot[]     mShots;
+    private Tower[]    mTower;
+    private Tower[][]  mTowerGrid;
+    private Tower[]    mTTypes;
+    private Coords selectedTower;
     
-    public int progressbarLastSent = 0;
+    private int progressbarLastSent = 0;
     
-    protected static boolean   pause = false;
-    protected static Semaphore pauseSemaphore = new Semaphore(1);
+    private static boolean   pause = false;
+    private static Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -76,7 +76,7 @@ public class GameLoop implements Runnable {
     	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
     }
     
-	protected void initializeDataStructures() {
+	private void initializeDataStructures() {
 		//this allocates the space we need for shots towers and creatures.
 	    //this.mTower = new Tower[60];
 	    this.mShots = new Shot[mTower.length];
@@ -167,7 +167,7 @@ public class GameLoop implements Runnable {
 		
 	}
     
-	protected void initializeLvl() {
+	private void initializeLvl() {
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -279,11 +279,8 @@ public class GameLoop implements Runnable {
 
 	    }
 	    
-	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
-	    Log.d("GAMELOOP","INIT GAMELOOP");
-
 	    gameSpeed = 1;
-
+        
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
@@ -518,7 +515,7 @@ public class GameLoop implements Runnable {
     	dialogSemaphore.release();
     }
     
-    protected void waitForDialogClick() {
+    private void waitForDialogClick() {
 		// Code to wait for the user to click ok on a dialog.
 		try {
 			dialogSemaphore.acquire();
@@ -606,7 +603,7 @@ public class GameLoop implements Runnable {
 		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3);
 	}
 	
-	public static void pause() {
+	public void pause() {
 		try { pauseSemaphore.acquire(); }
 		catch (InterruptedException e) { e.printStackTrace(); }
 		pause = true;

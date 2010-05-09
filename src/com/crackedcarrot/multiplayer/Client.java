@@ -32,9 +32,7 @@ public class Client extends Activity {
     private static final int REQUEST_CONNECT_DEVICE = 2;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
-    
-    public BluetoothSocket mmClientSocket = null;
+    private final int MAP = 2; // Default map for multiplayer is "The Field of Grass"
 
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
@@ -126,10 +124,13 @@ public class Client extends Activity {
     }
     
     private class ConnectThread extends Thread {
+        private final BluetoothSocket mmClientSocket;
+        private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
+            mmDevice = device;
             Log.d("CLIENT", "Connect thread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
@@ -149,30 +150,32 @@ public class Client extends Activity {
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-            	// Send a message that connection failed? Like in the BT code example?
                 try {
                     mmClientSocket.close();
-                } catch (IOException closeException) {
-                	Log.e("CLIENT", "Can't close socket", closeException);
-                }
-                
+                } catch (IOException closeException) { }
                 return;
             }
+
+            // Do work to manage the connection (in a separate thread)
+            // manageConnectedSocket(mmClientSocket);
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
+
+        }
+
+        /** Will cancel an in-progress connection, and close the socket */
+        public void cancel() {
+            try {
+                mmClientSocket.close();
+            } catch (IOException e) { }
         }
     }
 
     private void startGame(){
-    	Log.d("CLIENT", "Start game");
-    	GameInit.setMultiplayer(mmClientSocket);
     	Intent StartGame = new Intent(this ,GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
 		startActivity(StartGame);
-		// Cancel the thread that completed the connection
-        mConnectThread = null;
-		finish();
     }
     
 }
