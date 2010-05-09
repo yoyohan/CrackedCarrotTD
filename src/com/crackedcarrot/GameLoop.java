@@ -633,8 +633,8 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.relatedShot.draw = false;
     			t.draw = false;
-    			player.moneyFunction((int) (t.getPrice()/0.8f));
-    			
+    			player.moneyFunction((int) (t.getPrice()*0.8f));
+    			updateCurrency();
     		}
     		else{
     			Log.d("GAMELOOP","Error, no tower selected, can not sell");
