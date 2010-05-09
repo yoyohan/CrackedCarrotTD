@@ -1,7 +1,11 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
+<<<<<<< HEAD
 import android.app.ProgressDialog;
+=======
+import android.content.Context;
+>>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,12 +16,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -53,11 +56,13 @@ public class GameLoopGUI {
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
+<<<<<<< HEAD
     private int          resume;
     private int			 playerScore;
     private int			 opponentScore;
+=======
+>>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
     private Drawable     healthBarDrawable;
-    private ExpandMenu   expandMenu = null;
     private ImageView    enImView;
 	private LinearLayout statusBar;
     private ProgressBar  healthProgressBar;
@@ -101,6 +106,13 @@ public class GameLoopGUI {
     final Button towerbutton3;
     final Button towerbutton4;
     final LinearLayout towertext;
+    
+    final LinearLayout towerUpgrade;
+    final Button upgradeA;
+    final Button upgradeB;
+    final Button sellTower;
+    final Button closeUpgrade;
+    
     final Button tower2Information;
 
     
@@ -108,6 +120,12 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi, final UIHandler hud) {
     	gameInit = gi;
     	this.hud = hud;
+    	
+    	towerUpgrade = (LinearLayout) gameInit.findViewById(R.id.upgrade_layout);
+    	upgradeA = (Button) gameInit.findViewById(R.id.upgrade_a);
+    	upgradeB = (Button) gameInit.findViewById(R.id.upgrade_b);
+    	sellTower = (Button) gameInit.findViewById(R.id.sell);
+    	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
     	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
@@ -150,17 +168,10 @@ public class GameLoopGUI {
         playerHealthView = (TextView) gameInit.findViewById(R.id.playerHealth);
 
         
-        // Create the expandable menu
-        expandMenu =(ExpandMenu) gameInit.findViewById(R.id.expand_menu);
-        
-        // Create the instruction view
-        //instructionView = (InstructionView)findViewById(R.id.instruction_view);
-        
-
-        /** Listeners for the six icons in the in-game menu.
+        /** Listeners for the five icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
          *  on an empty space on the map. The first button
-         *  expands the menu. */
+         *  is the normal/fast switcher. */
         final Button forward = (Button) gameInit.findViewById(R.id.forward);
         final Button play = (Button) gameInit.findViewById(R.id.play);
 
@@ -169,7 +180,6 @@ public class GameLoopGUI {
         		forward.setVisibility(View.GONE);
         		gameInit.gameLoop.setGameSpeed(4);
         		play.setVisibility(View.VISIBLE);
-        		//expandMenu.switchMenu();
         	}
         });
 
@@ -178,10 +188,21 @@ public class GameLoopGUI {
         		play.setVisibility(View.GONE);
         		gameInit.gameLoop.setGameSpeed(1);
         		forward.setVisibility(View.VISIBLE);
-        		//expandMenu.switchMenu();
         	}
         });
+        
+        closeUpgrade.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Close Upgrade clicked!");
 
+        		towerUpgrade.setVisibility(View.GONE);
+           		towerbutton1.setVisibility(View.VISIBLE);
+        		towerbutton2.setVisibility(View.VISIBLE);
+        		towerbutton3.setVisibility(View.VISIBLE);
+        		towerbutton4.setVisibility(View.VISIBLE);
+        	}
+        });
+        
         towerbutton1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
@@ -229,106 +250,7 @@ public class GameLoopGUI {
         		hud.hideGrid();
         	}
         });
-        
-	    ////////////////////////////////////////////////////////////////
-	    // First button in Expand Menu
-	    ////////////////////////////////////////////////////////////////
-	    
-	    Button removeExpand = (Button) gameInit.findViewById(R.id.removeExpand);
-	    removeExpand.setOnClickListener(new OnClickListener() {
-	    	
-	    	public void onClick(View v) {
-	    		expandMenu.switchMenu(false);
-	    	}
-	    });
-	    
-	    // Second set normal gameSpeed
-	    Button normalSpeed = (Button) gameInit.findViewById(R.id.normalSpeed);
-	    normalSpeed.setOnClickListener(new OnClickListener() {
-	    	
-	    	public void onClick(View v) {
-	    		gameInit.gameLoop.setGameSpeed(1);
-	    		// And den remove menu
-	    		expandMenu.switchMenu(false);
-	    	}
-	    });
 
-	    // Third set fast gameSpeed
-	    Button fastSpeed = (Button) gameInit.findViewById(R.id.fastSpeed);
-	    fastSpeed.setOnClickListener(new OnClickListener() {
-	    	
-	    	public void onClick(View v) {
-	    		gameInit.gameLoop.setGameSpeed(4);
-	    		//And then remove menu
-	    			// TODO: we leave the menu raised in case the user wants to
-	    			//       return to normal speed quickly again... good or bad? :)
-	    		//expandMenu.switchMenu(false);
-	    	}
-	    });
-        
-	    // The second information button, activates the level info activity
-	    Button infoButton = (Button) gameInit.findViewById(R.id.infobutton);
-        infoButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
-        		gameInit.startActivity(ShowInstr);
-        	}
-        });
-        
-        // The pause button
-        Button pauseButton = (Button) gameInit.findViewById(R.id.pause);
-        pauseButton.setOnClickListener(new OnClickListener() {
-        	
-        	public void onClick(View v) {
-        		gameInit.gameLoop.pause();
-    			Log.d("GAMELOOPGUI", "denna koden skall ALDRIG köras? anropar System.exit(0) nu. bananapa");
-    			System.exit(0);
-        		/* gameInit.onPause();
-        		Intent ShowInstr = new Intent(v.getContext(),PauseView.class);
-        		gameInit.startActivity(ShowInstr); */
-        	}
-        });
-
-    }
-    
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuItem sound = menu.add(0, Menu.NONE, 0, "Sound");
-    	sound.setIcon(R.drawable.button_sound_on);
-    	
-    	MenuItem pause = menu.add(0, Menu.NONE, 0, "Pause");
-    	pause.setIcon(R.drawable.button_pause_48);
-
-    	return true;
-    }
-
-    public boolean onPrepareOptionsMenu(Menu menu) {
-    	MenuItem sound = menu.getItem(0);
-		if (gameInit.gameLoop.soundManager.playSound)
-	    	sound.setIcon(R.drawable.button_sound_on);
-		else
-	    	sound.setIcon(R.drawable.button_sound_off);
-    	
-    	return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	if (item.getTitle().toString().startsWith("Sound")) {
-    		if (gameInit.gameLoop.soundManager.playSound)
-    			gameInit.gameLoop.soundManager.playSound = false;
-    		else
-    			gameInit.gameLoop.soundManager.playSound = true;
-    	} else if (item.getTitle().toString().startsWith("Pause")) {
-    		gameInit.gameLoop.pause();
-			gameInit.showDialog(this.DIALOG_PAUSE_ID);
-    	} else if (item.getTitle().toString().startsWith("Quit")) {
-    			// User clicked Quit.
-    			// Doesnt save or prompt or anything, this just quits.
-    		gameInit.finish();
-    	}
-
-        return false;
     }
     
     
@@ -344,13 +266,14 @@ public class GameLoopGUI {
 		WindowManager.LayoutParams lp;
 		
 	    switch(id) {
+	    
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogNextLevel.setContentView(R.layout.nextlevel);
 	    	dialogNextLevel.setCancelable(true);
 	    	// Info button
-	    	Button infoButton2 = (Button) dialogNextLevel.findViewById(R.id.infobutton2);
-	        infoButton2.setOnClickListener(new OnClickListener() {
+	    	Button infoButton = (Button) dialogNextLevel.findViewById(R.id.infobutton2);
+	        infoButton.setOnClickListener(new OnClickListener() {
 	        	
 	        	public void onClick(View v) {
 	        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
@@ -432,14 +355,9 @@ public class GameLoopGUI {
 						}
 	    			});
 	    	
-	          // This is kinda cool, it makes the view behind the dialog blurred
-	          // instead of faded out.
-	          // TODO: Check on phone how this works, lags the game on emulator...
 	        lp = dialogQuit.getWindow().getAttributes();
 	        dialogQuit.getWindow().setAttributes(lp);
 	        dialogQuit.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-	        //dialogQuit.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-	        //    WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 	    	
 	    	return dialogQuit;
 	    	//break;
@@ -457,6 +375,26 @@ public class GameLoopGUI {
 	    				dialogPause.dismiss();
 	    			}
 	    		});
+	    	
+	    	// Continue button
+	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	buttonPauseSound.setOnClickListener(
+	    		new OnClickListener() {
+	    			public void onClick(View v) {
+	    	    		if (gameInit.gameLoop.soundManager.playSound) {
+	    	    			gameInit.gameLoop.soundManager.playSound = false;
+	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+	    	    		} else {
+	    	    			gameInit.gameLoop.soundManager.playSound = true;
+	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+	    	    		}
+	    			}
+	    		});
+	    		// And update the image to match the current setting.
+			if (gameInit.gameLoop.soundManager.playSound)
+				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+			else
+				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
 	    	
 	    	// Help button
 	    	Button buttonPauseHelp = (Button) dialogPause.findViewById(R.id.LevelPause_Help);
@@ -613,8 +551,6 @@ public class GameLoopGUI {
     		// And an icon.
 	    	ImageView image = (ImageView) dialog.findViewById(R.id.NextLevelImage);
 	    	image.setImageResource(currLvl.getDisplayResourceId());
-
-	    	
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
@@ -677,6 +613,7 @@ public class GameLoopGUI {
 		    else 
 		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
 		    break;
+<<<<<<< HEAD
 	    case LEVEL_SCORE:
 	    	TextView tv = (TextView) dialogScore.findViewById(R.id.scoreText);
 	    	String scoreText = "<b>Score so far:</b> " + "<br>";
@@ -707,6 +644,19 @@ public class GameLoopGUI {
 		    CharSequence chS2 = Html.fromHtml(compareScores);
 		    cS.setText(chS2);
 	    	break;
+=======
+		    
+	    case DIALOG_PAUSE_ID:
+	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+    		// And update the image to match the current setting.
+			if (gameInit.gameLoop.soundManager.playSound)
+				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+			else
+				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+
+			break;
+		    
+>>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -721,14 +671,16 @@ public class GameLoopGUI {
 	    @Override
 	    public void handleMessage(Message msg) {
 
-	    		// TODO: having this here is a fucking stupid idea.
-	    	SharedPreferences settings = gameInit.getSharedPreferences("Options", 0);
-	    	
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
+<<<<<<< HEAD
 	        	     if (settings.getBoolean("optionsNextLevel", false) 
 	        	    		 && !GameInit.multiplayerMode() ) {
 	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
+=======
+	        		 SharedPreferences settings1 = gameInit.getSharedPreferences("Options", 0);
+	        	     if (settings1.getBoolean("optionsNextLevel", true)) {
+>>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
@@ -743,7 +695,8 @@ public class GameLoopGUI {
 	        		 gameInit.showDialog(DIALOG_LOST_ID);
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
-	        	     if (settings.getBoolean("optionsHighscore", false)) {
+	        		 SharedPreferences settings2 = gameInit.getSharedPreferences("Options", 0);
+	        	     if (settings2.getBoolean("optionsHighscore", false)) {
 	        	    	 	// If ScoreNinja is enabled we show it to the player: 
 	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
@@ -876,6 +829,7 @@ public class GameLoopGUI {
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
 	}
+<<<<<<< HEAD
 	
 	public void setOpponentScore(int score){
 		this.opponentScore = score;
@@ -886,4 +840,28 @@ public class GameLoopGUI {
 		return this.gameInit;
 	}
 	
+=======
+
+
+	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
+		towerUpgrade.setVisibility(View.VISIBLE);
+		upgradeA.setBackgroundResource(typeResourceA);
+		upgradeB.setBackgroundResource(typeResourceB);
+		
+		towerbutton1.setVisibility(View.GONE);
+		towerbutton2.setVisibility(View.GONE);
+		towerbutton3.setVisibility(View.GONE);
+		towerbutton4.setVisibility(View.GONE);
+	}
+	public void setUpgradeListeners(OnClickListener upgradeAListener,
+									OnClickListener upgradeBListener, 
+									OnClickListener sellListener){
+		
+		
+		upgradeA.setOnClickListener(upgradeAListener);
+		upgradeB.setOnClickListener(upgradeBListener);
+		sellTower.setOnClickListener(sellListener);
+		
+	}
+>>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 }

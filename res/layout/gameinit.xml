@@ -13,56 +13,6 @@
 	    android:layout_height="wrap_content">
 	</com.crackedcarrot.SurfaceView>
 	
-	<com.crackedcarrot.ExpandMenu
-    	android:id="@+id/expand_menu"
-    	android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="100dp"
-		android:background="#66000044"
-		android:visibility="gone"
-		android:layout_alignParentBottom="true">
-		
-		<Button
-        	android:id="@+id/removeExpand"
-        	android:layout_width="50dp"
-        	android:layout_height="50dp"
-        	android:layout_marginRight="7dp"
-        	android:layout_marginLeft="7dp"
-        	android:background="@drawable/inmenu6_button" />
-        	
-		<Button
-        	android:id="@+id/normalSpeed"
-        	android:layout_width="50dp"
-        	android:layout_height="50dp"       	
-        	android:layout_marginRight="7dp"
-        	android:layout_marginLeft="7dp"
-        	android:background="@drawable/button_play_128" />
-
-   		<Button
-        	android:id="@+id/fastSpeed"
-        	android:layout_width="50dp"
-        	android:layout_height="50dp"
-        	android:layout_marginRight="7dp"
-        	android:layout_marginLeft="7dp"
-        	android:background="@drawable/button_forward_128" />	
-        	
-        <Button
-        	android:id="@+id/infobutton"
-        	android:layout_width="50dp"
-        	android:layout_height="50dp"
-        	android:layout_marginRight="7dp"
-        	android:layout_marginLeft="7dp"
-        	android:background="@drawable/info" />
-        	
-        <Button
-        	android:id="@+id/pause"
-        	android:layout_width="50dp"
-        	android:layout_height="50dp"
-        	android:layout_marginRight="7dp"
-        	android:layout_marginLeft="7dp"
-        	android:background="@drawable/pause" />		
-	</com.crackedcarrot.ExpandMenu>
-	
 	<LinearLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -119,9 +69,8 @@
 			android:layout_height="50dp"
 			android:id="@+id/ttext"
 			android:gravity="center_horizontal"
-			android:visibility="gone"
 			android:background="#00000000"
-	    >
+	    android:visibility="gone">
 	        <Button
 	       		android:id="@+id/t2info"
 				android:layout_width="192dp"
@@ -135,7 +84,28 @@
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
         		android:background="@drawable/xml_button_game_back" />
-    	</LinearLayout>    		
+    	
+</LinearLayout><LinearLayout android:id="@+id/upgrade_layout" android:visibility="gone" android:layout_height="50dp" android:layout_width="256dp"><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:id="@+id/sell" android:background="@drawable/t3"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/t4" android:id="@+id/upgrade_a"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/t4" android:id="@+id/upgrade_b"/><Button
+       		android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_game_back" android:id="@+id/close_upgrade"/>
+
+
+
+</LinearLayout>    		
 
     </LinearLayout>
     

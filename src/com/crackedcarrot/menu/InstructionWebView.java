@@ -1,5 +1,7 @@
 package com.crackedcarrot.menu;
 
+import com.crackedcarrot.GameLoop;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ public class InstructionWebView extends Activity {
     				public void onClick(View v) {
     					GameLoop.unPause();
     					finish();
+    					GameLoop.unPause();
     				}
     			});
 

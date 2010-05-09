@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.crackedcarrot.UI.UIHandler;
@@ -70,12 +68,6 @@ public class GameInit extends Activity {
 	protected Dialog onCreateDialog(int id) { return gameLoopGui.onCreateDialog(id); }
     @Override
 	protected void onPrepareDialog(int id, Dialog dialog) { gameLoopGui.onPrepareDialog(id, dialog); }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) { return gameLoopGui.onCreateOptionsMenu(menu); }
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) { return gameLoopGui.onPrepareOptionsMenu(menu); }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { return gameLoopGui.onOptionsItemSelected(item); }
     
     /*
      * This will have to live in GameInit.java for now - havent figured out how to move it correctly yet,
@@ -127,7 +119,7 @@ public class GameInit extends Activity {
         
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),
-        		hudHandler.getOverlayObjectsToRender(), hudHandler.getUIObjectsToRender());
+        		hudHandler.getOverlayObjectsToRender());
 
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
@@ -223,7 +215,7 @@ public class GameInit extends Activity {
 
         	// Resuming old game? Prepare GameLoop for this...
         if (resumes > 0) {
-        	gameLoop.resume(resumes, resume.getInt("level", 0), resume.getString("towers", null));
+        	gameLoop.resume(resume.getInt("level", 0), resume.getString("towers", null));
         }
         
         gameLoopThread = new Thread(gameLoop);
