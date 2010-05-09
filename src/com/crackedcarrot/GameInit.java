@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -284,6 +282,11 @@ public class GameInit extends Activity {
     protected void onStop() {
     	super.onStop();
     	gameLoop.stopGameLoop();
+    	if(multiplayerMode()){
+    		this.mMultiplayerService.endBluetooth();
+    		this.mMultiplayerService = null;
+    		Log.d("GAMEINIT", "End Bluetooth");
+    	}
     	Log.d("GAMEINIT", "onStop");
 
     	//You also need to stop the trace when you are done!

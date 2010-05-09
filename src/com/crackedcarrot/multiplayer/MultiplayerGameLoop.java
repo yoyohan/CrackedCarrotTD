@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.crackedcarrot.Coords;
-import com.crackedcarrot.GameInit;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.GameLoopGUI;
 import com.crackedcarrot.NativeRender;
@@ -236,7 +235,6 @@ public class MultiplayerGameLoop extends GameLoop {
 					}
 	            }
 	            
-	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {
 	            	
@@ -288,15 +286,12 @@ public class MultiplayerGameLoop extends GameLoop {
     			byte[] send = message.getBytes();
     			mMultiplayerService.write(send);
             	
-            	// If it's the last level, send the synch message so opponent won't wait for eternity
-            	if(lvlNbr >= mLvl.length){
-            		String lastMessage = "synchLevel";
-            		byte[] sendMessage = lastMessage.getBytes();
-            		mMultiplayerService.write(sendMessage);
-            	}
-            	
     			//Is the opponent still alive?
     			if(this.opponentLife){
+    				// Send the synch message so opponent won't wait for eternity
+    				String lastMessage = "synchLevel";
+            		byte[] sendMessage = lastMessage.getBytes();
+            		mMultiplayerService.write(sendMessage);
     				// Show the "You Lost"-dialog.
                 	gui.sendMessage(gui.MULTIPLAYER_LOST, 0, 0);
             		waitForDialogClick();
@@ -310,64 +305,56 @@ public class MultiplayerGameLoop extends GameLoop {
         	} 
             else if (remainingCreaturesALL < 1) {
         		//If you have survived the entire wave without dying. Proceed to next next level.
+            	String mess = "Score" + player.getScore();
+    			byte[] sendMess = mess.getBytes();
+    			mMultiplayerService.write(sendMess);
+            	
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
         		
-        		Log.d("FFFFFF", "Opponentlife: " + opponentLife);
+        		//Show "Waiting for opponent" message
+        		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+    			
+        		String me = "synchLevel";
+        		byte[] sendThis = me.getBytes();
+        		mMultiplayerService.write(sendThis);
+        		
+        		Log.d("ZZZZZZZ", "Before first synchlevel");
+        		// Wait for the opponent
+        		try {
+        			synchLevelSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        		Log.d("ZZZZZZZ", "Before second synchlevel");
+        		try {
+        			synchLevelSemaphore.acquire();
+        		} catch (InterruptedException e) {
+        			e.printStackTrace();
+        		}
+        		synchLevelSemaphore.release();
+        		Log.d("ZZZZZZZ", "close wait for....");
+        		//Close "Waiting for opponent" message
+        		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+        		
         		//Is the opponent dead, in that case you've won the game
         		if(!this.opponentLife){
         			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
         			waitForDialogClick();
-        			Log.d("FFFFFF", "MULTIPLAYER WON");
         			run = false;
         		} else {
 	        		// The game is not totally completed, send players score to opponent
 	        		if (lvlNbr < mLvl.length) {
 	        			String message = "Score" + player.getScore();
 	        			byte[] send = message.getBytes();
-	        			mMultiplayerService.write(send);
+	        			mMultiplayerService.write(send);	
 	        		}
 	        		else {
 	                	Log.d("GAMETHREAD", "You have completed this map");
-	                	//When player completed the map, wait for opponent
-	                	
-	                	String mess = "Score" + player.getScore();
-	        			byte[] sendMess = mess.getBytes();
-	        			mMultiplayerService.write(sendMess);
-	            
-	            		String message = "synchLevel";
-	            		byte[] send = message.getBytes();
-	            		mMultiplayerService.write(send);
-	            		
-	            		//Show "Waiting for opponent" message
-	            		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
-	            		
-	            		// Wait for the opponent
-	            		try {
-	            			synchLevelSemaphore.acquire();
-	            		} catch (InterruptedException e) {
-	            			e.printStackTrace();
-	            		}
-	            		try {
-	            			synchLevelSemaphore.acquire();
-	            		} catch (InterruptedException e) {
-	            			e.printStackTrace();
-	            		}
-	            		synchLevelSemaphore.release();
-	            		
-	            		//Close "Waiting for opponent" message
-	            		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
-	                	
-	            		//if opponent now is dead, show the "You won"-dialog
-	            		if(!this.opponentLife){
-	            			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
-	            			waitForDialogClick();
-	            			run = false;
-	            		} else {
-	            			gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
-	            			waitForDialogClick();
-	            			run = false;
-	            		}
+	                	//Both players have survived all the enemy waves
+	            		gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
+	            		waitForDialogClick();
+	            		run = false;
 	        		}
         		}
         	}

@@ -700,8 +700,8 @@ public class GameLoopGUI {
 	    	else {
 	    		winLoose = "<b>It's a tie!</b>";
 	    	}
-	    	compareScores = "You: " + playerScore + "<br>";
-	    	compareScores += "Opponent: " + opponentScore;
+	    	compareScores = "Your score: " + playerScore + "<br>";
+	    	compareScores += "Opponent's score: " + opponentScore;
 	    	CharSequence chS = Html.fromHtml(winLoose);
 		    wL.setText(chS);
 		    CharSequence chS2 = Html.fromHtml(compareScores);
@@ -727,7 +727,7 @@ public class GameLoopGUI {
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
 	        	     if (settings.getBoolean("optionsNextLevel", false) 
-	        	    		 || GameInit.multiplayerMode() ) {
+	        	    		 && !GameInit.multiplayerMode() ) {
 	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {

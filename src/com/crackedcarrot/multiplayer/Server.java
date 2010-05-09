@@ -1,6 +1,5 @@
 package com.crackedcarrot.multiplayer;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -93,6 +92,8 @@ public class Server extends Activity {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
             Log.d("SERVER", "Start server thread");
+    	} else {
+    		Log.d("SERVER", "The Accept thread already exists!!");
     	}
     }
     
@@ -121,7 +122,11 @@ public class Server extends Activity {
             BluetoothServerSocket tmp = null;
             try {
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-            } catch (IOException e) { }
+            } catch (Exception e) {
+            	Toast.makeText(Server.this, "Bluetooth not active, returned null-object as socket. " + 
+            			"Reactivate Bluetooth on device!",Toast.LENGTH_LONG).show();
+            	finish();
+            }
             mmServerSocket = tmp;
             Log.d("SERVER", "Serverthread constructor");
         }
@@ -130,34 +135,45 @@ public class Server extends Activity {
             BluetoothSocket socket = null;
             // Listen, by calling accept(), until exception occurs or a socket is returned
             while (true) {
-                try {
-                	Log.d("SERVER", "Kör server accept()");
-                    socket = mmServerSocket.accept();
-                } catch (IOException e) {
-                	Log.e("SERVER", "Accept() fungerar ej");
+            	if(mmServerSocket == null){
+                	finish();
                     break;
-                }
+            	}
+            	else{
+            		try {
+                    	Log.d("SERVER", "Kör server accept()");
+                        socket = mmServerSocket.accept();
+                    } catch (Exception e) {
+                        break;
+                    }
+            	}
                 Log.d("SERVER", "Serverthread running");
                 // Connection accepted?
                 if (socket != null) {
-                	Log.d("SERVER", "anlutning klar!");
+                	Log.d("SERVER", "connection established!");
                 	startGame(socket);
                 	try{
                 		mmServerSocket.close();
-                	} catch (Exception e){}
+                	} catch (Exception e){
+                		Log.d("SERVER", "Can't close the server socket");
+                	}
                     break;
                 }
             }
         }
     }
     
+    /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
+        // Start the game and finish the activity
     	Log.d("SERVER", "Start game");
     	GameInit.setMultiplayer(socket);
     	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
 		startActivity(StartGame);
+		// Cancel the accept thread because we only want to connect to one device
+		mAcceptThread = null;
 		finish();
     }
     

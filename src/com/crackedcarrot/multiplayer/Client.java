@@ -126,12 +126,10 @@ public class Client extends Activity {
     }
     
     private class ConnectThread extends Thread {
-        private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
-            mmDevice = device;
             Log.d("CLIENT", "Connect thread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
@@ -151,22 +149,17 @@ public class Client extends Activity {
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
+            	// Send a message that connection failed? Like in the BT code example?
                 try {
                     mmClientSocket.close();
-                } catch (IOException closeException) { }
+                } catch (IOException closeException) {
+                	Log.e("CLIENT", "Can't close socket", closeException);
+                }
+                
                 return;
             }
-
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
-
-        }
-
-        /** Will cancel an in-progress connection, and close the socket */
-        public void cancel() {
-            try {
-                mmClientSocket.close();
-            } catch (IOException e) { }
         }
     }
 
@@ -177,6 +170,8 @@ public class Client extends Activity {
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
 		startActivity(StartGame);
+		// Cancel the thread that completed the connection
+        mConnectThread = null;
 		finish();
     }
     
