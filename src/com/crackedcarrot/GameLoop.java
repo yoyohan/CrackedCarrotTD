@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-import android.net.http.SslCertificate;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +35,8 @@ public class GameLoop implements Runnable {
     protected long mLastTime;
     
     private String resumeTowers = "";
+    
+    protected Coords selectedTower;
 
     protected float startCreatureHealth;
     protected float currentCreatureHealth;

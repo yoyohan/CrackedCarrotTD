@@ -1,11 +1,7 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
-<<<<<<< HEAD
 import android.app.ProgressDialog;
-=======
-import android.content.Context;
->>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +26,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.crackedcarrot.multiplayer.MultiplayerService;
 
 	/*
 	 * 
@@ -56,12 +51,10 @@ public class GameLoopGUI {
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
-<<<<<<< HEAD
     private int          resume;
     private int			 playerScore;
     private int			 opponentScore;
-=======
->>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
+
     private Drawable     healthBarDrawable;
     private ImageView    enImView;
 	private LinearLayout statusBar;
@@ -613,7 +606,6 @@ public class GameLoopGUI {
 		    else 
 		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
 		    break;
-<<<<<<< HEAD
 	    case LEVEL_SCORE:
 	    	TextView tv = (TextView) dialogScore.findViewById(R.id.scoreText);
 	    	String scoreText = "<b>Score so far:</b> " + "<br>";
@@ -643,9 +635,7 @@ public class GameLoopGUI {
 		    wL.setText(chS);
 		    CharSequence chS2 = Html.fromHtml(compareScores);
 		    cS.setText(chS2);
-	    	break;
-=======
-		    
+	    	break;		    
 	    case DIALOG_PAUSE_ID:
 	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
@@ -655,8 +645,6 @@ public class GameLoopGUI {
 				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
 
 			break;
-		    
->>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -673,14 +661,10 @@ public class GameLoopGUI {
 
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
-<<<<<<< HEAD
-	        	     if (settings.getBoolean("optionsNextLevel", false) 
-	        	    		 && !GameInit.multiplayerMode() ) {
-	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
-=======
 	        		 SharedPreferences settings1 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings1.getBoolean("optionsNextLevel", true)) {
->>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
+	        	     if (settings1.getBoolean("optionsNextLevel", true)
+	        	    		 && !GameInit.multiplayerMode()) {
+	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
@@ -829,7 +813,6 @@ public class GameLoopGUI {
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
 	}
-<<<<<<< HEAD
 	
 	public void setOpponentScore(int score){
 		this.opponentScore = score;
@@ -840,9 +823,6 @@ public class GameLoopGUI {
 		return this.gameInit;
 	}
 	
-=======
-
-
 	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
 		towerUpgrade.setVisibility(View.VISIBLE);
 		upgradeA.setBackgroundResource(typeResourceA);
@@ -863,5 +843,4 @@ public class GameLoopGUI {
 		sellTower.setOnClickListener(sellListener);
 		
 	}
->>>>>>> 9dde2e63ce5f82a7edf2913cb202cbe4af380c06
 }

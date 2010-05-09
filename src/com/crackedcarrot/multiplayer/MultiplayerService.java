@@ -16,16 +16,12 @@ public class MultiplayerService extends Thread {
     private final OutputStream mmOutStream;
     
     // Message types sent to the MultiplayerService Handler
+    public static final int MESSAGE_READ = 10;
     public static final int MESSAGE_SYNCH_LEVEL = 1;
     public static final int MESSAGE_PLAYER_SCORE = 2;
     public static final int MESSAGE_PLAYER_DEAD = 3;
     public static final int MESSAGE_DEVICE_NAME = 30;
     public static final int MESSAGE_TOAST = 40;
-    
-    // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
-    private final String SYNCH_LEVEL = "synchLevel";
-    private final String PLAYER_SCORE = "Score";
-    private final String PLAYER_DEAD = "Dead";
     
     private boolean runBluetooth = true;
     
@@ -66,6 +62,9 @@ public class MultiplayerService extends Thread {
                 bytes = mmInStream.read(buffer);
                 
                 if(bytes > 0){
+                	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, 
+                    		bytes, buffer).sendToTarget();
+                	/**
 	                // construct a string from the valid bytes in the buffer
 	                String readMessage = new String(buffer);
 	                readMessage = readMessage.substring(0, bytes);
@@ -89,7 +88,7 @@ public class MultiplayerService extends Thread {
 	                				bytes, buffer).sendToTarget();
 	                	}
 	                	
-	                }
+	                }*/
                 }
          	   //Log.d("MPSERVICE LOOP", "Send to handler");
             } catch (IOException e) {

@@ -70,26 +70,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
 		// Initialize the status, displaying the creature image
 		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
-				
-		// Show the NextLevel-dialog and waits for user to click ok
-		// via the semaphore.
-    	try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		
-		//Also wait for the opponent to click ok via semaphore
-		try {
-			Log.d("MultiPLAYERGAMELOOP", "Acquire sem 1st time");
-	    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
-
-			synchLevelSemaphore.acquire();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		
-		gui.sendMessage(gui.DIALOG_NEXTLEVEL_ID, 0, 0);
+			
 		
     	// This is a good time to save the current progress of the game.
 			// -2 = call the SaveGame-function.
@@ -123,33 +104,6 @@ public class MultiplayerGameLoop extends GameLoop {
 		
 		// We wait to show the status bar until everything is updated
 		gui.sendMessage(gui.GUI_SHOWSTATUSBAR_ID, 0, 0);
-		
-		// Code to wait for the user to click ok on NextLevel-dialog.
-		try {
-			dialogSemaphore.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		dialogSemaphore.release();
-		
-		//When player clicked ok, send message to opponent that it's done
-		String message = "synchLevel";
-		byte[] send = message.getBytes();
-		mMultiplayerService.write(send);
-		
-		//Show "Waiting for opponent" message
-		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
-		
-		// Wait for the opponent
-		try {
-			synchLevelSemaphore.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		synchLevelSemaphore.release();
-		
-		//Close "Waiting for opponent" message
-		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
 		
 		//The dialog showing the players score is shown right after next level dialog
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
@@ -207,33 +161,29 @@ public class MultiplayerGameLoop extends GameLoop {
     			
 				final long time = SystemClock.uptimeMillis();
 
-				if(pause){
-	    			try {
-	    	    		pauseSemaphore.acquire();
-	    			} catch (InterruptedException e1) {}
+				if (pause) {
+	    			try { pauseSemaphore.acquire(); }
+	    			catch (InterruptedException e1) { }
 	    			pauseSemaphore.release();
 				}
     			
-				//Get the time after an eventual pause and add this to the mLastTime variable
-    			final long time2 = SystemClock.uptimeMillis();
-    			final long pauseTime = time2 - time;
-
 	            // Used to calculate creature movement.
-				final long timeDelta = time - mLastTime;
-	            final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time + pauseTime;
-
+				long timeDelta = time - mLastTime;
 	            // To save some cpu we will sleep the
 	            // gameloop when not needed. GOAL 60fps
 	            if (timeDelta <= 16) {
-	            	int naptime = (int)(16-timeDelta);
+	            	int naptime = (int) (16 - timeDelta);
 		            try {
 						Thread.sleep(naptime);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            }
+	            } else 				
+	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
+
+				final float timeDeltaSeconds = 
+	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
+	            mLastTime = time;
 	            
 	            // Displays the Countdown-to-next-wave text.
 	            if (player.getTimeUntilNextLevel() > 0) {
@@ -264,9 +214,10 @@ public class MultiplayerGameLoop extends GameLoop {
 	        		mCreatures[x].update(timeDeltaSeconds);
 	        	}       	
 	            //Calls the method that handles the monsterkilling.
-	        	for (int x = 0; x <= totalNumberOfTowers; x++) {
-	        		mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
-	        	}	            
+	        	for (int x = 0; x < mTower.length; x++) {
+	        		if(mTower[x].draw == true)
+	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
+	        	}	              
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
             		//If you have lost all your lives then the game ends.
@@ -304,38 +255,15 @@ public class MultiplayerGameLoop extends GameLoop {
     			}
         	} 
             else if (remainingCreaturesALL < 1) {
-        		//If you have survived the entire wave without dying. Proceed to next next level.
-            	String mess = "Score" + player.getScore();
-    			byte[] sendMess = mess.getBytes();
-    			mMultiplayerService.write(sendMess);
-            	
+            	//Send players score to opponent
+            	String message = "Score" + player.getScore();
+    			byte[] send = message.getBytes();
+    			mMultiplayerService.write(send);	
             	Log.d("GAMETHREAD", "Wave complete");
         		lvlNbr++;
+        		/**
         		
-        		//Show "Waiting for opponent" message
-        		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
-    			
-        		String me = "synchLevel";
-        		byte[] sendThis = me.getBytes();
-        		mMultiplayerService.write(sendThis);
-        		
-        		Log.d("ZZZZZZZ", "Before first synchlevel");
-        		// Wait for the opponent
-        		try {
-        			synchLevelSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		Log.d("ZZZZZZZ", "Before second synchlevel");
-        		try {
-        			synchLevelSemaphore.acquire();
-        		} catch (InterruptedException e) {
-        			e.printStackTrace();
-        		}
-        		synchLevelSemaphore.release();
-        		Log.d("ZZZZZZZ", "close wait for....");
-        		//Close "Waiting for opponent" message
-        		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+        		*/
         		
         		//Is the opponent dead, in that case you've won the game
         		if(!this.opponentLife){
@@ -343,11 +271,40 @@ public class MultiplayerGameLoop extends GameLoop {
         			waitForDialogClick();
         			run = false;
         		} else {
-	        		// The game is not totally completed, send players score to opponent
+        			//Show "Waiting for opponent" message
+            		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+        			
+            		try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+            		
+            		String me = "synchLevel";
+            		byte[] sendThis = me.getBytes();
+            		mMultiplayerService.write(sendThis);
+            		
+            		Log.d("ZZZZZZZ", "Before first synchlevel");
+            		// Wait for the opponent
+            		try {
+            			synchLevelSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			e.printStackTrace();
+            		}
+            		Log.d("ZZZZZZZ", "Before second synchlevel");
+            		try {
+            			synchLevelSemaphore.acquire();
+            		} catch (InterruptedException e) {
+            			e.printStackTrace();
+            		}
+            		synchLevelSemaphore.release();
+            		
+            		Log.d("ZZZZZZZ", "close wait for....");
+            		//Close "Waiting for opponent" message
+            		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+	        		// The game is not totally completed
 	        		if (lvlNbr < mLvl.length) {
-	        			String message = "Score" + player.getScore();
-	        			byte[] send = message.getBytes();
-	        			mMultiplayerService.write(send);	
+	        			//Do nothing here
 	        		}
 	        		else {
 	                	Log.d("GAMETHREAD", "You have completed this map");
