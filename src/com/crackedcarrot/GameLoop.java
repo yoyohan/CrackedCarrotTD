@@ -602,7 +602,7 @@ public class GameLoop implements Runnable {
 		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3);
 	}
 	
-	public void pause() {
+	public static void pause() {
 		try { pauseSemaphore.acquire(); }
 		catch (InterruptedException e) { e.printStackTrace(); }
 		pause = true;
