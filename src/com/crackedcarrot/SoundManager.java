@@ -58,7 +58,7 @@ public class SoundManager {
         // Here goes the mp3/wav/ogg-files we want to use.
         // These need to be added to the res/raw/NameOfSound.mp3 folder,
         // WITH the extension on the file.
-        this.addSound( 0, 1.0f, 250, R.raw.shot1);
+        this.addSound( 0, 1.0f, 500, R.raw.shot1);
         this.addSound(10, 1.0f, 1000, R.raw.died1);
         this.addSound(20, 1.0f, 1000, R.raw.build1);
         //this.addSound(20, 1.0f, R.raw.creaturehappy);
@@ -92,6 +92,7 @@ public class SoundManager {
 	 *
 	 * @param  index		The desired id for this sound, value: int.
 	 * @param  pitch		The pitch for the sound, value: 0.5 - 2.0 float.
+	 * @param  delay        How long before it can be played again, value: float.
 	 * @param  soundId		Location of the R.raw.soundfile.mp3 resource.
 	 * @return     			void
 	 */
