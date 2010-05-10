@@ -83,7 +83,7 @@ public class SoundManager {
 		 // number 4 is the total number of concurrently playing sounds. if 4 are already
 		 // playing the oldest one will be replaced. we can change if necessary.
 	     mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
-	     mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE); 	     
+	     mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); 	     
 	} 
 
     /**
@@ -132,6 +132,16 @@ public class SoundManager {
 	     mSoundPool.play(mSoundArray[index], streamVolume, streamVolume, 1, -1, 1f); 
 	}
 	
+	/**
+	 * Stops playing a sound or looped sound.
+	 * 
+	 * @param index		Index of sound to stop playing.
+	 * @return			void
+	 */
+	public void stopSound(int index) {
+		mSoundPool.stop(mSoundArray[index]);
+	}
+	
     /**
 	 * Plays a random sound from the array of sounds cached.
 	 *
@@ -141,6 +151,17 @@ public class SoundManager {
 	 */
 	public void playSoundRandom(int i, int j) {
 		playSound(i + random.nextInt(j));
+	}
+	
+	/**
+	 * Releases all cached soundfiles and returns their resources.
+	 * It's a good idea to call this when done using SoundManager
+	 * to preserve memory/CPU.
+	 * 
+	 * @return		void
+	 */
+	public void release() {
+		mSoundPool.release();
 	}
 
 }

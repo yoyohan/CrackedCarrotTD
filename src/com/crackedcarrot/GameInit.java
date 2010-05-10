@@ -246,6 +246,9 @@ public class GameInit extends Activity {
     protected void onStop() {
     	super.onStop();
     	gameLoop.stopGameLoop();
+    	
+    	gameLoop.soundManager.release();
+    	
     	Log.d("GAMEINIT", "onStop");
 
     	//You also need to stop the trace when you are done!
