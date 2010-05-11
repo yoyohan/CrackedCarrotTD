@@ -58,6 +58,22 @@ public class Shot extends Sprite{
 		}
 	}
 
+	
+	/**
+	 * Shows the moving animation for a shot. Requires system time, 
+	 * @param timeDeltaSeconds
+	 */
+	public void animateMovingShot(float timeDeltaSeconds) {
+		tmpAnimationTime -= timeDeltaSeconds;
+		if (tmpAnimationTime <= 0) {
+			this.cFrame = 0;
+			tmpAnimationTime = this.animationTime;
+		}
+		else {
+    		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames())));
+		}
+	}
+	
 	/**
 	 * Will return how long time a animation from this shot runs 
 	 * @return time(float)
