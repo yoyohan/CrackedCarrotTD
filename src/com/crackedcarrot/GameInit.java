@@ -101,7 +101,7 @@ public class GameInit extends Activity {
         
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),
-        		hudHandler.getOverlayObjectsToRender(), hudHandler.getUIObjectsToRender());
+        		hudHandler.getOverlayObjectsToRender());
 
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
         

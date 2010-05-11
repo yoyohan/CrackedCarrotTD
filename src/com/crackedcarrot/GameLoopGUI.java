@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,12 +76,20 @@ public class GameLoopGUI {
     final int GUI_SHOWSTATUSBAR_ID   = 16;
     final int GUI_SHOWHEALTHBAR_ID   = 17;
     final int GUI_HIDEHEALTHBAR_ID   = 18;
+    final int TOWER_UPGRADE 		 = 19;
     
     final Button towerbutton1;
     final Button towerbutton2;
     final Button towerbutton3;
     final Button towerbutton4;
     final LinearLayout towertext;
+    
+    final LinearLayout towerUpgrade;
+    final Button upgradeA;
+    final Button upgradeB;
+    final Button sellTower;
+    final Button closeUpgrade;
+    
     final Button tower2Information;
 
     
@@ -88,6 +97,12 @@ public class GameLoopGUI {
     public GameLoopGUI(GameInit gi, final UIHandler hud) {
     	gameInit = gi;
     	this.hud = hud;
+    	
+    	towerUpgrade = (LinearLayout) gameInit.findViewById(R.id.upgrade_layout);
+    	upgradeA = (Button) gameInit.findViewById(R.id.upgrade_a);
+    	upgradeB = (Button) gameInit.findViewById(R.id.upgrade_b);
+    	sellTower = (Button) gameInit.findViewById(R.id.sell);
+    	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
     	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
@@ -152,7 +167,19 @@ public class GameLoopGUI {
         		forward.setVisibility(View.VISIBLE);
         	}
         });
+        
+        closeUpgrade.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		Log.d("GUI", "Close Upgrade clicked!");
 
+        		towerUpgrade.setVisibility(View.GONE);
+           		towerbutton1.setVisibility(View.VISIBLE);
+        		towerbutton2.setVisibility(View.VISIBLE);
+        		towerbutton3.setVisibility(View.VISIBLE);
+        		towerbutton4.setVisibility(View.VISIBLE);
+        	}
+        });
+        
         towerbutton1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		// A tower of type 1 has been chosen, where to put it?
@@ -216,6 +243,7 @@ public class GameLoopGUI {
 		WindowManager.LayoutParams lp;
 		
 	    switch(id) {
+	    
 	    case DIALOG_NEXTLEVEL_ID:
 	    	dialogNextLevel = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogNextLevel.setContentView(R.layout.nextlevel);
@@ -629,5 +657,27 @@ public class GameLoopGUI {
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
-	}	
+	}
+
+
+	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
+		towerUpgrade.setVisibility(View.VISIBLE);
+		upgradeA.setBackgroundResource(typeResourceA);
+		upgradeB.setBackgroundResource(typeResourceB);
+		
+		towerbutton1.setVisibility(View.GONE);
+		towerbutton2.setVisibility(View.GONE);
+		towerbutton3.setVisibility(View.GONE);
+		towerbutton4.setVisibility(View.GONE);
+	}
+	public void setUpgradeListeners(OnClickListener upgradeAListener,
+									OnClickListener upgradeBListener, 
+									OnClickListener sellListener){
+		
+		
+		upgradeA.setOnClickListener(upgradeAListener);
+		upgradeB.setOnClickListener(upgradeBListener);
+		sellTower.setOnClickListener(sellListener);
+		
+	}
 }

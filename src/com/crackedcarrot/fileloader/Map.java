@@ -52,18 +52,42 @@ public class Map {
 	/** 
 	 * return towergrid for this map
 	 *
- 	 * @return Sprite[]
+ 	 * @return Sprite[][]
 	 */
-	public Tower[][] getTowerGrid() {
+	public Tower[][] get2DGrid() {
 		return twg;
 	}
 	
 	/** 
-	 * return towergrid for this map
+	 * return towergrid for this map as linear Array.
 	 *
  	 * @return Sprite[]
 	 */
+	public Tower[] getLinearGrid() {
+		int size = 0;
+		for(int i = 0; i < twg.length; i++){
+			for(int j = 0; j < twg[i].length; j++){
+				if(twg[i][j] != null)
+					size++;
+			}
+		}
+		
+		Tower[] result = new Tower[size];
+		
+		int index = 0;
+		for(int i = 0; i < twg.length; i++){
+			for(int j = 0; j < twg[i].length; j++){
+				if(twg[i][j] != null){
+					result[index] = twg[i][j];
+					index++;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	public Scaler getScaler() {
 		return mapScaler;
-	}	
+	}
 }

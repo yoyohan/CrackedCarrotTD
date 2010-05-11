@@ -78,6 +78,14 @@ public class Tower extends Sprite {
 		rand = new Random();
 	}
 	
+	public void initTower(int resourceId, int type, Creature[] mCreatures, SoundManager soundManager){
+		this.setResourceId(resourceId);
+		this.setType(TOWER, type);
+		this.soundManager = soundManager;
+		this.mCreatures = mCreatures;
+		rand = new Random();
+	}
+	
 	/**
 	 * Calculates special damage. Used by all towers that have frost,posion or fire damage
      * @param tmpCreature
