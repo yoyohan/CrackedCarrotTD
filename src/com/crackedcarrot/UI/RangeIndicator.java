@@ -60,6 +60,13 @@ public class RangeIndicator extends Sprite{
 				SystemClock.sleep(10);
 				currentTime = SystemClock.uptimeMillis();
 			}
+				// Show the range for a little while.
+			SystemClock.sleep(100);
+			
+				// Fade out should take equal time as fade in. Update the timers.
+			startTime = SystemClock.uptimeMillis();
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = currentTime;
 			opacity = 0.5f;
 			while((currentTime - startTime) < 500){
 				if((currentTime - lastUpdateTime) > 50){
