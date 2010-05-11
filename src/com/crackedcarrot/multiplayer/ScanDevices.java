@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -90,10 +91,12 @@ public class ScanDevices extends Activity {
             findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
             for (BluetoothDevice device : pairedDevices) {
                 mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                Log.d("SCANDEVICES", "Add these from start: " + device.getName() + " " + device.getAddress());
             }
         } else {
             String noDevices = "No devices have been paired";
             mPairedDevicesArrayAdapter.add(noDevices);
+            Log.d("SCANDEVICES", noDevices);
         }
     }
 
@@ -105,9 +108,9 @@ public class ScanDevices extends Activity {
         if (mBluetoothAdapter != null) {
             mBluetoothAdapter.cancelDiscovery();
         }
-
         // Unregister broadcast listeners
         this.unregisterReceiver(mReceiver);
+        Log.d("SCANDEVICES", "Unregister Receiver!!!");
     }
 
     /**
@@ -136,7 +139,8 @@ public class ScanDevices extends Activity {
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
-
+            Log.d("SCANDEVICES", info);
+            Log.d("SCANDEVICES", address);
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
@@ -161,6 +165,7 @@ public class ScanDevices extends Activity {
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    Log.d("SCANDEVICES", "Add to NewDevicesArrayAdapter");
                 }
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

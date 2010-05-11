@@ -2,18 +2,16 @@ package com.crackedcarrot;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
@@ -22,6 +20,7 @@ import com.crackedcarrot.fileloader.MapLoader;
 import com.crackedcarrot.fileloader.TowerLoader;
 import com.crackedcarrot.fileloader.WaveLoader;
 import com.crackedcarrot.menu.R;
+import com.crackedcarrot.multiplayer.MultiplayerGameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
 import com.scoreninja.adapter.ScoreNinjaAdapter;
@@ -36,9 +35,28 @@ public class GameInit extends Activity {
     private UIHandler   hudHandler;
     private MapLoader   mapLoader;
     
+
+    ///////////////// Multiplayer ////////////////////////////
+    private MultiplayerService mMultiplayerService;
+    private static BluetoothSocket multiplayerSocket = null;
+   
+    /** Makes the Bluetooth socket available from GameInit */
+    public static void setMultiplayer(BluetoothSocket socket){
+        multiplayerSocket = socket;
+    }
+    
+    /** Used by next level dialog to check if it should be shown */
+    public static boolean multiplayerMode(){
+    	if(multiplayerSocket != null){
+    		return true;
+    	} else{
+    		return false;
+    	}
+    }
+    //////////////////////////////////////////////////////////
+
     public ScoreNinjaAdapter scoreNinjaAdapter;
 
-    
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
      *  
@@ -141,7 +159,7 @@ public class GameInit extends Activity {
         
         // Create the map requested by the player
 
-       	// resume needs to load the correct map aswell.
+       	// resume needs to load the correct map as well.
        	if (resumes > 0)
        		mapChoice = resume.getInt("map", 0);
         
@@ -182,9 +200,19 @@ public class GameInit extends Activity {
         TowerLoader towerLoad = new TowerLoader(this, scaler);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
-    	// Sending data to GAMELOOP
-        gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,gameLoopGui,new SoundManager(getBaseContext()));
-        
+        if(multiplayerSocket != null){
+        	Log.d("GAMEINIT", "Create multiplayerGameLoop");
+    		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
+    		mMultiplayerService.start();
+    		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
+    				gameLoopGui,new SoundManager(getBaseContext()), mMultiplayerService);
+    	}else{
+    		// Sending data to GAMELOOP
+        	Log.d("GAMEINIT", "Create ordinary GameLoop");
+            gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
+            		gameLoopGui,new SoundManager(getBaseContext()));
+    	}
+
         	// Resuming old game? Prepare GameLoop for this...
         if (resumes > 0) {
         	gameLoop.resume(resume.getInt("level", 0), resume.getString("towers", null));
@@ -246,9 +274,12 @@ public class GameInit extends Activity {
     protected void onStop() {
     	super.onStop();
     	gameLoop.stopGameLoop();
-    	
     	gameLoop.soundManager.release();
-    	
+    	if(multiplayerMode()){
+    		this.mMultiplayerService.endBluetooth();
+    		this.mMultiplayerService = null;
+    		Log.d("GAMEINIT", "End Bluetooth");
+    	}
     	Log.d("GAMEINIT", "onStop");
 
     	//You also need to stop the trace when you are done!
@@ -286,49 +317,4 @@ public class GameInit extends Activity {
     		Log.d("GAMEINIT","resumes: " + -1);
     	}
     }
-    
-    
-    /** This is the multiplayer part, will move this to the GameLoopGUI as soon as it works */
-    /////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////
-    
-    private MultiplayerService mMultiplayerService;
-    
-    // Message types sent from the MultiplayerService Handler
-    public static final int MESSAGE_READ = 1;
-    public static final int MESSAGE_WRITE = 2;
-    public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
-    
-    // The Handler that gets information back from the MultiplayerService
-    private final Handler mMultiPlayerHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
-                //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                break;
-            case MESSAGE_READ:
-                byte[] readBuf = (byte[]) msg.obj;
-                // construct a string from the valid bytes in the buffer
-                String readMessage = new String(readBuf, 0, msg.arg1);
-                //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
-                break;
-            case MESSAGE_DEVICE_NAME:
-                // save the connected device's name
-                //mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                //Toast.makeText(getApplicationContext(), "Connected to "
-                //               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                break;
-            case MESSAGE_TOAST:
-                Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
-                               Toast.LENGTH_SHORT).show();
-                break;
-            }
-        }
-    };
-    
 }

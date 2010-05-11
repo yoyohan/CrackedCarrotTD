@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,9 +43,18 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
+	private ProgressDialog dialogWait = null;
+	private Dialog dialogScore = null;
+	private Dialog dialogMpWon = null;
+	private Dialog dialogMpLost = null;
+	private Dialog dialogCompare = null;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
+    private int          resume;
+    private int			 playerScore;
+    private int			 opponentScore;
+
     private Drawable     healthBarDrawable;
     private ImageView    enImView;
 	private LinearLayout statusBar;
@@ -59,23 +69,30 @@ public class GameLoopGUI {
 	
     
     	// For readability-reasons.
-    final int DIALOG_NEXTLEVEL_ID   = 1;
-    final int DIALOG_WON_ID         = 2;
-    final int DIALOG_LOST_ID        = 3;
-    final int DIALOG_HIGHSCORE_ID   = 4;
-    final int DIALOG_QUIT_ID        = 5;
+    public final int DIALOG_NEXTLEVEL_ID = 1;
+    public final int DIALOG_WON_ID       = 2;
+    public final int DIALOG_LOST_ID      = 3;
+    public final int DIALOG_HIGHSCORE_ID = 4;
+    final int DIALOG_QUIT_ID	= 5;
+    final int DIALOG_RESUMESLEFT_ID = 6;
     final int DIALOG_PAUSE_ID       = 7;
+    public final int WAIT_OPPONENT_ID = 8;
+    public final int CLOSE_WAIT_OPPONENT = 9;
+    public final int LEVEL_SCORE = 10;
+    public final int MULTIPLAYER_WON = 11;
+    public final int MULTIPLAYER_LOST = 12;
+    public final int COMPARE_PLAYERS = 13;
     
-    final int GUI_PLAYERMONEY_ID     = 10;
-    final int GUI_PLAYERHEALTH_ID    = 11;
-    final int GUI_CREATUREVIEW_ID    = 12;
-    final int GUI_CREATURELEFT_ID    = 13;
-    final int GUI_PROGRESSBAR_ID     = 14;
-    final int GUI_NEXTLEVELINTEXT_ID = 15;
-    final int GUI_SHOWSTATUSBAR_ID   = 16;
-    final int GUI_SHOWHEALTHBAR_ID   = 17;
-    final int GUI_HIDEHEALTHBAR_ID   = 18;
-    final int TOWER_UPGRADE 		 = 19;
+    public final int GUI_PLAYERMONEY_ID     = 20;
+    public final int GUI_PLAYERHEALTH_ID    = 21;
+    public final int GUI_CREATUREVIEW_ID    = 22;
+    final int GUI_CREATURELEFT_ID    = 23;
+    public final int GUI_PROGRESSBAR_ID     = 24;
+    public final int GUI_NEXTLEVELINTEXT_ID = 25;
+    public final int GUI_SHOWSTATUSBAR_ID   = 26;
+    public final int GUI_SHOWHEALTHBAR_ID   = 27;
+    public final int GUI_HIDEHEALTHBAR_ID   = 28;
+
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -406,8 +423,95 @@ public class GameLoopGUI {
 	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
 	    	return dialogPause;
-	    	// break;
-
+	    	
+	    case WAIT_OPPONENT_ID:
+	    	dialogWait = new ProgressDialog(gameInit);
+	    	dialogWait.setMessage("Waiting for opponent...");
+	    	dialogWait.setIndeterminate(true);
+	    	dialogWait.setCancelable(false);
+	    	return dialogWait;
+	    	
+	    case LEVEL_SCORE:
+	    	dialogScore = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialogScore.setContentView(R.layout.multiplayer_score);
+	    	dialogScore.setCancelable(false);
+	    	
+	    	Button closeScore = (Button) dialogScore.findViewById(R.id.scoreOK);
+	        closeScore.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		dialogScore.dismiss();
+	        	}
+	        });
+	        dialogScore.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							gameInit.gameLoop.dialogClick();
+						}
+	    			});
+	        return dialogScore;
+	        
+	    case MULTIPLAYER_WON:
+	    	dialogMpWon = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogMpWon.setContentView(R.layout.multiplayer_won);
+	    	dialogMpWon.setCancelable(false);
+	    	
+	    	TextView tv = (TextView) dialogMpWon.findViewById(R.id.wonText);
+	    	String wonText = "The opponent is dead! You have won the battle!" + "<br><br>";
+	    	wonText += 		"<b>Your score:<b> " + playerScore;
+	    	CharSequence stText = Html.fromHtml(wonText);
+		    tv.setText(stText);
+	    	
+	    	Button buttonMpWon = (Button) dialogMpWon.findViewById(R.id.MpWon_OK);
+	        buttonMpWon.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		dialogMpWon.dismiss();
+	        	}
+	        });
+	        dialogMpWon.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							gameInit.gameLoop.dialogClick();
+						}
+	    			});
+	    	return dialogMpWon;
+	    	
+	    case MULTIPLAYER_LOST:
+	    	dialogMpLost = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogMpLost.setContentView(R.layout.multiplayer_lost);
+	    	dialogMpLost.setCancelable(false);
+	    	// First button
+	    	Button buttonMpLost = (Button) dialogMpLost.findViewById(R.id.mpLost_OK);
+	        buttonMpLost.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		dialogMpLost.dismiss();
+	        	}
+	        });
+	        dialogMpLost.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							gameInit.gameLoop.dialogClick();
+						}
+	    			});
+	    	return dialogMpLost;
+	    case COMPARE_PLAYERS:
+	    	dialogCompare = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogCompare.setContentView(R.layout.multiplayer_compare);
+	    	dialogCompare.setCancelable(false);
+	    	// First button
+	    	Button buttonCompare = (Button) dialogCompare.findViewById(R.id.mpCompare_OK);
+	        buttonCompare.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		dialogCompare.dismiss();
+	        	}
+	        });
+	        dialogCompare.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+							gameInit.gameLoop.dialogClick();
+						}
+	    			});
+	    	return dialogCompare;
+	    	
 	    default:
 	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -501,9 +605,37 @@ public class GameLoopGUI {
 		    }
 		    else 
 		    	image.setColorFilter(Color.rgb(255, 255, 255),PorterDuff.Mode.MULTIPLY);
-		    
 		    break;
-		    
+	    case LEVEL_SCORE:
+	    	TextView tv = (TextView) dialogScore.findViewById(R.id.scoreText);
+	    	String scoreText = "<b>Score so far:</b> " + "<br>";
+	    	scoreText += 		"You: " + playerScore + "<br>";
+	    	scoreText += 		"Opponent: " + opponentScore + "<br>";
+	    	CharSequence sText = Html.fromHtml(scoreText);
+		    tv.setText(sText);
+	        break;
+	    case COMPARE_PLAYERS:
+	    	TextView wL = (TextView) dialogCompare.findViewById(R.id.compareWinLoose);
+	    	TextView cS = (TextView) dialogCompare.findViewById(R.id.compareScores);
+	    	String winLoose;
+	    	String compareScores;
+	    	//Is player score better than opponents, if so player is the winner
+	    	if(playerScore > opponentScore){
+	    		winLoose = "<b>You win!</b>";
+	    	}
+	    	else if (playerScore < opponentScore){
+	    		winLoose = "<b>You Loose!</b>";
+	    	} 
+	    	else {
+	    		winLoose = "<b>It's a tie!</b>";
+	    	}
+	    	compareScores = "Your score: " + playerScore + "<br>";
+	    	compareScores += "Opponent's score: " + opponentScore;
+	    	CharSequence chS = Html.fromHtml(winLoose);
+		    wL.setText(chS);
+		    CharSequence chS2 = Html.fromHtml(compareScores);
+		    cS.setText(chS2);
+	    	break;		    
 	    case DIALOG_PAUSE_ID:
 	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
@@ -513,7 +645,6 @@ public class GameLoopGUI {
 				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
 
 			break;
-		    
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -531,10 +662,13 @@ public class GameLoopGUI {
 	        switch (msg.what) {
 	        	 case DIALOG_NEXTLEVEL_ID:
 	        		 SharedPreferences settings1 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings1.getBoolean("optionsNextLevel", true)) {
+	        	     if (settings1.getBoolean("optionsNextLevel", true)
+	        	    		 && !GameInit.multiplayerMode()) {
+	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
+	        	    	 Log.d("GAMELOOPGUI", "Simulate next level dialog");
 	        	    	 gameInit.gameLoop.dialogClick();
 	        	     }
 	        		 break;
@@ -611,7 +745,28 @@ public class GameLoopGUI {
 	        		 healthProgressBar.setVisibility(View.GONE);
 	        		 enImView.setVisibility(View.GONE);
 	        		 break;
-	    			 
+	        	 case WAIT_OPPONENT_ID:
+	        		 gameInit.showDialog(WAIT_OPPONENT_ID);
+	        		 break;
+	        	 case CLOSE_WAIT_OPPONENT:
+	        		 dialogWait.hide();
+	        		 break;
+	        	 case LEVEL_SCORE:
+	        		 playerScore = msg.arg1;
+	        		 gameInit.showDialog(LEVEL_SCORE);
+	        		 break;
+	        	 case MULTIPLAYER_WON:
+	        		 playerScore = msg.arg1;
+	        		 gameInit.showDialog(MULTIPLAYER_WON);
+	        		 break;
+	        	 case MULTIPLAYER_LOST:
+	        		 gameInit.showDialog(MULTIPLAYER_LOST);
+	    			 break;
+	        	 case COMPARE_PLAYERS:
+	        		 playerScore = msg.arg1;
+	        		 gameInit.showDialog(COMPARE_PLAYERS);
+	        		 break;
+	        		 
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -627,7 +782,8 @@ public class GameLoopGUI {
 	    }
 	};
 	
-	protected void sendMessage(int i, int j, int k) {
+	public void sendMessage(int i, int j, int k) {
+
 		// TODO: remove this when done debugging msgs.
 		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
@@ -657,8 +813,16 @@ public class GameLoopGUI {
 		towerbutton4.setVisibility(View.GONE);
 		towertext.setVisibility(View.VISIBLE);
 	}
-
-
+	
+	public void setOpponentScore(int score){
+		this.opponentScore = score;
+	}
+	
+	/** Method used to get the GameInit object from the multiplayer handler */
+	public GameInit getGameInit(){
+		return this.gameInit;
+	}
+	
 	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
 		towerUpgrade.setVisibility(View.VISIBLE);
 		upgradeA.setBackgroundResource(typeResourceA);
