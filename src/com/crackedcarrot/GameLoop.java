@@ -617,12 +617,32 @@ public class GameLoop implements Runnable {
 	private class UpgradeAListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
+    		if(selectedTower != null){
+    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+    			if(player.getMoney() >= t.upgradeCost(0)){
+    				player.moneyFunction(t.upgradeCost(0));
+        			t.upgrade(0);
+    			}    			
+    		}
+    		else{
+    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    		}
     	}
     }
     
     private class UpgradeBListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade B clicked!");
+    		if(selectedTower != null){
+    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+    			if(player.getMoney() >= t.upgradeCost(1)){
+    				player.moneyFunction(t.upgradeCost(1));
+        			t.upgrade(1);
+    			}    			
+    		}
+    		else{
+    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    		}
     	}
     }
     
@@ -633,7 +653,7 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.relatedShot.draw = false;
     			t.draw = false;
-    			player.moneyFunction((int) (t.getPrice()*0.8f));
+    			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}
     		else{
