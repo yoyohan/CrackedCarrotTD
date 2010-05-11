@@ -216,6 +216,10 @@ public class Tower extends Sprite {
 		float xDistance = targetCreature.getScaledX() - this.relatedShot.x+(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
+		if (this.towerType == Tower.TELSA) {
+			relatedShot.animateMovingShot(timeDeltaSeconds);
+		}
+		
 		// This will only happen if we have reached our destination creature
 		if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) 
 			projectileHitsTarget(nbrCreatures);		
@@ -236,7 +240,14 @@ public class Tower extends Sprite {
 		float damageFactor = specialDamage(this.targetCreature,false);
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 		targetCreature.damage(randomInt);
-    	this.ImpactdAnimate = true;
+		
+		// At this moment dont show impact animation in case of tesla tower
+		if (this.towerType == Tower.TELSA) {
+			this.relatedShot.draw = false;
+			this.relatedShot.resetShotCordinates();
+		}
+		else this.ImpactdAnimate = true;
+		
     	if (this.towerType == Tower.CANNON){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);
 		}
@@ -279,7 +290,8 @@ public class Tower extends Sprite {
 		if (this.towerType == Tower.AOE) {
 			createPureAOEDamage(nbrCreatures,timeDeltaSeconds);
 		}
-		else if (this.towerType == Tower.BUNKER || this.towerType == Tower.CANNON) {
+		// If bunker, cannon or tesla
+		else {
 			createProjectileDamage(timeDeltaSeconds, nbrCreatures);
 		}
 	}

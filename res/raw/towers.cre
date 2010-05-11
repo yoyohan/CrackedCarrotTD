@@ -17,7 +17,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
 upgradelink1::4
 upgradelink2::-1
 range::100
@@ -42,7 +42,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink1::5
 upgradelink2::-1
 range::150
@@ -67,7 +67,7 @@ hasFireDamage::false
 hasPoisonDamage::true
 poisonDamage(per sec)::2
 poisonTime(sec)::5
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
 upgradelink1::6
 upgradelink2::-1
 range::100
@@ -76,7 +76,7 @@ aoe damage::0
 Shot animation time::0.4
 Shot texture::poisoncloud
 ////////////////////////////////////
-// Magic tower
+// Tesla lvl1
 ////////////////////////////////////
 texture::tesla1
 title::Magic tower
@@ -92,7 +92,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink1::7
 upgradelink2::-1
 range::400
@@ -117,7 +117,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
 upgradelink1::-1
 upgradelink2::-1
 range::100
@@ -142,14 +142,14 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink1::-1
 upgradelink2::-1
 range::150
 aoe range:: 70
 aoe damage::60 
 Shot animation time::0.4
-Shot texture::cannonshot
+Shot texture::cannonshot_ice
 ////////////////////////////////////
 // Posiontower LVL2
 ////////////////////////////////////
@@ -167,7 +167,7 @@ hasFireDamage::false
 hasPoisonDamage::true
 poisonDamage(per sec)::10
 poisonTime(sec)::5
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
 upgradelink1::-1
 upgradelink2::-1
 range::100
@@ -192,7 +192,7 @@ hasFireDamage::false
 hasPoisonDamage::false
 poisonDamage(per sec)::0
 poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink1::-1
 upgradelink2::-1
 range::400
