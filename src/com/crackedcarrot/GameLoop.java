@@ -654,6 +654,7 @@ public class GameLoop implements Runnable {
     	public void onClick(View v){
     		Log.d("GameLoop", "Sell Tower clicked!");
     		if(selectedTower != null){
+    			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.relatedShot.draw = false;
     			t.draw = false;

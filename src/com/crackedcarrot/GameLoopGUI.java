@@ -670,6 +670,16 @@ public class GameLoopGUI {
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
 	}
+	
+	public void hideTowerUpgrade() {
+		towerUpgrade.setVisibility(View.GONE);
+		
+		towerbutton1.setVisibility(View.VISIBLE);
+		towerbutton2.setVisibility(View.VISIBLE);
+		towerbutton3.setVisibility(View.VISIBLE);
+		towerbutton4.setVisibility(View.VISIBLE);
+		
+	}
 	public void setUpgradeListeners(OnClickListener upgradeAListener,
 									OnClickListener upgradeBListener, 
 									OnClickListener sellListener){
