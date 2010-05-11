@@ -191,7 +191,7 @@ public class TowerLoader {
 			            	// Shot texture
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	// Shot size
-			            	recalc = scaler.scale(8,8);
+			            	recalc = scaler.scale(16,16);
 			            	towerList[twrNbr] = new Tower(mResourceId, 0, null, null);
 			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
 			            	relatedShot.setHeight(recalc.getY());

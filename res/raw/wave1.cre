@@ -4,7 +4,7 @@ Total number of levels::11
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
-scale::0.6
+scale::1
 Wave title::Mr Baby Rabbit
 health::115
 fast level::true

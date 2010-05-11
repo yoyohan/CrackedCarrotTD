@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -433,6 +434,9 @@ public class GameLoopGUI {
 
 	    	// Title:
 	    	TextView title = (TextView) dialog.findViewById(R.id.NextLevelTitle);
+	    	Typeface face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	title.setTypeface(face);
+	
 	    	String titleText ="<b>Level " + currLvlnbr + "</b><br>" + currLvl.creepTitle +"<br>";
 		    CharSequence styledText = Html.fromHtml(titleText);
 	    	title.setText(styledText);
@@ -443,6 +447,7 @@ public class GameLoopGUI {
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
+	    	
 	    	Player currPlayer = gameInit.gameLoop.getPlayerData();
 	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
 	    	lvlText += 		"<b>Bounty:</b> " + currLvl.goldValue + "g/creep<br>";

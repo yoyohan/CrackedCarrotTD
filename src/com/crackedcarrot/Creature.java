@@ -63,6 +63,8 @@ public class Creature extends Sprite{
 	private float wayPointY;
 	private float spawnWayPointX;
 	private float spawnWayPointY;
+	//Shows how many laps the creature has currentle completed
+	public int mapLap;
 	
     /**
      * Constructor. When a new creature is definced we will also
@@ -186,6 +188,7 @@ public class Creature extends Sprite{
     		score();
     		moveToWaypoint(0);
     		setNextWayPoint(1);
+    		this.mapLap++;
     	}
     	else { 		
     		setNextWayPoint(getNextWayPoint() + 1);

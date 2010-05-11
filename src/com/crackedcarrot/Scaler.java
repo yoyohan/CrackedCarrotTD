@@ -83,11 +83,10 @@ public class Scaler {
 	}
 	
 	public int getGridWidth() {
-		return nbrGridX+1;
+		return nbrGridX;
 	}
 	public int getGridHeight() {
-		return nbrGridY+1;
-		
+		return nbrGridY;
 	}
 	
 }

@@ -21,8 +21,8 @@ public class Shot extends Sprite{
 	 * the start position
 	 */
 	public void resetShotCordinates() {
-		x = tower.x + tower.getWidth()/2;
-		y = tower.y + tower.getHeight()/2;
+		x = tower.x + tower.getWidth()/2 - this.getWidth()/2;
+		y = tower.y + tower.getHeight()/2 - this.getHeight()/2;
 	}
 	
 
