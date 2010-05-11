@@ -316,7 +316,7 @@ public class GameLoop implements Runnable {
 						e.printStackTrace();
 					}
 	            } else 				
-	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
+	            	timeDelta = timeDelta > 300 ? 300 : timeDelta;
 
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
