@@ -459,5 +459,19 @@ public class Tower extends Sprite {
 	 * @return price
 	 */	
 	public int getPrice() { return price; }
+
+	public int upgradeCost(int i) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void upgrade(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getResellPrice() {
+		return this.resellPrice;
+	}
 	
 }

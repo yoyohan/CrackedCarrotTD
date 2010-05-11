@@ -43,8 +43,6 @@ public class MultiplayerOp extends Activity {
         BackButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent Back = new Intent(v.getContext(),MainMenu.class);
-        		startActivity(Back);
         		finish();
         	}
         });
