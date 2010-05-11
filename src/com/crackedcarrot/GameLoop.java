@@ -272,7 +272,9 @@ public class GameLoop implements Runnable {
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
 	    		String[] tower = towers[i].split(",");
-	    		Coords c = new Coords(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
+	    		Coords c = mScaler.getPosFromGrid(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
+	    		c.setX((int) (c.x + mTTypes[0].getWidth()/2));
+	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
 	    		createTower(c, Integer.parseInt(tower[0]));
 	    	}
@@ -546,10 +548,12 @@ public class GameLoop implements Runnable {
     	// any upgrades purchased, etc....
     public String resumeGetTowers() {
     	String s = "";
+    	Coords tmp;
     	for (int i = 0; i < mTower.length; i++) {
     		Tower t = mTower[i];
     		if(t != null && t.draw){
-    			s = s + t.getTowerTypeId() + "," + (int) t.x + "," + (int) t.y + "-";
+    			tmp= mScaler.getGridXandY((int)t.x, (int)t.y);
+    			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "-";
     		}
     	}
     	
