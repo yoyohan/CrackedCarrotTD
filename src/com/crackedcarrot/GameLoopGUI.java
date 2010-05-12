@@ -277,6 +277,8 @@ public class GameLoopGUI {
 	    	
 	    	// A button	    	
 	    	Button butt = (Button) dialogNextLevel.findViewById(R.id.NextLevelButton);
+	    	Typeface face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	butt.setTypeface(face);
 	    	butt.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
@@ -551,13 +553,15 @@ public class GameLoopGUI {
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
+	    	Typeface face2 = Typeface.createFromAsset(gameInit.getAssets(), "fonts/tahoma.ttf");
+	    	text.setTypeface(face2);
 	    	
 	    	Player currPlayer = gameInit.gameLoop.getPlayerData();
 	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
 	    	lvlText += 		"<b>Bounty:</b> " + currLvl.goldValue + "g/creep<br>";
 	    	lvlText += 		"<b>Health:</b> " + (int)currLvl.getHealth() + "hp/creep<br>";
 	    	lvlText += 		"<br>";
-	    	lvlText += 		"<b>Special abillites:</b><br>";
+	    	lvlText += 		"<b>Special abilitys:</b><br>";
 	    	int tmpAbil = 0;
 	    	if (currLvl.creatureFast) {
 		    	lvlText += 		"<font color=yellow>Fast level</font><br>";
@@ -576,7 +580,7 @@ public class GameLoopGUI {
 		    	tmpAbil++;
 		    }
 		    if (tmpAbil == 0)
-		    	lvlText += 		"No special abbilities<br>";
+		    	lvlText += 		"No special ability<br>";
 		    
 		    if (currLvlnbr > 1) {
 		    	lvlText += 		"<br><b>Previous level:</b><br>";

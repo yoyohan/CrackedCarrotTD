@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,8 @@ public class MapOp extends Activity implements ViewFactory {
         gallery.setSelection((gallery.getCount()/2)+1, true);
 
         Button StartGameButton = (Button)findViewById(R.id.startmap);
+    	Typeface face = Typeface.createFromAsset(this.getAssets(), "fonts/Sniglet.ttf");
+    	StartGameButton.setTypeface(face);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it

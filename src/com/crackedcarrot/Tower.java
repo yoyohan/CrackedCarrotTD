@@ -14,7 +14,7 @@ public class Tower extends Sprite {
 	protected final static int BUNKER = 3;
 	protected final static int TELSA = 4;
 	//towertype
-	private int towerType;
+	public int towerType;
 	// The current range of a tower
 	private float range;
 	// The current AOE range of a tower
@@ -202,9 +202,12 @@ public class Tower extends Sprite {
 			this.relatedShot.resetShotCordinates();			
 		}
 		else if (this.relatedShot.draw && ImpactdAnimate) {
-			float size = this.relatedShot.getWidth();
+			float size = this.relatedShot.getWidth()/2;
 			if (this.towerType == Tower.CANNON)
 				size = this.rangeAOE;
+			if (this.towerType == Tower.TELSA)
+				size = this.targetCreature.getWidth()/2;
+			
 			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, targetCreature);
 		}
 		// if the tower is currently in use:
@@ -224,7 +227,7 @@ public class Tower extends Sprite {
 		float xDistance = targetCreature.getScaledX() - this.relatedShot.x-(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
-		if (this.towerType == Tower.TELSA) {
+		if (this.towerType == Tower.TELSA || this.towerType == Tower.BUNKER) {
 			relatedShot.animateMovingShot(timeDeltaSeconds);
 		}
 		
@@ -249,12 +252,8 @@ public class Tower extends Sprite {
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 		targetCreature.damage(randomInt);
 		
-		// At this moment dont show impact animation in case of tesla tower
-		if (this.towerType == Tower.TELSA) {
-			this.relatedShot.draw = false;
-			this.relatedShot.resetShotCordinates();
-		}
-		else this.ImpactdAnimate = true;
+		this.ImpactdAnimate = true;
+		relatedShot.tmpAnimationTime = relatedShot.animationTime;
 		
     	if (this.towerType == Tower.CANNON){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);

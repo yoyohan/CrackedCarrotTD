@@ -318,9 +318,10 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            } else 				
-	            	timeDelta = timeDelta > 300 ? 300 : timeDelta;
-
+	            } else if (timeDelta > 300) {			
+	            	timeDelta = 300;
+	            	Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.3s");
+	            }
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time;

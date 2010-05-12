@@ -49,15 +49,15 @@
 			<LinearLayout
 				android:orientation="horizontal"
 			    android:layout_height="wrap_content"
-			    android:layout_width="135dp"
+			    android:layout_width="145dp"
 			    android:gravity="left" 
 				android:padding="2dp"
 				>
 
 				<ImageView
 					android:id="@+id/StartGameImageViewEasy"
-					android:layout_width="32dp"
-					android:layout_height="32dp"
+					android:layout_width="44dp"
+					android:layout_height="44dp"
 	        		android:scaleType="fitXY"
 					android:layout_gravity="center"
 					android:gravity="center"
@@ -78,15 +78,15 @@
 			<LinearLayout 
 				android:orientation="horizontal"
 			    android:layout_height="wrap_content"
-			    android:layout_width="135dp"
+			    android:layout_width="145dp"
 			    android:gravity="left" 
 				android:padding="2dp"
 				>
 						
 		        <ImageView
 					android:id="@+id/StartGameImageViewNormal"
-					android:layout_width="32dp"
-					android:layout_height="32dp"
+					android:layout_width="44dp"
+					android:layout_height="44dp"
 	        		android:scaleType="fitXY"
 					android:layout_gravity="center"
 					android:gravity="center"
@@ -106,14 +106,14 @@
    			<LinearLayout 
 			android:orientation="horizontal"
 		    android:layout_height="wrap_content"
-		    android:layout_width="135dp"
+		    android:layout_width="145dp"
 		    android:gravity="left" 
 			android:padding="2dp"
 			>
         		<ImageView
 					android:id="@+id/StartGameImageViewHard"
-					android:layout_width="32dp"
-					android:layout_height="32dp"
+					android:layout_width="44dp"
+					android:layout_height="44dp"
 	        		android:scaleType="fitXY"
 					android:layout_gravity="center"
 					android:gravity="center"
@@ -134,15 +134,14 @@
 	<LinearLayout 
 	    android:layout_height="fill_parent"
 	    android:layout_width="fill_parent" 
-		android:gravity="center_horizontal"
+		android:gravity="center"
 		>
         <Button
 		android:id="@+id/startmap"
 		android:text="Start Game"
-		android:layout_gravity="center"
-		android:gravity="bottom"
-		android:layout_width="wrap_content"
-		android:layout_height="36dp">
+		android:textSize="18sp"		
+		android:layout_width="180dp"
+		android:layout_height="wrap_content">
 		</Button>
 	</LinearLayout>
 	

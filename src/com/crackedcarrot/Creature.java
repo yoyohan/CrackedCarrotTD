@@ -153,7 +153,7 @@ public class Creature extends Sprite{
 		}
 	    // Creature is dead and fading...
 		else if (allDead) {
-			fade(timeDeltaSeconds/5);
+			fade(timeDeltaSeconds/3);
 		}
 	}
 	
