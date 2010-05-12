@@ -22,8 +22,8 @@
     <TableRow>
         <Button
 		android:id="@+id/StartGame"
-		android:layout_width="64dp"
-		android:layout_height="34dp"
+		android:layout_width="66dp"
+		android:layout_height="38dp"
 	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_startgame">
 		</Button>
@@ -39,8 +39,8 @@
     <TableRow>
         <Button
 		android:id="@+id/Options"
-		android:layout_width="64dp"
-		android:layout_height="34dp"
+		android:layout_width="66dp"
+		android:layout_height="38dp"
 	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_options">
 		</Button>
@@ -56,8 +56,8 @@
     <TableRow>
         <Button
 		android:id="@+id/Help"
-		android:layout_width="64dp"
-		android:layout_height="34dp"
+		android:layout_width="66dp"
+		android:layout_height="38dp"
 	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_help">
 		</Button>
@@ -73,8 +73,8 @@
     <TableRow>
         <Button
 		android:id="@+id/Multiplayer"
-		android:layout_width="64dp"
-		android:layout_height="34dp"
+		android:layout_width="66dp"
+		android:layout_height="38dp"
 	    android:scaleType="fitXY"
 		android:background="@drawable/xml_button_multiplayer">
 		</Button>

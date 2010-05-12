@@ -59,9 +59,12 @@ public class GameLoopGUI {
     private Drawable     healthBarDrawable;
     private ImageView    enImView;
 	private LinearLayout statusBar;
+	private LinearLayout creatureBar;
+	private LinearLayout counterBar;	
     private ProgressBar  healthProgressBar;
     private TextView     currencyView;
     private TextView     nrCreText;
+    private TextView     counterText;
     private TextView     playerHealthView;
     private UIHandler	 hud;
 
@@ -141,10 +144,22 @@ public class GameLoopGUI {
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
+        // Create an pointer to creatureBar
+        creatureBar = (LinearLayout) gameInit.findViewById(R.id.creature_part);        
+        // Create an pointer to counterBar
+        counterBar = (LinearLayout) gameInit.findViewById(R.id.counter);
         
 		// Create the TextView showing number of enemies left
         nrCreText = (TextView) gameInit.findViewById(R.id.nrEnemyLeft);
-        
+    	Typeface MuseoSans = Typeface.createFromAsset(gameInit.getAssets(), "fonts/MuseoSans_500.otf");
+    	nrCreText.setTypeface(MuseoSans);
+    	
+		// Create the TextView showing counter
+    	counterText = (TextView) gameInit.findViewById(R.id.countertext);
+    	counterText.setTypeface(MuseoSans);
+
+    	
+    	
         // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);
         healthProgressBar.setMax(healthProgress);
@@ -157,10 +172,11 @@ public class GameLoopGUI {
         
         // Create the text view showing the amount of currency
         currencyView = (TextView)gameInit.findViewById(R.id.currency);
+        currencyView.setTypeface(MuseoSans);       
         
-        // Create the text view showing a players health
+    	// Create the text view showing a players health
         playerHealthView = (TextView) gameInit.findViewById(R.id.playerHealth);
-
+        playerHealthView.setTypeface(MuseoSans); 
         
         /** Listeners for the five icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
@@ -286,6 +302,16 @@ public class GameLoopGUI {
 
 				    }
 				});
+	    	
+	    	// Title of each level:
+	    	TextView title = (TextView) dialogNextLevel.findViewById(R.id.NextLevelTitle);
+	    	title.setTypeface(face);
+	
+    	
+	    	// Text for next level will be placed here.
+	    	TextView text = (TextView) dialogNextLevel.findViewById(R.id.NextLevelText);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/MuseoSans_500.otf");
+	    	text.setTypeface(face);
 	    	
 	    	dialogNextLevel.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
@@ -540,9 +566,6 @@ public class GameLoopGUI {
 
 	    	// Title:
 	    	TextView title = (TextView) dialog.findViewById(R.id.NextLevelTitle);
-	    	Typeface face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
-	    	title.setTypeface(face);
-	
 	    	String titleText ="<b>Level " + currLvlnbr + "</b><br>" + currLvl.creepTitle +"<br>";
 		    CharSequence styledText = Html.fromHtml(titleText);
 	    	title.setText(styledText);
@@ -553,8 +576,6 @@ public class GameLoopGUI {
 	    	
 	    	// Text for next level goes here.
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
-	    	Typeface face2 = Typeface.createFromAsset(gameInit.getAssets(), "fonts/tahoma.ttf");
-	    	text.setTypeface(face2);
 	    	
 	    	Player currPlayer = gameInit.gameLoop.getPlayerData();
 	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
@@ -710,11 +731,8 @@ public class GameLoopGUI {
 	        	 case GUI_CREATURELEFT_ID:
 	        		 // update number of creatures still alive on GUI.
 	        		 String tt = String.valueOf(msg.arg1);
-	        		 if (msg.arg1 < 10)
-	        			 tt = "  " + tt;
 	        		 nrCreText.setText("" + tt);
 	        		 break;
-	        		 
 	        	 case GUI_PROGRESSBAR_ID: // update progressbar with creatures health.
 	        		 // The code below is used to change color of healthbar when health drops
 	        		 if (msg.arg1 >= 66 && healthBarState == 1) {
@@ -734,9 +752,7 @@ public class GameLoopGUI {
 	        		 
 	        	 case GUI_NEXTLEVELINTEXT_ID: // This is used to show how long time until next lvl.
 	        		 tt = String.valueOf(msg.arg1);
-	        		 if (msg.arg1 < 10)
-	        			 tt = "  " + tt;
-	        		 nrCreText.setText("Next level in: " + tt);
+	        		 counterText.setText("Next level in: " + tt);
 	        		 break;
 	        		 
 	        	 case GUI_SHOWSTATUSBAR_ID:
@@ -745,14 +761,13 @@ public class GameLoopGUI {
 		    			break;
 	        	 case GUI_SHOWHEALTHBAR_ID:
 	        		 //If we want to switch back to healthbar
-        		 	 nrCreText.setText("");
-	        		 healthProgressBar.setVisibility(View.VISIBLE);
-	        		 enImView.setVisibility(View.VISIBLE);
+	        		 counterBar.setVisibility(View.GONE);
+	        		 creatureBar.setVisibility(View.VISIBLE);
 	        		 break;
 	        	 case GUI_HIDEHEALTHBAR_ID:
 	        		 //If we want to use space in statusbar to show time to next level counter
-	        		 healthProgressBar.setVisibility(View.GONE);
-	        		 enImView.setVisibility(View.GONE);
+	        		 creatureBar.setVisibility(View.GONE);
+	        		 counterBar.setVisibility(View.VISIBLE);
 	        		 break;
 	        	 case WAIT_OPPONENT_ID:
 	        		 gameInit.showDialog(WAIT_OPPONENT_ID);

@@ -206,7 +206,7 @@ public class Tower extends Sprite {
 			if (this.towerType == Tower.CANNON)
 				size = this.rangeAOE;
 			if (this.towerType == Tower.TELSA)
-				size = this.targetCreature.getWidth()/2;
+				size = this.targetCreature.getWidth()/2*this.targetCreature.scale;
 			
 			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, targetCreature);
 		}

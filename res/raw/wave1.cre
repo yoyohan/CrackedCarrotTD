@@ -9,7 +9,7 @@ Wave title::Mr Baby Rabbit
 health::115
 fast level::true
 fire resistant::false
-frost resistant::true
+frost resistant::false
 poison resistant::false
 goldValue::1
 nbrOfCreaturs::20
