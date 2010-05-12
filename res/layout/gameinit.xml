@@ -188,7 +188,7 @@
 				android:id="@+id/nrEnemyLeft"
 				android:gravity="right"
 	        	android:paddingRight="2dp"
-				android:layout_width="17dp" 
+				android:layout_width="18dp" 
 				android:layout_height="wrap_content" >
 			</TextView>
 					        
