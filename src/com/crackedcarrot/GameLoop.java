@@ -311,16 +311,11 @@ public class GameLoop implements Runnable {
     			//Systemclock. Used to help determine speed of the game. 
 				final long time = SystemClock.uptimeMillis();
     			
-				Log.d("GAMELOOP", "before pause");
-				
 				if (pause) {
 	    			try { pauseSemaphore.acquire(); }
 	    			catch (InterruptedException e1) { }
 	    			pauseSemaphore.release();
 				}
-				
-				Log.d("GAMELOOP", "after pause");
-
     			
 	            // Used to calculate creature movement.
 				long timeDelta = time - mLastTime;
@@ -623,7 +618,7 @@ public class GameLoop implements Runnable {
 
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
-		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3);
+		gui.showTowerUpgrade(R.drawable.upgrade_a, R.drawable.upgrade_b);
 	}
 	
 	public static void pause() {

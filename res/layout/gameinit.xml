@@ -103,14 +103,14 @@
    	    		android:layout_width="64dp"
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
-    	   		android:background="@drawable/t4"
+    	   		android:background="@drawable/upgrade_a"
      	  		android:id="@+id/upgrade_a" />
        		
     	   	<Button
      	  		android:layout_width="64dp"
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
-       			android:background="@drawable/t4"
+       			android:background="@drawable/upgrade_b"
        			android:id="@+id/upgrade_b" />
        		
      	  	<Button
