@@ -89,7 +89,7 @@
        		android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-       		android:id="@+id/sell" android:background="@drawable/t3"/><Button
+       		android:id="@+id/sell" android:background="@drawable/sell"/><Button
        		android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"

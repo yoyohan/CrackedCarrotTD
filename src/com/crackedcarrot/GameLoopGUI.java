@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
@@ -16,6 +17,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +49,7 @@ public class GameLoopGUI {
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
 	private ProgressDialog dialogWait = null;
+	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
 	private Dialog dialogMpWon = null;
 	private Dialog dialogMpLost = null;
@@ -52,9 +57,12 @@ public class GameLoopGUI {
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
-    private int          resume;
+    //private int          resume;
     private int			 playerScore;
     private int			 opponentScore;
+    public  int          towerInfo;
+    
+    private WebView mWebView; // used by TowerInfo-dialog to display html-pages.
 
     private Drawable     healthBarDrawable;
     private ImageView    enImView;
@@ -77,20 +85,20 @@ public class GameLoopGUI {
     public final int DIALOG_WON_ID       = 2;
     public final int DIALOG_LOST_ID      = 3;
     public final int DIALOG_HIGHSCORE_ID = 4;
-    final int DIALOG_QUIT_ID	= 5;
-    final int DIALOG_RESUMESLEFT_ID = 6;
-    final int DIALOG_PAUSE_ID       = 7;
-    public final int WAIT_OPPONENT_ID = 8;
+           final int DIALOG_QUIT_ID	     = 5;
+    public final int DIALOG_TOWERINFO_ID = 6;
+           final int DIALOG_PAUSE_ID     = 7;
+    public final int WAIT_OPPONENT_ID    = 8;
     public final int CLOSE_WAIT_OPPONENT = 9;
-    public final int LEVEL_SCORE = 10;
-    public final int MULTIPLAYER_WON = 11;
-    public final int MULTIPLAYER_LOST = 12;
-    public final int COMPARE_PLAYERS = 13;
+    public final int LEVEL_SCORE         = 10;
+    public final int MULTIPLAYER_WON     = 11;
+    public final int MULTIPLAYER_LOST    = 12;
+    public final int COMPARE_PLAYERS     = 13;
     
     public final int GUI_PLAYERMONEY_ID     = 20;
     public final int GUI_PLAYERHEALTH_ID    = 21;
     public final int GUI_CREATUREVIEW_ID    = 22;
-    final int GUI_CREATURELEFT_ID    = 23;
+           final int GUI_CREATURELEFT_ID    = 23;
     public final int GUI_PROGRESSBAR_ID     = 24;
     public final int GUI_NEXTLEVELINTEXT_ID = 25;
     public final int GUI_SHOWSTATUSBAR_ID   = 26;
@@ -134,10 +142,17 @@ public class GameLoopGUI {
         tower2Information = (Button) gameInit.findViewById(R.id.t2info);
         tower2Information.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-   	    		gameInit.gameLoop.pause();
-        		Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
-        		ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
-        		gameInit.startActivity(ShowInstr);
+        		
+        		if (GameLoop.pause == false) {
+        			GameLoop.pause();
+   	    		
+        			gameInit.gameLoop.gui.towerInfo = currentSelectedTower;
+        			gameInit.showDialog(DIALOG_TOWERINFO_ID);
+        			
+        			//Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
+        			//ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
+        			//gameInit.startActivity(ShowInstr);
+        		}
         	}
         });
         
@@ -321,6 +336,49 @@ public class GameLoopGUI {
 	    			});
 	    	return dialogNextLevel;
 	    	//break;
+	    	
+	    	
+	    case DIALOG_TOWERINFO_ID:
+	    	dialogTowerInfo = new Dialog(gameInit, R.style.NextlevelTheme);
+	    	dialogTowerInfo.setContentView(R.layout.webinstruction);
+	    	dialogTowerInfo.setCancelable(true);
+	    	
+	    	Button close = (Button) dialogTowerInfo.findViewById(R.id.closewebdialog);
+	    	close.setOnClickListener(
+	    			new View.OnClickListener() {
+	    				public void onClick(View v) {
+	    					// nothing else. handled by onDismissListener instead, it's better.
+	    					dialogTowerInfo.dismiss();
+	    				}
+	    			});
+
+	    	final Button back = (Button) dialogTowerInfo.findViewById(R.id.backwebdialog);
+	    	back.setOnClickListener(
+	    			new View.OnClickListener() {
+	    				public void onClick(View v) {
+	    					// We'll never have a Back button in this dialog.
+	    					//mWebView.goBack();
+	    				}
+	    			});
+	    	
+	    	dialogTowerInfo.setOnDismissListener(
+	    			new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface dialog) {
+								// Done with this window, unpause stuff.
+							GameLoop.unPause();
+						}
+	    			});
+	    	
+	        mWebView = (WebView) dialogTowerInfo.findViewById(R.id.webview);
+	        mWebView.setBackgroundColor(0);
+
+	        WebSettings webSettings = mWebView.getSettings();
+	        webSettings.setSavePassword(false);
+	        webSettings.setSaveFormData(false);
+	        webSettings.setJavaScriptEnabled(false);
+	        webSettings.setSupportZoom(false);
+	        
+	        return dialogTowerInfo;
 	    	
 	    case DIALOG_WON_ID:
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -675,6 +733,23 @@ public class GameLoopGUI {
 				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
 
 			break;
+			
+	    case DIALOG_TOWERINFO_ID:
+	        // Fetch information from previous intent. The information will contain the
+	        // tower decided by the player.
+	        String url = null;
+        	int tower = towerInfo;
+        	if (tower == 0) 
+                url = "file:///android_asset/t1.html";
+        	if (tower == 1) 
+                url = "file:///android_asset/t2.html";
+        	if (tower == 2) 
+                url = "file:///android_asset/t3.html";
+        	if (tower == 3) 
+                url = "file:///android_asset/t4.html";
+	        mWebView.loadUrl(url);
+	        break;
+			
 	    default:
 	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
