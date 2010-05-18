@@ -73,7 +73,7 @@ upgradelink2::-1
 range::100
 aoe range::0
 aoe damage::0 
-Shot animation time::0.4
+Shot animation time::0.5
 Shot texture::poisoncloud
 ////////////////////////////////////
 // Tesla lvl1
@@ -98,8 +98,8 @@ upgradelink2::-1
 range::400
 aoe range:: 0
 aoe damage::0 
-Shot animation time::0.1
-Shot texture::lightningball
+Shot animation time::0.4
+Shot texture::lightbolt
 ////////////////////////////////////
 // Bunker LVL2
 ////////////////////////////////////
@@ -173,7 +173,7 @@ upgradelink2::-1
 range::100
 aoe range::0
 aoe damage::0 
-Shot animation time::0.4
+Shot animation time::0.5
 Shot texture::poisoncloud
 ////////////////////////////////////
 // Magic tower LVL 2
@@ -198,6 +198,6 @@ upgradelink2::-1
 range::400
 aoe range:: 0
 aoe damage::0 
-Shot animation time::0.1
-Shot texture::lightningball
+Shot animation time::0.4
+Shot texture::lightbolt
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

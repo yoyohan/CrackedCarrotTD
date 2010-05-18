@@ -23,40 +23,41 @@ public class GameLoop implements Runnable {
     public  NativeRender renderHandle;
     public  SoundManager soundManager;  // We need to reach this to be able to turn off sound.
     
-    private GameLoopGUI  gui;
-    private Scaler       mScaler;
-    private Semaphore    dialogSemaphore = new Semaphore(1);
+    protected GameLoopGUI  gui;
+    protected Scaler       mScaler;
+    protected Semaphore    dialogSemaphore = new Semaphore(1);
 
-    private Map mGameMap;
-    private Player player;
+    protected Map mGameMap;
+    protected Player player;
 
-    private boolean run = true;
+    protected boolean run = true;
     
-    private long mLastTime;
+    protected long mLastTime;
     
     private String resumeTowers = "";
+    
+    protected Coords selectedTower;
 
-    private float startCreatureHealth;
-    private float currentCreatureHealth;
+    protected float startCreatureHealth;
+    protected float currentCreatureHealth;
     
-    private int lvlNbr = 0;
-    private int gameSpeed;
-    private int remainingCreaturesALIVE;
-    private int remainingCreaturesALL;
-    //private int totalNumberOfTowers = 0;
+    protected int lvlNbr = 0;
+    protected int gameSpeed;
+    protected int remainingCreaturesALIVE;
+    protected int remainingCreaturesALL;
+    protected int totalNumberOfTowers = 0;
 
-    private Creature[] mCreatures;
-    private Level[]    mLvl;
-    private Shot[]     mShots;
-    private Tower[]    mTower;
-    private Tower[][]  mTowerGrid;
-    private Tower[]    mTTypes;
-    private Coords selectedTower;
+    protected Creature[] mCreatures;
+    protected Level[]    mLvl;
+    protected Shot[]     mShots;
+    protected Tower[]    mTower;
+    protected Tower[][]  mTowerGrid;
+    protected Tower[]    mTTypes;
     
-    private int progressbarLastSent = 0;
+    public int progressbarLastSent = 0;
     
-    private static boolean   pause = false;
-    private static Semaphore pauseSemaphore = new Semaphore(1);
+    protected static boolean   pause = false;
+    protected static Semaphore pauseSemaphore = new Semaphore(1);
     
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
@@ -75,7 +76,7 @@ public class GameLoop implements Runnable {
     	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
     }
     
-	private void initializeDataStructures() {
+	protected void initializeDataStructures() {
 		//this allocates the space we need for shots towers and creatures.
 	    //this.mTower = new Tower[60];
 	    this.mShots = new Shot[mTower.length];
@@ -166,7 +167,7 @@ public class GameLoop implements Runnable {
 		
 	}
     
-	private void initializeLvl() {
+	protected void initializeLvl() {
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -280,8 +281,11 @@ public class GameLoop implements Runnable {
 
 	    }
 	    
+	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
+	    Log.d("GAMELOOP","INIT GAMELOOP");
+
 	    gameSpeed = 1;
-        
+
 	    while(run){
 	    	
 	    	//It is important that ALL SIZES OF SPRITES ARE SET BEFORE! THIS!
@@ -314,9 +318,10 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            } else 				
-	            	timeDelta = timeDelta > 300 ? 300 : timeDelta;
-
+	            } else if (timeDelta > 300) {			
+	            	timeDelta = 300;
+	            	Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.3s");
+	            }
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
 	            mLastTime = time;
@@ -516,7 +521,7 @@ public class GameLoop implements Runnable {
     	dialogSemaphore.release();
     }
     
-    private void waitForDialogClick() {
+    protected void waitForDialogClick() {
 		// Code to wait for the user to click ok on a dialog.
 		try {
 			dialogSemaphore.acquire();
@@ -620,12 +625,32 @@ public class GameLoop implements Runnable {
 	private class UpgradeAListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
+    		if(selectedTower != null){
+    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+    			if(player.getMoney() >= t.upgradeCost(0)){
+    				player.moneyFunction(t.upgradeCost(0));
+        			t.upgrade(0);
+    			}    			
+    		}
+    		else{
+    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    		}
     	}
     }
     
     private class UpgradeBListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade B clicked!");
+    		if(selectedTower != null){
+    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+    			if(player.getMoney() >= t.upgradeCost(1)){
+    				player.moneyFunction(t.upgradeCost(1));
+        			t.upgrade(1);
+    			}    			
+    		}
+    		else{
+    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    		}
     	}
     }
     
@@ -633,10 +658,11 @@ public class GameLoop implements Runnable {
     	public void onClick(View v){
     		Log.d("GameLoop", "Sell Tower clicked!");
     		if(selectedTower != null){
+    			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.relatedShot.draw = false;
     			t.draw = false;
-    			player.moneyFunction((int) (t.getPrice()*0.8f));
+    			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}
     		else{

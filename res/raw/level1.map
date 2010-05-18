@@ -14,7 +14,7 @@ map1
 4,1,8
 4,3,9
 6,3,10
-6,0,11
+6,-1,11
 //OBSTACLES: FIRST LINE NUMBER OF Obstacles
 5
 0,7

@@ -14,7 +14,7 @@ public class Tower extends Sprite {
 	protected final static int BUNKER = 3;
 	protected final static int TELSA = 4;
 	//towertype
-	private int towerType;
+	public int towerType;
 	// The current range of a tower
 	private float range;
 	// The current AOE range of a tower
@@ -62,6 +62,8 @@ public class Tower extends Sprite {
    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
     private boolean ImpactdAnimate = false;
+    //To determine when a creature has been teleported to spawnpoint we will check his nbr of laps
+	private int targetCreatureMapLap;
     
     /**
      * Constructor used when defining a new tower in the game. Needs the texture resource,
@@ -186,18 +188,27 @@ public class Tower extends Sprite {
 	 * @param nbrCreatures
 	 */
 	private void createProjectileDamage(float timeDeltaSeconds, int nbrCreatures){
-		if (ImpactdAnimate) {
-			float size = this.relatedShot.getWidth();
-			if (this.towerType == Tower.CANNON)
-				size = this.rangeAOE;
-			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, targetCreature);
-		}
 		//First we have to check if the tower is ready to fire
-		else if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
+		if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
 			// This is happens when a tower with projectile damage is ready to fire.
 			//this.targetCreature = trackNearestEnemyBETA();
 			this.targetCreature = trackNearestEnemy(nbrCreatures);
 			towerStartFireSequence(this.targetCreature);
+		}
+		//Creature has been teleported away. stop firing
+		else if (this.relatedShot.draw && targetCreatureMapLap != targetCreature.mapLap) {
+			this.tmpCoolDown = this.coolDown;			
+			this.relatedShot.draw = false;
+			this.relatedShot.resetShotCordinates();			
+		}
+		else if (this.relatedShot.draw && ImpactdAnimate) {
+			float size = this.relatedShot.getWidth()/2;
+			if (this.towerType == Tower.CANNON)
+				size = this.rangeAOE;
+			if (this.towerType == Tower.TELSA)
+				size = this.targetCreature.getWidth()/2*this.targetCreature.scale;
+			
+			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, targetCreature);
 		}
 		// if the tower is currently in use:
 		else if (this.relatedShot.draw) {
@@ -212,17 +223,17 @@ public class Tower extends Sprite {
 	 */
 	private void updateProjectile(float timeDeltaSeconds, int nbrCreatures) {
 
-		float yDistance = targetCreature.getScaledY() - this.relatedShot.y+(this.relatedShot.getHeight()/2);
-		float xDistance = targetCreature.getScaledX() - this.relatedShot.x+(this.relatedShot.getWidth()/2);
+		float yDistance = targetCreature.getScaledY() - this.relatedShot.y-(this.relatedShot.getHeight()/2);
+		float xDistance = targetCreature.getScaledX() - this.relatedShot.x-(this.relatedShot.getWidth()/2);
 		double xyMovement = (this.velocity * timeDeltaSeconds);
 		
-		if (this.towerType == Tower.TELSA) {
+		if (this.towerType == Tower.TELSA || this.towerType == Tower.BUNKER) {
 			relatedShot.animateMovingShot(timeDeltaSeconds);
 		}
 		
 		// This will only happen if we have reached our destination creature
 		if ((Math.abs(yDistance) <= xyMovement) && (Math.abs(xDistance) <= xyMovement)) 
-			projectileHitsTarget(nbrCreatures);		
+			projectileHitsTarget(nbrCreatures);
 		else {
 			// Travel until we reach target
 			double radian = Math.atan2(yDistance, xDistance);
@@ -241,12 +252,8 @@ public class Tower extends Sprite {
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
 		targetCreature.damage(randomInt);
 		
-		// At this moment dont show impact animation in case of tesla tower
-		if (this.towerType == Tower.TELSA) {
-			this.relatedShot.draw = false;
-			this.relatedShot.resetShotCordinates();
-		}
-		else this.ImpactdAnimate = true;
+		this.ImpactdAnimate = true;
+		relatedShot.tmpAnimationTime = relatedShot.animationTime;
 		
     	if (this.towerType == Tower.CANNON){
 	    	this.trackAllNearbyEnemies(nbrCreatures,false);
@@ -306,6 +313,7 @@ public class Tower extends Sprite {
 			soundManager.playSound(0);
 			//this.tmpCoolDown = this.coolDown;
 			this.relatedShot.draw = true;
+			this.targetCreatureMapLap = targetCreature.mapLap;
 		}
 	}
 	
@@ -450,5 +458,19 @@ public class Tower extends Sprite {
 	 * @return price
 	 */	
 	public int getPrice() { return price; }
+
+	public int upgradeCost(int i) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void upgrade(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getResellPrice() {
+		return this.resellPrice;
+	}
 	
 }

@@ -121,7 +121,8 @@ public class MapLoader {
 						    	else if (cp.y < tmpgridy) {
 						    		cp.y = cp.y + 1;
 						    	}
-								twg[cp.x][cp.y] = null;
+								if (cp.x < s.getGridWidth() && cp.x >= 0 && cp.y < s.getGridHeight() && cp.y >= 0)
+									twg[cp.x][cp.y] = null;
 							}
 						}
 					}
