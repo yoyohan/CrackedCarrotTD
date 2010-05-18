@@ -340,7 +340,7 @@ public class GameLoopGUI {
 	    	
 	    case DIALOG_TOWERINFO_ID:
 	    	dialogTowerInfo = new Dialog(gameInit, R.style.NextlevelTheme);
-	    	dialogTowerInfo.setContentView(R.layout.webinstruction);
+	    	dialogTowerInfo.setContentView(R.layout.towerinfo);
 	    	dialogTowerInfo.setCancelable(true);
 	    	
 	    	Button close = (Button) dialogTowerInfo.findViewById(R.id.closewebdialog);
@@ -365,6 +365,7 @@ public class GameLoopGUI {
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
 								// Done with this window, unpause stuff.
+							mWebView.clearView();
 							GameLoop.unPause();
 						}
 	    			});
