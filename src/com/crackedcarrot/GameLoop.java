@@ -171,6 +171,9 @@ public class GameLoop implements Runnable {
 	}
     
 	protected void initializeLvl() {
+		
+		Log.d("GAMELOOP", "InitalizeLvl 1");
+		
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -178,6 +181,9 @@ public class GameLoop implements Runnable {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
+		
+		Log.d("GAMELOOP", "InitalizeLvl 2");
+
     	
     	//Set the creatures texture size and other atributes.
     	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
@@ -261,13 +267,18 @@ public class GameLoop implements Runnable {
     			special = 2;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
+		
+		Log.d("GAMELOOP", "InitalizeLvl 3");
+
 	}
 
     public void run() {
 
-    	Log.d("GAMELOOP","INIT GAMELOOP");
+    	Log.d("GAMELOOP","INIT GAMELOOP 1");
    	
 	    initializeDataStructures();
+	    
+	    Log.d("GAMELOOP", "INIT GAMELOOP 2");
 
 	    	// Resuming an old game? Rebuild all the old towers.
 	    if (resumeTowers != "") {
@@ -284,8 +295,7 @@ public class GameLoop implements Runnable {
 
 	    }
 	    
-	    Log.d("GAMELOOP","INIT" + this.getClass().getName());
-	    Log.d("GAMELOOP","INIT GAMELOOP");
+	    Log.d("GAMELOOP","INIT GAMELOOP 3");
 
 	    gameSpeed = 1;
 
@@ -611,7 +621,7 @@ public class GameLoop implements Runnable {
 
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
-		gui.showTowerUpgrade(R.drawable.bunker3, R.drawable.tesla3);
+		gui.showTowerUpgrade(R.drawable.upgrade_a, R.drawable.upgrade_b);
 	}
 	
 	public static void pause() {

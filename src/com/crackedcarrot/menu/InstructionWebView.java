@@ -34,9 +34,7 @@ public class InstructionWebView extends Activity {
     	close.setOnClickListener(
     			new View.OnClickListener() {
     				public void onClick(View v) {
-    					GameLoop.unPause();
     					finish();
-    					GameLoop.unPause();
     				}
     			});
 

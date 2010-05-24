@@ -142,7 +142,6 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
-        		GameLoop.pause();
         	}
         });
         

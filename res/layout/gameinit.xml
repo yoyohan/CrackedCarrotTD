@@ -85,27 +85,42 @@
 				android:scaleType="fitXY"
         		android:background="@drawable/xml_button_game_back" />
     	
-</LinearLayout><LinearLayout android:id="@+id/upgrade_layout" android:visibility="gone" android:layout_height="50dp" android:layout_width="256dp"><Button
-       		android:layout_width="64dp"
+	</LinearLayout>
+		<LinearLayout
+			android:id="@+id/upgrade_layout"
+			android:visibility="gone"
 			android:layout_height="50dp"
-			android:scaleType="fitXY"
-       		android:id="@+id/sell" android:background="@drawable/t3"/><Button
-       		android:layout_width="64dp"
-			android:layout_height="50dp"
-			android:scaleType="fitXY"
-       		android:background="@drawable/t4" android:id="@+id/upgrade_a"/><Button
-       		android:layout_width="64dp"
-			android:layout_height="50dp"
-			android:scaleType="fitXY"
-       		android:background="@drawable/t4" android:id="@+id/upgrade_b"/><Button
-       		android:layout_width="64dp"
-			android:layout_height="50dp"
-			android:scaleType="fitXY"
-       		android:background="@drawable/xml_button_game_back" android:id="@+id/close_upgrade"/>
+			android:layout_width="256dp">
+		
+			<Button
+   	    		android:layout_width="64dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+     	  		android:id="@+id/sell"
+     	  		android:background="@drawable/coin" />
+       		
+   	    	<Button
+   	    		android:layout_width="64dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+    	   		android:background="@drawable/upgrade_a"
+     	  		android:id="@+id/upgrade_a" />
+       		
+    	   	<Button
+     	  		android:layout_width="64dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+       			android:background="@drawable/upgrade_b"
+       			android:id="@+id/upgrade_b" />
+       		
+     	  	<Button
+     	  		android:layout_width="64dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+      	 		android:background="@drawable/xml_button_game_back"
+       			android:id="@+id/close_upgrade" />
 
-
-
-</LinearLayout>    		
+		</LinearLayout>    		
 
     </LinearLayout>
     

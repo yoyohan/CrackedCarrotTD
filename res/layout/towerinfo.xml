@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	android:id="@+id/webinstuction"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="center"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:background="#00000000"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	android:layout_height="fill_parent" >
     
 	<LinearLayout 
 		android:id="@+id/level_instr"
@@ -15,37 +14,32 @@
 	    android:layout_width="280dp" 
 		android:layout_centerHorizontal="true"
 	    android:layout_centerVertical="true"
-	    android:gravity="right"
-		android:background="@drawable/test"
-		android:padding="10dp"
-		>
+	    android:gravity="right">
 		
 		<LinearLayout 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:padding="5dp"
-		>	
+			android:layout_height="wrap_content">	
 			<LinearLayout 
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-			>	
+				android:layout_height="wrap_content">	
 				<Button	
 						android:id="@+id/backwebdialog"
 						android:visibility="invisible"
 						android:layout_width="40dp"
-						android:layout_height="40dp" android:background="@drawable/button_forward_128">
+						android:layout_height="40dp"
+						android:background="@drawable/button_forward_128">
 				</Button>
 		    </LinearLayout>
 			<LinearLayout 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:gravity="right"
-			>	
+				android:gravity="right">	
 				<Button	
 						android:id="@+id/closewebdialog"
 						android:layout_width="40dp"
-						android:layout_height="40dp" android:background="@drawable/button_close_64">
+						android:layout_height="40dp"
+						android:background="@drawable/button_close_64">
 				</Button>
 		    </LinearLayout>	    
 	    </LinearLayout>	    
@@ -54,8 +48,7 @@
 	        android:id="@+id/webview"
 	        android:layout_width="fill_parent" 
 	        android:layout_height="fill_parent"
-	        android:layout_weight="1"
-	        />
+	        android:layout_weight="1"/>
 	        
 	</LinearLayout>
-</RelativeLayout>
+</LinearLayout>
