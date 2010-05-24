@@ -1,6 +1,9 @@
 package com.crackedcarrot;
 
 import java.util.Random;
+
+import android.util.Log;
+
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -66,6 +69,15 @@ public class Creature extends Sprite{
 	//Shows how many laps the creature has currentle completed
 	public int mapLap;
 	
+	//Tracker
+	// Each creature is a double list component 
+	public Creature nextCreature;
+	public Creature previousCreauture;
+	private int trackerX = 0;
+	private int trackerY = 0;
+	private Tracker tracker;
+	
+	
     /**
      * Constructor. When a new creature is definced we will also
      * send texturenumber, creaturesubtype, playerdata, soundmanager,
@@ -84,7 +96,8 @@ public class Creature extends Sprite{
 					SoundManager soundMan, 
 					Coords[] wayP, 
 					GameLoop loop, 
-					int creatureIndex
+					int creatureIndex,
+					Tracker tracker
 					){
 		
 		super(resourceId, CREATURE, type);
@@ -98,6 +111,7 @@ public class Creature extends Sprite{
 		rand = new Random();
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
+		this.tracker = tracker;
 	}
 
 	/**
@@ -141,6 +155,15 @@ public class Creature extends Sprite{
 				draw = true;
 				spawnWayPointX = 0;
 				spawnWayPointY = 0;
+
+				//Prepare tracker for game launch
+				Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
+	    		tmp.x++;
+	    		tmp.y++;
+				TrackerData tmpTrac = tracker.getTrackerData(tmp.x, tmp.y);
+    			tmpTrac.addCreatureToList(this);
+    			trackerX = tmp.x;
+    			trackerY = tmp.y;
 			}
 		}
 		//If still alive move the creature.
@@ -174,6 +197,21 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
+    		
+    		// Update tracker
+    		Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
+    		tmp.x++;
+    		tmp.y++;
+    		if (trackerX != tmp.x || trackerY != tmp.y) {
+    			TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
+    			tmpTrac.removeCreatureFromList(this);
+    			tmpTrac = tracker.getTrackerData(tmp.x, tmp.y);
+    			tmpTrac.addCreatureToList(this);
+    			trackerX = tmp.x;
+    			trackerY = tmp.y;
+    		}
+    			
+    		
 		}
 	}
 
@@ -210,6 +248,10 @@ public class Creature extends Sprite{
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
 		GL.creatureDiesOnMap(1);
+		// Remove creature from tracker
+		TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
+		tmpTrac.removeCreatureFromList(this);
+
 	}
 	
 	/**

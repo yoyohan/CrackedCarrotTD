@@ -53,6 +53,9 @@ public class GameLoop implements Runnable {
     protected Tower[]    mTower;
     protected Tower[][]  mTowerGrid;
     protected Tower[]    mTTypes;
+
+    // Tracker for finding creatures
+    private Tracker gameTracker;
     
     public int progressbarLastSent = 0;
     
@@ -72,8 +75,8 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	
     	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
+    	gameTracker = new Tracker();
     }
     
 	protected void initializeDataStructures() {
@@ -99,12 +102,12 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
 	    								0,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
-	    								i
+	    								i, 
+	    								gameTracker
 	    								);
 
 	    	mCreatures[i].draw = false;
@@ -436,7 +439,7 @@ public class GameLoop implements Runnable {
 			
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				t.createTower(mTTypes[towerType], towerPlacement, mScaler);
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
 				player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {

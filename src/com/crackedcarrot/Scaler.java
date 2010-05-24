@@ -89,4 +89,8 @@ public class Scaler {
 		return nbrGridY;
 	}
 	
+	public int rangeGrid(int g) {
+		int tmp = ((g / tmpGridSize.x)) + 1;
+		return tmp;
+	}
 }

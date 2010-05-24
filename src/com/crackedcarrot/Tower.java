@@ -2,6 +2,8 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import android.util.Log;
+
 /**
 * Class defining a tower in the game
 */
@@ -64,6 +66,8 @@ public class Tower extends Sprite {
     private boolean ImpactdAnimate = false;
     //To determine when a creature has been teleported to spawnpoint we will check his nbr of laps
 	private int targetCreatureMapLap;
+	// All creatures avaible for this tower
+	private TrackerList startTrackerList;
     
     /**
      * Constructor used when defining a new tower in the game. Needs the texture resource,
@@ -143,6 +147,44 @@ public class Tower extends Sprite {
 		}
 		return targetCreature;
 	}
+	/**
+	 * Method that tracks a creature. It iterates over a list of creatures and picks
+	 * the first creature in the list that is within the range of the tower 
+	 * @param nbrCreatures
+	 * @return nearest creature
+	 */
+	private Creature trackNearestEnemyBETA() {
+		Creature targetCreature = null;
+		double lastCreatureDistance = Double.MAX_VALUE;
+		
+		TrackerList tmpList = startTrackerList;
+		while(tmpList != null) {
+			TrackerData tmpData = tmpList.data;
+			if (tmpData != null) {
+				Creature tmpCreature = tmpData.first;
+				while ((tmpCreature != tmpData.last) && tmpCreature != null) {
+			
+					if(tmpCreature.draw == true && tmpCreature.health > 0){ // Is the creature still alive?
+						double distance = Math.sqrt(
+									Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
+									Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
+						if(distance < range){ // Is the creature within tower range?
+							if (targetCreature == null) 
+								targetCreature = tmpCreature;
+							else if (lastCreatureDistance > distance) {
+								targetCreature = tmpCreature;
+								lastCreatureDistance = distance;
+							}
+						}
+					}
+					tmpCreature = tmpCreature.nextCreature;
+				}
+			}
+			
+			tmpList = tmpList.next;
+		}
+		return targetCreature;
+	}
 	
 	/**
 	 * Method that tracks all creatures that are in range of tower. It iterates over a list of creatures and 
@@ -191,8 +233,8 @@ public class Tower extends Sprite {
 		//First we have to check if the tower is ready to fire
 		if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
 			// This is happens when a tower with projectile damage is ready to fire.
-			//this.targetCreature = trackNearestEnemyBETA();
-			this.targetCreature = trackNearestEnemy(nbrCreatures);
+			this.targetCreature = trackNearestEnemyBETA();
+			//this.targetCreature = trackNearestEnemy(nbrCreatures);
 			towerStartFireSequence(this.targetCreature);
 		}
 		//Creature has been teleported away. stop firing
@@ -383,7 +425,7 @@ public class Tower extends Sprite {
 	 * @param towerPlacement
 	 * @param mScaler
 	 */
-	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler) {
+	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker) {
 		//Use the textureNames that we preloaded into the towerTypes at startup
 		this.cloneTower(
 				clone.getResourceId(),
@@ -416,6 +458,34 @@ public class Tower extends Sprite {
 		this.y = towerPlacement.y;
 		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
+		
+		// Tracker
+		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
+		Coords tmp = mScaler.getGridXandY((int)x, (int)y);
+		int right = tmp.x + rangeGrid;
+		if (right >= (mScaler.getGridWidth() + 2))
+			right = mScaler.getGridWidth()+1;
+		int left = tmp.x - rangeGrid;
+		if (left < 0)
+			left = 0;
+		int top = tmp.y + rangeGrid;
+		if (top >= (mScaler.getGridHeight() + 2))
+			top = mScaler.getGridHeight()+1;
+		int bottom = tmp.y -rangeGrid;
+		if (bottom < 0)
+			bottom = 0;
+
+		startTrackerList = new TrackerList();
+		TrackerList currentTrackerList = new TrackerList();
+		startTrackerList.next = currentTrackerList;
+
+		for (int x = left; x <= right; x++) {
+			for (int y = bottom; y <= top; y++) {
+				currentTrackerList.data = (tracker.getTrackerData(x, y));
+				currentTrackerList.next = new TrackerList();
+				currentTrackerList = currentTrackerList.next;
+			}
+		}
 	}
 
 	//////////////////////////////////////////////
