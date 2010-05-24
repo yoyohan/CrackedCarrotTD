@@ -240,7 +240,7 @@ public class Creature extends Sprite{
 	private void die() {
 		this.dead = true;
 		setCurrentTexture(this.mDeadTextureData);
-		this.setRGB();
+		this.resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency();
 		// play died1.mp3
@@ -251,7 +251,6 @@ public class Creature extends Sprite{
 		// Remove creature from tracker
 		TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
 		tmpTrac.removeCreatureFromList(this);
-
 	}
 	
 	/**
@@ -262,6 +261,7 @@ public class Creature extends Sprite{
 	 * @return movement speed
 	 */
 	private float applyEffects(float timeDeltaSeconds){
+		float damage = 0;
 		float tmpR = this.rDefault;
 		float tmpG = this.gDefault;
 		float tmpB = this.bDefault;
@@ -278,8 +278,8 @@ public class Creature extends Sprite{
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - (timeDeltaSeconds);
-			damage(timeDeltaSeconds * creaturePoisonDamage);
-	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
+			damage = timeDeltaSeconds * creaturePoisonDamage;
+			tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
 	  		tmpR = tmpR*tmpRGB;
 	  		tmpB = tmpG*tmpRGB;
 		}
@@ -293,6 +293,10 @@ public class Creature extends Sprite{
 		this.r = tmpR;
 		this.g = tmpG;
 		this.b = tmpB;		
+
+		if (damage > 0)
+			damage(damage);
+
 		return movement;
 	}
 	
@@ -432,7 +436,7 @@ public class Creature extends Sprite{
 	/**
 	 * Needed to reset rgb to default value
 	 */
-	private void setRGB() {
+	private void resetRGB() {
 		this.r = this.rDefault;
 		this.g = this.gDefault;
 		this.b = this.bDefault;
