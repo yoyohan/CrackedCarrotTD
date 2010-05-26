@@ -1,12 +1,12 @@
 package com.crackedcarrot;
 
-import com.crackedcarrot.UI.UIHandler;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.crackedcarrot.UI.UIHandler;
 
 public class SurfaceView extends GLSurfaceView {
 	
@@ -55,8 +55,7 @@ public class SurfaceView extends GLSurfaceView {
 				
 				//You are not allowed to place tower here
 				ui.blinkRedGrid();
-			}
-			
+			}		
 			else Log.d("SURFACEVIEW", "The edge of the map, here be dragons! Or maybe road or a snowman, maybe a bush to =)");
 			
 			return false;

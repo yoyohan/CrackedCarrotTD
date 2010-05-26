@@ -2,8 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
-import android.util.Log;
-
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -120,14 +118,17 @@ public class Creature extends Sprite{
 	 * the gameloop.
 	 * @param dmg
 	 */
-	public void damage(float dmg){
+	public void damage(float dmg, int sound){
 		if (health > 0) {
 			dmg = health >= dmg ? dmg : health; 
 			health -= dmg;
 			GL.updateCreatureProgress(dmg);
 			if(health <= 0){
 				die();
+				soundManager.playSoundRandomDIE();
 			}
+			else if (sound != -1)
+				soundManager.playSound(sound);
 		}
 	}
 	
@@ -243,8 +244,6 @@ public class Creature extends Sprite{
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency();
-		// play died1.mp3
-		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
 		GL.creatureDiesOnMap(1);
@@ -295,7 +294,7 @@ public class Creature extends Sprite{
 		this.b = tmpB;		
 
 		if (damage > 0)
-			damage(damage);
+			damage(damage,-1);
 
 		return movement;
 	}
@@ -320,6 +319,7 @@ public class Creature extends Sprite{
 	 */
 	private void score(){
 		player.damage(1);
+		soundManager.playSoundRandomScore();
 		GL.updatePlayerHealth();
 	}
 

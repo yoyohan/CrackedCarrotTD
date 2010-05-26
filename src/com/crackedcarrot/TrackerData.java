@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
-
 public class TrackerData {
 	public Creature first;
 	public Creature last;

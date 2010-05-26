@@ -8,6 +8,7 @@ import android.content.Context;
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Shot;
+import com.crackedcarrot.SoundManager;
 import com.crackedcarrot.Tower;
 
 /**
@@ -15,6 +16,7 @@ import com.crackedcarrot.Tower;
  */
 public class TowerLoader {
 	
+	private SoundManager soundManager;
 	private Context context;
 	private InputStream in;
 	private Tower[] towerList;
@@ -43,15 +45,18 @@ public class TowerLoader {
 	private float width;
 	private float height;
 	private float animationTime;
+	private int sound_l;
+	private int sound_i;
 	/**
 	 * Constructor 
 	 * 
 	 * @param  Context  	The context of the activity that requested the loader.
 	 * @param  Scaler	 	A scaler.	
 	 */
-	public TowerLoader(Context context, Scaler scaler){
+	public TowerLoader(Context context, Scaler scaler, SoundManager soundManager){
 		this.context = context;
 		this.scaler = scaler;
+		this.soundManager = soundManager;
 	}
 
 	/**
@@ -192,11 +197,30 @@ public class TowerLoader {
 			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
 			            	// Shot size
 			            	recalc = scaler.scale(24,24);
-			            	towerList[twrNbr] = new Tower(mResourceId, 0, null, null);
 			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
 			            	relatedShot.setHeight(recalc.getY());
 			            	relatedShot.setWidth(recalc.getX());
 			            	relatedShot.setAnimationTime(animationTime);
+			            	break;
+						case 26:
+			            	// Shot sound. Projectile leaves
+							String soundfile = tmpStr[1].trim();
+							if (!soundfile.equals("none")) {
+								sound_l = context.getResources().getIdentifier(soundfile, "raw", context.getPackageName());
+								sound_l = soundManager.addSound(1.0f, 300, sound_l);
+							}
+							else sound_l = -1;
+							break;
+						case 27:
+			            	// Shot sound. impact
+							String soundfile2 = tmpStr[1].trim();
+							if (!soundfile2.equals("none")) {
+								sound_i = context.getResources().getIdentifier(soundfile2, "raw", context.getPackageName());
+								sound_i = soundManager.addSound(1.0f, 300, sound_i);
+							}
+							else sound_i = -1;
+
+			            	towerList[twrNbr] = new Tower(mResourceId, 0, null, null);
 			            	towerList[twrNbr].relatedShot = relatedShot;
 			            	towerList[twrNbr].cloneTower(
 			            			mResourceId,
@@ -222,7 +246,9 @@ public class TowerLoader {
 					            	coolDown,
 					            	width,
 					            	height,
-					            	relatedShot
+					            	relatedShot,
+					            	sound_l,
+					            	sound_i
 			            			);		
 			            	
 			            	twrNbr++;

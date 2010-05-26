@@ -2,8 +2,6 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
-import android.util.Log;
-
 /**
 * Class defining a tower in the game
 */
@@ -68,6 +66,10 @@ public class Tower extends Sprite {
 	private int targetCreatureMapLap;
 	// All creatures avaible for this tower
 	private TrackerList startTrackerList;
+	//Sound. leaves
+	private int sound_l;
+	//Sound. impact
+	private int sound_i;
     
     /**
      * Constructor used when defining a new tower in the game. Needs the texture resource,
@@ -214,7 +216,7 @@ public class Tower extends Sprite {
 						float damageFactor = specialDamage(mCreatures[i],true);
 						randomInt = this.aoeDamage * damageFactor;
 					}
-					mCreatures[i].damage(randomInt);
+					mCreatures[i].damage(randomInt,-1);
 					nbrOfHits++;
 				}
 			}
@@ -292,7 +294,7 @@ public class Tower extends Sprite {
 		this.tmpCoolDown = this.coolDown;
 		float damageFactor = specialDamage(this.targetCreature,false);
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
-		targetCreature.damage(randomInt);
+		targetCreature.damage(randomInt,sound_i);
 		
 		this.ImpactdAnimate = true;
 		relatedShot.tmpAnimationTime = relatedShot.animationTime;
@@ -316,10 +318,9 @@ public class Tower extends Sprite {
 		}
 		else if (this.tmpCoolDown <= 0) {
 			if (trackAllNearbyEnemies(nbrCreatures,true) > 0) {
-				soundManager.playSound(0);
+				soundManager.playSound(this.sound_l);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;
-				//relatedShot.scaleSprite(this.range);
 				ImpactdAnimate = true;
 			}
 		}
@@ -351,9 +352,8 @@ public class Tower extends Sprite {
 	 */
 	private void towerStartFireSequence(Creature targetCreature) {
 		if (targetCreature != null) {
-			// play shot1.mp3
-			soundManager.playSound(0);
-			//this.tmpCoolDown = this.coolDown;
+			if (sound_l != -1)
+				soundManager.playSound(sound_l);
 			this.relatedShot.draw = true;
 			this.targetCreatureMapLap = targetCreature.mapLap;
 		}
@@ -387,7 +387,9 @@ public class Tower extends Sprite {
 				float coolDown,
 				float width,
 				float height,
-				Shot copyShot
+				Shot copyShot,
+				int sound_l,
+				int sound_i
 			){
 
 			this.setResourceId(resourceId);
@@ -417,6 +419,8 @@ public class Tower extends Sprite {
 			this.relatedShot.setHeight(copyShot.getHeight());
 			this.relatedShot.setResourceId(copyShot.getResourceId());
 			this.relatedShot.setAnimationTime(copyShot.getAnimationTime());
+			this.sound_l = sound_l;
+			this.sound_i = sound_i;
 	}
 	
 	/**
@@ -451,7 +455,9 @@ public class Tower extends Sprite {
 				clone.coolDown,
 				clone.getWidth(),
 				clone.getHeight(),
-		    	clone.relatedShot
+		    	clone.relatedShot,
+            	clone.sound_l,
+            	clone.sound_i
 			);
 		this.draw = true;
 		this.x = towerPlacement.x;

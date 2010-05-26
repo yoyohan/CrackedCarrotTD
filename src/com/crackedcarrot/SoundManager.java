@@ -33,24 +33,31 @@ import com.crackedcarrot.menu.R;
 public class SoundManager {
 
 	private  SoundPool     mSoundPool;
-	private  int[]         mSoundArray     = new int[32];   // max # of sounds.
-											     		    // set to 32 for no reason.
-	private  float[]       mSoundPitch     = new float[32];
-	private  long[]        mSoundDelay     = new long[32];
-	private  long[]        mSoundDelayLast = new long[32];
+	private  int[]         mSoundArray     = new int[64];
+	private  float[]       mSoundPitch     = new float[64];
+	private  long[]        mSoundDelay     = new long[64];
+	private  long[]        mSoundDelayLast = new long[64];
 	private  AudioManager  mAudioManager;
 	private  Context       mContext;
 	
 	private  Random        random;
+	private	 int 		   randomStartDIE;
+	private  int		   randomEndDIE;
+	private	 int 		   randomStartScore;
+	private  int		   randomEndScore;
+	private  int 		   scoreOrder = 0;
 
+	private  int		   createTower = 0;
+	private  int		   victory = 0;
+	private  int		   loose = 0;
+
+	private int currIndex = 0;
     public   boolean       playSound = false; // play sounds?
     
     	// TODO: The sounds need to be better declared to make sense, ala GameLoopGUI.
     final int    		   SOUND_TOWER_SHOT1   = 0;
     final int              SOUND_TOWER_SHOT2   = 1;
-    
     final int	           SOUND_CREATURE_DEAD = 10;
-    
     final int              SOUND_TOWER_BUILD   = 20;
 
 	public SoundManager(Context baseContext) {
@@ -58,12 +65,27 @@ public class SoundManager {
         // Here goes the mp3/wav/ogg-files we want to use.
         // These need to be added to the res/raw/NameOfSound.mp3 folder,
         // WITH the extension on the file.
-        this.addSound( 0, 1.0f, 500, R.raw.shot1);
-        this.addSound(10, 1.0f, 1000, R.raw.died1);
-        this.addSound(20, 1.0f, 1000, R.raw.build1);
-        //this.addSound(20, 1.0f, R.raw.creaturehappy);
-        //this.addSound(30, 1.0f, R.raw.victory);
-        //this.addSound(31, 1.0f, R.raw.defeat);
+        randomStartDIE = this.addSound(1.0f, 500, R.raw.die_albin);
+        this.addSound(1.0f, 500, R.raw.die_fredrik);
+        this.addSound(1.0f, 500, R.raw.die_johan1);
+        this.addSound(1.0f, 500, R.raw.die_johan2);
+        this.addSound(1.0f, 500, R.raw.die_johan3);
+        this.addSound(1.0f, 500, R.raw.die_kalle);
+        this.addSound(1.0f, 500, R.raw.die_kalle2);
+        randomEndDIE = this.addSound(1.0f, 500, R.raw.die_tomat);
+        randomEndDIE = randomEndDIE - randomStartDIE;
+        randomStartScore = this.addSound(1.0f, 500, R.raw.die_albin);
+        this.addSound(1.0f, 500, R.raw.score_albin1);
+        this.addSound(1.0f, 500, R.raw.score_albin2);
+        this.addSound(1.0f, 500, R.raw.score_albin3);
+        this.addSound(1.0f, 500, R.raw.score_albin4);
+        this.addSound(1.0f, 500, R.raw.score_fredrik);
+        randomEndScore = this.addSound(1.0f, 500, R.raw.die_tomat);
+        randomEndScore = randomEndScore - randomStartScore;
+        
+        createTower = this.addSound(1.0f, 500, R.raw.open_beer);
+        victory = this.addSound(1.0f, 500, R.raw.victory);
+        loose = this.addSound(1.0f, 500, R.raw.loose);
         
         random = new Random();
         
@@ -90,16 +112,22 @@ public class SoundManager {
 	 * Loads a sound-file into our cache and prepares it for being played
 	 * by the playSound or playLoopedSound-functions.
 	 *
-	 * @param  index		The desired id for this sound, value: int.
 	 * @param  pitch		The pitch for the sound, value: 0.5 - 2.0 float.
 	 * @param  delay        How long before it can be played again, value: float.
 	 * @param  soundId		Location of the R.raw.soundfile.mp3 resource.
 	 * @return     			void
 	 */
-	private void addSound(int index, float pitch, long delay, int soundId) {
-		mSoundArray[index] = mSoundPool.load(mContext, soundId, 1);
-		mSoundPitch[index] = pitch;
-		mSoundDelay[index] = delay;
+	public int addSound(float pitch, long delay, int soundId) {
+		if (currIndex >= mSoundArray.length) {
+			// Incase the array is full we return -1
+			return -1;
+		} else {
+			mSoundArray[currIndex] = mSoundPool.load(mContext, soundId, 1);
+			mSoundPitch[currIndex] = pitch;
+			mSoundDelay[currIndex] = delay;
+			currIndex++;
+			return (currIndex-1);
+		}
 	}
 
 	/**
@@ -109,10 +137,7 @@ public class SoundManager {
 	 * @return			void
 	 */
 	public void playSound(int index) {
-		//Log.d("SOUNDMANAGER", "Playing sound " + index);
-		
 		final long time = SystemClock.uptimeMillis();
-		
 		if (playSound && mSoundDelay[index] + mSoundDelayLast[index] < time) {
 			mSoundDelayLast[index] = time;
 			int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -122,7 +147,29 @@ public class SoundManager {
 		}
 	}
 
-    /**
+	/**
+	 * Plays a specific sound.
+	 * @return			void
+	 */
+	public void playSoundCreate() {
+		playSound(createTower);
+	}
+	/**
+	 * Plays a specific sound.
+	 * @return			void
+	 */
+	public void playSoundVictory() {
+		playSound(victory);
+	}
+	/**
+	 * Plays a specific sound.
+	 * @return			void
+	 */
+	public void playSoundLoose() {
+		playSound(loose);
+	}
+
+	/**
 	 * Plays a sound in a loop, e.g. background music or similar.
 	 *
 	 * @param  index	Numerical int-value for the sound.
@@ -144,14 +191,22 @@ public class SoundManager {
 	}
 	
     /**
-	 * Plays a random sound from the array of sounds cached.
-	 *
-	 * @param  i		Random minimum sound to play.
-	 * @param  j		Random maximum sound to play.
+	 * Plays a random sound from the array of sounds cached. Death sounds
 	 * @return			void
 	 */
-	public void playSoundRandom(int i, int j) {
-		playSound(i + random.nextInt(j));
+	public void playSoundRandomDIE() {
+		playSound(randomStartDIE + random.nextInt(randomEndDIE));
+	}
+    /**
+	 * Plays a random sound from the array of sounds cached. Creature scores sounds
+	 * @return			void
+	 */
+	public void playSoundRandomScore() {
+		scoreOrder++;
+		if (scoreOrder == 3) {
+			scoreOrder = 0;
+			playSound(randomStartScore + random.nextInt(randomEndScore));
+		}
 	}
 	
 	/**
