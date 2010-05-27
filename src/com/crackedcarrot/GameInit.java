@@ -34,6 +34,7 @@ public class GameInit extends Activity {
     private Thread      gameLoopThread;
     private UIHandler   hudHandler;
     private MapLoader   mapLoader;
+    private SoundManager soundManager;
     
 
     ///////////////// Multiplayer ////////////////////////////
@@ -156,6 +157,10 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", 0);
     		editor.commit();
         }
+    
+        // We will init soundmanager here insteed
+        soundManager = new SoundManager(getBaseContext());
+        
         
         // Create the map requested by the player
 
@@ -197,7 +202,7 @@ public class GameInit extends Activity {
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
-        TowerLoader towerLoad = new TowerLoader(this, scaler);
+        TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
         if(multiplayerSocket != null){
@@ -205,12 +210,12 @@ public class GameInit extends Activity {
     		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
     		mMultiplayerService.start();
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-    				gameLoopGui,new SoundManager(getBaseContext()), mMultiplayerService);
+    				gameLoopGui,soundManager, mMultiplayerService);
     	}else{
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-            		gameLoopGui,new SoundManager(getBaseContext()));
+            		gameLoopGui,soundManager);
     	}
 
         	// Resuming old game? Prepare GameLoop for this...

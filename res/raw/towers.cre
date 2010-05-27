@@ -25,6 +25,8 @@ aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
 Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
 ////////////////////////////////////
 // Cannon tower
 ////////////////////////////////////
@@ -50,6 +52,8 @@ aoe range:: 70
 aoe damage::10 
 Shot animation time::0.4
 Shot texture::cannonshot
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
 ////////////////////////////////////
 // Posiontower
 ////////////////////////////////////
@@ -75,6 +79,8 @@ aoe range::0
 aoe damage::0 
 Shot animation time::0.5
 Shot texture::poisoncloud
+Sound-l::poison_vattenbrunn
+Sound-impact::none
 ////////////////////////////////////
 // Tesla lvl1
 ////////////////////////////////////
@@ -100,6 +106,8 @@ aoe range:: 0
 aoe damage::0 
 Shot animation time::0.4
 Shot texture::lightbolt
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
 ////////////////////////////////////
 // Bunker LVL2
 ////////////////////////////////////
@@ -125,6 +133,8 @@ aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
 Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
 ////////////////////////////////////
 // Cannon tower LVL2
 ////////////////////////////////////
@@ -150,6 +160,8 @@ aoe range:: 70
 aoe damage::60 
 Shot animation time::0.4
 Shot texture::cannonshot_ice
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
 ////////////////////////////////////
 // Posiontower LVL2
 ////////////////////////////////////
@@ -175,6 +187,8 @@ aoe range::0
 aoe damage::0 
 Shot animation time::0.5
 Shot texture::poisoncloud
+Sound-l::poison_vattenbrunn
+Sound-impact::none
 ////////////////////////////////////
 // Magic tower LVL 2
 ////////////////////////////////////
@@ -200,4 +214,6 @@ aoe range:: 0
 aoe damage::0 
 Shot animation time::0.4
 Shot texture::lightbolt
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

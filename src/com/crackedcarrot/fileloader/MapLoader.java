@@ -2,9 +2,7 @@ package com.crackedcarrot.fileloader;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.content.Context;
-
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;

@@ -53,6 +53,9 @@ public class GameLoop implements Runnable {
     protected Tower[]    mTower;
     protected Tower[][]  mTowerGrid;
     protected Tower[]    mTTypes;
+
+    // Tracker for finding creatures
+    private Tracker gameTracker;
     
     public int progressbarLastSent = 0;
     
@@ -72,8 +75,8 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	
     	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
+    	gameTracker = new Tracker();
     }
     
 	protected void initializeDataStructures() {
@@ -99,12 +102,12 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-
 	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
 	    								0,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,
-	    								i
+	    								i, 
+	    								gameTracker
 	    								);
 
 	    	mCreatures[i].draw = false;
@@ -383,13 +386,16 @@ public class GameLoop implements Runnable {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
 
-            		// Show the You Lost-dialog.
+           		// Show the You Lost-dialog.
             	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
             	// This is a good time clear all savegame data.
             		// -2 = call the SaveGame-function.
             		// 2  = ask SaveGame to clear all data.
             		// 0  = not used.
             	gui.sendMessage(-2, 2, 0);
+
+            	//Play fail sound
+            	soundManager.playSoundLoose();
             	
         		// Code to wait for the user to click ok on YouLost-dialog.
         		waitForDialogClick();
@@ -412,6 +418,9 @@ public class GameLoop implements Runnable {
             			// 2  = ask SaveGame to clear all data.
             			// 0  = not used.
                 	gui.sendMessage(-2, 2, 0);
+
+                	//Play victory sound
+                	soundManager.playSoundVictory();
                 	
                 	// Show Ninjahighscore-thingie.
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
@@ -446,7 +455,7 @@ public class GameLoop implements Runnable {
 			
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				t.createTower(mTTypes[towerType], towerPlacement, mScaler);
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
 				player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {
@@ -457,7 +466,7 @@ public class GameLoop implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				soundManager.playSound(20);
+				soundManager.playSoundCreate();
 				updateCurrency();
 				
 				return true;

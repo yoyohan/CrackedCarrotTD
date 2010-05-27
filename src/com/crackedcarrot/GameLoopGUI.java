@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
@@ -19,7 +18,6 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -625,7 +623,7 @@ public class GameLoopGUI {
 
 	    	// Title:
 	    	TextView title = (TextView) dialog.findViewById(R.id.NextLevelTitle);
-	    	String titleText ="<b>Level " + currLvlnbr + "</b><br>" + currLvl.creepTitle +"<br>";
+	    	String titleText ="Level " + currLvlnbr + "<br>" + currLvl.creepTitle +"<br>";
 		    CharSequence styledText = Html.fromHtml(titleText);
 	    	title.setText(styledText);
 	    	
@@ -637,11 +635,11 @@ public class GameLoopGUI {
 	    	TextView text = (TextView) dialog.findViewById(R.id.NextLevelText);
 	    	
 	    	Player currPlayer = gameInit.gameLoop.getPlayerData();
-	    	String lvlText ="<b>Number of creeps:</b> " + currLvl.nbrCreatures +"<br>";
-	    	lvlText += 		"<b>Bounty:</b> " + currLvl.goldValue + "g/creep<br>";
-	    	lvlText += 		"<b>Health:</b> " + (int)currLvl.getHealth() + "hp/creep<br>";
+	    	String lvlText ="Number of creeps: " + currLvl.nbrCreatures +"<br>";
+	    	lvlText += 		"Bounty: " + currLvl.goldValue + "g/creep<br>";
+	    	lvlText += 		"Health: " + (int)currLvl.getHealth() + "hp/creep<br>";
 	    	lvlText += 		"<br>";
-	    	lvlText += 		"<b>Special abilitys:</b><br>";
+	    	lvlText += 		"Special abilitys:<br>";
 	    	int tmpAbil = 0;
 	    	if (currLvl.creatureFast) {
 		    	lvlText += 		"<font color=yellow>Fast level</font><br>";
@@ -663,12 +661,12 @@ public class GameLoopGUI {
 		    	lvlText += 		"No special ability<br>";
 		    
 		    if (currLvlnbr > 1) {
-		    	lvlText += 		"<br><b>Previous level:</b><br>";
+		    	lvlText += 		"<br>Previous level:<br>";
 		    	lvlText += 		"Interest gained:" + currPlayer.getInterestGainedThisLvl() + "<br>";
 		    	lvlText += 		"Health lost:" + currPlayer.getHealthLostThisLvl();		    	
 		    }
 		    else {
-		    	lvlText += 		"<br><b>Tip:</b><br>";
+		    	lvlText += 		"<br>Tip:<br>";
 		    	lvlText += 		"If you have trouble <br>understanding this game.<br> Use the information<br> button below or ingame";
 		    }
 		    styledText = Html.fromHtml(lvlText);
