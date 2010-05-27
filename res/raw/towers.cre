@@ -1,14 +1,14 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::8
+Total number of towers::10
 ////////////////////////////////////
-// Bunker
+// Bunker LVL1
 ////////////////////////////////////
 texture::bunker1
 title::Bunker Lvl 1
-price::10
-resell value::8
-minDamage::10
-maxDamage::12
+price::8
+resell value::4
+minDamage::6
+maxDamage::8
 Shot-velocity::400
 cooldown between shots::0.3
 hasFrostDamage::false
@@ -28,14 +28,14 @@ Shot texture::throwingstar
 Sound-l::bunker_micro
 Sound-impact::none
 ////////////////////////////////////
-// Cannon tower
+// Cannon tower Lvl 1
 ////////////////////////////////////
 texture::cannontower1
-title::Cannontower
-price::10
+title::Cannontower lvl 1
+price::15
 resell value::8
-minDamage::10
-maxDamage::20
+minDamage::18
+maxDamage::28
 Shot-velocity::250
 cooldown between shots::2
 hasFrostDamage::false
@@ -48,33 +48,87 @@ Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink1::5
 upgradelink2::-1
 range::150
-aoe range:: 70
-aoe damage::10 
+aoe range:: 100
+aoe damage::18 
 Shot animation time::0.4
 Shot texture::cannonshot
 Sound-l::cannon_pangpase
 Sound-impact::cannon_bomb
 ////////////////////////////////////
-// Posiontower
+// Bunker LVL2 ADDED FOR TESTING
 ////////////////////////////////////
-texture::poisontower1
-title::Posiontower
-price::10
-resell value::8
-minDamage::20
-maxDamage::50
-Shot-velocity::250
-cooldown between shots::2.5
+texture::bunker1
+title::Bunker Lvl 2
+price::24
+resell value::12
+minDamage::18
+maxDamage::24
+Shot-velocity::400
+cooldown between shots::0.3
 hasFrostDamage::false
 frostTime(sec)::5
 hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink1::4
+upgradelink2::-1
+range::100
+aoe range:: 0
+aoe damage::0
+Shot animation time::0.2
+Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
+////////////////////////////////////
+// Bunker LVL2 Frost ADDED FOR TESTING
+////////////////////////////////////
+texture::bunker1
+title::Bunker Lvl 2
+price::40
+resell value::12
+minDamage::18
+maxDamage::24
+Shot-velocity::400
+cooldown between shots::0.3
+hasFrostDamage::true
+frostTime(sec)::5
+hasFireDamage::false
+hasPoisonDamage::false
+poisonDamage(per sec)::0
+poisonTime(sec)::0
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink1::4
+upgradelink2::-1
+range::100
+aoe range:: 0
+aoe damage::0
+Shot animation time::0.2
+Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
+////////////////////////////////////
+// Posiontower Lvl 1
+////////////////////////////////////
+texture::poisontower1
+title::Posiontower Lvl 1
+price::50
+resell value::25
+minDamage::20
+maxDamage::35
+Shot-velocity::250
+cooldown between shots::2
+hasFrostDamage::false
+frostTime(sec)::0
+hasFireDamage::false
 hasPoisonDamage::true
-poisonDamage(per sec)::2
-poisonTime(sec)::5
+poisonDamage(per sec)::10
+poisonTime(sec)::4
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
 upgradelink1::6
 upgradelink2::-1
-range::100
+range::90
 aoe range::0
 aoe damage::0 
 Shot animation time::0.5
@@ -86,12 +140,12 @@ Sound-impact::none
 ////////////////////////////////////
 texture::tesla1
 title::Magic tower
-price::10
-resell value::8
-minDamage::60
-maxDamage::90
+price::100
+resell value::50
+minDamage::200
+maxDamage::201
 Shot-velocity::250
-cooldown between shots::6
+cooldown between shots::4
 hasFrostDamage::false
 frostTime(sec)::0
 hasFireDamage::false
@@ -101,7 +155,7 @@ poisonTime(sec)::0
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink1::7
 upgradelink2::-1
-range::400
+range::200
 aoe range:: 0
 aoe damage::0 
 Shot animation time::0.4
