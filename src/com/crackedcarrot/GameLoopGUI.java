@@ -642,7 +642,7 @@ public class GameLoopGUI {
 	    	lvlText += 		"Special abilitys:<br>";
 	    	int tmpAbil = 0;
 	    	if (currLvl.creatureFast) {
-		    	lvlText += 		"<font color=pink>Fast level</font><br>";
+		    	lvlText += 		"<font color=0xFF00FF>Fast level</font><br>";
 		    	tmpAbil++;
 	    	}
 		    if (currLvl.creatureFireResistant) {

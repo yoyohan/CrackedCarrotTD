@@ -125,12 +125,8 @@ public class Tower extends Sprite {
 			return 1;
 	}
 	
-	/**
-	 * Method that tracks a creature. It iterates over a list of creatures and picks
-	 * the first creature in the list that is within the range of the tower 
-	 * @param nbrCreatures
-	 * @return nearest creature
-	 */
+	//Old tracker
+	/*
 	private Creature trackNearestEnemy(int nbrCreatures) {
 		Creature targetCreature = null;
 		double lastCreatureDistance = Double.MAX_VALUE;
@@ -152,13 +148,14 @@ public class Tower extends Sprite {
 		}
 		return targetCreature;
 	}
+	*/
 	/**
 	 * Method that tracks a creature. It iterates over a list of creatures and picks
 	 * the first creature in the list that is within the range of the tower 
 	 * @param nbrCreatures
 	 * @return nearest creature
 	 */
-	private Creature trackNearestEnemyBETA() {
+	private Creature trackNearestEnemy() {
 		Creature targetCreature = null;
 		double lastCreatureDistance = Double.MAX_VALUE;
 		
@@ -185,7 +182,6 @@ public class Tower extends Sprite {
 					tmpCreature = tmpCreature.nextCreature;
 				}
 			}
-			
 			tmpList = tmpList.next;
 		}
 		return targetCreature;
@@ -197,7 +193,47 @@ public class Tower extends Sprite {
 	 * @param nbrCreatures
 	 * @param doFullDamage
 	 */
-	private int trackAllNearbyEnemies(int nbrCreatures, boolean doFullDamage) {
+	private int trackAllNearbyEnemies(boolean doFullDamage) {
+		int nbrOfHits = 0;
+		float range;
+		if (doFullDamage)
+			range = this.range;
+		else 
+			range = this.rangeAOE;
+
+		TrackerList tmpList = startTrackerList;
+		while(tmpList != null) {
+			TrackerData tmpData = tmpList.data;
+			if (tmpData != null) {
+				Creature tmpCreature = tmpData.first;
+				while ((tmpCreature != tmpData.last) && tmpCreature != null) {
+					if(tmpCreature.draw == true && tmpCreature.health > 0){ // Is the creature still alive?
+						double distance = Math.sqrt(
+								Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
+								Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
+						if(distance <= range){ 
+							float randomInt;
+							if (doFullDamage) {
+								float damageFactor = specialDamage(tmpCreature,false);
+								randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
+							} else {
+								float damageFactor = specialDamage(tmpCreature,true);
+								randomInt = this.aoeDamage * damageFactor;
+							}
+						tmpCreature.damage(randomInt,-1);
+						nbrOfHits++;
+						}
+					}
+					tmpCreature = tmpCreature.nextCreature;
+				}
+			}
+			tmpList = tmpList.next;
+		}
+		return nbrOfHits;
+	}
+	
+	// Old tracker
+	/*private int trackAllNearbyEnemies(int nbrCreatures, boolean doFullDamage) {
 		int nbrOfHits = 0;
 		float range;
 		if (doFullDamage)
@@ -225,7 +261,8 @@ public class Tower extends Sprite {
 			}
 		}
 		return nbrOfHits;
-	}
+	}*/
+	
 	
 	/**
 	 * Method that calculates the damage for a specific tower
@@ -238,8 +275,7 @@ public class Tower extends Sprite {
 		//First we have to check if the tower is ready to fire
 		if (!this.relatedShot.draw && (this.tmpCoolDown <= 0)) {
 			// This is happens when a tower with projectile damage is ready to fire.
-			this.targetCreature = trackNearestEnemyBETA();
-			//this.targetCreature = trackNearestEnemy(nbrCreatures);
+			this.targetCreature = trackNearestEnemy();
 			towerStartFireSequence(this.targetCreature);
 		}
 		//Creature has been teleported away. stop firing
@@ -303,7 +339,7 @@ public class Tower extends Sprite {
 		relatedShot.tmpAnimationTime = relatedShot.animationTime;
 		
     	if (this.towerType == Tower.CANNON){
-	    	this.trackAllNearbyEnemies(nbrCreatures,false);
+	    	this.trackAllNearbyEnemies(false);
 		}
 	}
 	
@@ -320,7 +356,7 @@ public class Tower extends Sprite {
 			ImpactdAnimate = relatedShot.animateShot(timeDeltaSeconds, size, null);
 		}
 		else if (this.tmpCoolDown <= 0) {
-			if (trackAllNearbyEnemies(nbrCreatures,true) > 0) {
+			if (trackAllNearbyEnemies(true) > 0) {
 				soundManager.playSound(this.sound_l);
 				this.tmpCoolDown = this.coolDown;
 				this.relatedShot.draw = true;

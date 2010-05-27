@@ -129,9 +129,12 @@ public class WaveLoader {
 			            	tmpLvl.setCreatureSpecials(fast,fireResistant,frostResistant,poisonResistant);
 			            	break;
 						case 12:
-			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
+			            	tmpLvl.setDamagePerCreep(Integer.parseInt(tmpStr[1].trim()));
 							break;
 						case 13:
+			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
+							break;
+						case 14:
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;

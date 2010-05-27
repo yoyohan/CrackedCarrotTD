@@ -75,6 +75,9 @@ public class Creature extends Sprite{
 	private int trackerY = 0;
 	private Tracker tracker;
 	
+	//How mutch a creature will damage the player
+	private int damagePerCreep;
+	
 	
     /**
      * Constructor. When a new creature is definced we will also
@@ -318,7 +321,7 @@ public class Creature extends Sprite{
 	 * will remove one life from player
 	 */
 	private void score(){
-		player.damage(1);
+		player.damage(damagePerCreep);
 		soundManager.playSoundRandomScore();
 		GL.updatePlayerHealth();
 	}
@@ -491,6 +494,15 @@ public class Creature extends Sprite{
 		this.wayP = waypoints;
 	}
 	
+	/**
+	 * Set how mutch a creature will damage the player
+	 * @param int
+	 * 
+	 */
+	public void setDamagePerCreep(int damagePerCreep) {
+		this.damagePerCreep = damagePerCreep;
+	}
+
 	////////////////////////////////
 	// All getters
 	////////////////////////////////
@@ -559,7 +571,13 @@ public class Creature extends Sprite{
 		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
-	
+	/**
+	 * Return how mutch this creature will do to a player
+	 * @return int
+	 */
+	public int getDamagePerCreep() {
+		return this.damagePerCreep;
+	}
 	/**
 	 * Return if this creature is fast or not
 	 * @return true if fast

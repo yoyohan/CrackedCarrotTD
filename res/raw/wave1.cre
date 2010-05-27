@@ -4,13 +4,14 @@ Total number of levels::10
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
-scale::1
+scale::0.9
 Wave title::Agile Mr Rabbit
 health::115
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::1
 nbrOfCreaturs::20
 ////////////////////////////// level 2
@@ -24,6 +25,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 3
@@ -37,6 +39,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 4
@@ -50,6 +53,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::1
 nbrOfCreaturs::20
 /////////////////////////////// level 5
@@ -63,6 +67,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::2
 nbrOfCreaturs::20
 /////////////////////////////// level 6
@@ -76,6 +81,7 @@ fast level::true
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::2
 nbrOfCreaturs::20
 /////////////////////////////// level 7
@@ -89,6 +95,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::true
+damage/creep::1
 goldValue::2
 nbrOfCreaturs::20
 /////////////////////////////// level 8
@@ -102,6 +109,7 @@ fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::3
 nbrOfCreaturs::20
 /////////////////////////////// level 9
@@ -115,6 +123,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::1
 goldValue::3
 nbrOfCreaturs::20
 /////////////////////////////// level 10
@@ -128,6 +137,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
+damage/creep::8
 goldValue::80
 nbrOfCreaturs::1
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

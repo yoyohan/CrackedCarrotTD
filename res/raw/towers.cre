@@ -1,5 +1,5 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::10
+Total number of towers::8
 ////////////////////////////////////
 // Bunker LVL1
 ////////////////////////////////////
@@ -54,60 +54,6 @@ Shot animation time::0.4
 Shot texture::cannonshot
 Sound-l::cannon_pangpase
 Sound-impact::cannon_bomb
-////////////////////////////////////
-// Bunker LVL2 ADDED FOR TESTING
-////////////////////////////////////
-texture::bunker1
-title::Bunker Lvl 2
-price::24
-resell value::12
-minDamage::18
-maxDamage::24
-Shot-velocity::400
-cooldown between shots::0.3
-hasFrostDamage::false
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
-upgradelink1::4
-upgradelink2::-1
-range::100
-aoe range:: 0
-aoe damage::0
-Shot animation time::0.2
-Shot texture::throwingstar
-Sound-l::bunker_micro
-Sound-impact::none
-////////////////////////////////////
-// Bunker LVL2 Frost ADDED FOR TESTING
-////////////////////////////////////
-texture::bunker1
-title::Bunker Lvl 2
-price::40
-resell value::12
-minDamage::18
-maxDamage::24
-Shot-velocity::400
-cooldown between shots::0.3
-hasFrostDamage::true
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
-upgradelink1::4
-upgradelink2::-1
-range::100
-aoe range:: 0
-aoe damage::0
-Shot animation time::0.2
-Shot texture::throwingstar
-Sound-l::bunker_micro
-Sound-impact::none
 ////////////////////////////////////
 // Posiontower Lvl 1
 ////////////////////////////////////
@@ -167,7 +113,7 @@ Sound-impact::tesla_vattenplatta
 ////////////////////////////////////
 texture::bunker2
 title::Bunker Lvl 2
-price::70
+price::20
 resell value::50
 minDamage::40
 maxDamage::62
@@ -194,7 +140,7 @@ Sound-impact::none
 ////////////////////////////////////
 texture::cannontower2
 title::Cannontower Lvl 2
-price::80
+price::20
 resell value::67
 minDamage::70
 maxDamage::100
