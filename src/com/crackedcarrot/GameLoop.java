@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.crackedcarrot.Tower.UpgradeOption;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -627,7 +628,47 @@ public class GameLoop implements Runnable {
 
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
-		gui.showTowerUpgrade(R.drawable.upgrade_a, R.drawable.upgrade_b);
+		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+		int typeIndexA = t.getUpgradeTypeIndex(UpgradeOption.upgrade_a);
+		int typeIndexB = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
+		
+		int buttonAResId=0;
+		int buttonBResId=0;
+		
+		if(typeIndexA == -1){
+			buttonAResId=R.drawable.button_highscore_off;
+		}
+		else if(mTTypes[typeIndexA].isFireTower()){
+			buttonAResId = R.drawable.upgrade_a;
+		}
+		else if(mTTypes[typeIndexA].isFrostTower()){
+			buttonAResId = R.drawable.upgrade_b;
+		}
+		else if(mTTypes[typeIndexA].isPoisonTower()){
+			buttonAResId = R.drawable.upgrade_b;
+		}
+		else{
+			buttonAResId = R.drawable.button_yes;
+		}
+		
+		
+		if(typeIndexB == -1){
+			buttonBResId=R.drawable.button_highscore_off;
+		}
+		else if(mTTypes[typeIndexB].isFireTower()){
+			buttonBResId = R.drawable.upgrade_a;
+		}
+		else if(mTTypes[typeIndexB].isFrostTower()){
+			buttonBResId = R.drawable.upgrade_b;
+		}
+		else if(mTTypes[typeIndexB].isPoisonTower()){
+			buttonBResId = R.drawable.upgrade_b;
+		}
+		else{
+			buttonBResId = R.drawable.button_yes;
+		}
+		
+		gui.showTowerUpgrade(buttonAResId, buttonBResId);
 	}
 	
 	public static void pause() {
@@ -644,31 +685,62 @@ public class GameLoop implements Runnable {
 	private class UpgradeAListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
+			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			if(player.getMoney() >= t.upgradeCost(0)){
-    				player.moneyFunction(t.upgradeCost(0));
-        			t.upgrade(0);
-    			}    			
+    			int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_a);
+    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
+    				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
+    				updateCurrency();
+    				t.upgrade(mTTypes[upgradeIndex]);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    					t.setCurrentTexture(tex);
+    					tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    			else{
+    				Log.d("GAMELOOP","No upgrade avialible");
+    			}
     		}
     		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
     		}
+    		
     	}
     }
     
     private class UpgradeBListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade B clicked!");
+			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			if(player.getMoney() >= t.upgradeCost(1)){
-    				player.moneyFunction(t.upgradeCost(1));
-        			t.upgrade(1);
-    			}    			
+    			int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
+    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
+    				
+    				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
+    				updateCurrency();
+    				
+    				t.upgrade(mTTypes[upgradeIndex]);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    					t.setCurrentTexture(tex);
+    					tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    			else{
+    				Log.d("GAMELOOP","No upgrade avialible");
+    			}
     		}
     		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
     		}
     	}
     }
