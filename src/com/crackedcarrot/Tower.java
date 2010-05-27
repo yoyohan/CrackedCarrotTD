@@ -13,6 +13,9 @@ public class Tower extends Sprite {
 	protected final static int AOE = 2;
 	protected final static int BUNKER = 3;
 	protected final static int TELSA = 4;
+	
+	public enum UpgradeOption{upgrade_a, upgrade_b};
+	
 	//towertype
 	public int towerType;
 	// The current range of a tower
@@ -535,18 +538,68 @@ public class Tower extends Sprite {
 	 */	
 	public int getPrice() { return price; }
 
-	public int upgradeCost(int i) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void upgrade(int i) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public int getResellPrice() {
 		return this.resellPrice;
 	}
 	
+	public int getUpgradeTypeIndex(UpgradeOption opt) {
+		if(opt == UpgradeOption.upgrade_a)
+			return upgrade1;
+		
+		else
+			return upgrade2;
+	}
+	public boolean isPoisonTower(){
+		if(this.hasPoisonDamage)
+			return true;
+		else 
+			return false;
+	}
+	public boolean isFrostTower(){
+		if(this.hasFrostDamage)
+			return true;
+		else 
+			return false;
+	}
+	public boolean isFireTower(){
+		if(this.hasFireDamage)
+			return true;
+		else 
+			return false;
+	}
+
+	public void upgrade(Tower clone) {
+		this.draw = false;
+		this.cloneTower(
+				clone.getResourceId(),
+				clone.towerType,
+				clone.towerTypeId,
+				clone.range,
+				clone.rangeAOE,
+				clone.title,
+				clone.price,
+				clone.resellPrice,
+				clone.minDamage,
+				clone.maxDamage,
+				clone.aoeDamage,
+				clone.velocity,
+				clone.hasFrostDamage,
+				clone.frostTime,
+				clone.hasFireDamage,
+				clone.hasPoisonDamage,
+				clone.poisonDamage,
+				clone.poisonTime,
+				clone.upgrade1,
+				clone.upgrade2,
+				clone.coolDown,
+				clone.getWidth(),
+				clone.getHeight(),
+		    	clone.relatedShot,
+            	clone.sound_l,
+            	clone.sound_i
+			);
+		this.draw = true;
+		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
+		this.relatedShot.draw = false;
+	}
 }
