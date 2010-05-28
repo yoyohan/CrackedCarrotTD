@@ -111,10 +111,19 @@ public class GameLoopGUI {
     final LinearLayout towertext;
     
     final LinearLayout towerUpgrade;
-    final Button upgradeA;
-    final Button upgradeB;
     final Button sellTower;
     final Button closeUpgrade;
+    final Button upgradeLvl2;
+    final Button upgradeLvl3;
+    final Button upgradeFire1;
+    final Button upgradeFire2;
+    final Button upgradeFire3;
+    final Button upgradeFrost1;
+    final Button upgradeFrost2;
+    final Button upgradeFrost3;
+    final Button upgradePoison1;
+    final Button upgradePoison2;
+    final Button upgradePoison3;
     
     final Button tower2Information;
 
@@ -125,8 +134,17 @@ public class GameLoopGUI {
     	this.hud = hud;
     	
     	towerUpgrade = (LinearLayout) gameInit.findViewById(R.id.upgrade_layout);
-    	upgradeA = (Button) gameInit.findViewById(R.id.upgrade_a);
-    	upgradeB = (Button) gameInit.findViewById(R.id.upgrade_b);
+    	upgradeLvl2 = (Button) gameInit.findViewById(R.id.upgrade_lvl2);
+    	upgradeLvl3 = (Button) gameInit.findViewById(R.id.upgrade_lvl3);
+    	upgradeFire1 = (Button) gameInit.findViewById(R.id.upgrade_fire1);
+    	upgradeFire2 = (Button) gameInit.findViewById(R.id.upgrade_fire2);
+    	upgradeFire3 = (Button) gameInit.findViewById(R.id.upgrade_fire3);
+    	upgradeFrost1 = (Button) gameInit.findViewById(R.id.upgrade_frost1);
+    	upgradeFrost2 = (Button) gameInit.findViewById(R.id.upgrade_frost2);
+    	upgradeFrost3 = (Button) gameInit.findViewById(R.id.upgrade_frost3);
+    	upgradePoison1 = (Button) gameInit.findViewById(R.id.upgrade_poison1);
+    	upgradePoison2 = (Button) gameInit.findViewById(R.id.upgrade_poison2);
+    	upgradePoison3 = (Button) gameInit.findViewById(R.id.upgrade_poison3);
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
     	
@@ -921,15 +939,68 @@ public class GameLoopGUI {
 		return this.gameInit;
 	}
 	
-	public void showTowerUpgrade(int typeResourceA, int typeResourceB) {
-		towerUpgrade.setVisibility(View.VISIBLE);
-		upgradeA.setBackgroundResource(typeResourceA);
-		upgradeB.setBackgroundResource(typeResourceB);
+	public void showTowerUpgrade(int showLevelUpgrade,int showFireUpgrade, int showFrostUpgrade, int showPoisonUpgrade) {
+		this.upgradeFire1.setVisibility(View.GONE);
+		this.upgradeFire2.setVisibility(View.GONE);
+		this.upgradeFire3.setVisibility(View.GONE);
+		this.upgradeFrost1.setVisibility(View.GONE);
+		this.upgradeFrost2.setVisibility(View.GONE);
+		this.upgradeFrost3.setVisibility(View.GONE);
+		this.upgradePoison1.setVisibility(View.GONE);
+		this.upgradePoison2.setVisibility(View.GONE);
+		this.upgradePoison3.setVisibility(View.GONE);
+		this.upgradeLvl2.setVisibility(View.GONE);
+		this.upgradeLvl3.setVisibility(View.GONE);
+		
+		switch(showLevelUpgrade) {
+			case(1):
+				this.upgradeLvl2.setVisibility(View.VISIBLE);
+			break;
+			case(2):
+				this.upgradeLvl3.setVisibility(View.VISIBLE);
+			break;
+		}
+		switch(showFireUpgrade) {
+		case(0):
+			this.upgradeFire1.setVisibility(View.VISIBLE);
+		break;
+		case(1):
+			this.upgradeFire2.setVisibility(View.VISIBLE);
+		break;
+		case(2):
+			this.upgradeFire3.setVisibility(View.VISIBLE);
+		break;
+		}
+		switch(showFrostUpgrade) {
+		case(0):
+			this.upgradeFrost1.setVisibility(View.VISIBLE);
+		break;
+		case(1):
+			this.upgradeFrost2.setVisibility(View.VISIBLE);
+		break;
+		case(2):
+			this.upgradeFrost3.setVisibility(View.VISIBLE);
+		break;
+		}
+		switch(showPoisonUpgrade) {
+		case(0):
+			this.upgradePoison1.setVisibility(View.VISIBLE);
+		break;
+		case(1):
+			this.upgradePoison2.setVisibility(View.VISIBLE);
+		break;
+		case(2):
+			this.upgradePoison3.setVisibility(View.VISIBLE);
+		break;
+		}
 		
 		towerbutton1.setVisibility(View.GONE);
 		towerbutton2.setVisibility(View.GONE);
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
+
+		towerUpgrade.setVisibility(View.VISIBLE);
+
 	}
 	
 	public void hideTowerUpgrade() {
@@ -941,14 +1012,24 @@ public class GameLoopGUI {
 		towerbutton4.setVisibility(View.VISIBLE);
 		
 	}
-	public void setUpgradeListeners(OnClickListener upgradeAListener,
-									OnClickListener upgradeBListener, 
+	public void setUpgradeListeners(OnClickListener upgradeTowerLvlListener,
+									OnClickListener upgradeFireListener,
+									OnClickListener upgradeFrostListener,
+									OnClickListener upgradePoisonListener,
 									OnClickListener sellListener){
 		
-		
-		upgradeA.setOnClickListener(upgradeAListener);
-		upgradeB.setOnClickListener(upgradeBListener);
-		sellTower.setOnClickListener(sellListener);
+		this.upgradeLvl2.setOnClickListener(upgradeTowerLvlListener);
+		this.upgradeLvl3.setOnClickListener(upgradeTowerLvlListener);
+		this.upgradeFire1.setOnClickListener(upgradeFireListener);
+		this.upgradeFire2.setOnClickListener(upgradeFireListener);
+		this.upgradeFire3.setOnClickListener(upgradeFireListener);
+		this.upgradeFrost1.setOnClickListener(upgradeFrostListener);
+		this.upgradeFrost2.setOnClickListener(upgradeFrostListener);
+		this.upgradeFrost3.setOnClickListener(upgradeFrostListener);
+		this.upgradePoison1.setOnClickListener(upgradePoisonListener);
+		this.upgradePoison2.setOnClickListener(upgradePoisonListener);
+		this.upgradePoison3.setOnClickListener(upgradePoisonListener);
+		this.sellTower.setOnClickListener(sellListener);
 		
 	}
 }

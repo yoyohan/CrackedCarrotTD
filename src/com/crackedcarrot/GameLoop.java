@@ -76,7 +76,7 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
+    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener());
     	gameTracker = new Tracker();
     }
     
@@ -629,46 +629,11 @@ public class GameLoop implements Runnable {
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-		int typeIndexA = t.getUpgradeTypeIndex(UpgradeOption.upgrade_a);
-		int typeIndexB = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
-		
-		int buttonAResId=0;
-		int buttonBResId=0;
-		
-		if(typeIndexA == -1){
-			buttonAResId=R.drawable.button_highscore_off;
-		}
-		else if(mTTypes[typeIndexA].isFireTower()){
-			buttonAResId = R.drawable.upgrade_a;
-		}
-		else if(mTTypes[typeIndexA].isFrostTower()){
-			buttonAResId = R.drawable.upgrade_b;
-		}
-		else if(mTTypes[typeIndexA].isPoisonTower()){
-			buttonAResId = R.drawable.upgrade_b;
-		}
-		else{
-			buttonAResId = R.drawable.button_yes;
-		}
-		
-		
-		if(typeIndexB == -1){
-			buttonBResId=R.drawable.button_highscore_off;
-		}
-		else if(mTTypes[typeIndexB].isFireTower()){
-			buttonBResId = R.drawable.upgrade_a;
-		}
-		else if(mTTypes[typeIndexB].isFrostTower()){
-			buttonBResId = R.drawable.upgrade_b;
-		}
-		else if(mTTypes[typeIndexB].isPoisonTower()){
-			buttonBResId = R.drawable.upgrade_b;
-		}
-		else{
-			buttonBResId = R.drawable.button_yes;
-		}
-		
-		gui.showTowerUpgrade(buttonAResId, buttonBResId);
+		int upgradeLvl = t.getUpgradeTypeIndex(UpgradeOption.upgrade_lvl);
+		int upgradeFire = t.getUpgradeTypeIndex(UpgradeOption.upgrade_fire);
+		int upgradeFrost = t.getUpgradeTypeIndex(UpgradeOption.upgrade_frost);
+		int upgradePosion = t.getUpgradeTypeIndex(UpgradeOption.upgrade_poison);
+		gui.showTowerUpgrade(upgradeLvl, upgradeFire,upgradeFrost,upgradePosion);
 	}
 	
 	public static void pause() {
@@ -682,13 +647,13 @@ public class GameLoop implements Runnable {
 		pauseSemaphore.release();
 	}
 	
-	private class UpgradeAListener implements OnClickListener{
+	private class UpgradeTowerLvlListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
 			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_a);
+    			int upgradeIndex = t.getUpgradeTowerLvl();
     			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
@@ -713,51 +678,46 @@ public class GameLoop implements Runnable {
     	}
     }
     
-    private class UpgradeBListener implements OnClickListener{
+    private class UpgradeFireListener implements OnClickListener{
     	public void onClick(View v){
-    		Log.d("GUI", "Upgrade B clicked!");
-			gui.hideTowerUpgrade();
-    		if(selectedTower != null){
-    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			int price = t.upgradeSpecialAbility(UpgradeOption.upgrade_b, player.getMoney());
-				if (price != 0) { 
-					player.moneyFunction(-price);
-    				try {
-    					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
-    					t.relatedShot.setCurrentTexture(tex);
-    				} catch (InterruptedException e) {
-    					e.printStackTrace();
-    				}
-					updateCurrency();
-				}
-    			else{
-    				Log.d("GAMELOOP","No upgrade done");
-    			}
-    			
-    			//int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
-    			/*if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
-    				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
-    				updateCurrency();
-    				
-    				t.upgrade(mTTypes[upgradeIndex]);
-    				try {
-    					TextureData tex = renderHandle.getTexture(t.getResourceId());
-    					t.setCurrentTexture(tex);
-    					tex = renderHandle.getTexture(t.relatedShot.getResourceId());
-    					t.relatedShot.setCurrentTexture(tex);
-    				} catch (InterruptedException e) {
-    					e.printStackTrace();
-    				}
-    			}
-    			else{
-    				Log.d("GAMELOOP","No upgrade avialible");
-    			}
-    			*/
-    		}
-    		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
-    		}
+    		upgradeTower(Tower.UpgradeOption.upgrade_fire);
     	}
+    }
+    private class UpgradeFrostListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeTower(Tower.UpgradeOption.upgrade_frost);
+    	}
+    }
+    private class UpgradePoisonListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeTower(Tower.UpgradeOption.upgrade_poison);
+    	}
+    }
+        
+    private void upgradeTower(Tower.UpgradeOption opt) {
+		Log.d("GUI", "Upgrade B clicked!");
+		gui.hideTowerUpgrade();
+		if(selectedTower != null){
+			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+			int price = t.upgradeSpecialAbility(opt, player.getMoney());
+			if (price != 0) { 
+				player.moneyFunction(-price);
+				try {
+					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+					t.relatedShot.setCurrentTexture(tex);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				updateCurrency();
+			}
+			else{
+				Log.d("GAMELOOP","No upgrade done");
+			}
+		}
+		else{
+			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+		}
+
     }
     
     private class SellListener implements OnClickListener{
