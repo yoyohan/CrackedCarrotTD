@@ -1,5 +1,5 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::8
+Total number of towers::12
 ////////////////////////////////////
 // Bunker LVL1
 ////////////////////////////////////
@@ -30,7 +30,7 @@ Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink::5
-range::150
+range::130
 aoe range:: 100
 aoe damage::18 
 Shot animation time::0.4
@@ -42,8 +42,8 @@ Sound-impact::cannon_bomb
 lvl::1
 price::50
 resell value::25
-minDamage::20
-maxDamage::35
+minDamage::40
+maxDamage::45
 Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
@@ -76,10 +76,82 @@ Sound-impact::tesla_vattenplatta
 // Bunker LVL2
 ////////////////////////////////////
 lvl::2
-price::20
-resell value::50
-minDamage::40
-maxDamage::62
+price::16
+resell value::12
+minDamage::18
+maxDamage::24
+Shot-velocity::400
+cooldown between shots::0.3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink::8
+range::100
+aoe range:: 0
+aoe damage::0
+Shot animation time::0.2
+Sound-l::bunker_micro
+Sound-impact::none
+////////////////////////////////////
+// Cannon tower LVL2
+////////////////////////////////////
+lvl::2
+price::30
+resell value::23
+minDamage::54
+maxDamage::84
+Shot-velocity::250
+cooldown between shots::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
+upgradelink::9
+range::140
+aoe range:: 100
+aoe damage::54 
+Shot animation time::0.4
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
+////////////////////////////////////
+// Posiontower LVL2
+////////////////////////////////////
+lvl::2
+price::100
+resell value::90
+minDamage::120
+maxDamage::135
+Shot-velocity::250
+cooldown between shots::2.5
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
+upgradelink::10
+range::100
+aoe range::0
+aoe damage::0 
+Shot animation time::0.5
+Sound-l::poison_vattenbrunn
+Sound-impact::none
+////////////////////////////////////
+// Tesla LVL 2
+////////////////////////////////////
+lvl::2
+price::200
+resell value::150
+minDamage::600
+maxDamage::603
+Shot-velocity::250
+cooldown between shots::6
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
+upgradelink::11
+range::250
+aoe range:: 0
+aoe damage::0 
+Shot animation time::0.4
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
+////////////////////////////////////
+// Bunker LVL3
+////////////////////////////////////
+lvl::3
+price::32
+resell value::28
+minDamage::54
+maxDamage::72
 Shot-velocity::400
 cooldown between shots::0.3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
@@ -91,54 +163,54 @@ Shot animation time::0.2
 Sound-l::bunker_micro
 Sound-impact::none
 ////////////////////////////////////
-// Cannon tower LVL2
+// Cannon tower LVL3
 ////////////////////////////////////
-lvl::2
-price::20
-resell value::67
-minDamage::70
-maxDamage::100
+lvl::3
+price::40
+resell value::48
+minDamage::162
+maxDamage::252
 Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink::-1
 range::150
-aoe range:: 70
-aoe damage::60 
+aoe range:: 100
+aoe damage::162
 Shot animation time::0.4
 Sound-l::cannon_pangpase
 Sound-impact::cannon_bomb
 ////////////////////////////////////
-// Posiontower LVL2
+// Posiontower Lvl 3
 ////////////////////////////////////
-lvl::2
-price::50
-resell value::40
-minDamage::70
-maxDamage::100
+lvl::3
+price::200
+resell value::220
+minDamage::360
+maxDamage::405
 Shot-velocity::250
-cooldown between shots::2.5
+cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
 upgradelink::-1
-range::100
+range::90
 aoe range::0
 aoe damage::0 
 Shot animation time::0.5
 Sound-l::poison_vattenbrunn
 Sound-impact::none
 ////////////////////////////////////
-// Magic tower LVL 2
+// Tesla LVL 3
 ////////////////////////////////////
-lvl::2
-price::150
-resell value::120
-minDamage::110
-maxDamage::190
+lvl::3
+price::400
+resell value::350
+minDamage::1800
+maxDamage::1809
 Shot-velocity::250
 cooldown between shots::6
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::-1
-range::400
+range::300
 aoe range:: 0
 aoe damage::0 
 Shot animation time::0.4
