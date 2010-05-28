@@ -2,6 +2,10 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import android.util.Log;
+
+import com.crackedcarrot.menu.R;
+
 /**
 * Class defining a tower in the game
 */
@@ -9,12 +13,12 @@ public class Tower extends Sprite {
 	private SoundManager soundManager;
 	private Creature[] mCreatures;
 	//different towertypes
-	protected final static int CANNON = 1;
-	protected final static int AOE = 2;
-	protected final static int BUNKER = 3;
-	protected final static int TELSA = 4;
+	public final static int CANNON = 1;
+	public final static int AOE = 2;
+	public final static int BUNKER = 3;
+	public final static int TELSA = 4;
 	
-	public enum UpgradeOption{upgrade_a, upgrade_b};
+	public enum UpgradeOption{upgrade_a, upgrade_b, upgrade_c};
 	
 	//towertype
 	public int towerType;
@@ -22,8 +26,6 @@ public class Tower extends Sprite {
 	private float range;
 	// The current AOE range of a tower
 	private float rangeAOE;
-	// Tower title
-	private String title;
 	// Price for the tower
 	private int price;
 	// Resell value if the tower is sold
@@ -40,18 +42,22 @@ public class Tower extends Sprite {
 	private boolean hasFrostDamage;
 	// If the tower have frost damage. How long?
 	private int frostTime;
+	// If the tower have frost damage. How much will it affect?
+	private float frostAmount;
 	// If the tower have fire damage
 	private boolean hasFireDamage;
+	// If the tower have firedamage how mutch
+	private float fireFactor;
 	// If the tower have poison damage
 	private boolean hasPoisonDamage;
-	// If the tower have poison damage, how mutch?
-	private int poisonDamage;
-	// If the tower have poison damage, how long?
-	private int poisonTime;
-	// The first linked update for this tower
+	// Factor of posiondamage.
+	private int poisonFactor;
+	// The linked update for this tower
 	private int upgrade1;
-	// The second linked update for this tower
+	// The first special ability for this tower 
 	private int upgrade2;
+	// The second special abilty for this tower
+	private int upgrade3;
 	// The type of shot related to this tower
 	public Shot relatedShot;
     // The time existing between each fired shot
@@ -64,6 +70,7 @@ public class Tower extends Sprite {
     private Random rand;
    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
+    // Used to determine if the tower should animate impact
     private boolean ImpactdAnimate = false;
     //To determine when a creature has been teleported to spawnpoint we will check his nbr of laps
 	private int targetCreatureMapLap;
@@ -107,22 +114,21 @@ public class Tower extends Sprite {
 		//If tower has frostdamage
 		if (this.hasFrostDamage) {
 			if (aoeTower)
-				tmpCreature.affectWithFrost(this.frostTime/2);
+				tmpCreature.affectWithFrost(this.frostTime/2,this.frostAmount);
 			else
-				tmpCreature.affectWithFrost(this.frostTime);
+				tmpCreature.affectWithFrost(this.frostTime,this.frostAmount);
 		}		
 		// If tower has poison damage
 		if (this.hasPoisonDamage) {
-			if (aoeTower) 
-				tmpCreature.affectWithPoison(poisonTime,this.poisonDamage);
-			else
-				tmpCreature.affectWithPoison(poisonTime/2,this.poisonDamage);
+			if (this.isPoisonTower())
+				tmpCreature.affectWithPoison(4,this.minDamage);
+			if (this.isPoisonTower())
+				tmpCreature.affectWithPoison(4,this.minDamage*this.poisonFactor);
 		}				
 		// If tower has firedamage
-		if (tmpCreature.creatureFireResistant && this.hasFireDamage)
-			return 0.4f;
-		else 
-			return 1;
+		if (this.hasFireDamage && !tmpCreature.creatureFireResistant)
+			return this.fireFactor;
+		else return 1;
 	}
 	
 	//Old tracker
@@ -408,21 +414,13 @@ public class Tower extends Sprite {
 				int towerTypeId,
 				float range,
 				float rangeAOE,
-				String title,
 				int price,
 				int resellPrice,
 				int minDamage,
 				int maxDamage,
 				int aoeDamage,
 				int velocity,
-				boolean hasFrostDamage,
-				int frostTime,
-				boolean hasFireDamage,
-				boolean hasPoisonDamage,
-				int poisonDamage,
-				int poisonTime,
 				int upgrade1,
-				int upgrade2,
 				float coolDown,
 				float width,
 				float height,
@@ -436,21 +434,13 @@ public class Tower extends Sprite {
 			this.towerTypeId = towerTypeId;
 			this.range = range;
 			this.rangeAOE = rangeAOE;
-			this.title = title;
 			this.price = price;
 			this.resellPrice = resellPrice;
 			this.minDamage = minDamage;
 			this.maxDamage = maxDamage;
 			this.aoeDamage = aoeDamage;
 			this.velocity = velocity;
-			this.hasFrostDamage = hasFrostDamage;
-			this.frostTime = frostTime;
-			this.hasFireDamage = hasFireDamage;
-			this.hasPoisonDamage = hasPoisonDamage;
-			this.poisonDamage = poisonDamage;
-			this.poisonTime = poisonTime;
 			this.upgrade1 = upgrade1;
-			this.upgrade2 = upgrade2;
 			this.coolDown = coolDown;
 			this.setWidth(width);
 			this.setHeight(height);
@@ -469,40 +459,56 @@ public class Tower extends Sprite {
 	 * @param mScaler
 	 */
 	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker) {
+		this.draw = false;
+
 		//Use the textureNames that we preloaded into the towerTypes at startup
-		this.cloneTower(
-				clone.getResourceId(),
-				clone.towerType,
-				clone.towerTypeId,
-				clone.range,
-				clone.rangeAOE,
-				clone.title,
-				clone.price,
-				clone.resellPrice,
-				clone.minDamage,
-				clone.maxDamage,
-				clone.aoeDamage,
-				clone.velocity,
-				clone.hasFrostDamage,
-				clone.frostTime,
-				clone.hasFireDamage,
-				clone.hasPoisonDamage,
-				clone.poisonDamage,
-				clone.poisonTime,
-				clone.upgrade1,
-				clone.upgrade2,
-				clone.coolDown,
-				clone.getWidth(),
-				clone.getHeight(),
-		    	clone.relatedShot,
-            	clone.sound_l,
-            	clone.sound_i
-			);
-		this.draw = true;
-		this.x = towerPlacement.x;
-		this.y = towerPlacement.y;
-		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
-		this.relatedShot.draw = false;
+		//If this is a new created tower we have to manually reset the folowing values
+		this.towerTypeId = clone.towerTypeId;
+		
+		if (this.towerTypeId <= 3)  {
+			this.towerType = clone.towerType;
+			this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
+			this.sound_l = clone.sound_l;
+			this.sound_i = clone.sound_i;
+			this.x = towerPlacement.x;
+			this.y = towerPlacement.y;
+		}
+		this.setResourceId(clone.getResourceId());
+		this.range = clone.range;
+		this.rangeAOE = clone.rangeAOE;
+		this.price = clone.price;
+		this.resellPrice = clone.resellPrice;
+		this.minDamage = clone.minDamage;
+		this.maxDamage = clone.maxDamage;
+		this.aoeDamage = clone.aoeDamage;
+		this.velocity = clone.velocity;
+		this.upgrade1 = clone.upgrade1;
+		this.coolDown = clone.coolDown;
+		this.relatedShot.setAnimationTime(clone.relatedShot.getAnimationTime());
+		
+		// Special abilities. If this is a new created tower we have to manually reset the folowing values
+		if (this.towerTypeId <= 3)  {
+
+			if (this.towerType != Tower.AOE) {
+				this.hasPoisonDamage =false;
+			}
+			else {
+				this.hasPoisonDamage =true;
+			}
+			this.hasFrostDamage = false;
+			this.frostAmount = 0;
+			this.frostTime = 0;
+			this.hasFireDamage = false;
+			this.fireFactor = 0;
+			this.upgrade2 = 0;
+			this.upgrade3 = 0;
+			this.r = 1;
+			this.g = 1;
+			this.b = 1;
+			this.relatedShot.r = 1;
+			this.relatedShot.g = 1;
+			this.relatedShot.b = 1;
+		}
 		
 		// Tracker
 		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
@@ -531,6 +537,92 @@ public class Tower extends Sprite {
 				currentTrackerList = currentTrackerList.next;
 			}
 		}
+		
+		this.draw = true;
+		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
+		this.relatedShot.draw = false;
+
+	}
+	
+	public int upgradeSpecialAbility(UpgradeOption opt, int money) {
+		int price = 0;
+		
+		if(opt == UpgradeOption.upgrade_c && this.upgrade3 == 0) {
+			if (this.upgrade2 == 0 && money >= 30) {
+				this.fireFactor = 3;
+				this.hasFireDamage = true;
+				this.r = 1;
+				this.g = 0.7f;
+				this.b = 0.7f;
+				this.relatedShot.r = 1;
+				this.relatedShot.g = 0.7f;
+				this.relatedShot.b = 0.7f;
+				this.upgrade2++;
+				price = 20;
+			}
+			else if (this.upgrade2 == 1 && money >= 50) {
+				this.fireFactor = 6;
+				this.upgrade2++;
+				price = 50;
+			}
+			else if (this.upgrade2 == 2 && money >= 80) {
+				this.fireFactor = 9;
+				this.upgrade2++;
+				price = 100;
+			}
+		}
+		else if(opt == UpgradeOption.upgrade_b && this.upgrade2 == 0) {
+			if (this.towerType == Tower.CANNON) {
+				if (this.upgrade3 == 0 && money >= 30) {
+					this.relatedShot.setResourceId(R.drawable.cannonshot_ice);
+					this.frostTime = 3;
+					this.frostAmount = 0.6f;
+					this.hasFrostDamage = true;
+					this.r = 0.7f;
+					this.g = 0.7f;
+					this.b = 1;
+					this.upgrade3++;
+					price = 20;
+				}
+				else if (this.upgrade3 == 1 && money >= 50) {
+					this.frostTime = 4;
+					this.frostAmount = 0.4f;
+					this.upgrade3++;
+					price = 50;
+				}
+				else if (this.upgrade2 == 2 && money >= 80) {
+					this.frostTime = 5;
+					this.frostAmount = 0.2f;
+					this.upgrade3++;
+					price = 100;
+				}
+			}
+			if (this.towerType == Tower.BUNKER) {
+				if (this.upgrade3 == 0 && money >= 30) {
+					this.hasPoisonDamage = true;
+					this.poisonFactor = 1;
+					this.r = 0.7f;
+					this.g = 1;
+					this.b = 0.7f;
+					this.relatedShot.r = 0.7f;
+					this.relatedShot.g = 1;
+					this.relatedShot.b = 0.7f;
+					this.upgrade3++;
+					price = 20;
+				}
+				else if (this.upgrade3 == 1 && money >= 50) {
+					this.poisonFactor = 2;
+					this.upgrade3++;
+					price = 50;
+				}
+				else if (this.upgrade3 == 2 && money >= 80) {
+					this.poisonFactor = 3;
+					this.upgrade3++;
+					price = 100;
+				}
+			}
+		}
+		return price;
 	}
 
 	//////////////////////////////////////////////
@@ -562,11 +654,6 @@ public class Tower extends Sprite {
 	 */
 	public float getMaxDamage() { return this.maxDamage; }
 	
-	/**
-	 * Return title of tower
-	 * @return
-	 */
-	public String getTitle() { return this.title; }
 
 	/**
 	 * Returns the cost of this tower
@@ -581,61 +668,17 @@ public class Tower extends Sprite {
 	public int getUpgradeTypeIndex(UpgradeOption opt) {
 		if(opt == UpgradeOption.upgrade_a)
 			return upgrade1;
-		
 		else
 			return upgrade2;
 	}
 	public boolean isPoisonTower(){
-		if(this.hasPoisonDamage)
-			return true;
-		else 
-			return false;
+		return this.hasPoisonDamage;
 	}
 	public boolean isFrostTower(){
-		if(this.hasFrostDamage)
-			return true;
-		else 
-			return false;
+		return this.hasFrostDamage;
 	}
 	public boolean isFireTower(){
-		if(this.hasFireDamage)
-			return true;
-		else 
-			return false;
+		return this.hasFireDamage;
 	}
 
-	public void upgrade(Tower clone) {
-		this.draw = false;
-		this.cloneTower(
-				clone.getResourceId(),
-				clone.towerType,
-				clone.towerTypeId,
-				clone.range,
-				clone.rangeAOE,
-				clone.title,
-				clone.price,
-				clone.resellPrice,
-				clone.minDamage,
-				clone.maxDamage,
-				clone.aoeDamage,
-				clone.velocity,
-				clone.hasFrostDamage,
-				clone.frostTime,
-				clone.hasFireDamage,
-				clone.hasPoisonDamage,
-				clone.poisonDamage,
-				clone.poisonTime,
-				clone.upgrade1,
-				clone.upgrade2,
-				clone.coolDown,
-				clone.getWidth(),
-				clone.getHeight(),
-		    	clone.relatedShot,
-            	clone.sound_l,
-            	clone.sound_i
-			);
-		this.draw = true;
-		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
-		this.relatedShot.draw = false;
-	}
 }

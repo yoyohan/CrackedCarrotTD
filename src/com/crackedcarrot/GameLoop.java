@@ -692,12 +692,12 @@ public class GameLoop implements Runnable {
     			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
-    				t.upgrade(mTTypes[upgradeIndex]);
+    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);
-    					tex = renderHandle.getTexture(t.relatedShot.getResourceId());
-    					t.relatedShot.setCurrentTexture(tex);
+    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					//t.relatedShot.setCurrentTexture(tex);
     				} catch (InterruptedException e) {
     					e.printStackTrace();
     				}
@@ -719,9 +719,23 @@ public class GameLoop implements Runnable {
 			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
-    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
-    				
+    			int price = t.upgradeSpecialAbility(UpgradeOption.upgrade_b, player.getMoney());
+				if (price != 0) { 
+					player.moneyFunction(-price);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+					updateCurrency();
+				}
+    			else{
+    				Log.d("GAMELOOP","No upgrade done");
+    			}
+    			
+    			//int upgradeIndex = t.getUpgradeTypeIndex(UpgradeOption.upgrade_b);
+    			/*if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
     				
@@ -738,6 +752,7 @@ public class GameLoop implements Runnable {
     			else{
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
+    			*/
     		}
     		else{
     			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
