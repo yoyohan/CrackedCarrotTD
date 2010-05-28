@@ -229,7 +229,6 @@ public class TowerLoader {
 									ShotResID = R.drawable.lightbolt;
 								}
 							}
-
 							
 			            	// Tower size ALWAYS 60
 			            	recalc = scaler.scale(60,60);
