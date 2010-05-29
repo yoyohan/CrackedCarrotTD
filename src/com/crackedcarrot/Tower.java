@@ -509,9 +509,9 @@ public class Tower extends Sprite {
 			this.frostTime = 0;
 			this.hasFireDamage = false;
 			this.fireFactor = 0;
-			this.upgradeFire = 0;
-			this.upgradeFrost = 0;
-			this.upgradePoison = 0;
+			this.setUpgradeFire(0);
+			this.setUpgradeFrost(0);
+			this.setUpgradePoison(0);
 			this.r = 1;
 			this.g = 1;
 			this.b = 1;
@@ -559,7 +559,7 @@ public class Tower extends Sprite {
 		int price = 0;
 		
 		if(opt == UpgradeOption.upgrade_fire) {
-			if (this.upgradeFire == 0 && money >= 30) {
+			if (this.getUpgradeFire() == 0 && money >= 30) {
 				this.fireFactor = 1.5f;
 				this.hasFireDamage = true;
 				this.r = 1;
@@ -568,22 +568,22 @@ public class Tower extends Sprite {
 				this.relatedShot.r = 1;
 				this.relatedShot.g = 0.7f;
 				this.relatedShot.b = 0.7f;
-				this.upgradeFire++;
+				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 30;
 			}
-			else if (this.upgradeFire == 1 && money >= 60) {
+			else if (this.getUpgradeFire() == 1 && money >= 60) {
 				this.fireFactor = 2;
-				this.upgradeFire++;
+				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 60;
 			}
-			else if (this.upgradeFire == 2 && money >= 90) {
+			else if (this.getUpgradeFire() == 2 && money >= 90) {
 				this.fireFactor = 3;
-				this.upgradeFire++;
+				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 90;
 			}
 		}
 		else if (opt == UpgradeOption.upgrade_frost) {
-			if (this.upgradeFrost == 0 && money >= 30) {
+			if (this.getUpgradeFrost() == 0 && money >= 30) {
 				this.relatedShot.setResourceId(R.drawable.cannonshot_ice);
 				this.frostTime = 3;
 				this.frostAmount = 0.6f;
@@ -591,24 +591,24 @@ public class Tower extends Sprite {
 				this.r = 0.7f;
 				this.g = 0.7f;
 				this.b = 1;
-				this.upgradeFrost++;
+				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 30;
 			}
-			else if (this.upgradeFrost == 1 && money >= 60) {
+			else if (this.getUpgradeFrost() == 1 && money >= 60) {
 				this.frostTime = 4;
 				this.frostAmount = 0.5f;
-				this.upgradeFrost++;
+				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 60;
 			}
-			else if (this.upgradeFrost == 2 && money >= 90) {
+			else if (this.getUpgradeFrost() == 2 && money >= 90) {
 				this.frostTime = 5;
 				this.frostAmount = 0.4f;
-				this.upgradeFrost++;
+				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 90;
 			}
 		}
 		else if (opt == UpgradeOption.upgrade_poison) {
-			if (this.upgradePoison == 0 && money >= 30) {
+			if (this.getUpgradePoison() == 0 && money >= 30) {
 				this.hasPoisonDamage = true;
 				this.poisonFactor = 0.2f;
 				this.r = 0.7f;
@@ -617,17 +617,17 @@ public class Tower extends Sprite {
 				this.relatedShot.r = 0.7f;
 				this.relatedShot.g = 1;
 				this.relatedShot.b = 0.7f;
-				this.upgradePoison++;
+				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 30;
 			}
-			else if (this.upgradePoison == 1 && money >= 60) {
+			else if (this.getUpgradePoison() == 1 && money >= 60) {
 				this.poisonFactor = 0.5f;
-				this.upgradePoison++;
+				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 60;
 			}
-			else if (this.upgradePoison == 2 && money >= 90) {
+			else if (this.getUpgradePoison() == 2 && money >= 90) {
 				this.poisonFactor = 1;
-				this.upgradePoison++;
+				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 90;
 			}
 		}
@@ -691,24 +691,24 @@ public class Tower extends Sprite {
 			Upgrade[1] = towerTypes[upgradeLvl].price;
 		}
 		
-		if (upgradePoison == 0 && upgradeFrost == 0 && (towerType == Tower.BUNKER || towerType == Tower.CANNON))
+		if (getUpgradePoison() == 0 && getUpgradeFrost() == 0 && (towerType == Tower.BUNKER || towerType == Tower.CANNON))
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
-				Upgrade[2] = upgradeFire;
-				Upgrade[3] = 30 + upgradeFire*30;
+				Upgrade[2] = getUpgradeFire();
+				Upgrade[3] = 30 + getUpgradeFire()*30;
 			} else Upgrade[2] = -1;
 		else Upgrade[2] = -1;
 		
-		if (upgradePoison == 0 && upgradeFire == 0 && towerType == Tower.CANNON)
+		if (getUpgradePoison() == 0 && getUpgradeFire() == 0 && towerType == Tower.CANNON)
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
-				Upgrade[4] = upgradeFrost;
-				Upgrade[5] = 30 + upgradeFrost*30;
+				Upgrade[4] = getUpgradeFrost();
+				Upgrade[5] = 30 + getUpgradeFrost()*30;
 			} else Upgrade[4] = -1;
 		else Upgrade[4] = -1;
 
-		if (upgradeFrost == 0 && upgradeFire == 0 && towerType == Tower.BUNKER)
+		if (getUpgradeFrost() == 0 && getUpgradeFire() == 0 && towerType == Tower.BUNKER)
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
-				Upgrade[6] = upgradePoison;
-				Upgrade[7] = 30 + upgradePoison*30;
+				Upgrade[6] = getUpgradePoison();
+				Upgrade[7] = 30 + getUpgradePoison()*30;
 			}
 			else Upgrade[6] = -1;
 		else Upgrade[6] = -1;
@@ -730,6 +730,48 @@ public class Tower extends Sprite {
 
 	public int getUpgradeTowerLvl() {
 		return this.upgradeLvl;
+	}
+
+	/**
+	 * @param upgradeFire the upgradeFire to set
+	 */
+	public void setUpgradeFire(int upgradeFire) {
+		this.upgradeFire = upgradeFire;
+	}
+
+	/**
+	 * @return the upgradeFire
+	 */
+	public int getUpgradeFire() {
+		return upgradeFire;
+	}
+
+	/**
+	 * @param upgradeFrost the upgradeFrost to set
+	 */
+	public void setUpgradeFrost(int upgradeFrost) {
+		this.upgradeFrost = upgradeFrost;
+	}
+
+	/**
+	 * @return the upgradeFrost
+	 */
+	public int getUpgradeFrost() {
+		return upgradeFrost;
+	}
+
+	/**
+	 * @param upgradePoison the upgradePoison to set
+	 */
+	public void setUpgradePoison(int upgradePoison) {
+		this.upgradePoison = upgradePoison;
+	}
+
+	/**
+	 * @return the upgradePoison
+	 */
+	public int getUpgradePoison() {
+		return upgradePoison;
 	}
 
 }

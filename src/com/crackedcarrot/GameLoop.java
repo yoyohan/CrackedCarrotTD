@@ -303,7 +303,48 @@ public class GameLoop implements Runnable {
     					e.printStackTrace();
     				}
     			}
-	    		
+    			
+    				// Upgrade the fire.
+    			for (int j = 0; j < Integer.parseInt(tower[4]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_fire, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+
+				// Upgrade the frost.
+    			for (int j = 0; j < Integer.parseInt(tower[5]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_frost, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+    			
+				// Upgrade the poison.
+    			for (int j = 0; j < Integer.parseInt(tower[6]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_poison, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+
+
+    			
 	    	}
 
 	    }
@@ -598,7 +639,8 @@ public class GameLoop implements Runnable {
     		if(t != null && t.draw){
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
-    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() + "@";
+    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
     	
