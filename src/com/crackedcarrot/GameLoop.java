@@ -447,7 +447,7 @@ public class GameLoop implements Runnable {
 				//You are trying to place a tower on a spot outside the grid
 				return false;
 			}
-			if (player.getMoney() < mTTypes[towerType].getPrice()) {
+			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
 				return false;
 			}
