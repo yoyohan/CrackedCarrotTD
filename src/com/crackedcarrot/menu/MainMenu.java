@@ -110,10 +110,6 @@ public class MainMenu extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-    		// Handle scoreninja-thingie before starting game.
-    	final ScoreNinjaAdapter scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
-    	final boolean           scoreNinjaIsInstalled = ScoreNinjaAdapter.isInstalled(this);
-    	
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
@@ -126,15 +122,8 @@ public class MainMenu extends Activity {
             	if (resumes > -1 && resumes < 3) {
             		showDialog(1);
             	} else {
-            			
-	        		SharedPreferences settings = getSharedPreferences("Options", 0);
-	        	    if (settings.getBoolean("optionsHighscore", false) && scoreNinjaIsInstalled == false) {
-	        	    		// If ScoreNinja is enabled but not installed we try to install it:
-	        	    	scoreNinjaAdapter.show(0);
-	        	    } else {
-	        	    	Intent StartGame = new Intent(v.getContext(),MapOp.class);
-	        	    	startActivity(StartGame);
-	        	    }
+        	    	Intent StartGame = new Intent(v.getContext(),MapOp.class);
+        	    	startActivity(StartGame);
             	}
         	}
         });
