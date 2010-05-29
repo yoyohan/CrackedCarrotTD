@@ -283,6 +283,9 @@ public class GameLoop implements Runnable {
 
 	    	// Resuming an old game? Rebuild all the old towers.
 	    if (resumeTowers != "") {
+	    	
+	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
+	    	
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
@@ -291,7 +294,7 @@ public class GameLoop implements Runnable {
 	    		c.setX((int) (c.x + mTTypes[0].getWidth()/2));
 	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-	    		createTower(c, Integer.parseInt(tower[0]));
+	    		createTower(c, Integer.parseInt(tower[0]), true);
 	    	}
 
 	    }
@@ -438,7 +441,7 @@ public class GameLoop implements Runnable {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
-    public boolean createTower(Coords TowerPos, int towerType) {
+    public boolean createTower(Coords TowerPos, int towerType, boolean freeBuild) {
 		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
 				//You are trying to place a tower on a spot outside the grid
@@ -457,7 +460,8 @@ public class GameLoop implements Runnable {
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
 				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
-				player.moneyFunction(-mTTypes[towerType].getPrice());
+				if (!freeBuild)
+					player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {
 					TextureData tex = renderHandle.getTexture(t.getResourceId());
@@ -580,6 +584,8 @@ public class GameLoop implements Runnable {
     			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "-";
     		}
     	}
+    	
+    	Log.d("GAMELOOP", "resumeGetTowers: " + s);
 
     	return s;
     }
