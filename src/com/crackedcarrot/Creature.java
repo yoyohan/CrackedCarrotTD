@@ -176,8 +176,10 @@ public class Creature extends Sprite{
 		if (draw && health > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
-			move(movement);
-			animate(timeDeltaSeconds);
+			if (health > 0) {
+				move(movement);
+				animate(timeDeltaSeconds);
+			}
 		}
 	    // Creature is dead and fading...
 		else if (allDead) {
@@ -357,7 +359,7 @@ public class Creature extends Sprite{
 	 * @param poisontime
 	 * @param poisonDamage
 	 */
-	public void affectWithPoison(int poisonTime, int poisonDamage) {
+	public void affectWithPoison(int poisonTime, float poisonDamage) {
 		if (!this.creaturePoisonResistant) {
 			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
 				this.creaturePoisonDamage = (int)(poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);

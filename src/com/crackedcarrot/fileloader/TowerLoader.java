@@ -196,7 +196,7 @@ public class TowerLoader {
 									ShotResID = R.drawable.cannonshot;
 								}
 								else if (level == 3) {
-									mResourceId = R.drawable.cannontower2;
+									mResourceId = R.drawable.cannontower3;
 									ShotResID = R.drawable.cannonshot;
 								}
 							}
@@ -210,7 +210,7 @@ public class TowerLoader {
 									ShotResID = R.drawable.poisoncloud;
 								}
 								else if (level == 3) {
-									mResourceId = R.drawable.poisontower2;
+									mResourceId = R.drawable.poisontower3;
 									ShotResID = R.drawable.poisoncloud;
 								}
 

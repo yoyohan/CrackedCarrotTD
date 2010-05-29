@@ -70,7 +70,7 @@
 			android:id="@+id/ttext"
 			android:gravity="center_horizontal"
 			android:background="#00000000"
-	    android:visibility="gone">
+	    	android:visibility="gone">
 	        <Button
 	       		android:id="@+id/t2info"
 				android:layout_width="192dp"
@@ -84,98 +84,187 @@
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
         		android:background="@drawable/xml_button_game_back" />
-    	
-	</LinearLayout>
+		</LinearLayout>
 		<LinearLayout
 			android:id="@+id/upgrade_layout"
 			android:visibility="gone"
 			android:layout_height="50dp"
 			android:layout_width="256dp">
-		
-			<Button
-   	    		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-     	  		android:id="@+id/sell"
-     	  		android:background="@drawable/xml_upgrade_sell" />
-   	    	<Button
-   	    		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-    	   		android:background="@drawable/xml_upgrade_lvl2"
-     	  		android:id="@+id/upgrade_lvl2" />
-       		
-    	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"
-    	   		android:background="@drawable/xml_upgrade_lvl3"
-     	  		android:id="@+id/upgrade_lvl3" />
 
-    	   	<Button
-     	  		android:layout_width="51dp"
+			<LinearLayout
 				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_fire1"
-       			android:id="@+id/upgrade_fire1" />       		
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_fire2"
-       			android:id="@+id/upgrade_fire2" />       		
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_fire3"
-       			android:id="@+id/upgrade_fire3" />       	  	
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_frost1"
-       			android:id="@+id/upgrade_frost1" />       	  	
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_frost2"
-       			android:id="@+id/upgrade_frost2" />
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_frost3"
-       			android:id="@+id/upgrade_frost3" />       	  	
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_poison1"
-       			android:id="@+id/upgrade_poison1" />       	  	
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_poison2"
-       			android:id="@+id/upgrade_poison2" />       	  	
-     	   	<Button
-     	  		android:layout_width="51dp"
-				android:layout_height="50dp"
-				android:scaleType="fitXY"
-				android:visibility="gone"				
-       			android:background="@drawable/xml_upgrade_poison3"
-       			android:id="@+id/upgrade_poison3" />       	  	
+				android:layout_width="192dp">
+				<LinearLayout
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="center"
+				>
+					<Button
+		   	    		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+		     	  		android:id="@+id/sell"
+		     	  		android:background="@drawable/xml_upgrade_sell" />
+		     	  		
+     	  			<TextView
+						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
+						android:textSize="11sp"
+						android:text="+10"
+						android:id="@+id/sellText"
+						android:textColor="#000000"
+					>
+					</TextView>
+		     	  	
+				</LinearLayout>
+				<LinearLayout
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="center"
+				>
+		   	    	<Button
+		   	    		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+		    	   		android:background="@drawable/xml_upgrade_lvl2"
+		     	  		android:id="@+id/upgrade_lvl2" />
+		       		
+		    	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"
+		    	   		android:background="@drawable/xml_upgrade_lvl3"
+		     	  		android:id="@+id/upgrade_lvl3" />
+		     	  		
+		     	  	<TextView
+						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
+						android:textSize="11sp"
+						android:visibility="gone"				
+						android:text="-10"
+						android:id="@+id/upgradeLvlText"
+						android:textColor="#000000"
+					></TextView>
+					
+				</LinearLayout>	
+				<LinearLayout
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="center"
+				>
+
+		    	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_fire1"
+		       			android:id="@+id/upgrade_fire1" />       		
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_fire2"
+		       			android:id="@+id/upgrade_fire2" />       		
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_fire3"
+		       			android:id="@+id/upgrade_fire3" />
+		     	  	<TextView
+						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
+						android:textSize="11sp"
+						android:visibility="gone"				
+						android:text="-10"
+						android:id="@+id/upgradeFireText"
+						android:textColor="#000000"
+					></TextView>
+
+		       	</LinearLayout>
+				<LinearLayout
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="center"
+				>
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_frost1"
+		       			android:id="@+id/upgrade_frost1" />       	  	
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_frost2"
+		       			android:id="@+id/upgrade_frost2" />
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_frost3"
+		       			android:id="@+id/upgrade_frost3" />       	  	
+		     	  	<TextView
+						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
+						android:textSize="11sp"
+						android:visibility="gone"				
+						android:text="-10"
+						android:id="@+id/upgradeFrostText"
+						android:textColor="#000000"
+					></TextView>
+				</LinearLayout>
+				<LinearLayout
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:gravity="center"
+				>
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_poison1"
+		       			android:id="@+id/upgrade_poison1" />       	  	
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_poison2"
+		       			android:id="@+id/upgrade_poison2" />       	  	
+		     	   	<Button
+		     	  		android:layout_width="49dp"
+						android:layout_height="37dp"
+						android:scaleType="fitXY"
+						android:visibility="gone"				
+		       			android:background="@drawable/xml_upgrade_poison3"
+		       			android:id="@+id/upgrade_poison3" />
+		     	  	<TextView
+						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
+						android:textSize="11sp"
+						android:visibility="gone"				
+						android:text="-10"
+						android:id="@+id/upgradePoisonText"
+						android:textColor="#000000"
+					></TextView>
+		       	</LinearLayout>
+		       			
+	       	</LinearLayout>       	  	
      	  	<Button
      	  		android:layout_width="64dp"
 				android:layout_height="50dp"
@@ -202,7 +291,7 @@
 			android:layout_width="20dp" 
 			android:layout_height="20dp"
 			android:paddingRight="3dp"
-			android:src="@drawable/coin" >
+			android:src="@drawable/dollar" >
 		</ImageView>
 		
 		<TextView
@@ -214,7 +303,6 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" >
 		</TextView>
-
 
 	    <LinearLayout
 	    	android:id="@+id/healt_part"
@@ -228,7 +316,7 @@
 	        	android:id="@+id/heart"
 				android:layout_width="18dp" 
 				android:layout_height="18dp"
-				android:src="@drawable/heart" >
+				android:src="@drawable/carrot" >
 			</ImageView>
 		
 			<TextView

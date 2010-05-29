@@ -137,7 +137,7 @@ fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
-damage/creep::8
+damage/creep::5
 goldValue::80
 nbrOfCreaturs::1
 /////////////////////////////// level 11

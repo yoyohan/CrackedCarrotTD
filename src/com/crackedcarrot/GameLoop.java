@@ -174,8 +174,6 @@ public class GameLoop implements Runnable {
     
 	protected void initializeLvl() {
 		
-		Log.d("GAMELOOP", "InitalizeLvl 1");
-		
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -184,9 +182,6 @@ public class GameLoop implements Runnable {
 			e1.printStackTrace();
 		}
 		
-		Log.d("GAMELOOP", "InitalizeLvl 2");
-
-    	
     	//Set the creatures texture size and other atributes.
     	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
     	remainingCreaturesALIVE = mLvl[lvlNbr].nbrCreatures;
@@ -269,9 +264,6 @@ public class GameLoop implements Runnable {
     			special = 2;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
-		
-		Log.d("GAMELOOP", "InitalizeLvl 3");
-
 	}
 
     public void run() {
@@ -641,11 +633,8 @@ public class GameLoop implements Runnable {
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-		int upgradeLvl = t.getUpgradeTypeIndex(UpgradeOption.upgrade_lvl);
-		int upgradeFire = t.getUpgradeTypeIndex(UpgradeOption.upgrade_fire);
-		int upgradeFrost = t.getUpgradeTypeIndex(UpgradeOption.upgrade_frost);
-		int upgradePosion = t.getUpgradeTypeIndex(UpgradeOption.upgrade_poison);
-		gui.showTowerUpgrade(upgradeLvl, upgradeFire,upgradeFrost,upgradePosion);
+		int[] test = t.getUpgradeTypeIndex(this.mTTypes);
+		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
 	}
 	
 	public static void pause() {
