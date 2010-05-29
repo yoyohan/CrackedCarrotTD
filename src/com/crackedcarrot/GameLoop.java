@@ -629,8 +629,6 @@ public class GameLoop implements Runnable {
     }
     
     	// This is used by the savegame-function to remember all the towers.
-    	// TODO: We need to get the correct "version" of the tower too, e.g.
-    	// any upgrades purchased, etc....
     public String resumeGetTowers() {
     	String s = "";
     	Coords tmp;
@@ -644,7 +642,7 @@ public class GameLoop implements Runnable {
     		}
     	}
     	
-    	Log.d("GAMELOOP", "resumeGetTowers: " + s);
+    	Log.d("GAMELOOP", "DEBUG, resumeGetTowers: " + s);
 
     	return s;
     }
@@ -725,7 +723,7 @@ public class GameLoop implements Runnable {
     				} catch (InterruptedException e) {
     					e.printStackTrace();
     				}
-    				gui.hideTowerUpgrade();
+    				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
     				
@@ -773,7 +771,7 @@ public class GameLoop implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				gui.hideTowerUpgrade();
+				showTowerUpgradeUI((int) t.x, (int) t.y);
 				updateCurrency();
 			}
 			else {
