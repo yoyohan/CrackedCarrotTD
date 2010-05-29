@@ -63,7 +63,7 @@ resell value::50
 minDamage::200
 maxDamage::201
 Shot-velocity::250
-cooldown between shots::4
+cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::7
 range::200
@@ -76,8 +76,8 @@ Sound-impact::tesla_vattenplatta
 // Bunker LVL2
 ////////////////////////////////////
 lvl::2
-price::16
-resell value::12
+price::24
+resell value::16
 minDamage::18
 maxDamage::24
 Shot-velocity::400
@@ -94,8 +94,8 @@ Sound-impact::none
 // Cannon tower LVL2
 ////////////////////////////////////
 lvl::2
-price::30
-resell value::23
+price::45
+resell value::30
 minDamage::54
 maxDamage::84
 Shot-velocity::250
@@ -135,7 +135,7 @@ resell value::150
 minDamage::600
 maxDamage::603
 Shot-velocity::250
-cooldown between shots::6
+cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::11
 range::250
@@ -148,8 +148,8 @@ Sound-impact::tesla_vattenplatta
 // Bunker LVL3
 ////////////////////////////////////
 lvl::3
-price::32
-resell value::28
+price::72
+resell value::52
 minDamage::54
 maxDamage::72
 Shot-velocity::400
@@ -166,8 +166,8 @@ Sound-impact::none
 // Cannon tower LVL3
 ////////////////////////////////////
 lvl::3
-price::40
-resell value::48
+price::135
+resell value::97
 minDamage::162
 maxDamage::252
 Shot-velocity::250
@@ -207,7 +207,7 @@ resell value::350
 minDamage::1800
 maxDamage::1809
 Shot-velocity::250
-cooldown between shots::6
+cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::-1
 range::300

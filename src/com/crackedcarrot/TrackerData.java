@@ -15,14 +15,14 @@ public class TrackerData {
 	public void addCreatureToList(Creature creature) {
 		creature.nextCreature = first.nextCreature;
 		creature.previousCreauture = first;
-		Creature tmp = first.nextCreature;
 		first.nextCreature = creature;
-		tmp.previousCreauture = creature;
+		creature.nextCreature.previousCreauture = creature;
 	}
 	public void removeCreatureFromList(Creature creature) {
-		Creature tmp = creature.previousCreauture;
 		creature.previousCreauture.nextCreature = creature.nextCreature;
-		creature.nextCreature.previousCreauture = tmp;
+		creature.nextCreature.previousCreauture = creature.previousCreauture;
+		creature.nextCreature = null;
+		creature.previousCreauture = null;
 	}
 
 }
