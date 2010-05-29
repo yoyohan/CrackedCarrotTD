@@ -51,7 +51,7 @@ public class Tower extends Sprite {
 	// If the tower have poison damage
 	private boolean hasPoisonDamage;
 	// Factor of posiondamage.
-	private int poisonFactor;
+	private float poisonFactor;
 	// The linked upgrade for this tower
 	private int upgradeLvl;
 	private int upgradeFire;
@@ -508,36 +508,37 @@ public class Tower extends Sprite {
 			this.relatedShot.r = 1;
 			this.relatedShot.g = 1;
 			this.relatedShot.b = 1;
-		}
-		
-		// Tracker
-		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
-		Coords tmp = mScaler.getGridXandY((int)x, (int)y);
-		int right = tmp.x + rangeGrid;
-		if (right >= (mScaler.getGridWidth() + 2))
-			right = mScaler.getGridWidth()+1;
-		int left = tmp.x - rangeGrid;
-		if (left < 0)
-			left = 0;
-		int top = tmp.y + rangeGrid;
-		if (top >= (mScaler.getGridHeight() + 2))
-			top = mScaler.getGridHeight()+1;
-		int bottom = tmp.y -rangeGrid;
-		if (bottom < 0)
-			bottom = 0;
+			
+			// Tracker THis will usually be run every time a tower is upgraded. But until all bugs 
+			// are solved we will only run it when tower is created
+			int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
+			Coords tmp = mScaler.getGridXandY((int)x, (int)y);
+			int right = tmp.x + rangeGrid;
+			if (right >= (mScaler.getGridWidth() + 2))
+				right = mScaler.getGridWidth()+1;
+			int left = tmp.x - rangeGrid;
+			if (left < 0)
+				left = 0;
+			int top = tmp.y + rangeGrid;
+			if (top >= (mScaler.getGridHeight() + 2))
+				top = mScaler.getGridHeight()+1;
+			int bottom = tmp.y -rangeGrid;
+			if (bottom < 0)
+				bottom = 0;
 
-		startTrackerList = new TrackerList();
-		TrackerList currentTrackerList = new TrackerList();
-		startTrackerList.next = currentTrackerList;
+			startTrackerList = new TrackerList();
+			TrackerList currentTrackerList = new TrackerList();
+			startTrackerList.next = currentTrackerList;
 
-		for (int x = left; x <= right; x++) {
-			for (int y = bottom; y <= top; y++) {
-				currentTrackerList.data = (tracker.getTrackerData(x, y));
-				currentTrackerList.next = new TrackerList();
-				currentTrackerList = currentTrackerList.next;
+			for (int x = left; x <= right; x++) {
+				for (int y = bottom; y <= top; y++) {
+					currentTrackerList.data = (tracker.getTrackerData(x, y));
+					currentTrackerList.next = new TrackerList();
+					currentTrackerList = currentTrackerList.next;
+				}
 			}
 		}
-		
+
 		this.draw = true;
 		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
@@ -549,7 +550,7 @@ public class Tower extends Sprite {
 		
 		if(opt == UpgradeOption.upgrade_fire) {
 			if (this.upgradeFire == 0 && money >= 30) {
-				this.fireFactor = 3;
+				this.fireFactor = 1.5f;
 				this.hasFireDamage = true;
 				this.r = 1;
 				this.g = 0.7f;
@@ -558,17 +559,17 @@ public class Tower extends Sprite {
 				this.relatedShot.g = 0.7f;
 				this.relatedShot.b = 0.7f;
 				this.upgradeFire++;
-				price = 20;
+				price = 30;
 			}
-			else if (this.upgradeFire == 1 && money >= 50) {
-				this.fireFactor = 6;
+			else if (this.upgradeFire == 1 && money >= 60) {
+				this.fireFactor = 2;
 				this.upgradeFire++;
-				price = 50;
+				price = 60;
 			}
-			else if (this.upgradeFire == 2 && money >= 80) {
-				this.fireFactor = 9;
+			else if (this.upgradeFire == 2 && money >= 90) {
+				this.fireFactor = 3;
 				this.upgradeFire++;
-				price = 100;
+				price = 90;
 			}
 		}
 		else if (opt == UpgradeOption.upgrade_frost) {
@@ -581,25 +582,25 @@ public class Tower extends Sprite {
 				this.g = 0.7f;
 				this.b = 1;
 				this.upgradeFrost++;
-				price = 20;
+				price = 30;
 			}
-			else if (this.upgradeFrost == 1 && money >= 50) {
+			else if (this.upgradeFrost == 1 && money >= 60) {
 				this.frostTime = 4;
+				this.frostAmount = 0.5f;
+				this.upgradeFrost++;
+				price = 60;
+			}
+			else if (this.upgradeFrost == 2 && money >= 90) {
+				this.frostTime = 5;
 				this.frostAmount = 0.4f;
 				this.upgradeFrost++;
-				price = 50;
-			}
-			else if (this.upgradeFrost == 2 && money >= 80) {
-				this.frostTime = 5;
-				this.frostAmount = 0.2f;
-				this.upgradeFrost++;
-				price = 100;
+				price = 90;
 			}
 		}
 		else if (opt == UpgradeOption.upgrade_poison) {
 			if (this.upgradePoison == 0 && money >= 30) {
 				this.hasPoisonDamage = true;
-				this.poisonFactor = 1;
+				this.poisonFactor = 0.2f;
 				this.r = 0.7f;
 				this.g = 1;
 				this.b = 0.7f;
@@ -607,17 +608,17 @@ public class Tower extends Sprite {
 				this.relatedShot.g = 1;
 				this.relatedShot.b = 0.7f;
 				this.upgradePoison++;
-				price = 20;
+				price = 30;
 			}
-			else if (this.upgradePoison == 1 && money >= 50) {
-				this.poisonFactor = 2;
+			else if (this.upgradePoison == 1 && money >= 60) {
+				this.poisonFactor = 0.5f;
 				this.upgradePoison++;
-				price = 50;
+				price = 60;
 			}
-			else if (this.upgradePoison == 2 && money >= 80) {
-				this.poisonFactor = 3;
+			else if (this.upgradePoison == 2 && money >= 90) {
+				this.poisonFactor = 1;
 				this.upgradePoison++;
-				price = 100;
+				price = 90;
 			}
 		}
 		return price;
@@ -663,30 +664,46 @@ public class Tower extends Sprite {
 		return this.resellPrice;
 	}
 	
-	public int getUpgradeTypeIndex(UpgradeOption opt) {
-		if(opt == UpgradeOption.upgrade_lvl) {
-			if (upgradeLvl == -1)
-				return -1;
-			if (upgradeLvl < 8)
-				return 1;
-			if (upgradeLvl < 12)
-				return 2;
-			return -1;
+	public int[] getUpgradeTypeIndex(Tower[] towerTypes) {
+		int[] Upgrade = new int[9];
+		
+		if (upgradeLvl == -1)
+			Upgrade[0] = -1;
+		else if (upgradeLvl < 8)
+			Upgrade[0] = 1;
+		else if (upgradeLvl < 12)
+			Upgrade[0] = 2;
+		else Upgrade[0] = -1;
+
+		if (Upgrade[0] != -1) {
+			Upgrade[1] = towerTypes[upgradeLvl].price;
 		}
 		
-		else if(opt == UpgradeOption.upgrade_fire)
-			if (upgradePoison == 0 && upgradeFrost == 0 && (towerType == Tower.BUNKER || towerType == Tower.CANNON))
-				return upgradeFire;
-			else return -1;
+		if (upgradePoison == 0 && upgradeFrost == 0 && (towerType == Tower.BUNKER || towerType == Tower.CANNON))
+			if (upgradeLvl > 7 || upgradeLvl == -1) {
+				Upgrade[2] = upgradeFire;
+				Upgrade[3] = 30 + upgradeFire*30;
+			} else Upgrade[2] = -1;
+		else Upgrade[2] = -1;
 		
-		else if(opt == UpgradeOption.upgrade_frost)
-			if (upgradePoison == 0 && upgradeFire == 0 &&  towerType == Tower.CANNON)
-				return upgradeFrost;
-			else return -1;
-		else
-			if (upgradeFrost == 0 && upgradeFire == 0 && towerType == Tower.BUNKER)
-				return upgradePoison;
-			else return -1;
+		if (upgradePoison == 0 && upgradeFire == 0 && towerType == Tower.CANNON)
+			if (upgradeLvl > 7 || upgradeLvl == -1) {
+				Upgrade[4] = upgradeFrost;
+				Upgrade[5] = 30 + upgradeFrost*30;
+			} else Upgrade[4] = -1;
+		else Upgrade[4] = -1;
+
+		if (upgradeFrost == 0 && upgradeFire == 0 && towerType == Tower.BUNKER)
+			if (upgradeLvl > 7 || upgradeLvl == -1) {
+				Upgrade[6] = upgradePoison;
+				Upgrade[7] = 30 + upgradePoison*30;
+			}
+			else Upgrade[6] = -1;
+		else Upgrade[6] = -1;
+		
+		Upgrade[8] = this.resellPrice;
+	
+		return Upgrade;
 	}
 	
 	public boolean isPoisonTower(){

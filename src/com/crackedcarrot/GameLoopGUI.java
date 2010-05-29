@@ -29,6 +29,7 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -124,6 +125,11 @@ public class GameLoopGUI {
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
+    final TextView upgradeLvlText;
+    final TextView upgradeFireText;
+    final TextView upgradeFrostText;
+    final TextView upgradePoisonText;
+    final TextView sellText;
     
     final Button tower2Information;
 
@@ -147,6 +153,12 @@ public class GameLoopGUI {
     	upgradePoison3 = (Button) gameInit.findViewById(R.id.upgrade_poison3);
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
+
+    	upgradeLvlText = (TextView) gameInit.findViewById(R.id.upgradeLvlText);
+    	upgradeFireText = (TextView) gameInit.findViewById(R.id.upgradeFireText);
+    	upgradeFrostText = (TextView) gameInit.findViewById(R.id.upgradeFrostText);
+    	upgradePoisonText = (TextView) gameInit.findViewById(R.id.upgradePoisonText);
+    	sellText = (TextView) gameInit.findViewById(R.id.sellText);
     	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
@@ -802,8 +814,8 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
 	        		 SharedPreferences settings2 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings2.getBoolean("optionsHighscore", false)) {
-	        	    	 	// If ScoreNinja is enabled we show it to the player: 
+	        	     if (settings2.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(gameInit)) {
+	        	    	 	// If ScoreNinja is enabled and installed we show it to the player: 
 	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
@@ -939,7 +951,12 @@ public class GameLoopGUI {
 		return this.gameInit;
 	}
 	
-	public void showTowerUpgrade(int showLevelUpgrade,int showFireUpgrade, int showFrostUpgrade, int showPoisonUpgrade) {
+	public void showTowerUpgrade(int showLevelUpgrade, int LevelPrice,
+								int showFireUpgrade, int FirePrice, 
+								int showFrostUpgrade, int FrostPrice, 
+								int showPoisonUpgrade, int PoisonPrice,
+								int recellValue) {
+		
 		this.upgradeFire1.setVisibility(View.GONE);
 		this.upgradeFire2.setVisibility(View.GONE);
 		this.upgradeFire3.setVisibility(View.GONE);
@@ -952,60 +969,83 @@ public class GameLoopGUI {
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
 		
+    	upgradeLvlText.setVisibility(View.GONE);
+    	upgradeFireText.setVisibility(View.GONE);
+    	upgradeFrostText.setVisibility(View.GONE);
+    	upgradePoisonText.setVisibility(View.GONE);
+
+    	sellText.setText("+"+recellValue);
+		upgradeLvlText.setText("-"+LevelPrice);
+		upgradeFireText.setText("-"+FirePrice);
+		upgradeFrostText.setText("-"+FrostPrice);
+		upgradePoisonText.setText("-"+PoisonPrice);
+		
 		switch(showLevelUpgrade) {
 			case(1):
 				this.upgradeLvl2.setVisibility(View.VISIBLE);
-			break;
+				upgradeLvlText.setVisibility(View.VISIBLE);
+	    		break;
 			case(2):
 				this.upgradeLvl3.setVisibility(View.VISIBLE);
-			break;
+				upgradeLvlText.setVisibility(View.VISIBLE);
+				break;
 		}
 		switch(showFireUpgrade) {
 		case(0):
 			this.upgradeFire1.setVisibility(View.VISIBLE);
-		break;
+    		upgradeFireText.setVisibility(View.VISIBLE);
+    		break;
 		case(1):
 			this.upgradeFire2.setVisibility(View.VISIBLE);
-		break;
+			upgradeFireText.setVisibility(View.VISIBLE);
+			break;
 		case(2):
 			this.upgradeFire3.setVisibility(View.VISIBLE);
-		break;
+			upgradeFireText.setVisibility(View.VISIBLE);
+			break;
 		}
 		switch(showFrostUpgrade) {
 		case(0):
 			this.upgradeFrost1.setVisibility(View.VISIBLE);
-		break;
+    		upgradeFrostText.setVisibility(View.VISIBLE);
+    		break;
 		case(1):
 			this.upgradeFrost2.setVisibility(View.VISIBLE);
-		break;
+			upgradeFrostText.setVisibility(View.VISIBLE);
+			break;
 		case(2):
 			this.upgradeFrost3.setVisibility(View.VISIBLE);
-		break;
+			upgradeFrostText.setVisibility(View.VISIBLE);
+			break;
 		}
 		switch(showPoisonUpgrade) {
 		case(0):
 			this.upgradePoison1.setVisibility(View.VISIBLE);
-		break;
+			upgradePoisonText.setVisibility(View.VISIBLE);
+			break;
 		case(1):
 			this.upgradePoison2.setVisibility(View.VISIBLE);
+			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		case(2):
 			this.upgradePoison3.setVisibility(View.VISIBLE);
+			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		}
-		
+
+		gameInit.mGLSurfaceView.setTowerType(-1);
+		hud.hideGrid();
+		this.towertext.setVisibility(View.GONE);
 		towerbutton1.setVisibility(View.GONE);
 		towerbutton2.setVisibility(View.GONE);
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
-
 		towerUpgrade.setVisibility(View.VISIBLE);
 
 	}
 	
 	public void hideTowerUpgrade() {
 		towerUpgrade.setVisibility(View.GONE);
-		
 		towerbutton1.setVisibility(View.VISIBLE);
 		towerbutton2.setVisibility(View.VISIBLE);
 		towerbutton3.setVisibility(View.VISIBLE);

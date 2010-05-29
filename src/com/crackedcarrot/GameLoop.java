@@ -173,8 +173,6 @@ public class GameLoop implements Runnable {
     
 	protected void initializeLvl() {
 		
-		Log.d("GAMELOOP", "InitalizeLvl 1");
-		
 		try {
 			//Free last levels sprites to clear the video mem and ram from
 			//Unused creatures and settings that are no longer valid.
@@ -183,9 +181,6 @@ public class GameLoop implements Runnable {
 			e1.printStackTrace();
 		}
 		
-		Log.d("GAMELOOP", "InitalizeLvl 2");
-
-    	
     	//Set the creatures texture size and other atributes.
     	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
     	remainingCreaturesALIVE = mLvl[lvlNbr].nbrCreatures;
@@ -268,9 +263,6 @@ public class GameLoop implements Runnable {
     			special = 2;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
-		
-		Log.d("GAMELOOP", "InitalizeLvl 3");
-
 	}
 
     public void run() {
@@ -283,6 +275,9 @@ public class GameLoop implements Runnable {
 
 	    	// Resuming an old game? Rebuild all the old towers.
 	    if (resumeTowers != "") {
+	    	
+	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
+	    	
 	    	String[] towers = resumeTowers.split("-");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
@@ -291,7 +286,7 @@ public class GameLoop implements Runnable {
 	    		c.setX((int) (c.x + mTTypes[0].getWidth()/2));
 	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-	    		createTower(c, Integer.parseInt(tower[0]));
+	    		createTower(c, Integer.parseInt(tower[0]), true);
 	    	}
 
 	    }
@@ -438,13 +433,13 @@ public class GameLoop implements Runnable {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
-    public boolean createTower(Coords TowerPos, int towerType) {
+    public boolean createTower(Coords TowerPos, int towerType, boolean freeBuild) {
 		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
 				//You are trying to place a tower on a spot outside the grid
 				return false;
 			}
-			if (player.getMoney() < mTTypes[towerType].getPrice()) {
+			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
 				return false;
 			}
@@ -457,7 +452,8 @@ public class GameLoop implements Runnable {
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
 				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
-				player.moneyFunction(-mTTypes[towerType].getPrice());
+				if (!freeBuild)
+					player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {
 					TextureData tex = renderHandle.getTexture(t.getResourceId());
@@ -581,7 +577,7 @@ public class GameLoop implements Runnable {
     		}
     	}
     	
-    	Log.d("GAMELOOP", "resumeTowers: " + s);
+    	Log.d("GAMELOOP", "resumeGetTowers: " + s);
 
     	return s;
     }
@@ -629,11 +625,8 @@ public class GameLoop implements Runnable {
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-		int upgradeLvl = t.getUpgradeTypeIndex(UpgradeOption.upgrade_lvl);
-		int upgradeFire = t.getUpgradeTypeIndex(UpgradeOption.upgrade_fire);
-		int upgradeFrost = t.getUpgradeTypeIndex(UpgradeOption.upgrade_frost);
-		int upgradePosion = t.getUpgradeTypeIndex(UpgradeOption.upgrade_poison);
-		gui.showTowerUpgrade(upgradeLvl, upgradeFire,upgradeFrost,upgradePosion);
+		int[] test = t.getUpgradeTypeIndex(this.mTTypes);
+		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
 	}
 	
 	public static void pause() {
