@@ -29,6 +29,7 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -802,8 +803,8 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case DIALOG_HIGHSCORE_ID:
 	        		 SharedPreferences settings2 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings2.getBoolean("optionsHighscore", false)) {
-	        	    	 	// If ScoreNinja is enabled we show it to the player: 
+	        	     if (settings2.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(gameInit)) {
+	        	    	 	// If ScoreNinja is enabled and installed we show it to the player: 
 	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
