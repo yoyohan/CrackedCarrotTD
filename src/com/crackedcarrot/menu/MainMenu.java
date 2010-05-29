@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.*;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class MainMenu extends Activity {
 	
@@ -108,7 +109,7 @@ public class MainMenu extends Activity {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    	
+
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
@@ -121,8 +122,8 @@ public class MainMenu extends Activity {
             	if (resumes > -1 && resumes < 3) {
             		showDialog(1);
             	} else {
-            		Intent StartGame = new Intent(v.getContext(),MapOp.class);
-            		startActivity(StartGame);
+        	    	Intent StartGame = new Intent(v.getContext(),MapOp.class);
+        	    	startActivity(StartGame);
             	}
         	}
         });

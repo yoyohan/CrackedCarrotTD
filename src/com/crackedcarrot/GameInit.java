@@ -136,11 +136,13 @@ public class GameInit extends Activity {
         Bundle extras  = getIntent().getExtras();
         int mapChoice = 0;
         int difficulty = 0;
-        if(extras != null) {
+        if (extras != null) {
+        	Log.d("GAMEINIT", "Extras != null, fetching intents...");
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
+        } else {
+        	Log.d("GAMEINIT", "WTF?! Extras == null, please tell fredrik how you did this?!");
         }
-
         
         	// Are we resuming an old saved game?
         SharedPreferences resume = getSharedPreferences("resume", 0);
@@ -151,6 +153,7 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
     		editor.commit();
     		resumes = resume.getInt("resumes", 0);
+    		difficulty = -1;		// load saved health/money-values as well.
         } else {
         		// We are not resuming anything, clear the old flag(s) and
         		// prepare for a new save. Saves the chosen map directly.
@@ -305,6 +308,7 @@ public class GameInit extends Activity {
     	// in between levels when the NextLevel-dialog is shown.
     	
     	if (i == 1) {
+    		Log.d("GAMEINIT", "Saving game status...");
     			// Save everything.
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
@@ -318,6 +322,7 @@ public class GameInit extends Activity {
     		editor.commit();
     		Log.d("GAMEINIT","resumes: " + resume.getInt("resumes", 0));
     	} else {
+    		Log.d("GAMEINIT", "Erasing saved game status.");
     			// Dont allow resume. Clears the main resume flag!
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
