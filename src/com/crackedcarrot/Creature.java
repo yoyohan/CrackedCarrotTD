@@ -47,6 +47,7 @@ public class Creature extends Sprite{
     public boolean creaturePoisonResistant;
     // Creature affected by some kind of tower
     public float creatureFrozenTime;
+    public float creatureFrozenAmount = 1;
     public float creaturePoisonTime;
     public int creaturePoisonDamage;
 	// This is the base rgb colors for this creature
@@ -74,6 +75,9 @@ public class Creature extends Sprite{
 	private int trackerX = 0;
 	private int trackerY = 0;
 	private Tracker tracker;
+	
+	//How mutch a creature will damage the player
+	private int damagePerCreep;
 	
 	
     /**
@@ -266,13 +270,15 @@ public class Creature extends Sprite{
 		float tmpB = this.bDefault;
 		float tmpRGB = 1;
 		
-		int slowAffected = 1;
+		float slowAffected = 1;
 		if (creatureFrozenTime > 0) {
-			slowAffected = 2;
+			slowAffected = creatureFrozenAmount;
     		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
     		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
     		tmpR = tmpR*tmpRGB;
     		tmpG = tmpG*tmpRGB;
+		} else {
+			creatureFrozenAmount = 1;
 		}
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
@@ -287,7 +293,7 @@ public class Creature extends Sprite{
 			this.r = 0;
 		}
 		
-		float movement = (velocity * (timeDeltaSeconds/this.scale)) / slowAffected;
+		float movement = (velocity * (timeDeltaSeconds/this.scale)) * slowAffected;
 		
 		this.r = tmpR;
 		this.g = tmpG;
@@ -318,7 +324,7 @@ public class Creature extends Sprite{
 	 * will remove one life from player
 	 */
 	private void score(){
-		player.damage(1);
+		player.damage(damagePerCreep);
 		soundManager.playSoundRandomScore();
 		GL.updatePlayerHealth();
 	}
@@ -336,10 +342,14 @@ public class Creature extends Sprite{
 	/**
 	 * Affect this creature if possible with frost for the submitted time
 	 * @param time
+	 * @param amount of frost
 	 */
-	public void affectWithFrost(int time) {
-		if (!this.creatureFrostResistant)
+	public void affectWithFrost(int time, float frostAmount) {
+		if (!this.creatureFrostResistant) {
 			this.creatureFrozenTime = time;
+			if (this.creatureFrozenAmount > frostAmount)
+				this.creatureFrozenAmount = frostAmount;
+		}
 	}
 
 	/**
@@ -491,6 +501,15 @@ public class Creature extends Sprite{
 		this.wayP = waypoints;
 	}
 	
+	/**
+	 * Set how mutch a creature will damage the player
+	 * @param int
+	 * 
+	 */
+	public void setDamagePerCreep(int damagePerCreep) {
+		this.damagePerCreep = damagePerCreep;
+	}
+
 	////////////////////////////////
 	// All getters
 	////////////////////////////////
@@ -559,7 +578,13 @@ public class Creature extends Sprite{
 		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
-	
+	/**
+	 * Return how mutch this creature will do to a player
+	 * @return int
+	 */
+	public int getDamagePerCreep() {
+		return this.damagePerCreep;
+	}
 	/**
 	 * Return if this creature is fast or not
 	 * @return true if fast

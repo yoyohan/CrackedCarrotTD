@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.crackedcarrot.Tower.UpgradeOption;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -75,7 +76,7 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.gui.setUpgradeListeners(new UpgradeAListener(), new UpgradeBListener(), new SellListener());
+    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener());
     	gameTracker = new Tracker();
     }
     
@@ -627,7 +628,12 @@ public class GameLoop implements Runnable {
 
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
-		gui.showTowerUpgrade(R.drawable.upgrade_a, R.drawable.upgrade_b);
+		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+		int upgradeLvl = t.getUpgradeTypeIndex(UpgradeOption.upgrade_lvl);
+		int upgradeFire = t.getUpgradeTypeIndex(UpgradeOption.upgrade_fire);
+		int upgradeFrost = t.getUpgradeTypeIndex(UpgradeOption.upgrade_frost);
+		int upgradePosion = t.getUpgradeTypeIndex(UpgradeOption.upgrade_poison);
+		gui.showTowerUpgrade(upgradeLvl, upgradeFire,upgradeFrost,upgradePosion);
 	}
 	
 	public static void pause() {
@@ -641,36 +647,77 @@ public class GameLoop implements Runnable {
 		pauseSemaphore.release();
 	}
 	
-	private class UpgradeAListener implements OnClickListener{
+	private class UpgradeTowerLvlListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
+			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			if(player.getMoney() >= t.upgradeCost(0)){
-    				player.moneyFunction(t.upgradeCost(0));
-        			t.upgrade(0);
-    			}    			
+    			int upgradeIndex = t.getUpgradeTowerLvl();
+    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
+    				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
+    				updateCurrency();
+    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    					t.setCurrentTexture(tex);
+    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					//t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    			else{
+    				Log.d("GAMELOOP","No upgrade avialible");
+    			}
     		}
     		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
     		}
+    		
     	}
     }
     
-    private class UpgradeBListener implements OnClickListener{
+    private class UpgradeFireListener implements OnClickListener{
     	public void onClick(View v){
-    		Log.d("GUI", "Upgrade B clicked!");
-    		if(selectedTower != null){
-    			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			if(player.getMoney() >= t.upgradeCost(1)){
-    				player.moneyFunction(t.upgradeCost(1));
-        			t.upgrade(1);
-    			}    			
-    		}
-    		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
-    		}
+    		upgradeTower(Tower.UpgradeOption.upgrade_fire);
     	}
+    }
+    private class UpgradeFrostListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeTower(Tower.UpgradeOption.upgrade_frost);
+    	}
+    }
+    private class UpgradePoisonListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeTower(Tower.UpgradeOption.upgrade_poison);
+    	}
+    }
+        
+    private void upgradeTower(Tower.UpgradeOption opt) {
+		Log.d("GUI", "Upgrade B clicked!");
+		gui.hideTowerUpgrade();
+		if(selectedTower != null){
+			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+			int price = t.upgradeSpecialAbility(opt, player.getMoney());
+			if (price != 0) { 
+				player.moneyFunction(-price);
+				try {
+					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+					t.relatedShot.setCurrentTexture(tex);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				updateCurrency();
+			}
+			else{
+				Log.d("GAMELOOP","No upgrade done");
+			}
+		}
+		else{
+			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+		}
+
     }
     
     private class SellListener implements OnClickListener{

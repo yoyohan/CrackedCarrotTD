@@ -10,6 +10,7 @@ import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Shot;
 import com.crackedcarrot.SoundManager;
 import com.crackedcarrot.Tower;
+import com.crackedcarrot.menu.R;
 
 /**
  * A class that reads the requested towerConf and returns an list of Towers.
@@ -22,24 +23,18 @@ public class TowerLoader {
 	private Tower[] towerList;
 	private Scaler scaler;
     private int mResourceId;
+    private int ShotResID;
 	private int towerType;
 	private float range;
 	private float rangeAOE;
-	private String title;
+	private int level;
 	private int price;
 	private int resellPrice;
 	private int minDamage;
 	private int maxDamage;
 	private int aoeDamage;
 	private int velocity;
-	private boolean hasFrostDamage;
-	private int frostTime;
-	private boolean hasFireDamage;
-	private boolean hasPoisonDamage;
-	private int poisonDamage;
-	private int poisonTime;
 	private int upgrade1;
-	private int upgrade2;
     private float coolDown;
     private Shot relatedShot;
 	private float width;
@@ -101,108 +96,62 @@ public class TowerLoader {
 							tmpStr = buf.split("::");
 			            }
 						switch (tmpCount) {
-			            case 4:
-			            	// Load tower texture
-			            	mResourceId = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
-
-			            	// Tower size ALWAYS 60
-			            	Coords recalc = scaler.scale(60,60);
-			            	width = recalc.getX();
-			            	height =  recalc.getY();
+						case 4:  
+			            	// Tower level
+			            	level = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-			            case 5:  
-			            	// Tower title(name)
-			            	title = tmpStr[1].trim();
-			            	break;
-			            case 6:  
+						case 5:  
 			            	// Tower price
 			            	price = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-			            case 7:  
+			            case 6:  
 			            	//Tower resell value
 			            	resellPrice = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-			            case 8: 
+			            case 7: 
 			            	//Tower minimum damage
 			            	minDamage = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-			            case 9:
+			            case 8:
 			            	//Tower maximum damage
 			            	maxDamage = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-				        case 10:
+				        case 9:
 			            	//Tower velocity of bullets
-			            	recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
+				        	Coords recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	velocity = recalc.getX();
 			            	break;
-				        case 11:
+				        case 10:
 			            	//Cooldown between each shot
 			            	coolDown = Float.valueOf(tmpStr[1].trim());
-				        case 12:
-			            	// has tower frost damage?
-			            	hasFrostDamage = Boolean.parseBoolean(tmpStr[1].trim());
 			            	break;
-						case 13:
-			            	// if tower has frost damage? for how long
-			            	frostTime = Integer.parseInt(tmpStr[1].trim());
-			            	break;
-						case 14:
-			            	// has tower firedamage?
-			            	hasFireDamage = Boolean.parseBoolean(tmpStr[1].trim());
-			            	break;
-						case 15:
-			            	// has tower posion damage?
-							hasPoisonDamage = Boolean.parseBoolean(tmpStr[1].trim());
-			            	break;
-						case 16:
-			            	// Posion damage
-			            	poisonDamage = Integer.parseInt(tmpStr[1].trim());
-			            	break;
-						case 17:
-			            	// Posion time
-			            	poisonTime = Integer.parseInt(tmpStr[1].trim());
-			            	break;
-						case 18:
+						case 11:
 			            	// Towertype
 			            	towerType = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-						case 19:
-			            	// 1 upgrade (LEFT)
+						case 12:
+			            	// upgrade 
 							upgrade1 = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-						case 20:
-			            	// 2 upgrade (RIGHT)
-			            	upgrade2 = Integer.parseInt(tmpStr[1].trim());
-			            	break;
-						case 21:
+						case 13:
 			            	// Tower range
 			            	recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	range = recalc.getX();
 			            	break;
-						case 22:
+						case 14:
 			            	// AOE range
 			            	recalc = scaler.scale(Integer.parseInt(tmpStr[1].trim()),0);
 			            	rangeAOE = recalc.getX();
 			            	break;
-						case 23:
+						case 15:
 			            	// AOE damage
 			            	aoeDamage = Integer.parseInt(tmpStr[1].trim());
 			            	break;
-						case 24:
+						case 16:
 			            	// Shot animation time
 			            	animationTime = Float.parseFloat(tmpStr[1].trim());
 			            	break;
-						case 25:
-			            	// Shot texture
-			            	resID = context.getResources().getIdentifier(tmpStr[1].trim(), "drawable", context.getPackageName());
-			            	// Shot size
-			            	recalc = scaler.scale(24,24);
-			            	relatedShot = new Shot(resID, 0, towerList[twrNbr]);
-			            	relatedShot.setHeight(recalc.getY());
-			            	relatedShot.setWidth(recalc.getX());
-			            	relatedShot.setAnimationTime(animationTime);
-			            	break;
-						case 26:
+						case 17:
 			            	// Shot sound. Projectile leaves
 							String soundfile = tmpStr[1].trim();
 							if (!soundfile.equals("none")) {
@@ -211,7 +160,7 @@ public class TowerLoader {
 							}
 							else sound_l = -1;
 							break;
-						case 27:
+						case 18:
 			            	// Shot sound. impact
 							String soundfile2 = tmpStr[1].trim();
 							if (!soundfile2.equals("none")) {
@@ -220,6 +169,79 @@ public class TowerLoader {
 							}
 							else sound_i = -1;
 
+							ShotResID = 0;
+							
+			            	// Load tower texture
+							if (this.towerType == Tower.BUNKER) {
+								if (level == 1) {
+									mResourceId = R.drawable.bunker1;
+									ShotResID = R.drawable.throwingstar;
+								}
+								else if (level == 2) {
+									mResourceId = R.drawable.bunker2;
+									ShotResID = R.drawable.throwingstar;
+								}
+								else if (level == 3) {
+									mResourceId = R.drawable.bunker3;
+									ShotResID = R.drawable.throwingstar;
+								}
+							}
+							if (this.towerType == Tower.CANNON) {
+								if (level == 1) {
+									mResourceId = R.drawable.cannontower1;
+									ShotResID = R.drawable.cannonshot;
+								}
+								else if (level == 2) {
+									mResourceId = R.drawable.cannontower2;
+									ShotResID = R.drawable.cannonshot;
+								}
+								else if (level == 3) {
+									mResourceId = R.drawable.cannontower2;
+									ShotResID = R.drawable.cannonshot;
+								}
+							}
+							if (this.towerType == Tower.AOE) {
+								if (level == 1) {
+									mResourceId = R.drawable.poisontower1;
+									ShotResID = R.drawable.poisoncloud;
+								}
+								else if (level == 2) {
+									mResourceId = R.drawable.poisontower2;
+									ShotResID = R.drawable.poisoncloud;
+								}
+								else if (level == 3) {
+									mResourceId = R.drawable.poisontower2;
+									ShotResID = R.drawable.poisoncloud;
+								}
+
+							}
+							if (this.towerType == Tower.TELSA) {
+								if (level == 1) {
+									mResourceId = R.drawable.tesla1;
+									ShotResID = R.drawable.lightbolt;
+								}
+								else if (level == 2) {
+									mResourceId = R.drawable.tesla2;
+									ShotResID = R.drawable.lightbolt;
+								}
+								else if (level == 3) {
+									mResourceId = R.drawable.tesla3;
+									ShotResID = R.drawable.lightbolt;
+								}
+							}
+							
+			            	// Tower size ALWAYS 60
+			            	recalc = scaler.scale(60,60);
+			            	width = recalc.getX();
+			            	height =  recalc.getY();
+							
+			            	// Shot size
+			            	recalc = scaler.scale(24,24);
+			            	relatedShot = new Shot(ShotResID, 0, towerList[twrNbr]);
+			            	relatedShot.setHeight(recalc.getY());
+			            	relatedShot.setWidth(recalc.getX());
+			            	relatedShot.setAnimationTime(animationTime);
+							
 			            	towerList[twrNbr] = new Tower(mResourceId, 0, null, null);
 			            	towerList[twrNbr].relatedShot = relatedShot;
 			            	towerList[twrNbr].cloneTower(
@@ -228,21 +250,13 @@ public class TowerLoader {
 			            			twrNbr,
 					            	range,
 					            	rangeAOE,
-					            	title,
 					            	price,
 					            	resellPrice,
 					            	minDamage,
 					            	maxDamage,
 					            	aoeDamage,
 					            	velocity,
-					            	hasFrostDamage,
-					            	frostTime,
-					            	hasFireDamage,
-					            	hasPoisonDamage,
-					            	poisonDamage,
-					            	poisonTime,
 					            	upgrade1,
-					            	upgrade2,
 					            	coolDown,
 					            	width,
 					            	height,

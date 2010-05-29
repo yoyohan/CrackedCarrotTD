@@ -72,9 +72,10 @@ public class Level extends Creature {
 		clone.setAllDead(false);
 		clone.scale = this.scale;
 		clone.setDisplayResourceId(this.getDisplayResourceId());
-		clone.setAnimationTime(clone.creatureFast);
+		clone.setAnimationTime(this.creatureFast);
 		clone.moveToWaypoint(0);
 		clone.setSpawnPoint();
 		clone.setNextWayPoint(1);
+		clone.setDamagePerCreep(this.getDamagePerCreep());
 	}
 }
