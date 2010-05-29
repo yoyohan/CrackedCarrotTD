@@ -194,7 +194,7 @@ public class GameInit extends Activity {
         	p = new Player(difficulty, 60, 50, 10);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 50, 50, 10);
+        	p = new Player(difficulty, 50, 500, 10);
         }
         else if (difficulty == 2) {
         	p = new Player(difficulty, 40, 50, 10);

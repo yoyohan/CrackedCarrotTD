@@ -279,7 +279,7 @@ public class GameLoop implements Runnable {
 	    	
 	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
 	    	
-	    	String[] towers = resumeTowers.split("-");
+	    	String[] towers = resumeTowers.split("@");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
 	    		String[] tower = towers[i].split(",");
@@ -288,6 +288,22 @@ public class GameLoop implements Runnable {
 	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
 	    		createTower(c, Integer.parseInt(tower[0]), true);
+	    		
+	    			// And apply the Tower Upgrade first of all.
+    			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
+    			int upgradeIndexS = Integer.parseInt(tower[3]);
+    			if (upgradeIndexS != 0) {
+    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    					t.setCurrentTexture(tex);
+    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					//t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+	    		
 	    	}
 
 	    }
@@ -580,8 +596,9 @@ public class GameLoop implements Runnable {
     	for (int i = 0; i < mTower.length; i++) {
     		Tower t = mTower[i];
     		if(t != null && t.draw){
-    			tmp= mScaler.getGridXandY((int)t.x, (int)t.y);
-    			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "-";
+    			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
+    			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
+    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() + "@";
     		}
     	}
     	
@@ -651,7 +668,6 @@ public class GameLoop implements Runnable {
 	private class UpgradeTowerLvlListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
-			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			int upgradeIndex = t.getUpgradeTowerLvl();
@@ -667,10 +683,11 @@ public class GameLoop implements Runnable {
     				} catch (InterruptedException e) {
     					e.printStackTrace();
     				}
+    				gui.hideTowerUpgrade();
     			}
     			else {
     				
-    				CharSequence text = "No upgrade available!";
+    				CharSequence text = "Not enough money: " + mTTypes[upgradeIndex].getPrice();
     				int duration = Toast.LENGTH_SHORT;
     				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
     				toast.show();
@@ -703,7 +720,6 @@ public class GameLoop implements Runnable {
         
     private void upgradeTower(Tower.UpgradeOption opt) {
 		Log.d("GUI", "Upgrade B clicked!");
-		gui.hideTowerUpgrade();
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 			int price = t.upgradeSpecialAbility(opt, player.getMoney());
@@ -715,12 +731,12 @@ public class GameLoop implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				gui.hideTowerUpgrade();
 				updateCurrency();
 			}
 			else {
 				
-					// This is a really weird message to the player :)
-				CharSequence text = "No upgrade done!";
+				CharSequence text = "Not enough money: " + price;
 				int duration = Toast.LENGTH_SHORT;
 				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
 				toast.show();
