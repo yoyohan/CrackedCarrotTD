@@ -211,13 +211,13 @@ public class GameInit extends Activity {
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
-        if(multiplayerSocket != null){
+        if(multiplayerSocket != null) {
         	Log.d("GAMEINIT", "Create multiplayerGameLoop");
     		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
     		mMultiplayerService.start();
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,soundManager, mMultiplayerService);
-    	}else{
+    	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
