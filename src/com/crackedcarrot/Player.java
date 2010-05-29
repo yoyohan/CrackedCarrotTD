@@ -42,6 +42,9 @@ public class Player {
 		
 			// Punish bad players who let creatures through.
 		score = score - dmg * difficulty;
+		if (score < 0) {
+			score = 0;
+		}
 	}
 	
 	public void moneyFunction(int value) {

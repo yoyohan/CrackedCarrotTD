@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.crackedcarrot.Tower.UpgradeOption;
 import com.crackedcarrot.fileloader.Level;
@@ -449,6 +450,13 @@ public class GameLoop implements Runnable {
 			}
 			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
+
+					// Tell the player that too.
+				CharSequence text = "Not enough money: " + mTTypes[towerType].getPrice();
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+				toast.show();
+				
 				return false;
 			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
@@ -658,7 +666,7 @@ public class GameLoop implements Runnable {
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			int upgradeIndex = t.getUpgradeTowerLvl();
-    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
+    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()) {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
     				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
@@ -671,7 +679,13 @@ public class GameLoop implements Runnable {
     					e.printStackTrace();
     				}
     			}
-    			else{
+    			else {
+    				
+    				CharSequence text = "No upgrade available!";
+    				int duration = Toast.LENGTH_SHORT;
+    				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+    				toast.show();
+    				
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -704,7 +718,7 @@ public class GameLoop implements Runnable {
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 			int price = t.upgradeSpecialAbility(opt, player.getMoney());
-			if (price != 0) { 
+			if (price != 0) {
 				player.moneyFunction(-price);
 				try {
 					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
@@ -714,7 +728,14 @@ public class GameLoop implements Runnable {
 				}
 				updateCurrency();
 			}
-			else{
+			else {
+				
+					// This is a really weird message to the player :)
+				CharSequence text = "No upgrade done!";
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+				toast.show();
+				
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
