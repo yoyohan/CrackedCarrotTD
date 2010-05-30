@@ -247,6 +247,8 @@ public class GameLoopGUI {
         closeUpgrade.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		Log.d("GUI", "Close Upgrade clicked!");
+        		
+        		gameInit.hudHandler.hideRangeIndicator();
 
         		towerUpgrade.setVisibility(View.GONE);
            		towerbutton1.setVisibility(View.VISIBLE);

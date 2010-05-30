@@ -50,8 +50,8 @@ public class UIHandler extends Thread{
 	}
 	
 	public void hideRangeIndicator(){
-		this.mHandler.removeCallbacks(range.getShowRunner());
-		this.mHandler.post(range.getShowRunner());
+		this.mHandler.removeCallbacks(range.getHideRunner());
+		this.mHandler.post(range.getHideRunner());
 	}
 	
 	public Sprite[] getOverlayObjectsToRender(){
