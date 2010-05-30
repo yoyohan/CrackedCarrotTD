@@ -247,6 +247,8 @@ public class GameLoopGUI {
         closeUpgrade.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		Log.d("GUI", "Close Upgrade clicked!");
+        		
+        		gameInit.hudHandler.hideRangeIndicator();
 
         		towerUpgrade.setVisibility(View.GONE);
            		towerbutton1.setVisibility(View.VISIBLE);
@@ -294,6 +296,9 @@ public class GameLoopGUI {
         inMenu6.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		
+        		gameInit.hudHandler.hideRangeIndicator();
+        		
         		gameInit.mGLSurfaceView.setTowerType(-1);
         		towertext.setVisibility(View.GONE);
            		towerbutton1.setVisibility(View.VISIBLE);

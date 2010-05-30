@@ -7,8 +7,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-import com.crackedcarrot.Tower.UpgradeOption;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -278,7 +278,7 @@ public class GameLoop implements Runnable {
 	    	
 	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
 	    	
-	    	String[] towers = resumeTowers.split("-");
+	    	String[] towers = resumeTowers.split("@");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
 	    		String[] tower = towers[i].split(",");
@@ -287,6 +287,63 @@ public class GameLoop implements Runnable {
 	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
 	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
 	    		createTower(c, Integer.parseInt(tower[0]), true);
+	    		
+	    			// And apply the Tower Upgrade first of all.
+    			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
+    			int upgradeIndexS = Integer.parseInt(tower[3]);
+    			if (upgradeIndexS != 0) {
+    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
+    				try {
+    					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    					t.setCurrentTexture(tex);
+    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+    					//t.relatedShot.setCurrentTexture(tex);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    			
+    				// Upgrade the fire.
+    			for (int j = 0; j < Integer.parseInt(tower[4]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_fire, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+
+				// Upgrade the frost.
+    			for (int j = 0; j < Integer.parseInt(tower[5]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_frost, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+    			
+				// Upgrade the poison.
+    			for (int j = 0; j < Integer.parseInt(tower[6]); j ++) {
+					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_poison, 10000);
+					if (price != 0) {
+						try {
+							TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+							t.relatedShot.setCurrentTexture(tex);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+
+
+    			
 	    	}
 
 	    }
@@ -441,6 +498,13 @@ public class GameLoop implements Runnable {
 			}
 			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
+
+					// Tell the player that too.
+				CharSequence text = "Not enough money: " + mTTypes[towerType].getPrice();
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+				toast.show();
+				
 				return false;
 			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
@@ -564,20 +628,20 @@ public class GameLoop implements Runnable {
     }
     
     	// This is used by the savegame-function to remember all the towers.
-    	// TODO: We need to get the correct "version" of the tower too, e.g.
-    	// any upgrades purchased, etc....
     public String resumeGetTowers() {
     	String s = "";
     	Coords tmp;
     	for (int i = 0; i < mTower.length; i++) {
     		Tower t = mTower[i];
     		if(t != null && t.draw){
-    			tmp= mScaler.getGridXandY((int)t.x, (int)t.y);
-    			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "-";
+    			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
+    			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
+    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
     	
-    	Log.d("GAMELOOP", "resumeGetTowers: " + s);
+    	Log.d("GAMELOOP", "DEBUG, resumeGetTowers: " + s);
 
     	return s;
     }
@@ -643,11 +707,10 @@ public class GameLoop implements Runnable {
 	private class UpgradeTowerLvlListener implements OnClickListener{
     	public void onClick(View v){
     		Log.d("GUI", "Upgrade A clicked!");
-			gui.hideTowerUpgrade();
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			int upgradeIndex = t.getUpgradeTowerLvl();
-    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()){
+    			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()) {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
     				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
@@ -659,8 +722,19 @@ public class GameLoop implements Runnable {
     				} catch (InterruptedException e) {
     					e.printStackTrace();
     				}
+    				
+    				int[] data = getTowerCoordsAndRange((int) t.x, (int) t.y);
+    				gui.getGameInit().hudHandler.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
+    				
+    				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
-    			else{
+    			else {
+    				
+    				CharSequence text = "Not enough money: " + mTTypes[upgradeIndex].getPrice();
+    				int duration = Toast.LENGTH_SHORT;
+    				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+    				toast.show();
+    				
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -689,11 +763,10 @@ public class GameLoop implements Runnable {
         
     private void upgradeTower(Tower.UpgradeOption opt) {
 		Log.d("GUI", "Upgrade B clicked!");
-		gui.hideTowerUpgrade();
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 			int price = t.upgradeSpecialAbility(opt, player.getMoney());
-			if (price != 0) { 
+			if (price != 0) {
 				player.moneyFunction(-price);
 				try {
 					TextureData tex = renderHandle.getTexture(t.relatedShot.getResourceId());
@@ -701,9 +774,16 @@ public class GameLoop implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				showTowerUpgradeUI((int) t.x, (int) t.y);
 				updateCurrency();
 			}
-			else{
+			else {
+				
+				CharSequence text = "Not enough money: " + price;
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
+				toast.show();
+				
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
