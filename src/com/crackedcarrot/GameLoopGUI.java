@@ -296,6 +296,9 @@ public class GameLoopGUI {
         inMenu6.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
+        		
+        		gameInit.hudHandler.hideRangeIndicator();
+        		
         		gameInit.mGLSurfaceView.setTowerType(-1);
         		towertext.setVisibility(View.GONE);
            		towerbutton1.setVisibility(View.VISIBLE);
