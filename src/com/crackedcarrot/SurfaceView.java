@@ -35,6 +35,9 @@ public class SurfaceView extends GLSurfaceView {
 		
 		if (action == MotionEvent.ACTION_UP) {
 
+			if (buildTower && gameLoop.gridOcupied(x, y))
+				gameLoop.showTowerUpgradeUI(x, y);
+			
 			if(buildTower){
 				test = gameLoop.createTower(new Coords(x, y), towerType, false);
 			}
