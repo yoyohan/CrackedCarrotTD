@@ -201,6 +201,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @throws InterruptedException 
 	 */
 	private TextureData loadTexture(int rId){
+		Log.d("loadTexture id:", ""+rId);
 		final int resourceId = rId;
 		int lastTextureId = 0;
 		if (!textureMap.containsKey(resourceId)) {

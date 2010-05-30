@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <selector xmlns:android="http://schemas.android.com/apk/res/android"> 
-    <item android:state_focused="false" android:state_pressed="true" android:drawable="@drawable/upgrade_poison_3" /> 
+    <item android:state_focused="false" android:state_pressed="true" android:drawable="@drawable/upgrade3" /> 
     <item android:drawable="@drawable/upgrade_poison3_1" /> 
 </selector>

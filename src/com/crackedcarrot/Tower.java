@@ -518,37 +518,36 @@ public class Tower extends Sprite {
 			this.relatedShot.r = 1;
 			this.relatedShot.g = 1;
 			this.relatedShot.b = 1;
-			
-			// Tracker THis will usually be run every time a tower is upgraded. But until all bugs 
-			// are solved we will only run it when tower is created
-			int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
-			Coords tmp = mScaler.getGridXandY((int)x, (int)y);
-			int right = tmp.x + rangeGrid;
-			if (right >= (mScaler.getGridWidth() + 2))
-				right = mScaler.getGridWidth()+1;
-			int left = tmp.x - rangeGrid;
-			if (left < 0)
-				left = 0;
-			int top = tmp.y + rangeGrid;
-			if (top >= (mScaler.getGridHeight() + 2))
-				top = mScaler.getGridHeight()+1;
-			int bottom = tmp.y -rangeGrid;
-			if (bottom < 0)
-				bottom = 0;
+		}
+		// Tracker THis will usually be run every time a tower is upgraded. But until all bugs 
+		// are solved we will only run it when tower is created
+		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
+		Coords tmp = mScaler.getGridXandY((int)x, (int)y);
+		int right = tmp.x + rangeGrid;
+		if (right >= (mScaler.getGridWidth() + 2))
+			right = mScaler.getGridWidth()+1;
+		int left = tmp.x - rangeGrid;
+		if (left < 0)
+			left = 0;
+		int top = tmp.y + rangeGrid;
+		if (top >= (mScaler.getGridHeight() + 2))
+			top = mScaler.getGridHeight()+1;
+		int bottom = tmp.y -rangeGrid;
+		if (bottom < 0)
+			bottom = 0;
 
-			startTrackerList = new TrackerList();
-			TrackerList currentTrackerList = new TrackerList();
-			startTrackerList.next = currentTrackerList;
+		startTrackerList = new TrackerList();
+		TrackerList currentTrackerList = new TrackerList();
+		startTrackerList.next = currentTrackerList;
 
-			for (int x = left; x <= right; x++) {
-				for (int y = bottom; y <= top; y++) {
-					currentTrackerList.data = (tracker.getTrackerData(x, y));
-					currentTrackerList.next = new TrackerList();
-					currentTrackerList = currentTrackerList.next;
-				}
+		for (int x = left; x <= right; x++) {
+			for (int y = bottom; y <= top; y++) {
+				currentTrackerList.data = (tracker.getTrackerData(x, y));
+				currentTrackerList.next = new TrackerList();
+				currentTrackerList = currentTrackerList.next;
 			}
 		}
-
+		
 		this.draw = true;
 		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower
 		this.relatedShot.draw = false;
@@ -673,7 +672,17 @@ public class Tower extends Sprite {
 	public int getPrice() { return price; }
 
 	public int getResellPrice() {
-		return this.resellPrice;
+		int resell = 0;
+		if (this.upgradeFire > 0) {
+			resell = 15 + upgradeFire * 15;
+		}
+		if (this.upgradeFrost > 0) {
+			resell = 15 + upgradeFrost * 15;
+		}
+		if (this.upgradePoison > 0) {
+			resell = 15 + upgradePoison * 15;			
+		}
+		return resell + this.resellPrice;
 	}
 	
 	public int[] getUpgradeTypeIndex(Tower[] towerTypes) {
@@ -713,7 +722,7 @@ public class Tower extends Sprite {
 			else Upgrade[6] = -1;
 		else Upgrade[6] = -1;
 		
-		Upgrade[8] = this.resellPrice;
+		Upgrade[8] = this.getResellPrice();
 	
 		return Upgrade;
 	}

@@ -89,7 +89,7 @@ public class GameLoop implements Runnable {
 	    for (int i = 0; i < mTower.length; i++) {
 
 	    	mTower[i].initTower(R.drawable.tesla1, 0, mCreatures, soundManager);
-	    	mShots[i] = new Shot(R.drawable.cannonball,0, mTower[i]);
+	    	mShots[i] = new Shot(R.drawable.throwingstar,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
 	    	mTower[i].setWidth(this.mTTypes[0].getWidth());
 	    	mTower[i].relatedShot = mShots[i];
@@ -102,7 +102,7 @@ public class GameLoop implements Runnable {
 	    Random rand = new Random();	    
 	    //same as for the towers and shots.
 	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.bunny_pink_alive, 
+	    	mCreatures[i] = new Creature(R.drawable.mrrabbit_animate, 
 	    								0,player, soundManager, 
 	    								mGameMap.getWaypoints().getCoords(), 
 	    								this,

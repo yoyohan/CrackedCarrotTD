@@ -1,5 +1,5 @@
 // Name: wawe1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of levels::20
+Total number of levels::30
 ////////////////////////////// level 1
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
@@ -221,7 +221,7 @@ fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
-damage/creep::8
+damage/creep::1
 goldValue::6
 nbrOfCreaturs::20
 ////////////////////////////// level 17
@@ -277,7 +277,147 @@ fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
-damage/creep::1
+damage/creep::2
 goldValue::3
 nbrOfCreaturs::10
+/////////////////////////////// level 21
+Texture animate::mrbully_animate
+Texture display::mrbully
+Texture dead::mrbullydead
+scale::0.8
+Wave title::Mr Bully
+health::2673
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+damage/creep::1
+goldValue::10
+nbrOfCreaturs::20
+/////////////////////////////// level 22
+Texture animate::mrlion_animate
+Texture display::mrlion
+Texture dead::mrliondead
+scale::0.8
+Wave title::Mr Lion
+health::3133
+fast level::true
+fire resistant::false
+frost resistant::false
+poison resistant::false
+damage/creep::1
+goldValue::12
+nbrOfCreaturs::20
+////////////////////////////// level 23
+Texture animate::mrmonkey_animate
+Texture display::mrmonkey
+Texture dead::mrmonkeydead
+scale::1
+Wave title::Mr Monkey
+health::3674
+fast level::true
+fire resistant::true
+frost resistant::false
+poison resistant::false
+damage/creep::1
+goldValue::14
+nbrOfCreaturs::20
+/////////////////////////////// level 24
+Texture animate::mrpingu_animate
+Texture display::mrpingu
+Texture dead::mrpingudead
+scale::1
+Wave title::Mr Pingu
+health::4308
+fast level::true
+fire resistant::false
+frost resistant::false
+poison resistant::true
+damage/creep::1
+goldValue::14
+nbrOfCreaturs::20
+/////////////////////////////// level 25
+Texture animate::misspiggy_animate
+Texture display::misspiggy
+Texture dead::misspiggydead
+scale::0.8
+Wave title::Miss Piggy
+health::5051
+fast level::true
+fire resistant::false
+frost resistant::true
+poison resistant::false
+damage/creep::1
+goldValue::16
+nbrOfCreaturs::20
+////////////////////////////// level 26
+Texture animate::mrrabbit_animate
+Texture display::mrrabbit
+Texture dead::mrrabbitdead
+scale::0.8
+Wave title::Agile Mr Rabbit
+health::5922
+fast level::false
+fire resistant::true
+frost resistant::true
+poison resistant::false
+damage/creep::1
+goldValue::18
+nbrOfCreaturs::20
+/////////////////////////////// level 27
+Texture animate::mrbear_animate
+Texture display::mrbear
+Texture dead::mrbeardead
+scale::1.1
+Wave title::Mr Bear
+health::6944
+fast level::false
+fire resistant::false
+frost resistant::true
+poison resistant::true
+damage/creep::1
+goldValue::20
+nbrOfCreaturs::20
+/////////////////////////////// level 28
+Texture animate::mrmouse_animate
+Texture display::mrmouse
+Texture dead::mrmousedead
+scale::0.9
+Wave title::Mr Mouse
+health::8141
+fast level::true
+fire resistant::true
+frost resistant::true
+poison resistant::false
+damage/creep::1
+goldValue::22
+nbrOfCreaturs::20
+/////////////////////////////// level 29
+Texture animate::mrcat_animate
+Texture display::mrcat
+Texture dead::mrcatdead
+scale::1
+Wave title::Mr Cat
+health::9546
+fast level::true
+fire resistant::false
+frost resistant::true
+poison resistant::true
+damage/creep::1
+goldValue::24
+nbrOfCreaturs::20
+/////////////////////////////// level 30
+Texture animate::mrsakib_animate
+Texture display::mrsakib
+Texture dead::mrsakibdead
+scale::1
+Wave title::Sakib
+health::11193
+fast level::true
+fire resistant::true
+frost resistant::true
+poison resistant::true
+damage/creep::1
+goldValue::0
+nbrOfCreaturs::20
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
