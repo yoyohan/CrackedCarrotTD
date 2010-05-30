@@ -88,6 +88,7 @@
 		<LinearLayout
 			android:id="@+id/upgrade_layout"
 			android:visibility="gone"
+			android:background="@drawable/upgradeback"
 			android:layout_height="50dp"
 			android:layout_width="256dp">
 
@@ -288,8 +289,8 @@
       
         <ImageView
         	android:id="@+id/coin"
-			android:layout_width="20dp" 
-			android:layout_height="20dp"
+			android:layout_width="18dp" 
+			android:layout_height="18dp"
 			android:paddingRight="3dp"
 			android:src="@drawable/dollar" >
 		</ImageView>

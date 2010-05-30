@@ -26,7 +26,7 @@
 						android:layout_width="170dp"
 						android:textColor="#000"
 						android:typeface="serif"
-						android:textSize="18dip"
+						android:textSize="16dip"
 						android:text="Next Level Title!" 
 						android:layout_height="wrap_content"/>
 				
@@ -78,7 +78,7 @@
         		android:layout_height="40dp"
         		android:layout_gravity="bottom|left"
         		android:layout_marginRight="20dp"
-        		android:background="@drawable/info" />
+        		android:background="@drawable/xml_button_question" />
 
 		    <Button	android:id="@+id/NextLevelButton"
 				android:text="Start"
