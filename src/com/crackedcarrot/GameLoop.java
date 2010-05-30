@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -498,13 +497,6 @@ public class GameLoop implements Runnable {
 			}
 			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
-
-					// Tell the player that too.
-				CharSequence text = "Not enough money: " + mTTypes[towerType].getPrice();
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
 				return false;
 			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
@@ -729,12 +721,6 @@ public class GameLoop implements Runnable {
     				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
-    				
-    				CharSequence text = "Not enough money: " + mTTypes[upgradeIndex].getPrice();
-    				int duration = Toast.LENGTH_SHORT;
-    				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-    				toast.show();
-    				
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -778,12 +764,6 @@ public class GameLoop implements Runnable {
 				updateCurrency();
 			}
 			else {
-				
-				CharSequence text = "Not enough money: " + price;
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
