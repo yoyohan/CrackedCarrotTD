@@ -61,9 +61,24 @@ public class RangeIndicator extends Sprite{
 				currentTime = SystemClock.uptimeMillis();
 			}
 				// Show the range for a little while.
-			SystemClock.sleep(100);
+			//SystemClock.sleep(100);
 			
-				// Fade out should take equal time as fade in. Update the timers.
+		}
+	};
+	
+	private class Hide implements Runnable{
+		//@Override
+		public void run() {
+			if(draw == false)
+				return;
+			
+			/*
+			opacity = 0.5f;
+			startTime = SystemClock.uptimeMillis();
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = currentTime;
+			*/
+			// Fade out should take equal time as fade in. Update the timers.
 			startTime = SystemClock.uptimeMillis();
 			currentTime = SystemClock.uptimeMillis();
 			lastUpdateTime = currentTime;
@@ -78,20 +93,6 @@ public class RangeIndicator extends Sprite{
 			}
 			opacity = 0.0f;
 			draw = false;
-			
-		}
-	};
-	
-	private class Hide implements Runnable{
-		//@Override
-		public void run() {
-			if(draw == false)
-				return;
-			
-			opacity = 0.5f;
-			startTime = SystemClock.uptimeMillis();
-			currentTime = SystemClock.uptimeMillis();
-			lastUpdateTime = currentTime;
 		}
 	}
 

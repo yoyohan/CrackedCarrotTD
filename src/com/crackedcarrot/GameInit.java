@@ -34,7 +34,7 @@ public class GameInit extends Activity {
 
 	private GameLoopGUI gameLoopGui;
     private Thread      gameLoopThread;
-    private UIHandler   hudHandler;
+    public  UIHandler   hudHandler;
     private MapLoader   mapLoader;
     private SoundManager soundManager;
     

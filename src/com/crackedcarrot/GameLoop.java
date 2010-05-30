@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.crackedcarrot.Tower.UpgradeOption;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -629,8 +628,6 @@ public class GameLoop implements Runnable {
     }
     
     	// This is used by the savegame-function to remember all the towers.
-    	// TODO: We need to get the correct "version" of the tower too, e.g.
-    	// any upgrades purchased, etc....
     public String resumeGetTowers() {
     	String s = "";
     	Coords tmp;
@@ -644,7 +641,7 @@ public class GameLoop implements Runnable {
     		}
     	}
     	
-    	Log.d("GAMELOOP", "resumeGetTowers: " + s);
+    	Log.d("GAMELOOP", "DEBUG, resumeGetTowers: " + s);
 
     	return s;
     }
@@ -725,7 +722,11 @@ public class GameLoop implements Runnable {
     				} catch (InterruptedException e) {
     					e.printStackTrace();
     				}
-    				gui.hideTowerUpgrade();
+    				
+    				int[] data = getTowerCoordsAndRange((int) t.x, (int) t.y);
+    				gui.getGameInit().hudHandler.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
+    				
+    				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
     				
@@ -773,7 +774,7 @@ public class GameLoop implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				gui.hideTowerUpgrade();
+				showTowerUpgradeUI((int) t.x, (int) t.y);
 				updateCurrency();
 			}
 			else {
