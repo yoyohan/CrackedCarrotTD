@@ -661,7 +661,17 @@ public class Tower extends Sprite {
 	public int getPrice() { return price; }
 
 	public int getResellPrice() {
-		return this.resellPrice;
+		int resell = 0;
+		if (this.upgradeFire > 0) {
+			resell = 15 + upgradeFire * 15;
+		}
+		if (this.upgradeFrost > 0) {
+			resell = 15 + upgradeFrost * 15;
+		}
+		if (this.upgradePoison > 0) {
+			resell = 15 + upgradePoison * 15;			
+		}
+		return resell + this.resellPrice;
 	}
 	
 	public int[] getUpgradeTypeIndex(Tower[] towerTypes) {
@@ -701,7 +711,7 @@ public class Tower extends Sprite {
 			else Upgrade[6] = -1;
 		else Upgrade[6] = -1;
 		
-		Upgrade[8] = this.resellPrice;
+		Upgrade[8] = this.getResellPrice();
 	
 		return Upgrade;
 	}
