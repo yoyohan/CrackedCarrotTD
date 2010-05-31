@@ -164,7 +164,7 @@ public class Tower extends Sprite {
 	 */
 	private Creature trackNearestEnemy() {
 		Creature targetCreature = null;
-		double lastCreatureDistance = Double.MAX_VALUE;
+		double lastCreatureHealth = Double.MAX_VALUE;
 		
 		TrackerList tmpList = startTrackerList;
 		while(tmpList != null) {
@@ -178,11 +178,13 @@ public class Tower extends Sprite {
 									Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
 									Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
 						if(distance < range){ // Is the creature within tower range?
-							if (targetCreature == null) 
+							if (targetCreature == null) {
 								targetCreature = tmpCreature;
-							else if (lastCreatureDistance > distance) {
-								targetCreature = tmpCreature;
-								lastCreatureDistance = distance;
+								lastCreatureHealth = tmpCreature.health;
+							}
+							else if (lastCreatureHealth > tmpCreature.health) {
+									targetCreature = tmpCreature;
+									lastCreatureHealth = tmpCreature.health;
 							}
 						}
 					}
