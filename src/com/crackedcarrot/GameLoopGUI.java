@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
@@ -1095,5 +1096,14 @@ public class GameLoopGUI {
 		this.upgradePoison3.setOnClickListener(upgradePoisonListener);
 		this.sellTower.setOnClickListener(sellListener);
 		
+	}
+
+
+	public void NotEnougMoney() {
+		CharSequence text = "Not enough money";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
+		toast.show();
+		hud.blinkRedRange();
 	}
 }

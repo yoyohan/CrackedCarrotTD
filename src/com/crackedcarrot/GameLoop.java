@@ -729,12 +729,7 @@ public class GameLoop implements Runnable {
     				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
-    				
-    				CharSequence text = "Not enough money: " + mTTypes[upgradeIndex].getPrice();
-    				int duration = Toast.LENGTH_SHORT;
-    				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-    				toast.show();
-    				
+    				gui.NotEnougMoney();
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -778,12 +773,7 @@ public class GameLoop implements Runnable {
 				updateCurrency();
 			}
 			else {
-				
-				CharSequence text = "Not enough money: " + price;
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
+				gui.NotEnougMoney();
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
