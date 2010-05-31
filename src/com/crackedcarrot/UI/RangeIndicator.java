@@ -14,6 +14,7 @@ public class RangeIndicator extends Sprite{
 	
 	private Show showRunner;
 	private Hide hideRunner;
+	private BlinkRangeRed blinkR;
 	
 	public RangeIndicator(Scaler s){
 		//The grid only has one subtype, and one frame. Magical constants for the win.
@@ -25,12 +26,13 @@ public class RangeIndicator extends Sprite{
         this.draw = false;
         
         this.r = 1.0f;
-        this.g = 0.0f;
-        this.b = 0.0f;
+        this.g = 1.0f;
+        this.b = 1.0f;
         this.opacity = 0.0f;
                 
 		showRunner = new Show();
 		hideRunner = new Hide();
+		blinkR = new BlinkRangeRed();
 	}
 
 	public Show getShowRunner() {
@@ -39,6 +41,10 @@ public class RangeIndicator extends Sprite{
 
 	public Hide getHideRunner() {
 		return hideRunner;
+	}
+
+	public BlinkRangeRed getBlinkRedRunner() {
+		return blinkR;
 	}
 
 	private class Show implements Runnable{
@@ -95,5 +101,38 @@ public class RangeIndicator extends Sprite{
 			draw = false;
 		}
 	}
+
+	
+	private class BlinkRangeRed implements Runnable{
+		//@Override
+		public void run() {
+			if(draw == false)
+				return;
+			g = 1.0f;
+			b = 1.0f;
+
+			currentTime = SystemClock.uptimeMillis();
+			lastUpdateTime = 400;
+			
+			while(lastUpdateTime > 0){
+				startTime = SystemClock.uptimeMillis();
+				lastUpdateTime -= startTime - currentTime;
+				currentTime = SystemClock.uptimeMillis();
+
+				if(lastUpdateTime > 200) {
+					g = (((lastUpdateTime/2)-100)/100);
+					b = (((lastUpdateTime/2)-100)/100);
+				}
+				else {
+					g = 1-(((lastUpdateTime/2)-100)/100);
+					b = 1-(((lastUpdateTime/2)-100)/100);
+				}
+				SystemClock.sleep(10);
+			}
+
+			g = 1.0f;
+			b = 1.0f;
+		}
+	};
 
 }
