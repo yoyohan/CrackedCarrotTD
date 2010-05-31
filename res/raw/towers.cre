@@ -40,8 +40,8 @@ Sound-impact::cannon_bomb
 // Posiontower Lvl 1
 ////////////////////////////////////
 lvl::1
-price::50
-resell value::25
+price::60
+resell value::30
 minDamage::40
 maxDamage::45
 Shot-velocity::250
@@ -60,8 +60,8 @@ Sound-impact::none
 lvl::1
 price::100
 resell value::50
-minDamage::200
-maxDamage::201
+minDamage::500
+maxDamage::501
 Shot-velocity::250
 cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
@@ -84,7 +84,7 @@ Shot-velocity::400
 cooldown between shots::0.3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
 upgradelink::8
-range::100
+range::110
 aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
@@ -112,8 +112,8 @@ Sound-impact::cannon_bomb
 // Posiontower LVL2
 ////////////////////////////////////
 lvl::2
-price::100
-resell value::90
+price::160
+resell value::120
 minDamage::120
 maxDamage::135
 Shot-velocity::250
@@ -130,10 +130,10 @@ Sound-impact::none
 // Tesla LVL 2
 ////////////////////////////////////
 lvl::2
-price::200
-resell value::150
-minDamage::600
-maxDamage::603
+price::300
+resell value::200
+minDamage::1500
+maxDamage::1501
 Shot-velocity::250
 cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
@@ -156,7 +156,7 @@ Shot-velocity::400
 cooldown between shots::0.3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
 upgradelink::-1
-range::100
+range::120
 aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
@@ -184,15 +184,15 @@ Sound-impact::cannon_bomb
 // Posiontower Lvl 3
 ////////////////////////////////////
 lvl::3
-price::200
-resell value::220
+price::440
+resell value::370
 minDamage::360
 maxDamage::405
 Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
 upgradelink::-1
-range::90
+range::110
 aoe range::0
 aoe damage::0 
 Shot animation time::0.5
@@ -202,10 +202,10 @@ Sound-impact::none
 // Tesla LVL 3
 ////////////////////////////////////
 lvl::3
-price::400
-resell value::350
-minDamage::1800
-maxDamage::1809
+price::900
+resell value::700
+minDamage::4500
+maxDamage::4501
 Shot-velocity::250
 cooldown between shots::3.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
