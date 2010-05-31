@@ -2,5 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android"> 
     <item android:state_focused="true" android:state_pressed="true" android:drawable="@drawable/t_info_3" /> 
     <item android:state_focused="false" android:state_pressed="true" android:drawable="@drawable/t_info_3" /> 
-    <item android:drawable="@drawable/t2_info_1" /> 
+    <item android:drawable="@drawable/t4_info_1" /> 
 </selector>
