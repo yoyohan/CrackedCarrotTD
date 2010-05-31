@@ -483,6 +483,9 @@ public class GameLoopGUI {
 	    	
 	    	// Continue button
 	    	Button buttonPauseContinue = (Button) dialogPause.findViewById(R.id.LevelPause_Continue);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseContinue.setTypeface(face);
+
 	    	buttonPauseContinue.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -491,27 +494,38 @@ public class GameLoopGUI {
 	    		});
 	    	
 	    	// Continue button
-	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseSound.setTypeface(face);
 	    	buttonPauseSound.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
-	    	    		if (gameInit.gameLoop.soundManager.playSound) {
+	    				String pausetext = "Sound: ";
+	    				if (gameInit.gameLoop.soundManager.playSound) {
 	    	    			gameInit.gameLoop.soundManager.playSound = false;
-	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+	    		    		pausetext += "<font color=red>off</font>";
 	    	    		} else {
 	    	    			gameInit.gameLoop.soundManager.playSound = true;
-	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+	    		    		pausetext += "<font color=green>on</font>";
 	    	    		}
+	    		    	CharSequence chS = Html.fromHtml(pausetext);
+	    				buttonPauseSound.setText(chS);
+
 	    			}
 	    		});
-	    		// And update the image to match the current setting.
+	    		// And update the text to match the current setting.
+			String pausetext = "Sound: ";
 			if (gameInit.gameLoop.soundManager.playSound)
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+	    		pausetext += "<font color=green>on</font>";
 			else
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+	    		pausetext += "<font color=red>off</font>";
+	    	CharSequence chS = Html.fromHtml(pausetext);
+			buttonPauseSound.setText(chS);
 	    	
 	    	// Help button
 	    	Button buttonPauseHelp = (Button) dialogPause.findViewById(R.id.LevelPause_Help);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseHelp.setTypeface(face);
 	    	buttonPauseHelp.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -522,6 +536,8 @@ public class GameLoopGUI {
 	    	
 	    	// Quit button
 	    	Button buttonPauseQuit = (Button) dialogPause.findViewById(R.id.LevelPause_Quit);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseQuit.setTypeface(face);
 	    	buttonPauseQuit.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -759,13 +775,16 @@ public class GameLoopGUI {
 		    cS.setText(chS2);
 	    	break;		    
 	    case DIALOG_PAUSE_ID:
-	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
-			if (gameInit.gameLoop.soundManager.playSound)
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+			String pausetext = "Sound: ";
+	    	if (gameInit.gameLoop.soundManager.playSound)
+	    		pausetext += "<font color=green>on</font>";
 			else
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
-
+	    		pausetext += "<font color=red>off</font>";
+	    	
+			chS = Html.fromHtml(pausetext);
+			buttonPauseSound.setText(chS);
 			break;
 			
 	    case DIALOG_TOWERINFO_ID:
