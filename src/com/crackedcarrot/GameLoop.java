@@ -715,7 +715,7 @@ public class GameLoop implements Runnable {
     					e.printStackTrace();
     				}
     				
-    				int[] data = getTowerCoordsAndRange((int) t.x, (int) t.y);
+    				int[] data = getTowerCoordsAndRange((int)(t.x + t.getWidth()/2), (int)(t.y+t.getHeight()/2));
     				gui.getGameInit().hudHandler.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
     				
     				showTowerUpgradeUI((int) t.x, (int) t.y);
