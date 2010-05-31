@@ -39,7 +39,7 @@ public class Options extends Activity {
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
-        optionsHighscore = settings.getBoolean("optionsHighscore", true);
+        optionsHighscore = settings.getBoolean("optionsHighscore", false);
         optionsNextLevel = settings.getBoolean("optionsNextLevel", true);
         optionsSound     = settings.getBoolean("optionsSound", true);
         
