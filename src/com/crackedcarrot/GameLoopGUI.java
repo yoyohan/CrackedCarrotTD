@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -132,7 +131,10 @@ public class GameLoopGUI {
     final TextView upgradePoisonText;
     final TextView sellText;
     
+    final Button tower1Information;
     final Button tower2Information;
+    final Button tower3Information;
+    final Button tower4Information;
 
     
    	// Constructor. A good place to initiate all our different GUI-components.
@@ -168,23 +170,17 @@ public class GameLoopGUI {
         towerbutton4 = (Button) gameInit.findViewById(R.id.t4);
         
         // Tower information. Clicking this will open information about this tower
+        tower1Information = (Button) gameInit.findViewById(R.id.t1info);
+        tower1Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
         tower2Information = (Button) gameInit.findViewById(R.id.t2info);
-        tower2Information.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		
-        		if (GameLoop.pause == false) {
-        			GameLoop.pause();
-   	    		
-        			gameInit.gameLoop.gui.towerInfo = currentSelectedTower;
-        			gameInit.showDialog(DIALOG_TOWERINFO_ID);
-        			
-        			//Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
-        			//ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
-        			//gameInit.startActivity(ShowInstr);
-        		}
-        	}
-        });
-        
+        tower2Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
+        tower3Information = (Button) gameInit.findViewById(R.id.t3info);
+        tower3Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
+        tower4Information = (Button) gameInit.findViewById(R.id.t4info);
+        tower4Information.setOnClickListener(new InfoListener());
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
@@ -948,17 +944,30 @@ public class GameLoopGUI {
 	}
 
 	private void openTowerBuildMenu(int towerId) {
-		//Tower info = gameInit.gameLoop.getTower(towerId);
-		//String text =  info.getTitle() + "<b> Price:</b>" + info.getPrice() + "<br>";
-		//text		+= "<b>Speed:</b> Fast <b>Range:</b> " + (int)info.getRange() + "<br>";
-   		//text 		+= "<b> Damage:</b>" + (int)info.getMinDamage() + "-" + (int)info.getMaxDamage();
-	    //CharSequence styledText = Html.fromHtml(text);
-	    //if (towerId == 0) {
-		    //tower1Information.setVisibility(View.GONE);
+	    if (towerId == 0) {
+		    tower1Information.setVisibility(View.VISIBLE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 1) {
+		    tower1Information.setVisibility(View.GONE);
 		    tower2Information.setVisibility(View.VISIBLE);
-		    //tower3Information.setVisibility(View.GONE);
-		    //tower4Information.setVisibility(View.GONE);
-	    //}
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 2) {
+		    tower1Information.setVisibility(View.GONE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.VISIBLE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 3) {
+		    tower1Information.setVisibility(View.GONE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.VISIBLE);
+	    }
 		this.currentSelectedTower = towerId;
    		towerbutton1.setVisibility(View.GONE);
 		towerbutton2.setVisibility(View.GONE);
@@ -1106,4 +1115,15 @@ public class GameLoopGUI {
 		toast.show();
 		hud.blinkRedRange();
 	}
+
+	private class InfoListener implements OnClickListener{
+    	public void onClick(View v){
+    		if (GameLoop.pause == false) {
+    			GameLoop.pause();
+    			gameInit.gameLoop.gui.towerInfo = currentSelectedTower;
+    			gameInit.showDialog(DIALOG_TOWERINFO_ID);
+    		}
+    	}
+    }
+
 }

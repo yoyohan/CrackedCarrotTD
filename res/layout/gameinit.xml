@@ -72,11 +72,29 @@
 			android:background="#00000000"
 	    	android:visibility="gone">
 	        <Button
+	       		android:id="@+id/t1info"
+				android:layout_width="192dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+	       		android:background="@drawable/t1_info" />
+	        <Button
 	       		android:id="@+id/t2info"
 				android:layout_width="192dp"
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
 	       		android:background="@drawable/t2_info" />
+	        <Button
+	       		android:id="@+id/t3info"
+				android:layout_width="192dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+	       		android:background="@drawable/t3_info" />
+	        <Button
+	       		android:id="@+id/t4info"
+				android:layout_width="192dp"
+				android:layout_height="50dp"
+				android:scaleType="fitXY"
+	       		android:background="@drawable/t4_info" />
 
 	        <Button
         		android:id="@+id/inmenu6"
