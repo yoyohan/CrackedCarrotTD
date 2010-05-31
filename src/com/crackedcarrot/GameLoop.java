@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -498,13 +497,6 @@ public class GameLoop implements Runnable {
 			}
 			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
-
-					// Tell the player that too.
-				CharSequence text = "Not enough money: " + mTTypes[towerType].getPrice();
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
 				return false;
 			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
@@ -787,6 +779,9 @@ public class GameLoop implements Runnable {
     	public void onClick(View v){
     		Log.d("GameLoop", "Sell Tower clicked!");
     		if(selectedTower != null){
+    			
+    			gui.getGameInit().hudHandler.hideRangeIndicator();
+    			
     			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.relatedShot.draw = false;

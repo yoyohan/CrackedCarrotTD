@@ -81,8 +81,18 @@ public class Player {
 	}
 	
 	public int getScore() {
+
+			// Difference in difficulty should reflect the final score.
+		float d = 0;
+		if (difficulty == 0)
+			d = (float) 0.8;
+		else if (difficulty == 1)
+			d = (float) 1.0;
+		else if (difficulty == 2)
+			d = (float) 1.2;
+
 		// Times 10 just so we get a little cooler highscore.
-		return this.score * 10;
+		return this.score * 10 * (int) d;
 	}
 
 }
