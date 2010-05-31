@@ -2,9 +2,7 @@ package com.crackedcarrot.fileloader;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.content.Context;
-
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
@@ -40,7 +38,7 @@ public class MapLoader {
 				//At the moment all towers are the same size.
 				//Number of frames can be changed together with the
 				//Texture.
-				twg[x][y] = new Tower(R.drawable.tower1,0, null, null);
+				twg[x][y] = new Tower(R.drawable.tesla1,0, null, null);
 				twg[x][y].draw = false;
 			}
 		}
@@ -121,7 +119,8 @@ public class MapLoader {
 						    	else if (cp.y < tmpgridy) {
 						    		cp.y = cp.y + 1;
 						    	}
-								twg[cp.x][cp.y] = null;
+								if (cp.x < s.getGridWidth() && cp.x >= 0 && cp.y < s.getGridHeight() && cp.y >= 0)
+									twg[cp.x][cp.y] = null;
 							}
 						}
 					}

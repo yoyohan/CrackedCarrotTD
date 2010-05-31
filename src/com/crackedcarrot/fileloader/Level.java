@@ -10,7 +10,7 @@ public class Level extends Creature {
 	//Constructor
     public Level(int resourceId){
     	//Change subtype and numer of frames during load
-		super(resourceId, 0, null, null, null, null, 0);
+		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
 		return health;
@@ -72,9 +72,10 @@ public class Level extends Creature {
 		clone.setAllDead(false);
 		clone.scale = this.scale;
 		clone.setDisplayResourceId(this.getDisplayResourceId());
-		clone.setAnimationTime(clone.creatureFast);
+		clone.setAnimationTime(this.creatureFast);
 		clone.moveToWaypoint(0);
 		clone.setSpawnPoint();
 		clone.setNextWayPoint(1);
+		clone.setDamagePerCreep(this.getDamagePerCreep());
 	}
 }

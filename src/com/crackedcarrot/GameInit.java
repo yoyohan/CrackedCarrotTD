@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,8 +34,9 @@ public class GameInit extends Activity {
 
 	private GameLoopGUI gameLoopGui;
     private Thread      gameLoopThread;
-    private UIHandler   hudHandler;
+    public  UIHandler   hudHandler;
     private MapLoader   mapLoader;
+    private SoundManager soundManager;
     
 
     ///////////////// Multiplayer ////////////////////////////
@@ -81,7 +84,7 @@ public class GameInit extends Activity {
     		return true;
        	} else if (keyCode == KeyEvent.KEYCODE_MENU) {
        		Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
-       		gameLoop.pause();
+       		GameLoop.pause();
        		showDialog(gameLoopGui.DIALOG_PAUSE_ID);
        		return true;
        	}
@@ -133,11 +136,13 @@ public class GameInit extends Activity {
         Bundle extras  = getIntent().getExtras();
         int mapChoice = 0;
         int difficulty = 0;
-        if(extras != null) {
+        if (extras != null) {
+        	Log.d("GAMEINIT", "Extras != null, fetching intents...");
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
+        } else {
+        	Log.d("GAMEINIT", "WTF?! Extras == null, please tell fredrik how you did this?!");
         }
-
         
         	// Are we resuming an old saved game?
         SharedPreferences resume = getSharedPreferences("resume", 0);
@@ -148,6 +153,7 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
     		editor.commit();
     		resumes = resume.getInt("resumes", 0);
+    		difficulty = -1;		// load saved health/money-values as well.
         } else {
         		// We are not resuming anything, clear the old flag(s) and
         		// prepare for a new save. Saves the chosen map directly.
@@ -156,6 +162,11 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", 0);
     		editor.commit();
         }
+    
+        // We will init soundmanager here insteed
+        soundManager = new SoundManager(getBaseContext());
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        
         
         // Create the map requested by the player
 
@@ -180,13 +191,13 @@ public class GameInit extends Activity {
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 0) {
-        	p = new Player(difficulty, 60, 100, 10);
+        	p = new Player(difficulty, 60, 5000, 10);
         }
         else if (difficulty == 1) {
-        	p = new Player(difficulty, 50, 100, 10);
+        	p = new Player(difficulty, 50, 50, 10);
         }
         else if (difficulty == 2) {
-        	p = new Player(difficulty, 40, 100, 10);
+        	p = new Player(difficulty, 40, 50, 10);
         }
         else { // resume.
         	p = new Player(resume.getInt("difficulty", 0), resume.getInt("health", 0), resume.getInt("money", 0), 10);
@@ -197,20 +208,20 @@ public class GameInit extends Activity {
         Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
-        TowerLoader towerLoad = new TowerLoader(this, scaler);
+        TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
-        if(multiplayerSocket != null){
+        if(multiplayerSocket != null) {
         	Log.d("GAMEINIT", "Create multiplayerGameLoop");
     		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
     		mMultiplayerService.start();
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-    				gameLoopGui,new SoundManager(getBaseContext()), mMultiplayerService);
-    	}else{
+    				gameLoopGui,soundManager, mMultiplayerService);
+    	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-            		gameLoopGui,new SoundManager(getBaseContext()));
+            		gameLoopGui,soundManager);
     	}
 
         	// Resuming old game? Prepare GameLoop for this...
@@ -227,6 +238,7 @@ public class GameInit extends Activity {
         
         //Uncomment this to start cpu profileing (IT KICKS ROYAL ASS!)
         //You also need to uncomment the stopMethodTraceing() further down.
+        //Debug.startMethodTracing();
         
         // Start GameLoop
         gameLoopThread.start();
@@ -274,6 +286,7 @@ public class GameInit extends Activity {
     protected void onStop() {
     	super.onStop();
     	gameLoop.stopGameLoop();
+    	gameLoop.soundManager.release();
     	if(multiplayerMode()){
     		this.mMultiplayerService.endBluetooth();
     		this.mMultiplayerService = null;
@@ -295,6 +308,7 @@ public class GameInit extends Activity {
     	// in between levels when the NextLevel-dialog is shown.
     	
     	if (i == 1) {
+    		Log.d("GAMEINIT", "Saving game status...");
     			// Save everything.
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
@@ -306,12 +320,15 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", resume.getInt("resumes", 0));
     		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
+    		Log.d("GAMEINIT","resumes: " + resume.getInt("resumes", 0));
     	} else {
+    		Log.d("GAMEINIT", "Erasing saved game status.");
     			// Dont allow resume. Clears the main resume flag!
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
     		editor.putInt("resumes", -1);
     		editor.commit();
+    		Log.d("GAMEINIT","resumes: " + -1);
     	}
     }
 }

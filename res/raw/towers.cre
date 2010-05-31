@@ -1,203 +1,219 @@
 // Name: towers | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
-Total number of towers::8
+Total number of towers::12
 ////////////////////////////////////
-// Bunker
+// Bunker LVL1
 ////////////////////////////////////
-texture::bunker1
-title::Bunker Lvl 1
-price::10
-resell value::8
-minDamage::10
-maxDamage::12
+lvl::1
+price::8
+resell value::4
+minDamage::6
+maxDamage::8
 Shot-velocity::400
 cooldown between shots::0.3
-hasFrostDamage::false
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::4
-upgradelink2::-1
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink::4
 range::100
 aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
-Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
 ////////////////////////////////////
-// Cannon tower
+// Cannon tower Lvl 1
 ////////////////////////////////////
-texture::cannontower1
-title::Cannontower
-price::10
+lvl::1
+price::15
 resell value::8
-minDamage::10
-maxDamage::20
+minDamage::18
+maxDamage::28
 Shot-velocity::250
 cooldown between shots::2
-hasFrostDamage::false
-frostTime(sec)::0
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
-upgradelink1::5
-upgradelink2::-1
-range::150
-aoe range:: 70
-aoe damage::10 
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
+upgradelink::5
+range::130
+aoe range:: 100
+aoe damage::18 
 Shot animation time::0.4
-Shot texture::cannonshot
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
 ////////////////////////////////////
-// Posiontower
+// Posiontower Lvl 1
 ////////////////////////////////////
-texture::poisontower1
-title::Posiontower
-price::10
-resell value::8
-minDamage::20
-maxDamage::50
+lvl::1
+price::60
+resell value::30
+minDamage::40
+maxDamage::45
 Shot-velocity::250
-cooldown between shots::2.5
-hasFrostDamage::false
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::true
-poisonDamage(per sec)::2
-poisonTime(sec)::5
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
-upgradelink1::6
-upgradelink2::-1
-range::100
+cooldown between shots::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
+upgradelink::6
+range::90
 aoe range::0
 aoe damage::0 
-Shot animation time::0.4
-Shot texture::poisoncloud
+Shot animation time::0.5
+Sound-l::poison_vattenbrunn
+Sound-impact::none
 ////////////////////////////////////
-// Magic tower
+// Tesla lvl1
 ////////////////////////////////////
-texture::tesla1
-title::Magic tower
-price::10
-resell value::8
-minDamage::60
-maxDamage::90
+lvl::1
+price::100
+resell value::50
+minDamage::500
+maxDamage::501
 Shot-velocity::250
-cooldown between shots::6
-hasFrostDamage::false
-frostTime(sec)::0
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::7
-upgradelink2::-1
-range::400
+cooldown between shots::3.5
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
+upgradelink::7
+range::200
 aoe range:: 0
 aoe damage::0 
-Shot animation time::0.1
-Shot texture::lightningball
+Shot animation time::0.4
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
 ////////////////////////////////////
 // Bunker LVL2
 ////////////////////////////////////
-texture::bunker2
-title::Bunker Lvl 2
-price::70
-resell value::50
-minDamage::40
-maxDamage::62
+lvl::2
+price::24
+resell value::16
+minDamage::18
+maxDamage::24
 Shot-velocity::400
 cooldown between shots::0.3
-hasFrostDamage::false
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::-1
-upgradelink2::-1
-range::100
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink::8
+range::110
 aoe range:: 0
 aoe damage::0
 Shot animation time::0.2
-Shot texture::throwingstar
+Sound-l::bunker_micro
+Sound-impact::none
 ////////////////////////////////////
 // Cannon tower LVL2
 ////////////////////////////////////
-texture::cannontower2
-title::Cannontower Lvl 2
-price::80
-resell value::67
-minDamage::70
-maxDamage::100
+lvl::2
+price::45
+resell value::30
+minDamage::54
+maxDamage::84
 Shot-velocity::250
 cooldown between shots::2
-hasFrostDamage::false
-frostTime(sec)::0
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::1
-upgradelink1::-1
-upgradelink2::-1
-range::150
-aoe range:: 70
-aoe damage::60 
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
+upgradelink::9
+range::140
+aoe range:: 100
+aoe damage::54 
 Shot animation time::0.4
-Shot texture::cannonshot
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
 ////////////////////////////////////
 // Posiontower LVL2
 ////////////////////////////////////
-texture::poisontower2
-title::Posiontower lvl 2
-price::50
-resell value::40
-minDamage::70
-maxDamage::100
+lvl::2
+price::160
+resell value::120
+minDamage::120
+maxDamage::135
 Shot-velocity::250
 cooldown between shots::2.5
-hasFrostDamage::false
-frostTime(sec)::5
-hasFireDamage::false
-hasPoisonDamage::true
-poisonDamage(per sec)::10
-poisonTime(sec)::5
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::2
-upgradelink1::-1
-upgradelink2::-1
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
+upgradelink::10
 range::100
 aoe range::0
 aoe damage::0 
-Shot animation time::0.4
-Shot texture::poisoncloud
+Shot animation time::0.5
+Sound-l::poison_vattenbrunn
+Sound-impact::none
 ////////////////////////////////////
-// Magic tower LVL 2
+// Tesla LVL 2
 ////////////////////////////////////
-texture::tesla1
-title::Magic tower lvl 2
-price::150
-resell value::120
-minDamage::110
-maxDamage::190
+lvl::2
+price::300
+resell value::200
+minDamage::1500
+maxDamage::1501
 Shot-velocity::250
-cooldown between shots::6
-hasFrostDamage::false
-frostTime(sec)::0
-hasFireDamage::false
-hasPoisonDamage::false
-poisonDamage(per sec)::0
-poisonTime(sec)::0
-PROJECTILEAOE-1,PUREAOE-2,PROJECTILE-3::3
-upgradelink1::-1
-upgradelink2::-1
-range::400
+cooldown between shots::3.5
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
+upgradelink::11
+range::250
 aoe range:: 0
 aoe damage::0 
-Shot animation time::0.1
-Shot texture::lightningball
+Shot animation time::0.4
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
+////////////////////////////////////
+// Bunker LVL3
+////////////////////////////////////
+lvl::3
+price::72
+resell value::52
+minDamage::54
+maxDamage::72
+Shot-velocity::400
+cooldown between shots::0.3
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::3
+upgradelink::-1
+range::120
+aoe range:: 0
+aoe damage::0
+Shot animation time::0.2
+Sound-l::bunker_micro
+Sound-impact::none
+////////////////////////////////////
+// Cannon tower LVL3
+////////////////////////////////////
+lvl::3
+price::135
+resell value::97
+minDamage::162
+maxDamage::252
+Shot-velocity::250
+cooldown between shots::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
+upgradelink::-1
+range::150
+aoe range:: 100
+aoe damage::162
+Shot animation time::0.4
+Sound-l::cannon_pangpase
+Sound-impact::cannon_bomb
+////////////////////////////////////
+// Posiontower Lvl 3
+////////////////////////////////////
+lvl::3
+price::440
+resell value::370
+minDamage::360
+maxDamage::405
+Shot-velocity::250
+cooldown between shots::2
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
+upgradelink::-1
+range::110
+aoe range::0
+aoe damage::0 
+Shot animation time::0.5
+Sound-l::poison_vattenbrunn
+Sound-impact::none
+////////////////////////////////////
+// Tesla LVL 3
+////////////////////////////////////
+lvl::3
+price::900
+resell value::700
+minDamage::4500
+maxDamage::4501
+Shot-velocity::250
+cooldown between shots::3.5
+Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
+upgradelink::-1
+range::300
+aoe range:: 0
+aoe damage::0 
+Shot animation time::0.4
+Sound-l::tesla_electric
+Sound-impact::tesla_vattenplatta
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

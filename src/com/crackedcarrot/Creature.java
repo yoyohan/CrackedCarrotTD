@@ -1,6 +1,7 @@
 package com.crackedcarrot;
 
 import java.util.Random;
+
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -46,8 +47,9 @@ public class Creature extends Sprite{
     public boolean creaturePoisonResistant;
     // Creature affected by some kind of tower
     public float creatureFrozenTime;
+    public float creatureFrozenAmount = 1;
     public float creaturePoisonTime;
-    public int creaturePoisonDamage;
+    public float creaturePoisonDamage;
 	// This is the base rgb colors for this creature
 	protected float rDefault = 1;
 	protected float gDefault = 1;
@@ -63,6 +65,20 @@ public class Creature extends Sprite{
 	private float wayPointY;
 	private float spawnWayPointX;
 	private float spawnWayPointY;
+	//Shows how many laps the creature has currentle completed
+	public int mapLap;
+	
+	//Tracker
+	// Each creature is a double list component 
+	public Creature nextCreature;
+	public Creature previousCreauture;
+	private int trackerX = 0;
+	private int trackerY = 0;
+	private Tracker tracker;
+	
+	//How mutch a creature will damage the player
+	private int damagePerCreep;
+	
 	
     /**
      * Constructor. When a new creature is definced we will also
@@ -82,7 +98,8 @@ public class Creature extends Sprite{
 					SoundManager soundMan, 
 					Coords[] wayP, 
 					GameLoop loop, 
-					int creatureIndex
+					int creatureIndex,
+					Tracker tracker
 					){
 		
 		super(resourceId, CREATURE, type);
@@ -96,6 +113,7 @@ public class Creature extends Sprite{
 		rand = new Random();
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
+		this.tracker = tracker;
 	}
 
 	/**
@@ -104,14 +122,17 @@ public class Creature extends Sprite{
 	 * the gameloop.
 	 * @param dmg
 	 */
-	public void damage(float dmg){
+	public void damage(float dmg, int sound){
 		if (health > 0) {
 			dmg = health >= dmg ? dmg : health; 
 			health -= dmg;
 			GL.updateCreatureProgress(dmg);
 			if(health <= 0){
 				die();
+				soundManager.playSoundRandomDIE();
 			}
+			else if (sound != -1)
+				soundManager.playSound(sound);
 		}
 	}
 	
@@ -139,6 +160,15 @@ public class Creature extends Sprite{
 				draw = true;
 				spawnWayPointX = 0;
 				spawnWayPointY = 0;
+
+				//Prepare tracker for game launch
+				Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
+	    		tmp.x++;
+	    		tmp.y++;
+				TrackerData tmpTrac = tracker.getTrackerData(tmp.x, tmp.y);
+    			tmpTrac.addCreatureToList(this);
+    			trackerX = tmp.x;
+    			trackerY = tmp.y;
 			}
 		}
 		//If still alive move the creature.
@@ -146,12 +176,14 @@ public class Creature extends Sprite{
 		if (draw && health > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
-			move(movement);
-			animate(timeDeltaSeconds);
+			if (health > 0) {
+				move(movement);
+				animate(timeDeltaSeconds);
+			}
 		}
 	    // Creature is dead and fading...
 		else if (allDead) {
-			fade(timeDeltaSeconds/5);
+			fade(timeDeltaSeconds/3);
 		}
 	}
 	
@@ -172,6 +204,21 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
+    		
+    		// Update tracker
+    		Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
+    		tmp.x++;
+    		tmp.y++;
+    		if (trackerX != tmp.x || trackerY != tmp.y) {
+    			TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
+    			tmpTrac.removeCreatureFromList(this);
+    			tmpTrac = tracker.getTrackerData(tmp.x, tmp.y);
+    			tmpTrac.addCreatureToList(this);
+    			trackerX = tmp.x;
+    			trackerY = tmp.y;
+    		}
+    			
+    		
 		}
 	}
 
@@ -186,6 +233,7 @@ public class Creature extends Sprite{
     		score();
     		moveToWaypoint(0);
     		setNextWayPoint(1);
+    		this.mapLap++;
     	}
     	else { 		
     		setNextWayPoint(getNextWayPoint() + 1);
@@ -199,14 +247,15 @@ public class Creature extends Sprite{
 	private void die() {
 		this.dead = true;
 		setCurrentTexture(this.mDeadTextureData);
-		this.setRGB();
+		this.resetRGB();
 		player.moneyFunction(this.goldValue);
 		GL.updateCurrency();
-		// play died1.mp3
-		soundManager.playSound(10);
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
 		GL.creatureDiesOnMap(1);
+		// Remove creature from tracker
+		TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
+		tmpTrac.removeCreatureFromList(this);
 	}
 	
 	/**
@@ -217,24 +266,27 @@ public class Creature extends Sprite{
 	 * @return movement speed
 	 */
 	private float applyEffects(float timeDeltaSeconds){
+		float damage = 0;
 		float tmpR = this.rDefault;
 		float tmpG = this.gDefault;
 		float tmpB = this.bDefault;
 		float tmpRGB = 1;
 		
-		int slowAffected = 1;
+		float slowAffected = 1;
 		if (creatureFrozenTime > 0) {
-			slowAffected = 2;
+			slowAffected = creatureFrozenAmount;
     		creatureFrozenTime = creatureFrozenTime - timeDeltaSeconds;
     		tmpRGB = creatureFrozenTime <= 1f ? 1-0.3f*creatureFrozenTime : 0.7f;
     		tmpR = tmpR*tmpRGB;
     		tmpG = tmpG*tmpRGB;
+		} else {
+			creatureFrozenAmount = 1;
 		}
 		// If creature has been shot by a poison tower we slowly reduce creature health
 		if (creaturePoisonTime > 0) {
 			creaturePoisonTime = creaturePoisonTime - (timeDeltaSeconds);
-			damage(timeDeltaSeconds * creaturePoisonDamage);
-	  		tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
+			damage = timeDeltaSeconds * creaturePoisonDamage;
+			tmpRGB = creaturePoisonTime <= 1f ? 1-0.3f*creaturePoisonTime : 0.7f;
 	  		tmpR = tmpR*tmpRGB;
 	  		tmpB = tmpG*tmpRGB;
 		}
@@ -243,11 +295,15 @@ public class Creature extends Sprite{
 			this.r = 0;
 		}
 		
-		float movement = (velocity * (timeDeltaSeconds/this.scale)) / slowAffected;
+		float movement = (velocity * (timeDeltaSeconds/this.scale)) * slowAffected;
 		
 		this.r = tmpR;
 		this.g = tmpG;
 		this.b = tmpB;		
+
+		if (damage > 0)
+			damage(damage,-1);
+
 		return movement;
 	}
 	
@@ -270,7 +326,8 @@ public class Creature extends Sprite{
 	 * will remove one life from player
 	 */
 	private void score(){
-		player.damage(1);
+		player.damage(damagePerCreep);
+		soundManager.playSoundRandomScore();
 		GL.updatePlayerHealth();
 	}
 
@@ -287,10 +344,14 @@ public class Creature extends Sprite{
 	/**
 	 * Affect this creature if possible with frost for the submitted time
 	 * @param time
+	 * @param amount of frost
 	 */
-	public void affectWithFrost(int time) {
-		if (!this.creatureFrostResistant)
+	public void affectWithFrost(int time, float frostAmount) {
+		if (!this.creatureFrostResistant) {
 			this.creatureFrozenTime = time;
+			if (this.creatureFrozenAmount > frostAmount)
+				this.creatureFrozenAmount = frostAmount;
+		}
 	}
 
 	/**
@@ -298,12 +359,12 @@ public class Creature extends Sprite{
 	 * @param poisontime
 	 * @param poisonDamage
 	 */
-	public void affectWithPoison(int poisonTime, int poisonDamage) {
+	public void affectWithPoison(int poisonTime, float poisonDamage) {
 		if (!this.creaturePoisonResistant) {
 			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
-				this.creaturePoisonDamage = (int)(poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);
+				this.creaturePoisonDamage = ((poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime)) / poisonTime);
 			else
-				this.creaturePoisonDamage = (int)(poisonDamage);
+				this.creaturePoisonDamage = poisonDamage;
 			this.creaturePoisonTime = poisonTime;
 		}
 	}
@@ -387,7 +448,7 @@ public class Creature extends Sprite{
 	/**
 	 * Needed to reset rgb to default value
 	 */
-	private void setRGB() {
+	private void resetRGB() {
 		this.r = this.rDefault;
 		this.g = this.gDefault;
 		this.b = this.bDefault;
@@ -442,6 +503,15 @@ public class Creature extends Sprite{
 		this.wayP = waypoints;
 	}
 	
+	/**
+	 * Set how mutch a creature will damage the player
+	 * @param int
+	 * 
+	 */
+	public void setDamagePerCreep(int damagePerCreep) {
+		this.damagePerCreep = damagePerCreep;
+	}
+
 	////////////////////////////////
 	// All getters
 	////////////////////////////////
@@ -510,7 +580,13 @@ public class Creature extends Sprite{
 		float cen_y  = y + this.getHeight()/2;
 		return (cen_y*this.scale);
 	}
-	
+	/**
+	 * Return how mutch this creature will do to a player
+	 * @return int
+	 */
+	public int getDamagePerCreep() {
+		return this.damagePerCreep;
+	}
 	/**
 	 * Return if this creature is fast or not
 	 * @return true if fast

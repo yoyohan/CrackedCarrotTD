@@ -7,8 +7,8 @@ public class Shot extends Sprite{
     // The tower object which the shot belongs to
     public Tower tower;
     // Varibles used to calculate animation time for a shot
-    private float animationTime;
-    private float tmpAnimationTime;
+    public float animationTime;
+    public float tmpAnimationTime;
     
 	public Shot(int resourceId,  int type, Tower tower){
 		super(resourceId, SHOT, type);
@@ -21,8 +21,8 @@ public class Shot extends Sprite{
 	 * the start position
 	 */
 	public void resetShotCordinates() {
-		x = tower.x + tower.getWidth()/2;
-		y = tower.y + tower.getHeight()/2;
+		x = tower.x + tower.getWidth()/2 - this.getWidth()/2;
+		y = tower.y + tower.getHeight()/2 - this.getHeight()/2;
 	}
 	
 
@@ -47,17 +47,37 @@ public class Shot extends Sprite{
 		}
 		else {
 			if (targetCreature != null) {
-				this.x = targetCreature.getScaledX();
-				this.y = targetCreature.getScaledY();
+				this.x = targetCreature.getScaledX() - this.getWidth()/2;
+				this.y = targetCreature.getScaledY() - this.getHeight()/2;
 			}
 			else
 				this.resetShotCordinates();
+			if (this.tower.towerType == Tower.BUNKER || this.tower.towerType == Tower.TELSA)
+	    		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()/2)))+(this.getNbrOfFrames()/2);
+			else 
+				cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()-1)))+1;
+			
 			scaleSprite(size);
-    		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()-1)))+1;
 			return true;
 		}
 	}
 
+	
+	/**
+	 * Shows the moving animation for a shot. Requires system time, 
+	 * @param timeDeltaSeconds
+	 */
+	public void animateMovingShot(float timeDeltaSeconds) {
+		tmpAnimationTime -= timeDeltaSeconds*5;
+		if (tmpAnimationTime <= 0) {
+			this.cFrame = 0;
+			tmpAnimationTime = this.animationTime;
+		}
+		else {
+    		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()/2)));
+		}
+	}
+	
 	/**
 	 * Will return how long time a animation from this shot runs 
 	 * @return time(float)

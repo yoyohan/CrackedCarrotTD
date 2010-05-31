@@ -2,7 +2,9 @@ package com.crackedcarrot.fileloader;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import android.content.Context;
+
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
 
@@ -50,8 +52,8 @@ public class WaveLoader {
 		boolean frostResistant = false;
 		boolean fast = false;
 		
-		if (difficulty == 2) gameDifficulty = 1;
-		if (difficulty == 3) gameDifficulty = 1.7;
+		if (difficulty == 1) gameDifficulty = 1;
+		else if (difficulty == 2) gameDifficulty = 1.5;
 		else gameDifficulty = 0.6;
 		
 		try {
@@ -111,7 +113,7 @@ public class WaveLoader {
 			            	tmpLvl.setHeight(recalc.getY());
 
 			            	// I will put velocity here
-			            	recalc = scaler.scale(50,0);
+			            	recalc = scaler.scale(60,0);
 			        		if (fast)
 				            	tmpLvl.setVelocity(recalc.getX()* 2);
 			        		else tmpLvl.setVelocity(recalc.getX());
@@ -127,9 +129,12 @@ public class WaveLoader {
 			            	tmpLvl.setCreatureSpecials(fast,fireResistant,frostResistant,poisonResistant);
 			            	break;
 						case 12:
-			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
+			            	tmpLvl.setDamagePerCreep(Integer.parseInt(tmpStr[1].trim()));
 							break;
 						case 13:
+			            	tmpLvl.setGoldValue(Integer.parseInt(tmpStr[1].trim()));
+							break;
+						case 14:
 			            	tmpLvl.nbrCreatures = Integer.parseInt(tmpStr[1].trim());
 			            	levelList[lvlNbr] = tmpLvl;
 			            	lvlNbr++;

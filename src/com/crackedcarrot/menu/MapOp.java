@@ -3,7 +3,9 @@ package com.crackedcarrot.menu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.crackedcarrot.GameInit;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 /**
  * This class/activity consists of three clickable objects, two buttons that
@@ -59,34 +62,44 @@ public class MapOp extends Activity implements ViewFactory {
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
         tv = (TextView) this.findViewById(R.id.maptext);
-
+    	Typeface face = Typeface.createFromAsset(this.getAssets(), "fonts/MuseoSans_500.otf");
+    	tv.setTypeface(face);
+    	
+		// Handle scoreninja-thingie before starting game.
+    	ScoreNinjaAdapter scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
+		SharedPreferences settings = getSharedPreferences("Options", 0);
+	    if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this) == false) {
+	    		// If ScoreNinja is enabled but not installed we try to install it:
+	    	scoreNinjaAdapter.show();
+	    }
+    	
         Gallery gallery = (Gallery) findViewById(R.id.gallery1);
         gallery.setAdapter(new ImageAdapter(this));
         gallery.setOnItemSelectedListener(gItemSelectedHandler);
         gallery.setSelection((gallery.getCount()/2)+1, true);
 
         Button StartGameButton = (Button)findViewById(R.id.startmap);
+    	face = Typeface.createFromAsset(this.getAssets(), "fonts/Sniglet.ttf");
+    	StartGameButton.setTypeface(face);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it
-        		Intent StartGame2 = new Intent(v.getContext(),GameInit.class);
-        		StartGame2.putExtra("com.crackedcarrot.menu.map", mapSelected);
-        		StartGame2.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
-        		startActivity(StartGame2);
-        		finish();
-
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
         		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		startActivity(StartGame);
-                finish();
+        		finish();
         	}
         });
         
         // Difficulty listeners.
+    	face = Typeface.createFromAsset(this.getAssets(), "fonts/MuseoSans_500.otf");
         radioEasy = (RadioButton) findViewById(R.id.radioEasy);
+       	radioEasy.setTypeface(face);
         radioNormal = (RadioButton) findViewById(R.id.radioNormal);
+       	radioNormal.setTypeface(face);
         radioHard = (RadioButton) findViewById(R.id.radioHard);
+       	radioHard.setTypeface(face);
 
         radioEasy.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {

@@ -1,6 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
 /** 
  * Class defining the relation between different screen resolutions
  */
@@ -84,11 +83,14 @@ public class Scaler {
 	}
 	
 	public int getGridWidth() {
-		return nbrGridX+1;
+		return nbrGridX;
 	}
 	public int getGridHeight() {
-		return nbrGridY+1;
-		
+		return nbrGridY;
 	}
 	
+	public int rangeGrid(int g) {
+		int tmp = ((g / tmpGridSize.x)) + 1;
+		return tmp;
+	}
 }

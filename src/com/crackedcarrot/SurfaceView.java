@@ -1,12 +1,12 @@
 package com.crackedcarrot;
 
-import com.crackedcarrot.UI.UIHandler;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.crackedcarrot.UI.UIHandler;
 
 public class SurfaceView extends GLSurfaceView {
 	
@@ -35,8 +35,11 @@ public class SurfaceView extends GLSurfaceView {
 		
 		if (action == MotionEvent.ACTION_UP) {
 
+			if (buildTower && gameLoop.gridOcupied(x, y))
+				gameLoop.showTowerUpgradeUI(x, y);
+			
 			if(buildTower){
-				test = gameLoop.createTower(new Coords(x, y), towerType);
+				test = gameLoop.createTower(new Coords(x, y), towerType, false);
 			}
 			
 			if(ui != null && gameLoop.gridOcupied(x, y)){
@@ -44,7 +47,8 @@ public class SurfaceView extends GLSurfaceView {
 				int[] data = gameLoop.getTowerCoordsAndRange(x, y);
 				if(data != null){
 					ui.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
-					gameLoop.showTowerUpgradeUI(x, y);
+					if (!buildTower)
+						gameLoop.showTowerUpgradeUI(x, y);
 					
 					test = true;
 				}
@@ -55,8 +59,7 @@ public class SurfaceView extends GLSurfaceView {
 				
 				//You are not allowed to place tower here
 				ui.blinkRedGrid();
-			}
-			
+			}		
 			else Log.d("SURFACEVIEW", "The edge of the map, here be dragons! Or maybe road or a snowman, maybe a bush to =)");
 			
 			return false;

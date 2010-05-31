@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.*;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class MainMenu extends Activity {
 	
@@ -85,6 +86,19 @@ public class MainMenu extends Activity {
     	}
     	return dialog;
     }
+    
+	protected void onPrepareDialog(int id, Dialog dialog) {
+	    switch(id) {
+	    case 1:
+	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
+	    	textView.setText("Resume last game? You have " + (3 - resumes) + " resume(s) left.");
+	    	
+	    default:
+	    	Log.d("MAINMENU", "onPrepareDialog got unknown dialog id: " + id);
+	        dialog = null;
+	    }
+	}
+
 
 
 	/** Called when the activity is first created. */
@@ -95,20 +109,21 @@ public class MainMenu extends Activity {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    	
+
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
             	// See if there's any old game saved that can be resumed.
             	SharedPreferences resume = getSharedPreferences("resume", 0);
-            	resumes = resume.getInt("resumes", 0);
+            	resumes = resume.getInt("resumes", -1);
+            	Log.d("MAINMENU", "resumes: " + resumes);
             	
             	if (resumes > -1 && resumes < 3) {
             		showDialog(1);
             	} else {
-            		Intent StartGame = new Intent(v.getContext(),MapOp.class);
-            		startActivity(StartGame);
+        	    	Intent StartGame = new Intent(v.getContext(),MapOp.class);
+        	    	startActivity(StartGame);
             	}
         	}
         });
@@ -128,7 +143,6 @@ public class MainMenu extends Activity {
         	public void onClick(View v) {
         		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
         		startActivity(Help);
-        		GameLoop.pause();
         	}
         });
         
@@ -142,6 +156,17 @@ public class MainMenu extends Activity {
         });
         
     }
+
+	// Called when we get focus again (after a game has ended).
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	
+    		// Update the resumes variable in case it's changed.
+        // If you touch this please tell fredrik about it.
+    	SharedPreferences resume = getSharedPreferences("resume", 0);
+    	resumes = resume.getInt("resumes", -1);
+    }
     
 	// Called when we get focus again (after a game has ended).
     @Override
@@ -149,8 +174,9 @@ public class MainMenu extends Activity {
         super.onRestart();
         
         	// Update the resumes variable in case it's changed.
+        // If you touch this please tell fredrik about it.
     	SharedPreferences resume = getSharedPreferences("resume", 0);
-    	resumes = resume.getInt("resumes", 0);
+    	resumes = resume.getInt("resumes", -1);
     }
     
 }

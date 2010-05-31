@@ -11,8 +11,8 @@
 		android:orientation="vertical"
 		android:minHeight="440dp" 
 	    android:layout_height="440dp"
-	    android:minWidth="300dp" 
-	    android:layout_width="300dp" 
+	    android:minWidth="290dp" 
+	    android:layout_width="290dp" 
 		android:layout_centerHorizontal="true"
 	    android:layout_centerVertical="true"
 	    android:gravity="right"
@@ -34,7 +34,7 @@
 						android:id="@+id/backwebdialog"
 						android:visibility="invisible"
 						android:layout_width="40dp"
-						android:layout_height="40dp" android:background="@drawable/button_forward_128">
+						android:layout_height="40dp" android:background="@drawable/xml_button_back">
 				</Button>
 		    </LinearLayout>
 			<LinearLayout 
@@ -45,7 +45,7 @@
 				<Button	
 						android:id="@+id/closewebdialog"
 						android:layout_width="40dp"
-						android:layout_height="40dp" android:background="@drawable/button_close_64">
+						android:layout_height="40dp" android:background="@drawable/xml_button_close">
 				</Button>
 		    </LinearLayout>	    
 	    </LinearLayout>	    

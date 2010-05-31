@@ -42,6 +42,11 @@ public class UIHandler extends Thread{
 		this.mHandler.removeCallbacks(g.getBlinRedRunner());
 		this.mHandler.post(g.getBlinRedRunner());
 	}
+
+	public void blinkRedRange(){
+		this.mHandler.removeCallbacks(range.getBlinkRedRunner());
+		this.mHandler.post(range.getBlinkRedRunner());
+	}
 	
 	public void showRangeIndicator(int towerX, int towerY, int towerRange, int width, int height){
 		this.mHandler.removeCallbacks(range.getShowRunner());
@@ -50,8 +55,8 @@ public class UIHandler extends Thread{
 	}
 	
 	public void hideRangeIndicator(){
-		this.mHandler.removeCallbacks(range.getShowRunner());
-		this.mHandler.post(range.getShowRunner());
+		this.mHandler.removeCallbacks(range.getHideRunner());
+		this.mHandler.post(range.getHideRunner());
 	}
 	
 	public Sprite[] getOverlayObjectsToRender(){
