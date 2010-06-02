@@ -125,11 +125,6 @@ public class GameLoopGUI {
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
-    final TextView upgradeLvlText;
-    final TextView upgradeFireText;
-    final TextView upgradeFrostText;
-    final TextView upgradePoisonText;
-    final TextView sellText;
     
     final Button tower1Information;
     final Button tower2Information;
@@ -157,12 +152,6 @@ public class GameLoopGUI {
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
 
-    	upgradeLvlText = (TextView) gameInit.findViewById(R.id.upgradeLvlText);
-    	upgradeFireText = (TextView) gameInit.findViewById(R.id.upgradeFireText);
-    	upgradeFrostText = (TextView) gameInit.findViewById(R.id.upgradeFrostText);
-    	upgradePoisonText = (TextView) gameInit.findViewById(R.id.upgradePoisonText);
-    	sellText = (TextView) gameInit.findViewById(R.id.sellText);
-    	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
         towerbutton2 = (Button) gameInit.findViewById(R.id.t2);
@@ -1003,67 +992,59 @@ public class GameLoopGUI {
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
 		
-    	upgradeLvlText.setVisibility(View.GONE);
-    	upgradeFireText.setVisibility(View.GONE);
-    	upgradeFrostText.setVisibility(View.GONE);
-    	upgradePoisonText.setVisibility(View.GONE);
-
-    	sellText.setText("+"+recellValue);
-		upgradeLvlText.setText("-"+LevelPrice);
-		upgradeFireText.setText("-"+FirePrice);
-		upgradeFrostText.setText("-"+FrostPrice);
-		upgradePoisonText.setText("-"+PoisonPrice);
+    	this.sellTower.setText("+"+recellValue);
 		
 		switch(showLevelUpgrade) {
 			case(1):
+				this.upgradeLvl2.setText("-"+LevelPrice);
 				this.upgradeLvl2.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
-	    		break;
+
+				break;
 			case(2):
+				this.upgradeLvl3.setText("-"+LevelPrice);
 				this.upgradeLvl3.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
 				break;
 		}
 		switch(showFireUpgrade) {
 		case(0):
+			this.upgradeFire1.setText("-"+FirePrice);
 			this.upgradeFire1.setVisibility(View.VISIBLE);
-    		upgradeFireText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFire2.setText("-"+FirePrice);
 			this.upgradeFire2.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFire3.setText("-"+FirePrice);
 			this.upgradeFire3.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showFrostUpgrade) {
 		case(0):
+			this.upgradeFrost1.setText("-"+FrostPrice);
 			this.upgradeFrost1.setVisibility(View.VISIBLE);
-    		upgradeFrostText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFrost2.setText("-"+FrostPrice);
 			this.upgradeFrost2.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFrost3.setText("-"+FrostPrice);
 			this.upgradeFrost3.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showPoisonUpgrade) {
 		case(0):
+			this.upgradePoison1.setText("-"+PoisonPrice);
 			this.upgradePoison1.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 			break;
 		case(1):
+			this.upgradePoison2.setText("-"+PoisonPrice);
 			this.upgradePoison2.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		case(2):
+			this.upgradePoison3.setText("-"+PoisonPrice);
 			this.upgradePoison3.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		}
 
