@@ -561,7 +561,7 @@ public class Tower extends Sprite {
 		
 		if(opt == UpgradeOption.upgrade_fire) {
 			if (this.getUpgradeFire() == 0 && money >= 30) {
-				this.fireFactor = 1.5f;
+				this.fireFactor = 1.7f;
 				this.hasFireDamage = true;
 				this.r = 1;
 				this.g = 0.7f;
@@ -573,12 +573,12 @@ public class Tower extends Sprite {
 				price = 30;
 			}
 			else if (this.getUpgradeFire() == 1 && money >= 60) {
-				this.fireFactor = 2;
+				this.fireFactor = 2.8f;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 60;
 			}
 			else if (this.getUpgradeFire() == 2 && money >= 90) {
-				this.fireFactor = 3;
+				this.fireFactor = 3.7f;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 90;
 			}

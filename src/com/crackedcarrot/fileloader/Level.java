@@ -54,7 +54,7 @@ public class Level extends Creature {
 		clone.setResourceId(this.getResourceId());
 		clone.setDeadResourceId(this.getDeadResourceId());
 		clone.setDeadTexture(this.getDeadTexture());
-		clone.creatureFast = this.creatureFast;
+		clone.creatureFast = this.isCreatureFast();
 		clone.creatureFireResistant = this.creatureFireResistant;
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
@@ -72,7 +72,7 @@ public class Level extends Creature {
 		clone.setAllDead(false);
 		clone.scale = this.scale;
 		clone.setDisplayResourceId(this.getDisplayResourceId());
-		clone.setAnimationTime(this.creatureFast);
+		clone.setAnimationTime(this.isCreatureFast());
 		clone.moveToWaypoint(0);
 		clone.setSpawnPoint();
 		clone.setNextWayPoint(1);

@@ -217,7 +217,7 @@ public class GameLoopGUI {
         forward.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		forward.setVisibility(View.GONE);
-        		gameInit.gameLoop.setGameSpeed(4);
+        		gameInit.gameLoop.setGameSpeed(3);
         		play.setVisibility(View.VISIBLE);
         	}
         });
