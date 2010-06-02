@@ -21,9 +21,9 @@ public class Player {
 	
 	public void calculateInterest() {
 		// Formula for calculating interest.
-		interestGainedLatestLvl = (int)(money * 0.05);
+		interestGainedLatestLvl = (int)(money * 0.10);
 		score += interestGainedLatestLvl;
-		money = (int)(money * 1.05);
+		money = (int)(money * 1.10);
 	}
 	
 	public int getInterestGainedThisLvl() {
@@ -41,7 +41,7 @@ public class Player {
 		health -= dmg;
 		
 			// Punish bad players who let creatures through.
-		score = score - dmg * difficulty;
+		score = score - dmg * (difficulty + 1);
 		if (score < 0) {
 			score = 0;
 		}
