@@ -59,6 +59,7 @@ public class MapLoader {
 		int lineNo = 0;
 		int nbrWayP = 0;
 		int nbrObs = 0;
+		int textureFile = 0;
 		
 		try {
 			String buf = "";
@@ -81,19 +82,20 @@ public class MapLoader {
 
 				        // Gamemap
 						Sprite background = new Sprite(resID, Sprite.BACKGROUND, 0);
-						//BitmapDrawable backgroundImage = (BitmapDrawable)context.getResources().getDrawable(R.drawable.background2);
-				        //Bitmap backgoundBitmap = backgroundImage.getBitmap();
 				        background.setWidth(s.getScreenResolutionX());
 				        background.setHeight(s.getScreenResolutionY());
 				        bckgrd = new Sprite[1];
 				        bckgrd[0] = background;
 					}
-					else if(lineNo == 5){
+					else if(lineNo == 5)
+						textureFile = context.getResources().getIdentifier(buf.trim(), "raw", context.getPackageName());
+					else if(lineNo == 6){
+						
 						// Nbr of waypoints
 						nbrWayP = Integer.parseInt(buf.trim());
 						wps = new Waypoints(nbrWayP, s);
 					}
-					else if (lineNo >= 6 && lineNo <= 5+nbrWayP){
+					else if (lineNo >= 7 && lineNo <= 6+nbrWayP){
 						//Each waypoint
 						String[] wp = buf.split(",");
 						int tmpgridx = Integer.parseInt(wp[0].trim());
@@ -124,11 +126,11 @@ public class MapLoader {
 							}
 						}
 					}
-					else if (lineNo == 7+nbrWayP){
+					else if (lineNo == 8+nbrWayP){
 						// Nbr of obstacle
 						nbrObs = Integer.parseInt(buf.trim());
 					}
-					else if (lineNo >= 7+nbrWayP && lineNo <= 7+nbrWayP+nbrObs) {
+					else if (lineNo >= 8+nbrWayP && lineNo <= 8+nbrWayP+nbrObs) {
 						String[] wp = buf.split(",");
 						int tmpgridx = Integer.parseInt(wp[0].trim());
 						int tmpgridy = Integer.parseInt(wp[1].trim());
@@ -143,6 +145,6 @@ public class MapLoader {
 			e.printStackTrace();
 		}
 		
-		return new Map(wps,bckgrd,twg,s);
+		return new Map(wps,bckgrd,twg,s,textureFile);
 	}
 }
