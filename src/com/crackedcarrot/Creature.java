@@ -249,6 +249,7 @@ public class Creature extends Sprite{
 		setCurrentTexture(this.mDeadTextureData);
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
+		player.scoreFunction(this.goldValue);
 		GL.updateCurrency();
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.

@@ -39,6 +39,14 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
+        <TextView
+			android:text="Final score: -"
+			android:id="@+id/LevelWon_Score"
+			android:textColor="#000000"
+			android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
 	</LinearLayout>
 	
  	<LinearLayout
