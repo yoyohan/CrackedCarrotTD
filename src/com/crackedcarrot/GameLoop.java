@@ -423,6 +423,8 @@ public class GameLoop implements Runnable {
 	        	for (int x = 0; x < mTower.length; x++) {
 	        		if(mTower[x].draw == true)
 	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
+	        		else if (mTower[x].relatedShot.draw)
+	        			mTower[x].relatedShot.draw = false;
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -560,16 +562,7 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
 
-    	/* Henk visar hur det ska g� till:
-    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
-    	public int lastPorgress 
-    	if (test != lastpro)
-    	*/
-
-    		// Only send this if there are no updates in the queue, saves on performance:
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-
-    		// Another solution, only send when the update is 1/20'th of the total healthbar:
+   		// Another solution, only send when the update is 1/20'th of the total healthbar:
     	int step = (int) 100/20;
     	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
     	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
@@ -784,8 +777,8 @@ public class GameLoop implements Runnable {
     			
     			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			t.relatedShot.draw = false;
     			t.draw = false;
+    			t.relatedShot.draw = false;
     			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}
