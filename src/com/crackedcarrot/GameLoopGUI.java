@@ -188,11 +188,9 @@ public class GameLoopGUI {
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
     	
-    	
     		// And the score Counter.
     	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
-    	Typeface face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
-    	scoreCounter.setTypeface(face);
+    	scoreCounter.setTypeface(MuseoSans);
     	
         // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);

@@ -13,18 +13,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.crackedcarrot.GameInit;
-import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.*;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class MainMenu extends Activity {
 	
-	
 	Dialog dialog;
 	private int resumes;
-
 	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
