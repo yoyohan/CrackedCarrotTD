@@ -243,13 +243,16 @@
 
 		<TextView
 			android:textColor="#000000"
-			android:textStyle="bold"
-			android:textSize="13sp"
+			android:textStyle=""
+			android:textSize="12sp"
 			android:text="Score: -"
 			android:gravity="left"
 			android:id="@+id/scoreCounter"
 			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" android:layout_weight="1" android:layout_gravity="left|center_vertical" android:layout_marginLeft="10dp">
+			android:layout_height="wrap_content"
+			android:layout_weight="1" 
+			android:layout_gravity="left|center_vertical" 
+			android:layout_marginLeft="10dp">
 		</TextView>
       
         <ImageView
