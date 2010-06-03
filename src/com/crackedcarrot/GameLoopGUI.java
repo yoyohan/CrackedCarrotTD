@@ -836,14 +836,14 @@ public class GameLoopGUI {
 	        	 case GUI_PLAYERMONEY_ID:
 	        		 // Update currencyView (MONEY) and score.
 	        		 
-	        		 scoreCounter.setText("Score: " + String.format("%08d", gameInit.gameLoop.player.getScore()) );
+	        		 scoreCounter.setText("" + String.format("%08d", gameInit.gameLoop.player.getScore()) );
 	        		 
 	        		 currencyView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_PLAYERHEALTH_ID:
 	        		 // Update player-health. and score.
 	        		 
-	        		 scoreCounter.setText("Score: " + String.format("%08d", gameInit.gameLoop.player.getScore()) );
+	        		 scoreCounter.setText("" + String.format("%08d", gameInit.gameLoop.player.getScore()) );
 	        		 
 	        		 playerHealthView.setText("" + msg.arg1);
 	        		 break;
