@@ -362,7 +362,7 @@ public class Creature extends Sprite{
 	public void affectWithPoison(int poisonTime, float poisonDamage) {
 		if (!this.creaturePoisonResistant) {
 			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
-				this.creaturePoisonDamage = ((poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime)) / poisonTime);
+				this.creaturePoisonDamage = poisonDamage + ((this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);
 			else
 				this.creaturePoisonDamage = poisonDamage;
 			this.creaturePoisonTime = poisonTime;
@@ -421,7 +421,7 @@ public class Creature extends Sprite{
 	 */
 	public void setAnimationTime(boolean fast) {
 		if (fast)
-			this.animationTime = 0.15f;
+			this.animationTime = 0.22f;
 		else
 			this.animationTime = 0.3f;
 	}

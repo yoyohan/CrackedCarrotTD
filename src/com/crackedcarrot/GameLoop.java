@@ -257,9 +257,9 @@ public class GameLoop implements Runnable {
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
 			reverse--;
-			int special = 1;
+			float special = 1;
     		if (mCreatures[z].isCreatureFast())
-    			special = 2;
+    			special = 1.5f;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
 	}
