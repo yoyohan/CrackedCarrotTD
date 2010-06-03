@@ -290,7 +290,7 @@ public class GameLoop implements Runnable {
 	    			// And apply the Tower Upgrade first of all.
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
     			int upgradeIndexS = Integer.parseInt(tower[3]);
-    			if (upgradeIndexS != 0) {
+    			if ((upgradeIndexS != -1) && (upgradeIndexS != 0)) {
     				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());

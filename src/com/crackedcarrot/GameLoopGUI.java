@@ -73,6 +73,7 @@ public class GameLoopGUI {
     private TextView     nrCreText;
     private TextView     counterText;
     private TextView     playerHealthView;
+    private TextView     scoreCounter;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -186,8 +187,11 @@ public class GameLoopGUI {
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
-
     	
+    	
+    		// And the score Counter.
+    	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
+
     	
         // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);
@@ -831,11 +835,17 @@ public class GameLoopGUI {
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:
-	        		 // Update currencyView (MONEY)
+	        		 // Update currencyView (MONEY) and score.
+	        		 
+	        		 scoreCounter.setText("Score: " + gameInit.gameLoop.player.getScore());
+	        		 
 	        		 currencyView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_PLAYERHEALTH_ID:
-	        		 // Update player-health.
+	        		 // Update player-health. and score.
+	        		 
+	        		 scoreCounter.setText("Score: " + gameInit.gameLoop.player.getScore());
+	        		 
 	        		 playerHealthView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_CREATUREVIEW_ID:

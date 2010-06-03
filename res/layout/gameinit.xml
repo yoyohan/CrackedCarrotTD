@@ -241,6 +241,17 @@
 		android:visibility="invisible"
         android:layout_alignParentTop="true">
 
+		<TextView
+			android:textColor="#000000"
+			android:textStyle="bold"
+			android:textSize="13sp"
+			android:text="Score: -"
+			android:gravity="left"
+			android:id="@+id/scoreCounter"
+			android:paddingRight="7dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:layout_weight="1" android:layout_gravity="left|center_vertical" android:layout_marginLeft="5dp">
+		</TextView>
       
         <ImageView
         	android:id="@+id/coin"
