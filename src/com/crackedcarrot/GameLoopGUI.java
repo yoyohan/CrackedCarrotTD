@@ -19,11 +19,11 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
@@ -125,13 +125,11 @@ public class GameLoopGUI {
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
-    final TextView upgradeLvlText;
-    final TextView upgradeFireText;
-    final TextView upgradeFrostText;
-    final TextView upgradePoisonText;
-    final TextView sellText;
     
+    final Button tower1Information;
     final Button tower2Information;
+    final Button tower3Information;
+    final Button tower4Information;
 
     
    	// Constructor. A good place to initiate all our different GUI-components.
@@ -154,12 +152,6 @@ public class GameLoopGUI {
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
 
-    	upgradeLvlText = (TextView) gameInit.findViewById(R.id.upgradeLvlText);
-    	upgradeFireText = (TextView) gameInit.findViewById(R.id.upgradeFireText);
-    	upgradeFrostText = (TextView) gameInit.findViewById(R.id.upgradeFrostText);
-    	upgradePoisonText = (TextView) gameInit.findViewById(R.id.upgradePoisonText);
-    	sellText = (TextView) gameInit.findViewById(R.id.sellText);
-    	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
         towerbutton2 = (Button) gameInit.findViewById(R.id.t2);
@@ -167,23 +159,17 @@ public class GameLoopGUI {
         towerbutton4 = (Button) gameInit.findViewById(R.id.t4);
         
         // Tower information. Clicking this will open information about this tower
+        tower1Information = (Button) gameInit.findViewById(R.id.t1info);
+        tower1Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
         tower2Information = (Button) gameInit.findViewById(R.id.t2info);
-        tower2Information.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		
-        		if (GameLoop.pause == false) {
-        			GameLoop.pause();
-   	    		
-        			gameInit.gameLoop.gui.towerInfo = currentSelectedTower;
-        			gameInit.showDialog(DIALOG_TOWERINFO_ID);
-        			
-        			//Intent ShowInstr = new Intent(v.getContext(),InstructionWebView.class);
-        			//ShowInstr.putExtra("com.crackedcarrot.menu.tower", currentSelectedTower);
-        			//gameInit.startActivity(ShowInstr);
-        		}
-        	}
-        });
-        
+        tower2Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
+        tower3Information = (Button) gameInit.findViewById(R.id.t3info);
+        tower3Information.setOnClickListener(new InfoListener());
+        // Tower information. Clicking this will open information about this tower
+        tower4Information = (Button) gameInit.findViewById(R.id.t4info);
+        tower4Information.setOnClickListener(new InfoListener());
     	
         // Create an pointer to the statusbar
         statusBar = (LinearLayout) gameInit.findViewById(R.id.status_menu);
@@ -231,7 +217,7 @@ public class GameLoopGUI {
         forward.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		forward.setVisibility(View.GONE);
-        		gameInit.gameLoop.setGameSpeed(4);
+        		gameInit.gameLoop.setGameSpeed(3);
         		play.setVisibility(View.VISIBLE);
         	}
         });
@@ -483,6 +469,9 @@ public class GameLoopGUI {
 	    	
 	    	// Continue button
 	    	Button buttonPauseContinue = (Button) dialogPause.findViewById(R.id.LevelPause_Continue);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseContinue.setTypeface(face);
+
 	    	buttonPauseContinue.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -491,27 +480,38 @@ public class GameLoopGUI {
 	    		});
 	    	
 	    	// Continue button
-	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseSound.setTypeface(face);
 	    	buttonPauseSound.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
-	    	    		if (gameInit.gameLoop.soundManager.playSound) {
+	    				String pausetext = "Sound: ";
+	    				if (gameInit.gameLoop.soundManager.playSound) {
 	    	    			gameInit.gameLoop.soundManager.playSound = false;
-	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+	    		    		pausetext += "<font color=red>off</font>";
 	    	    		} else {
 	    	    			gameInit.gameLoop.soundManager.playSound = true;
-	    	    			buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+	    		    		pausetext += "<font color=green>on</font>";
 	    	    		}
+	    		    	CharSequence chS = Html.fromHtml(pausetext);
+	    				buttonPauseSound.setText(chS);
+
 	    			}
 	    		});
-	    		// And update the image to match the current setting.
+	    		// And update the text to match the current setting.
+			String pausetext = "Sound: ";
 			if (gameInit.gameLoop.soundManager.playSound)
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+	    		pausetext += "<font color=green>on</font>";
 			else
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
+	    		pausetext += "<font color=red>off</font>";
+	    	CharSequence chS = Html.fromHtml(pausetext);
+			buttonPauseSound.setText(chS);
 	    	
 	    	// Help button
 	    	Button buttonPauseHelp = (Button) dialogPause.findViewById(R.id.LevelPause_Help);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseHelp.setTypeface(face);
 	    	buttonPauseHelp.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -522,6 +522,8 @@ public class GameLoopGUI {
 	    	
 	    	// Quit button
 	    	Button buttonPauseQuit = (Button) dialogPause.findViewById(R.id.LevelPause_Quit);
+	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	buttonPauseQuit.setTypeface(face);
 	    	buttonPauseQuit.setOnClickListener(
 	    		new OnClickListener() {
 	    			public void onClick(View v) {
@@ -759,13 +761,16 @@ public class GameLoopGUI {
 		    cS.setText(chS2);
 	    	break;		    
 	    case DIALOG_PAUSE_ID:
-	    	final ImageButton buttonPauseSound = (ImageButton) dialogPause.findViewById(R.id.LevelPause_Sound);
+	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
-			if (gameInit.gameLoop.soundManager.playSound)
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_on);
+			String pausetext = "Sound: ";
+	    	if (gameInit.gameLoop.soundManager.playSound)
+	    		pausetext += "<font color=green>on</font>";
 			else
-				buttonPauseSound.setBackgroundResource(R.drawable.button_sound_off);
-
+	    		pausetext += "<font color=red>off</font>";
+	    	
+			chS = Html.fromHtml(pausetext);
+			buttonPauseSound.setText(chS);
 			break;
 			
 	    case DIALOG_TOWERINFO_ID:
@@ -928,17 +933,30 @@ public class GameLoopGUI {
 	}
 
 	private void openTowerBuildMenu(int towerId) {
-		//Tower info = gameInit.gameLoop.getTower(towerId);
-		//String text =  info.getTitle() + "<b> Price:</b>" + info.getPrice() + "<br>";
-		//text		+= "<b>Speed:</b> Fast <b>Range:</b> " + (int)info.getRange() + "<br>";
-   		//text 		+= "<b> Damage:</b>" + (int)info.getMinDamage() + "-" + (int)info.getMaxDamage();
-	    //CharSequence styledText = Html.fromHtml(text);
-	    //if (towerId == 0) {
-		    //tower1Information.setVisibility(View.GONE);
+	    if (towerId == 0) {
+		    tower1Information.setVisibility(View.VISIBLE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 1) {
+		    tower1Information.setVisibility(View.GONE);
 		    tower2Information.setVisibility(View.VISIBLE);
-		    //tower3Information.setVisibility(View.GONE);
-		    //tower4Information.setVisibility(View.GONE);
-	    //}
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 2) {
+		    tower1Information.setVisibility(View.GONE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.VISIBLE);
+		    tower4Information.setVisibility(View.GONE);
+	    }
+	    else if (towerId == 3) {
+		    tower1Information.setVisibility(View.GONE);
+		    tower2Information.setVisibility(View.GONE);
+		    tower3Information.setVisibility(View.GONE);
+		    tower4Information.setVisibility(View.VISIBLE);
+	    }
 		this.currentSelectedTower = towerId;
    		towerbutton1.setVisibility(View.GONE);
 		towerbutton2.setVisibility(View.GONE);
@@ -974,67 +992,59 @@ public class GameLoopGUI {
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
 		
-    	upgradeLvlText.setVisibility(View.GONE);
-    	upgradeFireText.setVisibility(View.GONE);
-    	upgradeFrostText.setVisibility(View.GONE);
-    	upgradePoisonText.setVisibility(View.GONE);
-
-    	sellText.setText("+"+recellValue);
-		upgradeLvlText.setText("-"+LevelPrice);
-		upgradeFireText.setText("-"+FirePrice);
-		upgradeFrostText.setText("-"+FrostPrice);
-		upgradePoisonText.setText("-"+PoisonPrice);
+    	this.sellTower.setText("+"+recellValue);
 		
 		switch(showLevelUpgrade) {
 			case(1):
+				this.upgradeLvl2.setText("-"+LevelPrice);
 				this.upgradeLvl2.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
-	    		break;
+
+				break;
 			case(2):
+				this.upgradeLvl3.setText("-"+LevelPrice);
 				this.upgradeLvl3.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
 				break;
 		}
 		switch(showFireUpgrade) {
 		case(0):
+			this.upgradeFire1.setText("-"+FirePrice);
 			this.upgradeFire1.setVisibility(View.VISIBLE);
-    		upgradeFireText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFire2.setText("-"+FirePrice);
 			this.upgradeFire2.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFire3.setText("-"+FirePrice);
 			this.upgradeFire3.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showFrostUpgrade) {
 		case(0):
+			this.upgradeFrost1.setText("-"+FrostPrice);
 			this.upgradeFrost1.setVisibility(View.VISIBLE);
-    		upgradeFrostText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFrost2.setText("-"+FrostPrice);
 			this.upgradeFrost2.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFrost3.setText("-"+FrostPrice);
 			this.upgradeFrost3.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showPoisonUpgrade) {
 		case(0):
+			this.upgradePoison1.setText("-"+PoisonPrice);
 			this.upgradePoison1.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 			break;
 		case(1):
+			this.upgradePoison2.setText("-"+PoisonPrice);
 			this.upgradePoison2.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		case(2):
+			this.upgradePoison3.setText("-"+PoisonPrice);
 			this.upgradePoison3.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		}
 
@@ -1077,4 +1087,24 @@ public class GameLoopGUI {
 		this.sellTower.setOnClickListener(sellListener);
 		
 	}
+
+
+	public void NotEnougMoney() {
+		CharSequence text = "Not enough money";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
+		toast.show();
+		hud.blinkRedRange();
+	}
+
+	private class InfoListener implements OnClickListener{
+    	public void onClick(View v){
+    		if (GameLoop.pause == false) {
+    			GameLoop.pause();
+    			gameInit.gameLoop.gui.towerInfo = currentSelectedTower;
+    			gameInit.showDialog(DIALOG_TOWERINFO_ID);
+    		}
+    	}
+    }
+
 }

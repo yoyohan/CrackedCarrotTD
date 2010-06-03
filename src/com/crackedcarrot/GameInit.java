@@ -191,7 +191,7 @@ public class GameInit extends Activity {
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 0) {
-        	p = new Player(difficulty, 60, 50, 10);
+        	p = new Player(difficulty, 60, 5000, 10);
         }
         else if (difficulty == 1) {
         	p = new Player(difficulty, 50, 50, 10);

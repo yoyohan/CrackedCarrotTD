@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
@@ -258,9 +257,9 @@ public class GameLoop implements Runnable {
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
 			reverse--;
-			int special = 1;
+			float special = 1;
     		if (mCreatures[z].isCreatureFast())
-    			special = 2;
+    			special = 1.5f;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
 	}
@@ -424,6 +423,8 @@ public class GameLoop implements Runnable {
 	        	for (int x = 0; x < mTower.length; x++) {
 	        		if(mTower[x].draw == true)
 	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
+	        		else if (mTower[x].relatedShot.draw)
+	        			mTower[x].relatedShot.draw = false;
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -498,13 +499,6 @@ public class GameLoop implements Runnable {
 			}
 			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
-
-					// Tell the player that too.
-				CharSequence text = "Not enough money: " + mTTypes[towerType].getPrice();
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
 				return false;
 			}
 			Coords tmpC = mScaler.getGridXandY(TowerPos.x,TowerPos.y);
@@ -568,16 +562,7 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
 
-    	/* Henk visar hur det ska g� till:
-    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
-    	public int lastPorgress 
-    	if (test != lastpro)
-    	*/
-
-    		// Only send this if there are no updates in the queue, saves on performance:
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-
-    		// Another solution, only send when the update is 1/20'th of the total healthbar:
+   		// Another solution, only send when the update is 1/20'th of the total healthbar:
     	int step = (int) 100/20;
     	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
     	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
@@ -723,18 +708,13 @@ public class GameLoop implements Runnable {
     					e.printStackTrace();
     				}
     				
-    				int[] data = getTowerCoordsAndRange((int) t.x, (int) t.y);
+    				int[] data = getTowerCoordsAndRange((int)(t.x + t.getWidth()/2), (int)(t.y+t.getHeight()/2));
     				gui.getGameInit().hudHandler.showRangeIndicator(data[0], data[1], data[2], data[3], data[4]);
     				
     				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
-    				
-    				CharSequence text = "Not enough money: " + mTTypes[upgradeIndex].getPrice();
-    				int duration = Toast.LENGTH_SHORT;
-    				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-    				toast.show();
-    				
+    				gui.NotEnougMoney();
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -778,12 +758,7 @@ public class GameLoop implements Runnable {
 				updateCurrency();
 			}
 			else {
-				
-				CharSequence text = "Not enough money: " + price;
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(gui.getGameInit(), text, duration);
-				toast.show();
-				
+				gui.NotEnougMoney();
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
@@ -797,10 +772,13 @@ public class GameLoop implements Runnable {
     	public void onClick(View v){
     		Log.d("GameLoop", "Sell Tower clicked!");
     		if(selectedTower != null){
+    			
+    			gui.getGameInit().hudHandler.hideRangeIndicator();
+    			
     			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			t.relatedShot.draw = false;
     			t.draw = false;
+    			t.relatedShot.draw = false;
     			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}
