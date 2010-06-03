@@ -191,7 +191,8 @@ public class GameLoopGUI {
     	
     		// And the score Counter.
     	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
-
+    	Typeface face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+    	scoreCounter.setTypeface(face);
     	
         // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);
@@ -837,14 +838,14 @@ public class GameLoopGUI {
 	        	 case GUI_PLAYERMONEY_ID:
 	        		 // Update currencyView (MONEY) and score.
 	        		 
-	        		 scoreCounter.setText("Score: " + gameInit.gameLoop.player.getScore());
+	        		 scoreCounter.setText("Score: " + String.format("%08d", gameInit.gameLoop.player.getScore()) );
 	        		 
 	        		 currencyView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_PLAYERHEALTH_ID:
 	        		 // Update player-health. and score.
 	        		 
-	        		 scoreCounter.setText("Score: " + gameInit.gameLoop.player.getScore());
+	        		 scoreCounter.setText("Score: " + String.format("%08d", gameInit.gameLoop.player.getScore()) );
 	        		 
 	        		 playerHealthView.setText("" + msg.arg1);
 	        		 break;
