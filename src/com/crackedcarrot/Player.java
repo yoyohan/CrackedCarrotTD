@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 public class Player {
 
 	private int difficulty;
@@ -21,9 +23,9 @@ public class Player {
 	
 	public void calculateInterest() {
 		// Formula for calculating interest.
-		interestGainedLatestLvl = (int)(money * 0.10);
-		score += interestGainedLatestLvl;
-		money = (int)(money * 1.10);
+		interestGainedLatestLvl = (int) (money * 0.10);
+		score = score + interestGainedLatestLvl;
+		money = (int) (money * 1.10);
 	}
 	
 	public int getInterestGainedThisLvl() {
@@ -56,6 +58,13 @@ public class Player {
 		}
 	}
 	
+	public void scoreFunction(int value) {
+		score = score + value;
+		
+		if (score < 0)
+			score = 0;
+	}
+	
 	public int getMoney() {
 		return money;
 	}
@@ -81,18 +90,16 @@ public class Player {
 	}
 	
 	public int getScore() {
-
 			// Difference in difficulty should reflect the final score.
-		float d = 0;
 		if (difficulty == 0)
-			d = (float) 0.8;
+			return (this.score * 8);
 		else if (difficulty == 1)
-			d = (float) 1.0;
+			return (this.score * 10);
 		else if (difficulty == 2)
-			d = (float) 1.2;
+			return (this.score * 12);
 
-		// Times 10 just so we get a little cooler highscore.
-		return this.score * 10 * (int) d;
+		// Que?
+		return -1;
 	}
 
 }
