@@ -2,7 +2,6 @@ package com.crackedcarrot.menu;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -66,19 +65,20 @@ public class MapOp extends Activity implements ViewFactory {
 
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize = 8;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
         InputStream is = this.getResources().openRawResource(R.drawable.map1);
         
         try {
-        	bitmap1 = BitmapFactory.decodeStream(is, null, options);
+        	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map2);
-            bitmap2 = BitmapFactory.decodeStream(is, null, options);
+            mmaps[1] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.background);
-            bitmap3 = BitmapFactory.decodeStream(is, null, options);
+            mmaps[2] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
-                // Ignore.
+            	//Skip
             }
         }
         
