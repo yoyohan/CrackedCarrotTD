@@ -1,10 +1,15 @@
 package com.crackedcarrot.menu;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -33,13 +38,6 @@ import com.scoreninja.adapter.ScoreNinjaAdapter;
  */
 public class MapOp extends Activity implements ViewFactory {
 	
-	/** References to our images */
-    private Integer[] mmaps = {
-    		R.drawable.map1,
-    		R.drawable.map2,
-    		R.drawable.background,
-    };
-    
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected;
@@ -49,6 +47,16 @@ public class MapOp extends Activity implements ViewFactory {
     private RadioButton radioNormal;
     private RadioButton radioHard;
     
+    private Bitmap bitmap1;
+    private Bitmap bitmap2;
+    private Bitmap bitmap3;
+
+    /** References to our images */
+    private Bitmap[] mmaps = {
+    		bitmap1,
+    		bitmap2,
+    		bitmap3,
+    };
     
     /** Called when the activity is first created. */
     @Override
@@ -56,6 +64,24 @@ public class MapOp extends Activity implements ViewFactory {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainmenu_startgame);
 
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        InputStream is = this.getResources().openRawResource(R.drawable.map1);
+        
+        try {
+        	bitmap1 = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.map2);
+            bitmap2 = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.background);
+            bitmap3 = BitmapFactory.decodeStream(is, null, options);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                // Ignore.
+            }
+        }
+        
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -249,7 +275,7 @@ public class MapOp extends Activity implements ViewFactory {
         {
         	this.position = position%3;
         	ImageView imageView = new ImageView(context);
-            imageView.setImageResource(mmaps[this.position]);
+            imageView.setImageBitmap(mmaps[this.position]);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setLayoutParams(new Gallery.LayoutParams(x,y));
             imageView.setBackgroundResource(R.drawable.xml_gallery);
