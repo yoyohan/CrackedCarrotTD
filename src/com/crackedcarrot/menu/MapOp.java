@@ -79,8 +79,6 @@ public class MapOp extends Activity implements ViewFactory {
         gallery.setSelection((gallery.getCount()/2)+1, true);
 
         Button StartGameButton = (Button)findViewById(R.id.startmap);
-    	face = Typeface.createFromAsset(this.getAssets(), "fonts/Sniglet.ttf");
-    	StartGameButton.setTypeface(face);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it
