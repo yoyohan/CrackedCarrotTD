@@ -407,6 +407,11 @@ public class GameLoopGUI {
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.levelwon);
 	    	dialog.setCancelable(false);
+	    	
+	    	// Score
+	    	TextView textViewWonScore = (TextView) dialog.findViewById(R.id.LevelWon_Score);
+	    	textViewWonScore.setText("Score: " + gameInit.gameLoop.player.getScore());
+	    	
 	    	// First button
 	    	Button buttonWon = (Button) dialog.findViewById(R.id.LevelWon_OK);
 	        buttonWon.setOnClickListener(new OnClickListener() {
@@ -420,6 +425,11 @@ public class GameLoopGUI {
 	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialog.setContentView(R.layout.levellost);
 	    	dialog.setCancelable(false);
+	    	
+	    	// Score
+	    	TextView textViewLostScore = (TextView) dialog.findViewById(R.id.LevelLost_Score);
+	    	textViewLostScore.setText("Score: " + gameInit.gameLoop.player.getScore());
+	    	
 	    	// First button
 	    	Button buttonLost = (Button) dialog.findViewById(R.id.LevelLost_OK);
 	        buttonLost.setOnClickListener(new OnClickListener() {
