@@ -7,20 +7,32 @@
 	android:background="@drawable/background"
 	xmlns:android="http://schemas.android.com/apk/res/android"> 
 
-<TableLayout
-	android:layout_width="200dp"
-    android:layout_height="320dp"
+<LinearLayout
+	android:layout_width="fill_parent"
+	android:layout_height="80dp"
     android:gravity="center"
-	android:layout_alignParentTop="true"
+>
+	    <ImageView
+			android:layout_width="260dp"
+			android:layout_height="40dp"
+			android:background="@drawable/multiplayerimage">
+		</ImageView>
+</LinearLayout>
+
+<TableLayout
+	android:layout_width="140dp"
+    android:layout_height="wrap_content"
+	android:paddingTop="100dp"
+    android:gravity="center"
 	android:layout_centerHorizontal="true"
-	android:paddingTop="40dp"
 	android:background="#00000000">
-    
+
     <TableRow>
         <Button
 			android:id="@+id/host"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="38dp"
+	    	android:scaleType="fitXY"
 			android:background="@drawable/xml_button_host">
 		</Button>
     </TableRow>
@@ -36,7 +48,8 @@
 	<Button
 			android:id="@+id/join"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="38dp"
+	    	android:scaleType="fitXY"
 			android:background="@drawable/xml_button_join">
 		</Button>
     </TableRow>
@@ -52,10 +65,26 @@
         <Button
 			android:id="@+id/back"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="38dp"
+	    	android:scaleType="fitXY"
 			android:background="@drawable/xml_button_menu_back">
 		</Button>
     </TableRow>
+
+	<TableRow>
+		<View
+        	android:layout_height="15dp"
+        	android:layout_width="wrap_content"
+        	android:background="#00000000" />
+	</TableRow>
+
+	<TableRow>
+		<TextView
+			android:gravity="center"
+        	android:text="Multiplayer uses bluetooth to connect to your opponent."
+        	android:layout_width="wrap_content"
+        	android:textColor="#000000" />
+	</TableRow>
 
 </TableLayout>
 </RelativeLayout>
