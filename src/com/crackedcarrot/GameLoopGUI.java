@@ -188,7 +188,6 @@ public class GameLoopGUI {
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
     	
-    	
     		// And the score Counter.
     	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
     	scoreCounter.setTypeface(MuseoSans);

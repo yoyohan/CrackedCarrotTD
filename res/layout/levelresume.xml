@@ -45,7 +45,7 @@
 	        	android:layout_width="128dp"
 				android:layout_height="34dp"
 		   		android:scaleType="fitXY"
-				android:background="@drawable/xml_button_startgame" />
+				android:background="@drawable/xml_button_newgame" />
 	
 		</LinearLayout>
 	
