@@ -42,6 +42,9 @@ public class Player {
 		healthLost++;
 		health -= dmg;
 		
+		if (health < 0)
+			health = 0;
+		
 			// Punish bad players who let creatures through.
 		score = score - dmg * (difficulty + 1);
 		if (score < 0) {
