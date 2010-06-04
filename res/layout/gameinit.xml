@@ -120,7 +120,7 @@
 				android:layout_width="192dp">
 
 				<Button
-	   	    		android:layout_width="49dp"
+	   	    		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 	     	  		android:id="@+id/sell"
@@ -128,7 +128,7 @@
 	     	  		android:background="@drawable/xml_upgrade_sell" />
 		     	  	
 	   	    	<Button
-	   	    		android:layout_width="49dp"
+	   	    		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:gravity="bottom|center"
@@ -136,7 +136,7 @@
 	     	  		android:id="@+id/upgrade_lvl2" />
 	       		
 	    	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"
@@ -145,7 +145,7 @@
 	     	  		android:id="@+id/upgrade_lvl3" />
 		     	  		
 	    	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -153,7 +153,7 @@
 	       			android:background="@drawable/xml_upgrade_fire1"
 	       			android:id="@+id/upgrade_fire1" />       		
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -161,7 +161,7 @@
 	       			android:background="@drawable/xml_upgrade_fire2"
 	       			android:id="@+id/upgrade_fire2" />       		
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -170,7 +170,7 @@
 	       			android:id="@+id/upgrade_fire3" />
 
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -178,7 +178,7 @@
 	       			android:background="@drawable/xml_upgrade_frost1"
 	       			android:id="@+id/upgrade_frost1" />       	  	
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -186,7 +186,7 @@
 	       			android:background="@drawable/xml_upgrade_frost2"
 	       			android:id="@+id/upgrade_frost2" />
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -195,7 +195,7 @@
 	       			android:id="@+id/upgrade_frost3" />       	  	
 
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -203,7 +203,7 @@
 	       			android:background="@drawable/xml_upgrade_poison1"
 	       			android:id="@+id/upgrade_poison1" />       	  	
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				
@@ -211,7 +211,7 @@
 	       			android:background="@drawable/xml_upgrade_poison2"
 	       			android:id="@+id/upgrade_poison2" />       	  	
 	     	   	<Button
-	     	  		android:layout_width="49dp"
+	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
 					android:scaleType="fitXY"
 					android:visibility="gone"				

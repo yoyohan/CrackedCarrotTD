@@ -42,8 +42,8 @@ Sound-impact::cannon_bomb
 lvl::1
 price::60
 resell value::30
-minDamage::50
-maxDamage::80
+minDamage::40
+maxDamage::60
 Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
@@ -62,7 +62,7 @@ price::100
 resell value::50
 minDamage::800
 maxDamage::801
-Shot-velocity::250
+Shot-velocity::350
 cooldown between shots::3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::7
@@ -114,8 +114,8 @@ Sound-impact::cannon_bomb
 lvl::2
 price::150
 resell value::105
-minDamage::150
-maxDamage::240
+minDamage::120
+maxDamage::180
 Shot-velocity::250
 cooldown between shots::2.5
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
@@ -134,7 +134,7 @@ price::250
 resell value::175
 minDamage::2400
 maxDamage::2401
-Shot-velocity::250
+Shot-velocity::350
 cooldown between shots::3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::11
@@ -186,8 +186,8 @@ Sound-impact::cannon_bomb
 lvl::3
 price::375
 resell value::323
-minDamage::450
-maxDamage::720
+minDamage::360
+maxDamage::540
 Shot-velocity::250
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::2
@@ -206,7 +206,7 @@ price::625
 resell value::538
 minDamage::7200
 maxDamage::7209
-Shot-velocity::250
+Shot-velocity::350
 cooldown between shots::3
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::4
 upgradelink::-1

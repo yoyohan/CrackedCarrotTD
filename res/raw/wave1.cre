@@ -132,7 +132,7 @@ Texture display::misspiggy
 Texture dead::misspiggydead
 scale::1.2
 Wave title::Bitchy Miss P
-health::8100
+health::8000
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -272,14 +272,14 @@ Texture display::mrelephant
 Texture dead::mrelephantdead
 scale::1.2
 Wave title::Mr Elephant
-health::4534
+health::40000
 fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
-damage/creep::2
-goldValue::3
-nbrOfCreaturs::10
+damage/creep::5
+goldValue::200
+nbrOfCreaturs::1
 /////////////////////////////// level 21
 Texture animate::mrbully_animate
 Texture display::mrbully
@@ -411,13 +411,13 @@ Texture animate::mrsakib_animate
 Texture display::mrsakib
 Texture dead::mrsakibdead
 scale::1
-Wave title::Sakib
-health::11193
+Wave title::Mr Sakib
+health::200000
 fast level::true
 fire resistant::true
 frost resistant::true
 poison resistant::true
-damage/creep::1
+damage/creep::5
 goldValue::0
-nbrOfCreaturs::20
+nbrOfCreaturs::1
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE
