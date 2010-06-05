@@ -54,7 +54,6 @@ public class Tower extends Sprite {
 	private float poisonFactor;
 	// The linked upgrade for this tower
 	private int upgradeLvl;
-	private int upgradeLvlOld;
 	private int upgradeFire;
 	private int upgradeFrost;
 	private int upgradePoison;
@@ -68,7 +67,7 @@ public class Tower extends Sprite {
     private Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
-   // used by resume to uniquely identify this tower-type.
+    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
     // Used to determine if the tower should animate impact
     private boolean ImpactdAnimate = false;
@@ -497,8 +496,6 @@ public class Tower extends Sprite {
 		this.maxDamage = clone.maxDamage;
 		this.aoeDamage = clone.aoeDamage;
 		this.velocity = clone.velocity;
-			// Needed for resuming of towers...
-				this.upgradeLvlOld = this.upgradeLvl;
 		this.upgradeLvl = clone.upgradeLvl;
 		this.coolDown = clone.coolDown;
 		this.relatedShot.setAnimationTime(clone.relatedShot.getAnimationTime());
@@ -644,6 +641,14 @@ public class Tower extends Sprite {
 	//////////////////////////////////////////////
 	// Getter for tower
 	//////////////////////////////////////////////
+
+	public int getTowerType() { return this.towerType; }
+	
+	/**
+	 * Given a tower this method will create a new tower with the same
+	 * variables as the given one
+	 * @return
+	 */
 	
 	/**
 	 * Return range of this tower
