@@ -292,7 +292,7 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
     			int upgradeIndexS = Integer.parseInt(tower[3]);
     			if ((upgradeIndexS != -1) && (upgradeIndexS != 0)) {
-    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
+    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker,false);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);
@@ -510,7 +510,7 @@ public class GameLoop implements Runnable {
 			
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker,false);
 				if (!freeBuild)
 					player.moneyFunction(-mTTypes[towerType].getPrice());
 				
@@ -626,7 +626,7 @@ public class GameLoop implements Runnable {
     		if(t != null && t.draw){
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
-    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
     			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
@@ -703,7 +703,7 @@ public class GameLoop implements Runnable {
     			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()) {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
-    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
+    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker, true);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);

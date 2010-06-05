@@ -70,7 +70,6 @@ public class Tower extends Sprite {
     private Random rand;
    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
-    private int towerTypeIdOld = -1;
     // Used to determine if the tower should animate impact
     private boolean ImpactdAnimate = false;
     //To determine when a creature has been teleported to spawnpoint we will check his nbr of laps
@@ -474,20 +473,14 @@ public class Tower extends Sprite {
 	 * @param towerPlacement
 	 * @param mScaler
 	 */
-	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker) {
+	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker, boolean upgrade) {
 		this.draw = false;
 
-			// Still needed for resuming of towers...
-		if (clone.towerTypeId <= 3) {
-			this.towerTypeIdOld = clone.towerTypeId;
-			Log.d("TOWER", "Saving TowerTypeIdOld: " + towerTypeIdOld);
-		}
-		
 		//Use the textureNames that we preloaded into the towerTypes at startup
 		//If this is a new created tower we have to manually reset the folowing values
 		this.towerTypeId = clone.towerTypeId;
 		
-		if (this.towerTypeId <= 3)  {
+		if (!upgrade)  {
 			this.towerType = clone.towerType;
 			this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
 			this.sound_l = clone.sound_l;
@@ -511,7 +504,7 @@ public class Tower extends Sprite {
 		this.relatedShot.setAnimationTime(clone.relatedShot.getAnimationTime());
 		
 		// Special abilities. If this is a new created tower we have to manually reset the folowing values
-		if (this.towerTypeId <= 3)  {
+		if (!upgrade)  {
 
 			if (this.towerType != Tower.AOE) {
 				this.hasPoisonDamage =false;
@@ -534,8 +527,8 @@ public class Tower extends Sprite {
 			this.relatedShot.g = 1;
 			this.relatedShot.b = 1;
 		}
-		// Tracker THis will usually be run every time a tower is upgraded. But until all bugs 
-		// are solved we will only run it when tower is created
+
+		// Tracker
 		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
 		Coords tmp = mScaler.getGridXandY((int)x, (int)y);
 		int right = tmp.x + rangeGrid;
@@ -651,15 +644,6 @@ public class Tower extends Sprite {
 	//////////////////////////////////////////////
 	// Getter for tower
 	//////////////////////////////////////////////
-	
-	/**
-	 * Given a tower this method will create a new tower with the same
-	 * variables as the given one
-	 * @return
-	 */
-	public int getTowerTypeIdOld() { return towerTypeIdOld; }
-	
-	public int getUpgradeLvlOld() { return this.upgradeLvlOld; }
 	
 	/**
 	 * Return range of this tower
@@ -798,4 +782,11 @@ public class Tower extends Sprite {
 		return upgradePoison;
 	}
 
+	/**
+	 * @return the towertype
+	 */
+	public int getTowerTypeId() {
+		return this.towerTypeId;
+	}
+	
 }
