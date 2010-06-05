@@ -284,11 +284,12 @@ public class GameLoop implements Runnable {
 	    		Coords c = mScaler.getPosFromGrid(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
 	    		c.setX((int) (c.x + mTTypes[0].getWidth()/2));
 	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
-	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-	    		createTower(c, Integer.parseInt(tower[0]), true);
+	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[3]);
+	    		createTower(c, Integer.parseInt(tower[3]), true);
 	    		
 	    			// And apply the Tower Upgrade first of all.
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
+	    		/*
     			int upgradeIndexS = Integer.parseInt(tower[3]);
     			if ((upgradeIndexS != -1) && (upgradeIndexS != 0)) {
     				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
@@ -301,6 +302,7 @@ public class GameLoop implements Runnable {
     					e.printStackTrace();
     				}
     			}
+    			*/
     			
     				// Upgrade the fire.
     			for (int j = 0; j < Integer.parseInt(tower[4]); j ++) {
@@ -621,7 +623,7 @@ public class GameLoop implements Runnable {
     		if(t != null && t.draw){
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
-    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			s = s + t.getTowerType() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
     			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
