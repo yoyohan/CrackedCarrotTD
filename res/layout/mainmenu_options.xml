@@ -1,80 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="center"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/background">
+	android:background="@drawable/background" >
 	
-	<TableLayout
-		android:layout_centerHorizontal="true"
-		android:layout_height="wrap_content"
-		android:layout_width="250dp"
-		android:paddingTop="20dp">
-		
-		<TableRow>
-			<TextView
-				android:text="Options"
-				android:textSize="25sp"
-				android:textStyle="bold"
-				android:textColor="#000000"
-				android:layout_gravity="center" />
-		</TableRow>
-		
-		<TableRow>
-			<TableLayout>
-				<TableRow>
-					<ImageButton
-						android:id="@+id/MainMenuOptionsImageButton1"
-						android:src="@drawable/button_yes" />
-					<TextView
-						android:text="Play sounds during the game?"
-						android:textColor="#000000"
-						android:layout_gravity="center"
-						android:layout_width="175dp"
-						android:gravity="center" />
-				</TableRow>
-				
-				<TableRow>
-					<ImageButton
-						android:id="@+id/MainMenuOptionsImageButton2"
-						android:src="@drawable/button_yes" />
-					<TextView
-						android:text="Use ScoreNinja to keep highscores?"
-						android:textColor="#000000"
-						android:layout_width="175dp"
-						android:layout_gravity="center"
-						android:gravity="center" />
-				</TableRow>
-				
-				<TableRow>
-					<ImageButton
-						android:id="@+id/MainMenuOptionsImageButton3"
-						android:src="@drawable/button_yes" />
-					<TextView
-						android:text="Show Next Level information during the game?"
-						android:textColor="#000000"
-						android:layout_gravity="center"
-						android:layout_width="175dp"
-						android:gravity="center" />
-				</TableRow>
-			</TableLayout>
-		</TableRow>
-		
-		<TableRow>
-			<View android:layout_height="80dp" />
-		</TableRow>
-		
-		<TableRow>
-			<TableLayout>
-				<TableRow
-					android:gravity="center">
-					<ImageButton
-						android:id="@+id/MainMenuOptionsImageButtonOk"
-						android:src="@drawable/button_options_ok" />
-				</TableRow>
-			</TableLayout>
-		</TableRow>
-		
-	</TableLayout>
+	<LinearLayout
+    	android:orientation="vertical"
+    	android:gravity="center"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent" >
 
-</RelativeLayout>
+		<LinearLayout
+    		android:orientation="horizontal"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="60dp" >
+
+			<ImageView
+				android:src="@drawable/optionsimage"
+				android:gravity="center"
+    		    android:layout_width="fill_parent"
+      		    android:layout_height="fill_parent"
+				android:layout_weight="1" />
+     		   	    
+ 		</LinearLayout>
+		
+		<LinearLayout
+    		android:orientation="vertical"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="200dp" >
+    		
+					<Button
+						android:text="Sounds: -"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuOptionsButton1"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+
+					<Button
+						android:text="ScoreNinja: -"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuOptionsButton2"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+
+					<Button
+						android:text="NextLevel: -"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuOptionsButton3"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+
+		</LinearLayout>
+		
+		<LinearLayout
+    		android:orientation="vertical"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="150dp" >
+				
+					<Button
+						android:text="Back"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuOptionsButtonOk"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+    		
+    	</LinearLayout>
+		
+	</LinearLayout>
+	
+</LinearLayout>
