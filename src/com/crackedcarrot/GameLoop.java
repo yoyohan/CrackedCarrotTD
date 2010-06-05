@@ -564,12 +564,16 @@ public class GameLoop implements Runnable {
     	this.currentCreatureHealth -= dmg;
 
    		// Another solution, only send when the update is 1/20'th of the total healthbar:
-    	int step = (int) 100/20;
-    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
-    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
-    	if ((progressbarLastSent - step) >= curr) {
-    		progressbarLastSent = progressbarLastSent - step;
-    		
+    	// If we cast 1,999999 to int we will receive 1.
+    	// To solve that problem we use +0,5. Ex: 1,4 and 1,5 both will be casted to 1 but
+    	// if we add 0,5 -> 1,9 and 2. Java will cast to 1 and 2 =)
+    	float currFl = (20*(currentCreatureHealth/startCreatureHealth)) + 0.5f;
+    	int curr = ((int)currFl)*5;
+    	
+    	if ((progressbarLastSent - 5) >= curr) {
+    		//When using a 5% step we will asume that no tower can do more than 5% of total creature
+    		//health. Instead we will set progressbar to current total value of creature health.
+    		progressbarLastSent = curr;
     		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
     	}
     }
