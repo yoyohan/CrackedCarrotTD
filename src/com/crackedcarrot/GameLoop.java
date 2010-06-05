@@ -233,7 +233,8 @@ public class GameLoop implements Runnable {
 		// And reset our internal counter for the creature health progress bar ^^
 		progressbarLastSent = 100;
 		
-		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
+		gui.sendMessage(gui.GUI_UPDATELVLNBRTEXT_ID, this.lvlNbr+1, 0);
+		
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
 		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
@@ -291,7 +292,7 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
     			int upgradeIndexS = Integer.parseInt(tower[3]);
     			if ((upgradeIndexS != -1) && (upgradeIndexS != 0)) {
-    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
+    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker,false);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);
@@ -509,7 +510,7 @@ public class GameLoop implements Runnable {
 			
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker,false);
 				if (!freeBuild)
 					player.moneyFunction(-mTTypes[towerType].getPrice());
 				
@@ -563,12 +564,16 @@ public class GameLoop implements Runnable {
     	this.currentCreatureHealth -= dmg;
 
    		// Another solution, only send when the update is 1/20'th of the total healthbar:
-    	int step = (int) 100/20;
-    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
-    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
-    	if ((progressbarLastSent - step) >= curr) {
-    		progressbarLastSent = progressbarLastSent - step;
-    		
+    	// If we cast 1,999999 to int we will receive 1.
+    	// To solve that problem we use +0,5. Ex: 1,4 and 1,5 both will be casted to 1 but
+    	// if we add 0,5 -> 1,9 and 2. Java will cast to 1 and 2 =)
+    	float currFl = (20*(currentCreatureHealth/startCreatureHealth)) + 0.5f;
+    	int curr = ((int)currFl)*5;
+    	
+    	if ((progressbarLastSent - 5) >= curr) {
+    		//When using a 5% step we will asume that no tower can do more than 5% of total creature
+    		//health. Instead we will set progressbar to current total value of creature health.
+    		progressbarLastSent = curr;
     		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
     	}
     }
@@ -621,7 +626,7 @@ public class GameLoop implements Runnable {
     		if(t != null && t.draw){
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
-    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			s = s + t.getTowerTypeId() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
     			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
@@ -698,7 +703,7 @@ public class GameLoop implements Runnable {
     			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()) {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
-    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
+    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker, true);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);

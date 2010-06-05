@@ -67,7 +67,7 @@ public class Creature extends Sprite{
 	private float spawnWayPointY;
 	//Shows how many laps the creature has currentle completed
 	public int mapLap;
-	
+	public float distance; 
 	//Tracker
 	// Each creature is a double list component 
 	public Creature nextCreature;
@@ -169,6 +169,7 @@ public class Creature extends Sprite{
     			tmpTrac.addCreatureToList(this);
     			trackerX = tmp.x;
     			trackerY = tmp.y;
+    			this.distance = 0;
 			}
 		}
 		//If still alive move the creature.
@@ -204,6 +205,8 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
+    		
+    		this.distance += movement;
     		
     		// Update tracker
     		Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
