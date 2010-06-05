@@ -694,7 +694,7 @@ public class GameLoopGUI {
 	    	lvlText += 		"Bounty: " + currLvl.goldValue + "g/creep<br>";
 	    	lvlText += 		"Health: " + (int)currLvl.getHealth() + "hp/creep<br>";
 	    	lvlText += 		"<br>";
-	    	lvlText += 		"Special abilitys:<br>";
+	    	lvlText += 		"Special abilities:<br>";
 	    	int tmpAbil = 0;
 	    	if (currLvl.creatureFast) {
 		    	lvlText += 		"<font color=0xFF00FF>Fast level</font><br>";
@@ -709,11 +709,11 @@ public class GameLoopGUI {
 		    	tmpAbil++;
 		    }
 		    if (currLvl.creaturePoisonResistant) {
-		    	lvlText += 		"<font color=green>Posion resistant</font><br>";
+		    	lvlText += 		"<font color=green>Poision resistant</font><br>";
 		    	tmpAbil++;
 		    }
 		    if (tmpAbil == 0)
-		    	lvlText += 		"No special ability<br>";
+		    	lvlText += 		"No special abilities<br>";
 		    
 		    if (currLvlnbr > 1) {
 		    	lvlText += 		"<br>Previous level:<br>";
@@ -722,7 +722,7 @@ public class GameLoopGUI {
 		    }
 		    else {
 		    	lvlText += 		"<br>Tip:<br>";
-		    	lvlText += 		"If you have trouble <br>understanding this game.<br> Use the information<br> button below or ingame";
+		    	lvlText += 		"If you have trouble<br>playing the game<br>use the information<br>button below or ingame.";
 		    }
 		    styledText = Html.fromHtml(lvlText);
 		    text.setText(styledText);
