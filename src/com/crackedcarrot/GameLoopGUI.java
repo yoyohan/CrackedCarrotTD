@@ -74,6 +74,7 @@ public class GameLoopGUI {
     private TextView     counterText;
     private TextView     playerHealthView;
     private TextView     scoreCounter;
+    private TextView	 lvlNbr;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -104,7 +105,7 @@ public class GameLoopGUI {
     public final int GUI_SHOWSTATUSBAR_ID   = 26;
     public final int GUI_SHOWHEALTHBAR_ID   = 27;
     public final int GUI_HIDEHEALTHBAR_ID   = 28;
-
+    public final int GUI_UPDATELVLNBRTEXT_ID= 29;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -187,6 +188,10 @@ public class GameLoopGUI {
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
+    	
+    	// Create the TextView showing current level
+    	lvlNbr =  (TextView) gameInit.findViewById(R.id.lvlNumber);
+    	lvlNbr.setTypeface(MuseoSans);
     	
     		// And the score Counter.
     	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
@@ -887,7 +892,10 @@ public class GameLoopGUI {
 	        		 tt = String.valueOf(msg.arg1);
 	        		 counterText.setText("Next level in: " + tt);
 	        		 break;
-	        		 
+	        	 case GUI_UPDATELVLNBRTEXT_ID: // This is used to show level number.
+	        		 tt = String.valueOf(msg.arg1);
+	        		 lvlNbr.setText("Level: " + tt);
+	        		 break;
 	        	 case GUI_SHOWSTATUSBAR_ID:
 	        		 //Show statusbar
 		    			statusBar.setVisibility(View.VISIBLE);

@@ -233,7 +233,8 @@ public class GameLoop implements Runnable {
 		// And reset our internal counter for the creature health progress bar ^^
 		progressbarLastSent = 100;
 		
-		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
+		gui.sendMessage(gui.GUI_UPDATELVLNBRTEXT_ID, this.lvlNbr+1, 0);
+		
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
 		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
