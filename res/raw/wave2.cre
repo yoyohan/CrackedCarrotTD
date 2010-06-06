@@ -1,0 +1,17 @@
+// Name: wawe1 | AUTHOR: CRACKEDCARROT | First line will not be read by the Loader.
+Total number of levels::1
+////////////////////////////// level 1
+Texture animate::mrrabbit_animate
+Texture display::mrrabbit
+Texture dead::mrrabbitdead
+scale::0.9
+Wave title::Agile Mr Rabbit
+health::100
+fast level::false
+fire resistant::false
+frost resistant::false
+poison resistant::false
+damage/creep::1
+goldValue::1
+nbrOfCreaturs::10
+// LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

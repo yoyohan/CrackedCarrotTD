@@ -205,7 +205,7 @@ public class GameInit extends Activity {
         
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this, scaler);
-        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
+        Level[] waveList  = waveLoad.readWave("wave2",difficulty);
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
