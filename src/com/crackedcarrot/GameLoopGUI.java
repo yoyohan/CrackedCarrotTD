@@ -47,6 +47,8 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
+	private Dialog dialogWon = null;
+	private Dialog dialogLost = null;
 	private ProgressDialog dialogWait = null;
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
@@ -409,16 +411,16 @@ public class GameLoopGUI {
 	        return dialogTowerInfo;
 	    	
 	    case DIALOG_WON_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levelwon);
-	    	dialog.setCancelable(false);
+	    	dialogWon = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogWon.setContentView(R.layout.levelwon);
+	    	dialogWon.setCancelable(false);
 	    	
 	    	// Score
-	    	TextView textViewWonScore = (TextView) dialog.findViewById(R.id.LevelWon_Score);
+	    	TextView textViewWonScore = (TextView) dialogWon.findViewById(R.id.LevelWon_Score);
 	    	textViewWonScore.setText("Score: " + gameInit.gameLoop.player.getScore());
 	    	
 	    	// First button
-	    	Button buttonWon = (Button) dialog.findViewById(R.id.LevelWon_OK);
+	    	Button buttonWon = (Button) dialogWon.findViewById(R.id.LevelWon_OK);
 	        buttonWon.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
@@ -427,16 +429,16 @@ public class GameLoopGUI {
 	    	break;
 	    	
 	    case DIALOG_LOST_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levellost);
-	    	dialog.setCancelable(false);
+	    	dialogLost = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogLost.setContentView(R.layout.levellost);
+	    	dialogLost.setCancelable(false);
 	    	
 	    	// Score
-	    	TextView textViewLostScore = (TextView) dialog.findViewById(R.id.LevelLost_Score);
+	    	TextView textViewLostScore = (TextView) dialogLost.findViewById(R.id.LevelLost_Score);
 	    	textViewLostScore.setText("Score: " + gameInit.gameLoop.player.getScore());
 	    	
 	    	// First button
-	    	Button buttonLost = (Button) dialog.findViewById(R.id.LevelLost_OK);
+	    	Button buttonLost = (Button) dialogLost.findViewById(R.id.LevelLost_OK);
 	        buttonLost.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
