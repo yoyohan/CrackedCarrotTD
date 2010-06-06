@@ -426,7 +426,8 @@ public class GameLoopGUI {
 	        		gameInit.gameLoop.dialogClick();
 	        	}
 	        });
-	    	break;
+	        return dialogWon;
+	    	//break;
 	    	
 	    case DIALOG_LOST_ID:
 	    	dialogLost = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -444,7 +445,8 @@ public class GameLoopGUI {
 	        		gameInit.gameLoop.dialogClick();
 	        	}
 	        });
-	    	break;
+	        return dialogLost;
+	    	//break;
 	    	
 	    case DIALOG_QUIT_ID:
 	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
