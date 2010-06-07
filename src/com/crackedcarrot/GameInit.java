@@ -266,6 +266,9 @@ public class GameInit extends Activity {
     protected void onPause() {
     	super.onPause();
     	Log.d("GAMEINIT", "onPause");
+    	
+    	Log.d("GAMEINIT", "OnPause: (we lost focus!) calling finish() on gameinit to kill everything.");
+    	this.finish();
     }
     
     protected void onRestart() {
