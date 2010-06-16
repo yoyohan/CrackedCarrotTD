@@ -6,9 +6,9 @@
 	android:background="@drawable/background" >
 
 	<LinearLayout 
-		android:minHeight="170dp" 
+		android:minHeight="170dp"
 	    android:layout_height="170dp"
-	    android:layout_width="fill_parent" 
+	    android:layout_width="fill_parent"
 		android:paddingTop="10dp"
 		>
 	    <Gallery
