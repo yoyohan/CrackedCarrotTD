@@ -249,7 +249,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			//@Override
 			public void run() {
 				TextureData d = textureMap.get(rId);
-				nativeFreeTex(d.mTextureName);
+				
+				if(d != null)
+					nativeFreeTex(d.mTextureName);
+				
 				textureMap.remove(rId);
 				lock2.release();
 			}
