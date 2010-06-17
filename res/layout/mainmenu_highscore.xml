@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="center"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/background" >
+	
+	<LinearLayout
+    	android:orientation="vertical"
+    	android:gravity="center"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent" >
+
+		<LinearLayout
+    		android:orientation="horizontal"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="60dp" >
+
+			<ImageView
+				android:src="@drawable/optionsimage"
+				android:gravity="center"
+    		    android:layout_width="fill_parent"
+      		    android:layout_height="fill_parent"
+				android:layout_weight="1" />
+     		   	    
+ 		</LinearLayout>
+		
+		<LinearLayout
+    		android:orientation="vertical"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="200dp" >
+    		
+		    <Gallery
+		       android:id="@+id/GalleryHighscore"
+		       android:animationDuration="50"
+			   android:spacing="7dp" 	 
+			   android:unselectedAlpha="0.3"
+		       android:layout_width="fill_parent"
+		       android:layout_height="wrap_content" />
+
+		</LinearLayout>
+		
+		<LinearLayout
+    		android:orientation="vertical"
+    		android:gravity="center"
+    		android:layout_width="fill_parent"
+    		android:layout_height="150dp" >
+
+					<Button
+						android:text="Show"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuHighscoreButtonShow"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+				
+					<Button
+						android:text="Back"
+						android:background="@drawable/xml_button_pause"
+						android:id="@+id/MainMenuHighscoreButtonOk"
+			    		android:textSize="22sp"		
+			            android:layout_width="fill_parent"
+			            android:layout_height="fill_parent"
+			            android:layout_weight="1" />
+    		
+    	</LinearLayout>
+		
+	</LinearLayout>
+	
+</LinearLayout>

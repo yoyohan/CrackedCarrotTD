@@ -463,11 +463,16 @@ public class GameLoop implements Runnable {
                 	//Play victory sound
                 	soundManager.playSoundVictory();
                 	
+            		// Code to wait for the user to click ok on YouWon-dialog.
+            		waitForDialogClick();
+                	
                 	// Show Ninjahighscore-thingie.
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
-            		waitForDialogClick();
+            		// !!! MOVED !!! Put this before scoreninja instead!
+                	// Might fix some activity-focus problems we're having... /Fredrik
+                	//waitForDialogClick();
 
         			run = false;
         		}
