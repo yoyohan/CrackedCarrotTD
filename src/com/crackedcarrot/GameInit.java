@@ -205,7 +205,7 @@ public class GameInit extends Activity {
         
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this, scaler);
-        Level[] waveList  = waveLoad.readWave("wave2",difficulty);
+        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
         
         // Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
@@ -266,6 +266,9 @@ public class GameInit extends Activity {
     protected void onPause() {
     	super.onPause();
     	Log.d("GAMEINIT", "onPause");
+    	
+    	Log.d("GAMEINIT", "OnPause: (we lost focus!) calling finish() on gameinit to kill everything.");
+    	this.finish();
     }
     
     protected void onRestart() {

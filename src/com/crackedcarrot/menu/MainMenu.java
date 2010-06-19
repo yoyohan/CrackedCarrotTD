@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.multiplayer.*;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class MainMenu extends Activity {
 	
@@ -149,6 +150,23 @@ public class MainMenu extends Activity {
         		startActivity(Multiplayer);
         	}
         });
+        
+        Button HighscoreButton = (Button) findViewById(R.id.ButtonHighscore);
+        HighscoreButton.setOnClickListener(new OnClickListener() {
+        	
+        	public void onClick(View v) {
+        		Intent Highscore = new Intent(MainMenu.this,Highscore.class);
+        		startActivity(Highscore);
+        	}
+        });
+        
+		// Remove the button if scoreninja disabled and not installed. Makes for cleaner interface.
+		SharedPreferences settings = getSharedPreferences("Options", 0);
+	    if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this) == false) {
+	    		// If ScoreNinja isnt installed we dont 
+	    	//HighscoreButton.setVisibility(View.GONE);
+	    }
+
         
     }
 

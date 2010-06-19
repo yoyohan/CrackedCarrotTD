@@ -7,9 +7,9 @@
 	android:background="@drawable/mainmenu"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
-<TableLayout
+  <TableLayout
 	android:layout_width="140dp"
-    android:layout_height="380dp"
+    android:layout_height="460dp"
     android:gravity="center"
 	android:layout_alignParentTop="true"
 	android:layout_centerHorizontal="true"
@@ -80,5 +80,22 @@
 		</Button>
     </TableRow>
 
-</TableLayout>
+	<TableRow>
+		<View
+        	android:layout_height="15dp"
+        	android:layout_width="wrap_content"
+        	android:background="#00000000" />
+	</TableRow>
+
+    <TableRow>
+        <Button
+		android:id="@+id/ButtonHighscore"
+		android:layout_width="66dp"
+		android:layout_height="38dp"
+	    android:scaleType="fitXY"
+		android:background="@drawable/xml_button_highscore">
+		</Button>
+    </TableRow>
+
+  </TableLayout>
 </RelativeLayout>

@@ -243,7 +243,7 @@ public class MapOp extends Activity implements ViewFactory {
         }
     };
 
-    public class ImageAdapter extends BaseAdapter 
+    private class ImageAdapter extends BaseAdapter 
     {
         private Context context;
         //private int itemBackground;

@@ -30,6 +30,8 @@
 			android:screenOrientation="portrait"></activity>
 		<activity android:name=".MapOp"
 			android:screenOrientation="portrait"></activity>
+		<activity android:name=".Highscore"
+			android:screenOrientation="portrait"></activity>
     	<activity android:name="com.crackedcarrot.GameInit"
     		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
     		android:screenOrientation="portrait"
