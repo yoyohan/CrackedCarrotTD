@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:gravity="center"
+<RelativeLayout
+	android:id="@+id/relLay1"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/background" >
-	
+	android:background="@drawable/background"
+	xmlns:android="http://schemas.android.com/apk/res/android"> 
+
+
 	<LinearLayout
     	android:orientation="vertical"
-    	android:gravity="center"
+    	android:gravity="top"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent" >
 
 		<LinearLayout
-    		android:orientation="horizontal"
-    		android:gravity="center"
-    		android:layout_width="fill_parent"
-    		android:layout_height="60dp" >
+			android:layout_width="fill_parent"
+			android:layout_height="100dp"
+		    android:gravity="center"
+		>
+			    <ImageView
+					android:layout_width="200dp"
+					android:layout_height="40dp"
+					android:background="@drawable/optionsimage">
+				</ImageView>
+		</LinearLayout>	
 
-			<ImageView
-				android:src="@drawable/optionsimage"
-				android:gravity="center"
-    		    android:layout_width="fill_parent"
-      		    android:layout_height="fill_parent"
-				android:layout_weight="1" />
-     		   	    
- 		</LinearLayout>
-		
 		<LinearLayout
     		android:orientation="vertical"
     		android:gravity="center"
@@ -74,11 +73,11 @@
 						android:id="@+id/MainMenuOptionsButtonOk"
 			    		android:textSize="22sp"		
 			            android:layout_width="fill_parent"
-			            android:layout_height="fill_parent"
-			            android:layout_weight="1" />
+			            android:layout_height="60dp"
+			             />
     		
     	</LinearLayout>
 		
 	</LinearLayout>
 	
-</LinearLayout>
+</RelativeLayout>
