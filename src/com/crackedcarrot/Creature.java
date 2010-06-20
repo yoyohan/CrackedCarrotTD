@@ -67,7 +67,7 @@ public class Creature extends Sprite{
 	private float spawnWayPointY;
 	//Shows how many laps the creature has currentle completed
 	public int mapLap;
-	
+	public float distance; 
 	//Tracker
 	// Each creature is a double list component 
 	public Creature nextCreature;
@@ -169,6 +169,7 @@ public class Creature extends Sprite{
     			tmpTrac.addCreatureToList(this);
     			trackerX = tmp.x;
     			trackerY = tmp.y;
+    			this.distance = 0;
 			}
 		}
 		//If still alive move the creature.
@@ -204,6 +205,8 @@ public class Creature extends Sprite{
     		double radian = Math.atan2(yDistance, xDistance);
     		this.x += (Math.cos(radian) * movement);
     		this.y += (Math.sin(radian) * movement);
+    		
+    		this.distance += movement;
     		
     		// Update tracker
     		Coords tmp = this.GL.mScaler.getGridXandY((int)(x*this.scale),(int)(y*this.scale));
@@ -249,6 +252,7 @@ public class Creature extends Sprite{
 		setCurrentTexture(this.mDeadTextureData);
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
+		player.scoreFunction(this.goldValue);
 		GL.updateCurrency();
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
@@ -362,7 +366,7 @@ public class Creature extends Sprite{
 	public void affectWithPoison(int poisonTime, float poisonDamage) {
 		if (!this.creaturePoisonResistant) {
 			if ( this.creaturePoisonDamage > 0 && this.creaturePoisonTime > 0 )
-				this.creaturePoisonDamage = ((poisonDamage + (this.creaturePoisonDamage * this.creaturePoisonTime)) / poisonTime);
+				this.creaturePoisonDamage = poisonDamage + ((this.creaturePoisonDamage * this.creaturePoisonTime) / poisonTime);
 			else
 				this.creaturePoisonDamage = poisonDamage;
 			this.creaturePoisonTime = poisonTime;
@@ -421,7 +425,7 @@ public class Creature extends Sprite{
 	 */
 	public void setAnimationTime(boolean fast) {
 		if (fast)
-			this.animationTime = 0.15f;
+			this.animationTime = 0.22f;
 		else
 			this.animationTime = 0.3f;
 	}

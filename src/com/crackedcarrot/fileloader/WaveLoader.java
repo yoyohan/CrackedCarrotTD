@@ -101,8 +101,8 @@ public class WaveLoader {
 							tmpLvl.creepTitle = tmpStr[1].trim();
 							break;
 						case 7:
-			            	tmpLvl.setHealth(Integer.parseInt(tmpStr[1].trim()));
-			            	tmpLvl.setHealth((int)(tmpLvl.getHealth() * gameDifficulty));
+			            	int tmpHealth = Integer.parseInt(tmpStr[1].trim());
+			            	tmpLvl.setHealth((int)(tmpHealth * gameDifficulty));
 							break;
 						case 8:
 			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
@@ -115,7 +115,7 @@ public class WaveLoader {
 			            	// I will put velocity here
 			            	recalc = scaler.scale(60,0);
 			        		if (fast)
-				            	tmpLvl.setVelocity(recalc.getX()* 2);
+				            	tmpLvl.setVelocity(recalc.getX()* 1.5f);
 			        		else tmpLvl.setVelocity(recalc.getX());
 							break;
 						case 9:

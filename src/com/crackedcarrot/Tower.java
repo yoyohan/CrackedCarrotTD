@@ -54,7 +54,6 @@ public class Tower extends Sprite {
 	private float poisonFactor;
 	// The linked upgrade for this tower
 	private int upgradeLvl;
-	private int upgradeLvlOld;
 	private int upgradeFire;
 	private int upgradeFrost;
 	private int upgradePoison;
@@ -68,9 +67,8 @@ public class Tower extends Sprite {
     private Creature targetCreature;
 	// Random used to calculate damage
     private Random rand;
-   // used by resume to uniquely identify this tower-type.
+    // used by resume to uniquely identify this tower-type.
     private int towerTypeId;
-    private int towerTypeIdOld = -1;
     // Used to determine if the tower should animate impact
     private boolean ImpactdAnimate = false;
     //To determine when a creature has been teleported to spawnpoint we will check his nbr of laps
@@ -164,7 +162,8 @@ public class Tower extends Sprite {
 	 */
 	private Creature trackNearestEnemy() {
 		Creature targetCreature = null;
-		double lastCreatureHealth = Double.MAX_VALUE;
+		double lastTraveledDistance = 0;
+		double lastCreatureDistanceToTower = Double.MAX_VALUE;
 		
 		TrackerList tmpList = startTrackerList;
 		while(tmpList != null) {
@@ -177,14 +176,26 @@ public class Tower extends Sprite {
 						double distance = Math.sqrt(
 									Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
 									Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
+
 						if(distance < range){ // Is the creature within tower range?
 							if (targetCreature == null) {
 								targetCreature = tmpCreature;
-								lastCreatureHealth = tmpCreature.health;
+								lastTraveledDistance = tmpCreature.distance;
+								lastCreatureDistanceToTower = distance;
 							}
-							else if (lastCreatureHealth > tmpCreature.health) {
+							else {
+								// Incase this is a bunker we want to only fire at closest enemy to
+								// keep speed at highest possible
+								if (this.towerType == Tower.BUNKER) {
+									if (lastCreatureDistanceToTower > distance) {
+										targetCreature = tmpCreature;
+										lastCreatureDistanceToTower = distance;
+									}
+								}
+								else if (lastTraveledDistance < tmpCreature.distance) {
 									targetCreature = tmpCreature;
-									lastCreatureHealth = tmpCreature.health;
+									lastTraveledDistance = tmpCreature.distance;
+								}
 							}
 						}
 					}
@@ -461,20 +472,14 @@ public class Tower extends Sprite {
 	 * @param towerPlacement
 	 * @param mScaler
 	 */
-	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker) {
+	public void createTower(Tower clone, Coords towerPlacement, Scaler mScaler, Tracker tracker, boolean upgrade) {
 		this.draw = false;
 
-			// Still needed for resuming of towers...
-		if (clone.towerTypeId <= 3) {
-			this.towerTypeIdOld = clone.towerTypeId;
-			Log.d("TOWER", "Saving TowerTypeIdOld: " + towerTypeIdOld);
-		}
-		
 		//Use the textureNames that we preloaded into the towerTypes at startup
 		//If this is a new created tower we have to manually reset the folowing values
 		this.towerTypeId = clone.towerTypeId;
 		
-		if (this.towerTypeId <= 3)  {
+		if (!upgrade)  {
 			this.towerType = clone.towerType;
 			this.relatedShot.setResourceId(clone.relatedShot.getResourceId());
 			this.sound_l = clone.sound_l;
@@ -491,14 +496,12 @@ public class Tower extends Sprite {
 		this.maxDamage = clone.maxDamage;
 		this.aoeDamage = clone.aoeDamage;
 		this.velocity = clone.velocity;
-			// Needed for resuming of towers...
-				this.upgradeLvlOld = this.upgradeLvl;
 		this.upgradeLvl = clone.upgradeLvl;
 		this.coolDown = clone.coolDown;
 		this.relatedShot.setAnimationTime(clone.relatedShot.getAnimationTime());
 		
 		// Special abilities. If this is a new created tower we have to manually reset the folowing values
-		if (this.towerTypeId <= 3)  {
+		if (!upgrade)  {
 
 			if (this.towerType != Tower.AOE) {
 				this.hasPoisonDamage =false;
@@ -521,8 +524,8 @@ public class Tower extends Sprite {
 			this.relatedShot.g = 1;
 			this.relatedShot.b = 1;
 		}
-		// Tracker THis will usually be run every time a tower is upgraded. But until all bugs 
-		// are solved we will only run it when tower is created
+
+		// Tracker
 		int rangeGrid = mScaler.rangeGrid((int)(this.range+this.rangeAOE));
 		Coords tmp = mScaler.getGridXandY((int)x, (int)y);
 		int right = tmp.x + rangeGrid;
@@ -561,7 +564,7 @@ public class Tower extends Sprite {
 		
 		if(opt == UpgradeOption.upgrade_fire) {
 			if (this.getUpgradeFire() == 0 && money >= 30) {
-				this.fireFactor = 1.5f;
+				this.fireFactor = 1.7f;
 				this.hasFireDamage = true;
 				this.r = 1;
 				this.g = 0.7f;
@@ -573,12 +576,12 @@ public class Tower extends Sprite {
 				price = 30;
 			}
 			else if (this.getUpgradeFire() == 1 && money >= 60) {
-				this.fireFactor = 2;
+				this.fireFactor = 2.8f;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 60;
 			}
 			else if (this.getUpgradeFire() == 2 && money >= 90) {
-				this.fireFactor = 3;
+				this.fireFactor = 3.7f;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 90;
 			}
@@ -638,15 +641,14 @@ public class Tower extends Sprite {
 	//////////////////////////////////////////////
 	// Getter for tower
 	//////////////////////////////////////////////
+
+	public int getTowerType() { return this.towerType; }
 	
 	/**
 	 * Given a tower this method will create a new tower with the same
 	 * variables as the given one
 	 * @return
 	 */
-	public int getTowerTypeIdOld() { return towerTypeIdOld; }
-	
-	public int getUpgradeLvlOld() { return this.upgradeLvlOld; }
 	
 	/**
 	 * Return range of this tower
@@ -785,4 +787,11 @@ public class Tower extends Sprite {
 		return upgradePoison;
 	}
 
+	/**
+	 * @return the towertype
+	 */
+	public int getTowerTypeId() {
+		return this.towerTypeId;
+	}
+	
 }

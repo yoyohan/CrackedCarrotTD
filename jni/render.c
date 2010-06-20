@@ -169,5 +169,15 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobject thiz){
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Resetting library to known state before drawing.");
 	
+	int i = 0;
+	
+	texData = NULL;
+	texDataLength = 0;
+	
+	for(i = 0; i < 7; i++){
+	    noOfSprites[i] = 0;
+	    renderSprites[i] = NULL;
+	}	
 }

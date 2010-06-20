@@ -47,6 +47,8 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
+	private Dialog dialogWon = null;
+	private Dialog dialogLost = null;
 	private ProgressDialog dialogWait = null;
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
@@ -75,6 +77,8 @@ public class GameLoopGUI {
     private TextView     nrCreText;
     private TextView     counterText;
     private TextView     playerHealthView;
+    private TextView     scoreCounter;
+    private TextView	 lvlNbr;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -105,7 +109,7 @@ public class GameLoopGUI {
     public final int GUI_SHOWSTATUSBAR_ID   = 26;
     public final int GUI_SHOWHEALTHBAR_ID   = 27;
     public final int GUI_HIDEHEALTHBAR_ID   = 28;
-
+    public final int GUI_UPDATELVLNBRTEXT_ID= 29;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -127,11 +131,6 @@ public class GameLoopGUI {
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
-    final TextView upgradeLvlText;
-    final TextView upgradeFireText;
-    final TextView upgradeFrostText;
-    final TextView upgradePoisonText;
-    final TextView sellText;
     
     final Button tower1Information;
     final Button tower2Information;
@@ -164,12 +163,6 @@ public class GameLoopGUI {
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
 
-    	upgradeLvlText = (TextView) gameInit.findViewById(R.id.upgradeLvlText);
-    	upgradeFireText = (TextView) gameInit.findViewById(R.id.upgradeFireText);
-    	upgradeFrostText = (TextView) gameInit.findViewById(R.id.upgradeFrostText);
-    	upgradePoisonText = (TextView) gameInit.findViewById(R.id.upgradePoisonText);
-    	sellText = (TextView) gameInit.findViewById(R.id.sellText);
-    	
         towertext = (LinearLayout) gameInit.findViewById(R.id.ttext);
         towerbutton1 = (Button) gameInit.findViewById(R.id.t1);
         towerbutton2 = (Button) gameInit.findViewById(R.id.t2);
@@ -204,8 +197,14 @@ public class GameLoopGUI {
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
-
     	
+    	// Create the TextView showing current level
+    	lvlNbr =  (TextView) gameInit.findViewById(R.id.lvlNumber);
+    	lvlNbr.setTypeface(MuseoSans);
+    	
+    		// And the score Counter.
+    	scoreCounter = (TextView) gameInit.findViewById(R.id.scoreCounter);
+    	scoreCounter.setTypeface(MuseoSans);
     	
         // Create the progress bar, showing the enemies total health
         healthProgressBar = (ProgressBar) gameInit.findViewById(R.id.health_progress);
@@ -266,7 +265,7 @@ public class GameLoopGUI {
         forward.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		forward.setVisibility(View.GONE);
-        		gameInit.gameLoop.setGameSpeed(4);
+        		gameInit.gameLoop.setGameSpeed(3);
         		play.setVisibility(View.VISIBLE);
         	}
         });
@@ -450,30 +449,42 @@ public class GameLoopGUI {
 	        return dialogTowerInfo;
 	    	
 	    case DIALOG_WON_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levelwon);
-	    	dialog.setCancelable(false);
+	    	dialogWon = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogWon.setContentView(R.layout.levelwon);
+	    	dialogWon.setCancelable(false);
+	    	
+	    	// Score
+	    	TextView textViewWonScore = (TextView) dialogWon.findViewById(R.id.LevelWon_Score);
+	    	textViewWonScore.setText("Score: " + gameInit.gameLoop.player.getScore());
+	    	
 	    	// First button
-	    	Button buttonWon = (Button) dialog.findViewById(R.id.LevelWon_OK);
+	    	Button buttonWon = (Button) dialogWon.findViewById(R.id.LevelWon_OK);
 	        buttonWon.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
 	        	}
 	        });
-	    	break;
+	        return dialogWon;
+	    	//break;
 	    	
 	    case DIALOG_LOST_ID:
-	    	dialog = new Dialog(gameInit,R.style.NextlevelTheme);
-	        dialog.setContentView(R.layout.levellost);
-	    	dialog.setCancelable(false);
+	    	dialogLost = new Dialog(gameInit,R.style.NextlevelTheme);
+	    	dialogLost.setContentView(R.layout.levellost);
+	    	dialogLost.setCancelable(false);
+	    	
+	    	// Score
+	    	TextView textViewLostScore = (TextView) dialogLost.findViewById(R.id.LevelLost_Score);
+	    	textViewLostScore.setText("Score: " + gameInit.gameLoop.player.getScore());
+	    	
 	    	// First button
-	    	Button buttonLost = (Button) dialog.findViewById(R.id.LevelLost_OK);
+	    	Button buttonLost = (Button) dialogLost.findViewById(R.id.LevelLost_OK);
 	        buttonLost.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.gameLoop.dialogClick();
 	        	}
 	        });
-	    	break;
+	        return dialogLost;
+	    	//break;
 	    	
 	    case DIALOG_QUIT_ID:
 	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -725,7 +736,7 @@ public class GameLoopGUI {
 	    	lvlText += 		"Bounty: " + currLvl.goldValue + "g/creep<br>";
 	    	lvlText += 		"Health: " + (int)currLvl.getHealth() + "hp/creep<br>";
 	    	lvlText += 		"<br>";
-	    	lvlText += 		"Special abilitys:<br>";
+	    	lvlText += 		"Special abilities:<br>";
 	    	int tmpAbil = 0;
 	    	if (currLvl.creatureFast) {
 		    	lvlText += 		"<font color=0xFF00FF>Fast level</font><br>";
@@ -740,11 +751,11 @@ public class GameLoopGUI {
 		    	tmpAbil++;
 		    }
 		    if (currLvl.creaturePoisonResistant) {
-		    	lvlText += 		"<font color=green>Posion resistant</font><br>";
+		    	lvlText += 		"<font color=green>Poision resistant</font><br>";
 		    	tmpAbil++;
 		    }
 		    if (tmpAbil == 0)
-		    	lvlText += 		"No special ability<br>";
+		    	lvlText += 		"No special abilities<br>";
 		    
 		    if (currLvlnbr > 1) {
 		    	lvlText += 		"<br>Previous level:<br>";
@@ -753,7 +764,7 @@ public class GameLoopGUI {
 		    }
 		    else {
 		    	lvlText += 		"<br>Tip:<br>";
-		    	lvlText += 		"If you have trouble <br>understanding this game.<br> Use the information<br> button below or ingame";
+		    	lvlText += 		"If you have trouble<br>playing the game<br>use the information<br>button below or ingame.";
 		    }
 		    styledText = Html.fromHtml(lvlText);
 		    text.setText(styledText);
@@ -880,11 +891,17 @@ public class GameLoopGUI {
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:
-	        		 // Update currencyView (MONEY)
+	        		 // Update currencyView (MONEY) and score.
+	        		 
+	        		 scoreCounter.setText("" + String.format("%08d", gameInit.gameLoop.player.getScore()) );
+	        		 
 	        		 currencyView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_PLAYERHEALTH_ID:
-	        		 // Update player-health.
+	        		 // Update player-health. and score.
+	        		 
+	        		 scoreCounter.setText("" + String.format("%08d", gameInit.gameLoop.player.getScore()) );
+	        		 
 	        		 playerHealthView.setText("" + msg.arg1);
 	        		 break;
 	        	 case GUI_CREATUREVIEW_ID:
@@ -917,7 +934,10 @@ public class GameLoopGUI {
 	        		 tt = String.valueOf(msg.arg1);
 	        		 counterText.setText("Next level in: " + tt);
 	        		 break;
-	        		 
+	        	 case GUI_UPDATELVLNBRTEXT_ID: // This is used to show level number.
+	        		 tt = String.valueOf(msg.arg1);
+	        		 lvlNbr.setText("Level: " + tt);
+	        		 break;
 	        	 case GUI_SHOWSTATUSBAR_ID:
 	        		 //Show statusbar
 		    			statusBar.setVisibility(View.VISIBLE);
@@ -1041,67 +1061,59 @@ public class GameLoopGUI {
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
 		
-    	upgradeLvlText.setVisibility(View.GONE);
-    	upgradeFireText.setVisibility(View.GONE);
-    	upgradeFrostText.setVisibility(View.GONE);
-    	upgradePoisonText.setVisibility(View.GONE);
-
-    	sellText.setText("+"+recellValue);
-		upgradeLvlText.setText("-"+LevelPrice);
-		upgradeFireText.setText("-"+FirePrice);
-		upgradeFrostText.setText("-"+FrostPrice);
-		upgradePoisonText.setText("-"+PoisonPrice);
+    	this.sellTower.setText("+"+recellValue);
 		
 		switch(showLevelUpgrade) {
 			case(1):
+				this.upgradeLvl2.setText("-"+LevelPrice);
 				this.upgradeLvl2.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
-	    		break;
+
+				break;
 			case(2):
+				this.upgradeLvl3.setText("-"+LevelPrice);
 				this.upgradeLvl3.setVisibility(View.VISIBLE);
-				upgradeLvlText.setVisibility(View.VISIBLE);
 				break;
 		}
 		switch(showFireUpgrade) {
 		case(0):
+			this.upgradeFire1.setText("-"+FirePrice);
 			this.upgradeFire1.setVisibility(View.VISIBLE);
-    		upgradeFireText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFire2.setText("-"+FirePrice);
 			this.upgradeFire2.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFire3.setText("-"+FirePrice);
 			this.upgradeFire3.setVisibility(View.VISIBLE);
-			upgradeFireText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showFrostUpgrade) {
 		case(0):
+			this.upgradeFrost1.setText("-"+FrostPrice);
 			this.upgradeFrost1.setVisibility(View.VISIBLE);
-    		upgradeFrostText.setVisibility(View.VISIBLE);
     		break;
 		case(1):
+			this.upgradeFrost2.setText("-"+FrostPrice);
 			this.upgradeFrost2.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		case(2):
+			this.upgradeFrost3.setText("-"+FrostPrice);
 			this.upgradeFrost3.setVisibility(View.VISIBLE);
-			upgradeFrostText.setVisibility(View.VISIBLE);
 			break;
 		}
 		switch(showPoisonUpgrade) {
 		case(0):
+			this.upgradePoison1.setText("-"+PoisonPrice);
 			this.upgradePoison1.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 			break;
 		case(1):
+			this.upgradePoison2.setText("-"+PoisonPrice);
 			this.upgradePoison2.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		case(2):
+			this.upgradePoison3.setText("-"+PoisonPrice);
 			this.upgradePoison3.setVisibility(View.VISIBLE);
-			upgradePoisonText.setVisibility(View.VISIBLE);
 		break;
 		}
 

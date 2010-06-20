@@ -13,6 +13,7 @@ public class Map {
 	private Sprite[] bkg;
 	private Tower[][] twg;
 	private Scaler mapScaler;
+	private int textureFile;
 	//public int gridSizeX;
 	//public int gridSizeY;
 	
@@ -22,13 +23,12 @@ public class Map {
 	 * @param  Waypoints 	waypoints that will be used by the Map.
 	 * @param  Sprite[]		the background sprite that the Map uses.
 	 */
-	public Map(Waypoints p, Sprite[] bkg, Tower[][] twg, Scaler mapScaler){
+	public Map(Waypoints p, Sprite[] bkg, Tower[][] twg, Scaler mapScaler, int textureFile){
 		points = p;
 		this.bkg = bkg;
 		this.twg = twg;
-		//gridSizeX = twg.length;
-		//gridSizeY = twg[0].length;
 		this.mapScaler = mapScaler;
+		this.textureFile = textureFile;
 	}
 
 	/** 
@@ -86,8 +86,22 @@ public class Map {
 		
 		return result;
 	}
-	
+
+	/** 
+	 * return scaler.
+	 *
+ 	 * @return Scaler
+	 */
 	public Scaler getScaler() {
 		return mapScaler;
+	}
+
+	/** 
+	 * return texturefile resource value.
+	 *
+ 	 * @return int
+	 */
+	public int getTextureFile() {
+		return textureFile;
 	}
 }

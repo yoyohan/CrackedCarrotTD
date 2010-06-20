@@ -7,13 +7,25 @@
 	android:background="@drawable/background"
 	xmlns:android="http://schemas.android.com/apk/res/android"> 
 
-	<TableLayout
-		android:layout_width="200dp"
-	    android:layout_height="320dp"
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="100dp"
 	    android:gravity="center"
-		android:layout_alignParentTop="true"
+	>
+		    <ImageView
+				android:layout_width="260dp"
+				android:layout_height="40dp"
+				android:background="@drawable/multiplayerimage">
+			</ImageView>
+	</LinearLayout>
+	
+	<TableLayout
+		android:layout_width="140dp"
+	    android:layout_height="wrap_content"
+		android:paddingTop="100dp"
+	    android:gravity="center"
 		android:layout_centerHorizontal="true"
-		android:paddingTop="40dp"
 		android:background="#00000000">
+		
 	</TableLayout>
 </RelativeLayout>

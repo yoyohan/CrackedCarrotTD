@@ -6,9 +6,9 @@
 	android:background="@drawable/background" >
 
 	<LinearLayout 
-		android:minHeight="170dp" 
+		android:minHeight="170dp"
 	    android:layout_height="170dp"
-	    android:layout_width="fill_parent" 
+	    android:layout_width="fill_parent"
 		android:paddingTop="10dp"
 		>
 	    <Gallery
@@ -128,10 +128,10 @@
 		>
         <Button
 		android:id="@+id/startmap"
-		android:text="Start Game"
-		android:textSize="18sp"		
-		android:layout_width="180dp"
-		android:layout_height="wrap_content">
+		android:background="@drawable/xml_button_startgame"
+	    android:scaleType="fitXY"
+		android:layout_width="130dp"
+		android:layout_height="38dp">
 		</Button>
 	</LinearLayout>
 	

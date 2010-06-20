@@ -121,10 +121,6 @@ public class GameInit extends Activity {
         hudHandler = new UIHandler(scaler);
         hudHandler.start();
         
-        NativeRender nativeRenderer = new NativeRender(this, 
-        		mGLSurfaceView,TextureLibraryLoader.loadTextures(R.raw.all_textures,this),
-        		hudHandler.getOverlayObjectsToRender());
-
         mGLSurfaceView.setScreenHeight(dm.heightPixels);
         
         
@@ -193,7 +189,11 @@ public class GameInit extends Activity {
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
         }
         
+        NativeRender nativeRenderer = new NativeRender(this, 
+        		mGLSurfaceView,TextureLibraryLoader.loadTextures(gameMap.getTextureFile(),this),
+        		hudHandler.getOverlayObjectsToRender());
 
+        
         //Define player specific variables depending on difficulty.
         Player p;
         if (difficulty == 0) {
@@ -273,6 +273,9 @@ public class GameInit extends Activity {
     protected void onPause() {
     	super.onPause();
     	Log.d("GAMEINIT", "onPause");
+    	
+    	Log.d("GAMEINIT", "OnPause: (we lost focus!) calling finish() on gameinit to kill everything.");
+    	this.finish();
     }
     
     protected void onRestart() {

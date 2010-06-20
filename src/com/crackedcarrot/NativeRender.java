@@ -249,7 +249,10 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			//@Override
 			public void run() {
 				TextureData d = textureMap.get(rId);
-				nativeFreeTex(d.mTextureName);
+				
+				if(d != null)
+					nativeFreeTex(d.mTextureName);
+				
 				textureMap.remove(rId);
 				lock2.release();
 			}
@@ -316,7 +319,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
 
             gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
-
+            
+            Log.d("JAVA_LOADTEXTURE","Trying to load texture: " + context.getResources().getResourceName(resourceId));
             InputStream is = context.getResources().openRawResource(resourceId);
             Bitmap bitmap;
             try {

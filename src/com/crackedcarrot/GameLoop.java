@@ -233,7 +233,8 @@ public class GameLoop implements Runnable {
 		// And reset our internal counter for the creature health progress bar ^^
 		progressbarLastSent = 100;
 		
-		// Fredrik: this was added by akerberg 2010-04-05, survied commit.
+		gui.sendMessage(gui.GUI_UPDATELVLNBRTEXT_ID, this.lvlNbr+1, 0);
+		
 		// If we dont reset this variable each wave. The timeDelta will be fucked up
 		// And creatures will try to move to second waypoint insteed.
 		mLastTime = 0;
@@ -257,9 +258,9 @@ public class GameLoop implements Runnable {
     	int reverse = remainingCreaturesALL; 
 		for (int z = 0; z < remainingCreaturesALL; z++) {
 			reverse--;
-			int special = 1;
+			float special = 1;
     		if (mCreatures[z].isCreatureFast())
-    			special = 2;
+    			special = 1.5f;
     		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
 		}
 	}
@@ -282,27 +283,13 @@ public class GameLoop implements Runnable {
 	    	for (int i = 0; i < towers.length; i ++) {
 	    		String[] tower = towers[i].split(",");
 	    		Coords c = mScaler.getPosFromGrid(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
-	    		c.setX((int) (c.x + mTTypes[0].getWidth()/2));
-	    		c.setY((int) (c.y + mTTypes[0].getHeight()/2));
-	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[0]);
-	    		createTower(c, Integer.parseInt(tower[0]), true);
+	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[3]);
 	    		
-	    			// And apply the Tower Upgrade first of all.
+	    			// First we build the tower.
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
-    			int upgradeIndexS = Integer.parseInt(tower[3]);
-    			if (upgradeIndexS != 0) {
-    				t.createTower(mTTypes[upgradeIndexS], null, mScaler, gameTracker);
-    				try {
-    					TextureData tex = renderHandle.getTexture(t.getResourceId());
-    					t.setCurrentTexture(tex);
-    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
-    					//t.relatedShot.setCurrentTexture(tex);
-    				} catch (InterruptedException e) {
-    					e.printStackTrace();
-    				}
-    			}
-    			
-    				// Upgrade the fire.
+    			t.createTower(mTTypes[Integer.parseInt(tower[3])], c, mScaler, gameTracker, false);
+
+    			// Upgrade the fire.
     			for (int j = 0; j < Integer.parseInt(tower[4]); j ++) {
 					int price = t.upgradeSpecialAbility(Tower.UpgradeOption.upgrade_fire, 10000);
 					if (price != 0) {
@@ -423,6 +410,8 @@ public class GameLoop implements Runnable {
 	        	for (int x = 0; x < mTower.length; x++) {
 	        		if(mTower[x].draw == true)
 	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
+	        		else if (mTower[x].relatedShot.draw)
+	        			mTower[x].relatedShot.draw = false;
 	        	}	            
 	            // Check if the GameLoop are to run the level loop one more time.
 	            if (player.getHealth() < 1) {
@@ -474,11 +463,16 @@ public class GameLoop implements Runnable {
                 	//Play victory sound
                 	soundManager.playSoundVictory();
                 	
+            		// Code to wait for the user to click ok on YouWon-dialog.
+            		waitForDialogClick();
+                	
                 	// Show Ninjahighscore-thingie.
                 	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
                 	
             		// Code to wait for the user to click ok on YouWon-dialog.
-            		waitForDialogClick();
+            		// !!! MOVED !!! Put this before scoreninja instead!
+                	// Might fix some activity-focus problems we're having... /Fredrik
+                	//waitForDialogClick();
 
         			run = false;
         		}
@@ -489,13 +483,13 @@ public class GameLoop implements Runnable {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
-    public boolean createTower(Coords TowerPos, int towerType, boolean freeBuild) {
+    public boolean createTower(Coords TowerPos, int towerType) {
 		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
 				//You are trying to place a tower on a spot outside the grid
 				return false;
 			}
-			if (!freeBuild && player.getMoney() < mTTypes[towerType].getPrice()) {
+			if (player.getMoney() < mTTypes[towerType].getPrice()) {
 				// Not enough money to build this tower.
 				return false;
 			}
@@ -507,9 +501,8 @@ public class GameLoop implements Runnable {
 			
 			if (t != null && !t.draw) {
 				Coords towerPlacement = mScaler.getPosFromGrid(tmpx, tmpy);
-				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker);
-				if (!freeBuild)
-					player.moneyFunction(-mTTypes[towerType].getPrice());
+				t.createTower(mTTypes[towerType], towerPlacement, mScaler, gameTracker, false);
+				player.moneyFunction(-mTTypes[towerType].getPrice());
 				
 				try {
 					TextureData tex = renderHandle.getTexture(t.getResourceId());
@@ -560,22 +553,17 @@ public class GameLoop implements Runnable {
     	// Update the status, displaying total health of all creatures
     	this.currentCreatureHealth -= dmg;
 
-    	/* Henk visar hur det ska g� till:
-    	int test = (int) (((this.currentCreatureHealth/startCreatureHealth)*100)/5);
-    	public int lastPorgress 
-    	if (test != lastpro)
-    	*/
-
-    		// Only send this if there are no updates in the queue, saves on performance:
-    	//if (!gui.guiHandler.hasMessages(gui.GUI_PROGRESSBAR_ID)) {
-
-    		// Another solution, only send when the update is 1/20'th of the total healthbar:
-    	int step = (int) 100/20;
-    	int curr = (int) (100*(currentCreatureHealth/startCreatureHealth));
-    	//Log.d("GAMELOOP", "wtf: (" + progressbarLastSent + " - " + step + ") < " + curr);
-    	if ((progressbarLastSent - step) >= curr) {
-    		progressbarLastSent = progressbarLastSent - step;
-    		
+   		// Another solution, only send when the update is 1/20'th of the total healthbar:
+    	// If we cast 1,999999 to int we will receive 1.
+    	// To solve that problem we use +0,5. Ex: 1,4 and 1,5 both will be casted to 1 but
+    	// if we add 0,5 -> 1,9 and 2. Java will cast to 1 and 2 =)
+    	float currFl = (20*(currentCreatureHealth/startCreatureHealth)) + 0.5f;
+    	int curr = ((int)currFl)*5;
+    	
+    	if ((progressbarLastSent - 5) >= curr) {
+    		//When using a 5% step we will asume that no tower can do more than 5% of total creature
+    		//health. Instead we will set progressbar to current total value of creature health.
+    		progressbarLastSent = curr;
     		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, progressbarLastSent, 0);
     	}
     }
@@ -628,7 +616,7 @@ public class GameLoop implements Runnable {
     		if(t != null && t.draw){
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
-    			s = s + t.getTowerTypeIdOld() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getUpgradeLvlOld() +
+    			s = s + t.getTowerType() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
     			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
     		}
     	}
@@ -705,7 +693,7 @@ public class GameLoop implements Runnable {
     			if(upgradeIndex != -1 && player.getMoney() >= mTTypes[upgradeIndex].getPrice()) {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
-    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker);
+    				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker, true);
     				try {
     					TextureData tex = renderHandle.getTexture(t.getResourceId());
     					t.setCurrentTexture(tex);
@@ -784,8 +772,8 @@ public class GameLoop implements Runnable {
     			
     			gui.hideTowerUpgrade();
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-    			t.relatedShot.draw = false;
     			t.draw = false;
+    			t.relatedShot.draw = false;
     			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}

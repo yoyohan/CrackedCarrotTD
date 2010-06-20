@@ -7,9 +7,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 public class Options extends Activity {
@@ -18,9 +20,9 @@ public class Options extends Activity {
 	private boolean optionsNextLevel;
 	private boolean optionsSound;
 	
-	private ImageButton imageButton1;
-	private ImageButton imageButton2;
-	private ImageButton imageButton3;
+	private Button button1;
+	private Button button2;
+	private Button button3;
 
     private ScoreNinjaAdapter scoreNinjaAdapter;
 
@@ -43,9 +45,11 @@ public class Options extends Activity {
         optionsNextLevel = settings.getBoolean("optionsNextLevel", true);
         optionsSound     = settings.getBoolean("optionsSound", true);
         
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Sniglet.ttf");
         
-        imageButton1 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton1);
-        imageButton1.setOnClickListener(new OnClickListener() {
+        button1 = (Button) findViewById(R.id.MainMenuOptionsButton1);
+        button1.setTypeface(face);
+        button1.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         			// Toggles sound on or off
         		if (optionsSound) {
@@ -59,8 +63,9 @@ public class Options extends Activity {
         setSound(optionsSound);
 
         
-        imageButton2 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton2);
-        imageButton2.setOnClickListener(new OnClickListener() {
+        button2 = (Button) findViewById(R.id.MainMenuOptionsButton2);
+        button2.setTypeface(face);
+        button2.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         			// Toggles highscore on or off
         		if (optionsHighscore) {
@@ -75,8 +80,9 @@ public class Options extends Activity {
 
         
         	// Enable/disable NextLevel-dialog.
-        imageButton3 = (ImageButton) findViewById(R.id.MainMenuOptionsImageButton3);
-        imageButton3.setOnClickListener(new OnClickListener() {
+        button3 = (Button) findViewById(R.id.MainMenuOptionsButton3);
+        button3.setTypeface(face);
+        button3.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         			// Toggles highscore on or off
         		if (optionsNextLevel) {
@@ -90,8 +96,9 @@ public class Options extends Activity {
         setNextLevel(optionsNextLevel);
         
         
-        ImageButton imageButtonSave = (ImageButton) findViewById(R.id.MainMenuOptionsImageButtonOk);
-        imageButtonSave.setOnClickListener(new OnClickListener() {
+        Button buttonSave = (Button) findViewById(R.id.MainMenuOptionsButtonOk);
+        buttonSave.setTypeface(face);
+        buttonSave.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		setSave();
         	}
@@ -124,9 +131,9 @@ public class Options extends Activity {
     	this.optionsHighscore = b;
     	
     	if (b) {
-			imageButton2.setImageResource(R.drawable.button_yes);
+			button2.setText("ScoreNinja: On");
     	} else {
-			imageButton2.setImageResource(R.drawable.button_no);
+			button2.setText("ScoreNinja: Off");
     	}
     }
     
@@ -134,9 +141,9 @@ public class Options extends Activity {
     	this.optionsNextLevel = b;
     	
     	if (b) {
-			imageButton3.setImageResource(R.drawable.button_yes);
+			button3.setText("NextLevel: On");
     	} else {
-			imageButton3.setImageResource(R.drawable.button_no);
+			button3.setText("NextLevel: Off");
     	}
     }
     
@@ -148,9 +155,9 @@ public class Options extends Activity {
     	this.optionsSound = b;
     	
     	if (b) {
-			imageButton1.setImageResource(R.drawable.button_yes);
+			button1.setText("Sounds: On");
     	} else {
-			imageButton1.setImageResource(R.drawable.button_no);
+			button1.setText("Sounds: Off");
     	}
     }
 

@@ -6,7 +6,7 @@ Texture display::mrrabbit
 Texture dead::mrrabbitdead
 scale::0.9
 Wave title::Agile Mr Rabbit
-health::115
+health::100
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -20,7 +20,7 @@ Texture display::mrmonkey
 Texture dead::mrmonkeydead
 scale::1
 Wave title::Funny Mr Monkey
-health::135
+health::130
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -34,7 +34,7 @@ Texture display::mrpingu
 Texture dead::mrpingudead
 scale::1
 Wave title::Elegant Mr Pingu
-health::159
+health::180
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -48,7 +48,7 @@ Texture display::mrbully
 Texture dead::mrbullydead
 scale::1
 Wave title::Nasty Mr Bully
-health::185
+health::250
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -62,12 +62,12 @@ Texture display::mrlion
 Texture dead::mrliondead
 scale::1
 Wave title::Charming Mr Lion
-health::217
+health::320
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
-damage/creep::1
+damage/creep::2
 goldValue::2
 nbrOfCreaturs::20
 /////////////////////////////// level 6
@@ -76,7 +76,7 @@ Texture display::mrcat
 Texture dead::mrcatdead
 scale::1
 Wave title::Speedy Mr Cat
-health::217
+health::320
 fast level::true
 fire resistant::false
 frost resistant::false
@@ -90,7 +90,7 @@ Texture display::mrmouse
 Texture dead::mrmousedead
 scale::0.8
 Wave title::Sneaky Mr Mouse
-health::295
+health::380
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -104,13 +104,13 @@ Texture display::mrbear
 Texture dead::mrbeardead
 scale::1.1
 Wave title::Mighty Mr Bear
-health::346
+health::440
 fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::3
+goldValue::2
 nbrOfCreaturs::20
 /////////////////////////////// level 9
 Texture animate::mrelephant_animate
@@ -118,7 +118,7 @@ Texture display::mrelephant
 Texture dead::mrelephantdead
 scale::1
 Wave title::Fat Mr Elephant
-health::405
+health::500
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -132,49 +132,49 @@ Texture display::misspiggy
 Texture dead::misspiggydead
 scale::1.2
 Wave title::Bitchy Miss P
-health::8100
+health::7200
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
 damage/creep::5
-goldValue::80
+goldValue::60
 nbrOfCreaturs::1
 /////////////////////////////// level 11
 Texture animate::mrbear_animate
 Texture display::mrbear
 Texture dead::mrbeardead
 scale::1
-Wave title::Mr Bear
-health::556
+Wave title::Creepy Mr Bear
+health::600
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::4
+goldValue::3
 nbrOfCreaturs::20
 /////////////////////////////// level 12
 Texture animate::mrbully_animate
 Texture display::mrbully
 Texture dead::mrbullydead
 scale::1.1
-Wave title::Mr Bully
-health::649
+Wave title::Intens Mr Bull
+health::700
 fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::4
+goldValue::3
 nbrOfCreaturs::20
 ////////////////////////////// level 13
 Texture animate::mrmonkey_animate
 Texture display::mrmonkey
 Texture dead::mrmonkeydead
 scale::0.9
-Wave title::Mr Monkey
-health::760
+Wave title::Sooky Mr Monkey
+health::800
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -187,8 +187,8 @@ Texture animate::mrlion_animate
 Texture display::mrlion
 Texture dead::mrliondead
 scale::1
-Wave title::Mr Lion
-health::888
+Wave title::Cuddly Mr Lion
+health::900
 fast level::false
 fire resistant::false
 frost resistant::true
@@ -201,36 +201,36 @@ Texture animate::mrcat_animate
 Texture display::mrcat
 Texture dead::mrcatdead
 scale::0.9
-Wave title::Mr Cat
-health::1040
+Wave title::Strained Mr Cat
+health::1050
 fast level::true
 fire resistant::false
 frost resistant::true
 poison resistant::false
 damage/creep::1
-goldValue::6
+goldValue::5
 nbrOfCreaturs::20
 /////////////////////////////// level 16
 Texture animate::misspiggy_animate
 Texture display::misspiggy
 Texture dead::misspiggydead
 scale::1
-Wave title::Miss Piggy
-health::1216
+Wave title::Sweet Miss P
+health::1200
 fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::6
+goldValue::5
 nbrOfCreaturs::20
 ////////////////////////////// level 17
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
 scale::0.9
-Wave title::Mr Rabbit
-health::1424
+Wave title::Toxic Mr Rabbit
+health::1400
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -243,50 +243,50 @@ Texture animate::mrpingu_animate
 Texture display::mrpingu
 Texture dead::mrpingudead
 scale::1
-Wave title::Mr Pingu
-health::1665
+Wave title::Chilly Mr Pingu
+health::1700
 fast level::true
 fire resistant::false
 frost resistant::true
 poison resistant::false
 damage/creep::1
-goldValue::8
+goldValue::6
 nbrOfCreaturs::20
 /////////////////////////////// level 19
 Texture animate::mrmouse_animate
 Texture display::mrmouse
 Texture dead::mrmousedead
 scale::0.9
-Wave title::Mr Mouse
-health::1948
+Wave title::Lurking Mr Mouse
+health::2000
 fast level::false
 fire resistant::false
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::8
+goldValue::6
 nbrOfCreaturs::20
 /////////////////////////////// level 20
 Texture animate::mrelephant_animate
 Texture display::mrelephant
 Texture dead::mrelephantdead
 scale::1.2
-Wave title::Mr Elephant
-health::4534
+Wave title::Mr Elephant(Boss)
+health::34000
 fast level::false
 fire resistant::true
 frost resistant::false
 poison resistant::false
-damage/creep::2
-goldValue::3
-nbrOfCreaturs::10
+damage/creep::5
+goldValue::120
+nbrOfCreaturs::1
 /////////////////////////////// level 21
 Texture animate::mrbully_animate
 Texture display::mrbully
 Texture dead::mrbullydead
 scale::0.8
 Wave title::Mr Bully
-health::2673
+health::2650
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -300,13 +300,13 @@ Texture display::mrlion
 Texture dead::mrliondead
 scale::0.8
 Wave title::Mr Lion
-health::3133
+health::3150
 fast level::true
 fire resistant::false
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::12
+goldValue::10
 nbrOfCreaturs::20
 ////////////////////////////// level 23
 Texture animate::mrmonkey_animate
@@ -314,13 +314,13 @@ Texture display::mrmonkey
 Texture dead::mrmonkeydead
 scale::1
 Wave title::Mr Monkey
-health::3674
+health::3700
 fast level::true
 fire resistant::true
 frost resistant::false
 poison resistant::false
 damage/creep::1
-goldValue::14
+goldValue::10
 nbrOfCreaturs::20
 /////////////////////////////// level 24
 Texture animate::mrpingu_animate
@@ -328,13 +328,13 @@ Texture display::mrpingu
 Texture dead::mrpingudead
 scale::1
 Wave title::Mr Pingu
-health::4308
+health::4300
 fast level::true
 fire resistant::false
 frost resistant::false
 poison resistant::true
 damage/creep::1
-goldValue::14
+goldValue::10
 nbrOfCreaturs::20
 /////////////////////////////// level 25
 Texture animate::misspiggy_animate
@@ -342,13 +342,13 @@ Texture display::misspiggy
 Texture dead::misspiggydead
 scale::0.8
 Wave title::Miss Piggy
-health::5051
+health::5050
 fast level::true
 fire resistant::false
 frost resistant::true
 poison resistant::false
 damage/creep::1
-goldValue::16
+goldValue::15
 nbrOfCreaturs::20
 ////////////////////////////// level 26
 Texture animate::mrrabbit_animate
@@ -356,13 +356,13 @@ Texture display::mrrabbit
 Texture dead::mrrabbitdead
 scale::0.8
 Wave title::Agile Mr Rabbit
-health::5922
+health::5900
 fast level::false
 fire resistant::true
 frost resistant::true
 poison resistant::false
 damage/creep::1
-goldValue::18
+goldValue::15
 nbrOfCreaturs::20
 /////////////////////////////// level 27
 Texture animate::mrbear_animate
@@ -370,13 +370,13 @@ Texture display::mrbear
 Texture dead::mrbeardead
 scale::1.1
 Wave title::Mr Bear
-health::6944
+health::6950
 fast level::false
 fire resistant::false
 frost resistant::true
 poison resistant::true
 damage/creep::1
-goldValue::20
+goldValue::15
 nbrOfCreaturs::20
 /////////////////////////////// level 28
 Texture animate::mrmouse_animate
@@ -384,13 +384,13 @@ Texture display::mrmouse
 Texture dead::mrmousedead
 scale::0.9
 Wave title::Mr Mouse
-health::8141
+health::8150
 fast level::true
 fire resistant::true
 frost resistant::true
 poison resistant::false
 damage/creep::1
-goldValue::22
+goldValue::15
 nbrOfCreaturs::20
 /////////////////////////////// level 29
 Texture animate::mrcat_animate
@@ -398,26 +398,26 @@ Texture display::mrcat
 Texture dead::mrcatdead
 scale::1
 Wave title::Mr Cat
-health::9546
+health::9550
 fast level::true
 fire resistant::false
 frost resistant::true
 poison resistant::true
 damage/creep::1
-goldValue::24
+goldValue::30
 nbrOfCreaturs::20
 /////////////////////////////// level 30
 Texture animate::mrsakib_animate
 Texture display::mrsakib
 Texture dead::mrsakibdead
 scale::1
-Wave title::Sakib
-health::11193
+Wave title::Mr Sakib (Boss)
+health::170000
 fast level::true
 fire resistant::true
 frost resistant::true
 poison resistant::true
-damage/creep::1
+damage/creep::5
 goldValue::0
-nbrOfCreaturs::20
+nbrOfCreaturs::1
 // LAST LINE. WILL NOT BE READ BY THE LOADER. BE SURE NOT TO PUT A NEWLINE AFTER THIS LINE

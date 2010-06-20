@@ -2,6 +2,7 @@
 // Line 4: Background image(without file extension) | Line5: number of waypoints on the map 
 // Line6 - Line(6 + nbrOfwaypoints): each waypoint xcord,ycord,waypointNbr
 map2
+map2_textures
 11
 1,11,0
 1,6,1

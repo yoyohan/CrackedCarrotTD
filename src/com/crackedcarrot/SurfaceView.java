@@ -39,7 +39,7 @@ public class SurfaceView extends GLSurfaceView {
 				gameLoop.showTowerUpgradeUI(x, y);
 			
 			if(buildTower){
-				test = gameLoop.createTower(new Coords(x, y), towerType, false);
+				test = gameLoop.createTower(new Coords(x, y), towerType);
 			}
 			
 			if(ui != null && gameLoop.gridOcupied(x, y)){
