@@ -340,7 +340,7 @@ public class MultiplayerGameLoop extends GameLoop {
      * called once (decreaseOppLife() and destroyTower() included) every level */
     public boolean increaseEnemySpeed(){
     	if (hurtOpponent){
-    		if(player.getMoney() >= 200){
+    		if(player.getMoney() >= 20){
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String increaseEnemySpeed = "incEnSp";
@@ -362,7 +362,7 @@ public class MultiplayerGameLoop extends GameLoop {
      * (increaseEnemySpeed() and destroyTower() included) every level */
     public boolean decreaseOppLife(){
     	if (hurtOpponent){
-    		if(player.getMoney() >= 200){
+    		if(player.getMoney() >= 20){
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String decOppLife = "decOppLife";
@@ -384,7 +384,7 @@ public class MultiplayerGameLoop extends GameLoop {
      * (increaseEnemySpeed() and decreaseOppLife() included) every level */
     public boolean destroyTower(){
     	if (hurtOpponent){
-    		if(player.getMoney() >= 200){
+    		if(player.getMoney() >= 20){
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String desTower = "desTower";

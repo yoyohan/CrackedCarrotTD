@@ -56,11 +56,8 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-<<<<<<< HEAD
 			android:visibility="gone"
-=======
 			android:gravity="bottom|center"
->>>>>>> c3aaf0065ada6c0459978ee7a4fe42b3ffb6dfab
        		android:background="@drawable/xml_button_forward" />
 
        	<Button

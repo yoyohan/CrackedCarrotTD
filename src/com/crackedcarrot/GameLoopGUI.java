@@ -257,6 +257,10 @@ public class GameLoopGUI {
         			lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         		}
         		
         	}
