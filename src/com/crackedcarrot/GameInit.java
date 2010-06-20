@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +29,7 @@ import com.scoreninja.adapter.ScoreNinjaAdapter;
 public class GameInit extends Activity {
 
 	public GameLoop     gameLoop;
+	public MultiplayerGameLoop gLoop = null;
     public SurfaceView  mGLSurfaceView;
 
 	private GameLoopGUI gameLoopGui;
@@ -124,7 +124,12 @@ public class GameInit extends Activity {
         
         
     	// We need this to communicate with our GUI.
-        gameLoopGui = new GameLoopGUI(this, hudHandler);
+        if(multiplayerMode()){
+        	gameLoopGui = new GameLoopGUI(this, hudHandler, true);
+        } else {
+        	gameLoopGui = new GameLoopGUI(this, hudHandler, false);
+        }
+        
         
 
         // Fetch information from previous intent. The information will contain the
@@ -217,6 +222,7 @@ public class GameInit extends Activity {
     		mMultiplayerService.start();
     		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,soundManager, mMultiplayerService);
+    		gLoop = (MultiplayerGameLoop) gameLoop;
     	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");

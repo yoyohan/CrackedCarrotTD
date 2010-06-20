@@ -3,7 +3,6 @@ package com.crackedcarrot.menu;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.crackedcarrot.GameInit;
 import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 import android.app.Activity;
@@ -12,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +74,10 @@ public class Highscore extends Activity {
         gallery.setOnItemSelectedListener(gItemSelectedHandler);
         gallery.setSelection((gallery.getCount()/2)+1, true);
         
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Sniglet.ttf");
+        
         Button ShowButton = (Button)findViewById(R.id.MainMenuHighscoreButtonShow);
+        ShowButton.setTypeface(face);
         ShowButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		show();
@@ -82,6 +85,7 @@ public class Highscore extends Activity {
         });
         
         Button OkButton = (Button)findViewById(R.id.MainMenuHighscoreButtonOk);
+        OkButton.setTypeface(face);
         OkButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		finish();

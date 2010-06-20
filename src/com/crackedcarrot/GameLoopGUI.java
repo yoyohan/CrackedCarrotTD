@@ -56,6 +56,8 @@ public class GameLoopGUI {
 	private Dialog dialogMpLost = null;
 	private Dialog dialogCompare = null;
 	
+	private boolean multiplayerMode;
+	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
     //private int          resume;
@@ -134,12 +136,17 @@ public class GameLoopGUI {
     final Button tower2Information;
     final Button tower3Information;
     final Button tower4Information;
-
+    
+    final ExpandMenu expandMenu;
+    final Button lessHealthButton;
+    final Button enemyFastButton;
+    final Button destroyTowerButton;
     
    	// Constructor. A good place to initiate all our different GUI-components.
-    public GameLoopGUI(GameInit gi, final UIHandler hud) {
+    public GameLoopGUI(GameInit gi, final UIHandler hud, boolean multiplayerMode) {
     	gameInit = gi;
     	this.hud = hud;
+    	this.multiplayerMode = multiplayerMode;
     	
     	towerUpgrade = (LinearLayout) gameInit.findViewById(R.id.upgrade_layout);
     	upgradeLvl2 = (Button) gameInit.findViewById(R.id.upgrade_lvl2);
@@ -217,13 +224,48 @@ public class GameLoopGUI {
         playerHealthView = (TextView) gameInit.findViewById(R.id.playerHealth);
         playerHealthView.setTypeface(MuseoSans); 
         
-        /** Listeners for the five icons in the in-game menu.
+        // Create the expandable menu in multiplayer mode
+        expandMenu = (ExpandMenu) gameInit.findViewById(R.id.expandable_menu);
+        lessHealthButton = (Button) gameInit.findViewById(R.id.less_health);
+        enemyFastButton = (Button) gameInit.findViewById(R.id.enemy_fast);
+        destroyTowerButton = (Button) gameInit.findViewById(R.id.destroy_tower);
+        
+        final Button forward = (Button) gameInit.findViewById(R.id.forward);
+        final Button play = (Button) gameInit.findViewById(R.id.play);
+        final Button expandMenuButton = (Button) gameInit.findViewById(R.id.expand_menu);
+        
+        if (multiplayerMode){
+        	expandMenuButton.setVisibility(View.VISIBLE);
+        } else {
+        	forward.setVisibility(View.VISIBLE);
+        }
+        
+        /** Listeners for the nine icons in the in-game menu.
          *  When clicked on, it's possible to place a tower
          *  on an empty space on the map. The first button
          *  is the normal/fast switcher. */
-        final Button forward = (Button) gameInit.findViewById(R.id.forward);
-        final Button play = (Button) gameInit.findViewById(R.id.play);
-
+        expandMenuButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		expandMenu.switchMenu();
+        	}
+        });
+        
+        lessHealthButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(gameInit.gLoop.increaseEnemySpeed()){
+        			expandMenu.switchMenu();
+        			lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
+        		}else{
+        			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
+        		}
+        		
+        	}
+        });
+        
         forward.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		forward.setVisibility(View.GONE);
@@ -1120,7 +1162,7 @@ public class GameLoopGUI {
 	}
 
 
-	public void NotEnougMoney() {
+	public void NotEnoughMoney() {
 		CharSequence text = "Not enough money";
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(this.getGameInit(), text, duration);

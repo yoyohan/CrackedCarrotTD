@@ -20,6 +20,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	private static Semaphore synchLevelSemaphore = new Semaphore(1);
 	private MultiplayerService mMultiplayerService;
 	private boolean opponentLife = true;
+	private boolean hurtOpponent;
 
 	public MultiplayerGameLoop(NativeRender renderHandle, Map gameMap,
 			Level[] waveList, Tower[] tTypes, Player p, GameLoopGUI gui,
@@ -39,6 +40,9 @@ public class MultiplayerGameLoop extends GameLoop {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
+		
+		//Every new level in multiplayer, itäs possible to hurt the opponent
+		this.hurtOpponent = true;
     	
     	//Set the creatures texture size and other atributes.
     	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
@@ -329,6 +333,72 @@ public class MultiplayerGameLoop extends GameLoop {
     /** When handler receives info about opponent life, update through this method */
     public void setOpponentLife(boolean bool){
     	this.opponentLife = bool;
+    }
+    
+    /** This method is called when the player wants to increase the speed 
+     * and health of one of the opponents enemies. The method can only be
+     * called once (decreaseOppLife() and destroyTower() included) every level */
+    public boolean increaseEnemySpeed(){
+    	if (hurtOpponent){
+    		if(player.getMoney() >= 20){
+    			this.hurtOpponent = false;
+    			//send message over Bluetooth
+    			String increaseEnemySpeed = "incEnSp";
+    			byte[] sendIncEnSp = increaseEnemySpeed.getBytes();
+    			mMultiplayerService.write(sendIncEnSp);
+    			
+    			return true;
+    		} else {
+    			//Not enough money
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /** This method is called when the player wants to decrease 
+     * the health of the opponent. The method can only be called once 
+     * (increaseEnemySpeed() and destroyTower() included) every level */
+    public boolean decreaseOppLife(){
+    	if (hurtOpponent){
+    		if(player.getMoney() >= 20){
+    			this.hurtOpponent = false;
+    			//send message over Bluetooth
+    			String decOppLife = "decOppLife";
+    			byte[] sendDecOppL = decOppLife.getBytes();
+    			mMultiplayerService.write(sendDecOppL);
+    			
+    			return true;
+    		} else {
+    			//Not enough money
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /** This method is called when the player wants to destroy 
+     * one of the opponents random towers The method can only be called once 
+     * (increaseEnemySpeed() and decreaseOppLife() included) every level */
+    public boolean destroyTower(){
+    	if (hurtOpponent){
+    		if(player.getMoney() >= 20){
+    			this.hurtOpponent = false;
+    			//send message over Bluetooth
+    			String desTower = "desTower";
+    			byte[] sendDesTow = desTower.getBytes();
+    			mMultiplayerService.write(sendDesTow);
+    			
+    			return true;
+    		} else {
+    			//Not enough money
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
     }
 
 }
