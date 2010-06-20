@@ -137,10 +137,13 @@ public class GameInit extends Activity {
         Bundle extras  = getIntent().getExtras();
         int mapChoice = 0;
         int difficulty = 0;
+        int wave = 0;
+        
         if (extras != null) {
         	Log.d("GAMEINIT", "Extras != null, fetching intents...");
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
+        	wave =  extras.getInt("com.crackedcarrot.menu.wave");
         } else {
         	Log.d("GAMEINIT", "WTF?! Extras == null, please tell fredrik how you did this?!");
         }
@@ -210,9 +213,16 @@ public class GameInit extends Activity {
         
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this, scaler);
-        Level[] waveList  = waveLoad.readWave("wave1",difficulty);
-        
-        // Load all available towers and the shots related to the tower
+        Level[] waveList;
+        // INcase 1 this game is not a multiplayer game and we will launch the ordinary wavefile
+        if (wave == 1) {
+            waveList  = waveLoad.readWave("wave1",difficulty);
+        }
+        else 
+        	//Multiplayer game
+            waveList  = waveLoad.readWave("wave2",difficulty);
+
+       	// Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
