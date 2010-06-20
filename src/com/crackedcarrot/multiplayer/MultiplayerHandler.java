@@ -30,6 +30,8 @@ public class MultiplayerHandler extends Thread {
     private final String INCREASE_ENEMY_SPEED = "incEnSp";
     private final String DECREASE_OPP_LIFE = "decOppLife";
     private final String DESTROY_TOWER = "desTower";
+    private final String MAKE_ELEMENTAL = "mkElem";
+    private final String MAKE_SHIELD = "mkShield";
 	
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
@@ -89,7 +91,18 @@ public class MultiplayerHandler extends Thread {
 	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 	            		toast.show();
 	                }
-	                else{
+	                else if(readMessage.equals(MAKE_ELEMENTAL)){
+	                	Log.d("MULTIPLAYERHANDLER", "Make elemental");
+	                	CharSequence text = "The enemies have gained special ability";
+	            		int duration = Toast.LENGTH_SHORT;
+	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+	            		toast.show();
+	                }
+	                
+	                else if(readMessage.equals(MAKE_SHIELD)){
+	                	Log.d("MULTIPLAYERHANDLER", "opponent made a shield");
+	                }
+	                else {
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;

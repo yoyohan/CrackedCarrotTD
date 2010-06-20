@@ -94,6 +94,8 @@ public class MultiplayerGameLoop extends GameLoop {
 		// And reset our internal counter for the creature health progress bar ^^
 		progressbarLastSent = 100;
 		
+		gui.sendMessage(gui.GUI_UPDATELVLNBRTEXT_ID, this.lvlNbr+1, 0);
+		
 		mLastTime = 0;
 		// Reset gamespeed between levels?
 		// gameSpeed = 1;
@@ -111,6 +113,9 @@ public class MultiplayerGameLoop extends GameLoop {
 		
 		//The dialog showing the players score is shown right after next level dialog
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
+		
+		//Make the five multiplayer buttons visible for the current level
+		gui.setButtonsVisible();
 		
 		waitForDialogClick();
 		
@@ -399,6 +404,69 @@ public class MultiplayerGameLoop extends GameLoop {
     	} else {
     		return false;
     	}
+    }
+    
+    /** This method is called when the player wants to make
+     *  all the opponents enemies gain special ability (fast
+     *  or resistance) */
+    public boolean makeElemental(){
+    	if (hurtOpponent){
+    		if(player.getMoney() >= 20){
+    			this.hurtOpponent = false;
+    			//send message over Bluetooth
+    			String mkElem = "mkElem";
+    			byte[] sendMkElem = mkElem.getBytes();
+    			mMultiplayerService.write(sendMkElem);
+    			
+    			return true;
+    		} else {
+    			//Not enough money
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /** This method is called when the player wants to make
+     *  a shield to protect from the opponents nasty multiplayer-
+     *  manipulations */
+    public boolean makeShield(){
+    	if (hurtOpponent){
+    		if(player.getMoney() >= 20){
+    			this.hurtOpponent = false;
+    			//send message over Bluetooth
+    			String mkShield = "mkShield";
+    			byte[] sendMkShield = mkShield.getBytes();
+    			mMultiplayerService.write(sendMkShield);
+    			
+    			return true;
+    		} else {
+    			//Not enough money
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /**
+     * The five help functions for the multiplayer gameplay
+     */
+    public void incEnSp(){
+    	
+    }
+    public void decOppLife(){
+    	
+    }
+    public void desTower(){
+    	
+    }
+    public void mkElem(){
+    	
+    }
+    public void mkShield(){
+    	
     }
 
 }

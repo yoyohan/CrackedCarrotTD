@@ -141,6 +141,8 @@ public class GameLoopGUI {
     final Button lessHealthButton;
     final Button enemyFastButton;
     final Button destroyTowerButton;
+    final Button makeElementalButton;
+    final Button makeShieldButton;
     
    	// Constructor. A good place to initiate all our different GUI-components.
     public GameLoopGUI(GameInit gi, final UIHandler hud, boolean multiplayerMode) {
@@ -229,6 +231,8 @@ public class GameLoopGUI {
         lessHealthButton = (Button) gameInit.findViewById(R.id.less_health);
         enemyFastButton = (Button) gameInit.findViewById(R.id.enemy_fast);
         destroyTowerButton = (Button) gameInit.findViewById(R.id.destroy_tower);
+        makeElementalButton = (Button) gameInit.findViewById(R.id.make_elemental);
+        makeShieldButton = (Button) gameInit.findViewById(R.id.make_shield);
         
         final Button forward = (Button) gameInit.findViewById(R.id.forward);
         final Button play = (Button) gameInit.findViewById(R.id.play);
@@ -252,9 +256,73 @@ public class GameLoopGUI {
         
         lessHealthButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		if(gameInit.gLoop.increaseEnemySpeed()){
+        		if(gameInit.gLoop.decreaseOppLife()){
         			expandMenu.switchMenu();
         			lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
+        		}else{
+        			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
+        		}
+        		
+        	}
+        });
+        
+        enemyFastButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(gameInit.gLoop.increaseEnemySpeed()){
+        			expandMenu.switchMenu();
+        			enemyFastButton.setVisibility(View.INVISIBLE); //set visible when new level
+        		}else{
+        			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
+        		}
+        		
+        	}
+        });
+        
+        destroyTowerButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(gameInit.gLoop.destroyTower()){
+        			expandMenu.switchMenu();
+        			destroyTowerButton.setVisibility(View.INVISIBLE); //set visible when new level
+        		}else{
+        			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
+        		}
+        		
+        	}
+        });
+        
+        makeElementalButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(gameInit.gLoop.makeElemental()){
+        			expandMenu.switchMenu();
+        			makeElementalButton.setVisibility(View.INVISIBLE); //set visible when new level
+        		}else{
+        			//Not enough money, show in the menu below
+        			CharSequence text = "Not enough money";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
+        		}
+        		
+        	}
+        });
+        
+        makeShieldButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(gameInit.gLoop.makeShield()){
+        			expandMenu.switchMenu();
+        			makeShieldButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
         			CharSequence text = "Not enough money";
@@ -1170,6 +1238,17 @@ public class GameLoopGUI {
 		hud.blinkRedRange();
 	}
 
+	/**
+	 * A method for making the five multiplayer buttons visible for each new level
+	 */
+	public void setButtonsVisible(){
+		lessHealthButton.setVisibility(View.VISIBLE);
+	    enemyFastButton.setVisibility(View.VISIBLE);
+	    destroyTowerButton.setVisibility(View.VISIBLE);
+	    makeElementalButton.setVisibility(View.VISIBLE);
+	    makeShieldButton.setVisibility(View.VISIBLE);
+	}
+	
 	private class InfoListener implements OnClickListener{
     	public void onClick(View v){
     		if (GameLoop.pause == false) {
