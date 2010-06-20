@@ -3,83 +3,62 @@ And add more todos as you come up with them.
 
 HIGH PRIORITY:
 
-Dead Creatures Stay below living.
--- Albin DONE!
+Loading screen
+-- Albin
 
-We need a currency display. ATM the player cant tell how much money he has.
--- JOHAN - DONE!
+Random Crash
+-- Albin
 
-We need a player health display. ATM the player cant tell how much health he has.
-Maybe a cute heart next to the number of lifes.
---Johan - DONE!
+Win/Lose Grafik
+-- Sillen
 
-Tower upgrade ui is super important
---Albin
+Ingame Multiplayer knappar:
+Sabba torn för spelare knapp.
+Ta ett liv från spelare.
+Lägg till resistance.
+Gör fiend snabbare/starkare
+Sköld.
+-- Sillen
 
-Tower range indicator is missing.
---Albin --DONE!
+Ökenbana:
+-- Emil
 
-The game never really ends, no highscore nothing.
---FREDRIK - DONE, scoreninja works on phones and crashes on emulator, this is normal.
+Hjälp topic för multiplayer.
+-- Fredrik.
 
-Towers class still needs cleaning/refactoring badly
---Henrik  ALMOST DONE
+Ny intro skärm:
+-- Fredrik.
 
-Level instructions. Under the game menu while playing. Needs to be scrollview
---Johan - DONE!
+Multiplayer gameplay:
+-- Henrik/Johan.
 
-Highscore ninja
---Fredrik - DONE.
-
-new "DOOM style" difficulty settings on the start game screen.
---Fredrik - NEEDS GRAPHICS FOR PUSHABLE BUTTONS, XML-CODE IN PLACE.
-
-Support for pause. (During Incommeing phonecalls och SMS).
---Johan - DONE!
-
-Prevent display from going in sleep mode while playing
---Johan - DONE!
-
-Options menyn: highscore settings/Sound etc.
---FREDRIK - DONE.
-
-Countdown timer. In the gameloop we have a countdown before level starts so players dont feel stressed. 
-It would be really nice if the timer is shown instead of progress bar until lvl begins
---Henrik - DONE
+BlueTooth pairing GUI + bättre grännssnitt.
+-- Johan.
 
 MEDIUM PRIORITY:
 
-Ljud Inspelning. Helg hemma hos albin med en mic och ett gäng öl.
---ALLA --DONE!
-
-Support for animated sprites, explosions etc..
---Albin DONE!.
+Oändlig wave i multiplayer/Last man standing.
+-- ALLA.
 
 Possibly support for texture blending for frost/fire effects on the creatures.
---Albin
+-- Albin
 
-Multiplayer support.
---JOHAN, CONNECTION ESTABLISHED!
+Blixt/Partikel effekter:
+-- Albin
 
 Balancing of the game. Create more levels balance towers etc.
 --Henrik
 
-More detailed information between levels. The player have to know what kind of creatures he will be facing
-before next level starts
---Henrik - DONE?
-
-Main menu -> Options menu. We need to have possible sound settings before game starts.
---FREDRIK - DONE.
-
-Gamespeed. The game is designed to have different gamespeeds. We have to implement a button and test this.
---Henrik - DONE!
-
-Save game info between levels. If the user quits/closes/something the game the game will allow the user
-to resume from the last completed level when the game starts again.
---Fredrik - 90% DONE, ALL CODE NEEDED TO SAVE/RESTORE GAMESTATE IS COMPLETE AND INTEGRATED INTO THE GUI.
-
-Scale. if we want to change the size of creatures we have to use the renderer scale function and balance it with the game.
---Henrik - DONE!
-
-Grid Remake
+Health bar på alla djur:
 --Albin
+
+LOW PRIORITY:
+
+MultiplayerBana:
+-- Emil
+
+Snoffsa Till gräsbanans slut:
+-- Henke
+
+Häftig about effekt:
+-- Fredrik.
