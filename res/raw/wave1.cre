@@ -34,7 +34,7 @@ Texture display::mrpingu
 Texture dead::mrpingudead
 scale::1
 Wave title::Elegant Mr Pingu
-health::170
+health::180
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -48,7 +48,7 @@ Texture display::mrbully
 Texture dead::mrbullydead
 scale::1
 Wave title::Nasty Mr Bully
-health::200
+health::250
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -62,7 +62,7 @@ Texture display::mrlion
 Texture dead::mrliondead
 scale::1
 Wave title::Charming Mr Lion
-health::250
+health::320
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -76,7 +76,7 @@ Texture display::mrcat
 Texture dead::mrcatdead
 scale::1
 Wave title::Speedy Mr Cat
-health::250
+health::320
 fast level::true
 fire resistant::false
 frost resistant::false
@@ -90,7 +90,7 @@ Texture display::mrmouse
 Texture dead::mrmousedead
 scale::0.8
 Wave title::Sneaky Mr Mouse
-health::320
+health::380
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -104,7 +104,7 @@ Texture display::mrbear
 Texture dead::mrbeardead
 scale::1.1
 Wave title::Mighty Mr Bear
-health::370
+health::440
 fast level::false
 fire resistant::true
 frost resistant::false
@@ -118,7 +118,7 @@ Texture display::mrelephant
 Texture dead::mrelephantdead
 scale::1
 Wave title::Fat Mr Elephant
-health::440
+health::500
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -132,7 +132,7 @@ Texture display::misspiggy
 Texture dead::misspiggydead
 scale::1.2
 Wave title::Bitchy Miss P
-health::8500
+health::7200
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -146,7 +146,7 @@ Texture display::mrbear
 Texture dead::mrbeardead
 scale::1
 Wave title::Creepy Mr Bear
-health::570
+health::600
 fast level::false
 fire resistant::false
 frost resistant::false
@@ -272,7 +272,7 @@ Texture display::mrelephant
 Texture dead::mrelephantdead
 scale::1.2
 Wave title::Mr Elephant(Boss)
-health::45000
+health::34000
 fast level::false
 fire resistant::true
 frost resistant::false
@@ -411,8 +411,8 @@ Texture animate::mrsakib_animate
 Texture display::mrsakib
 Texture dead::mrsakibdead
 scale::1
-Wave title::Mr Sakib
-health::200000
+Wave title::Mr Sakib (Boss)
+health::170000
 fast level::true
 fire resistant::true
 frost resistant::true
