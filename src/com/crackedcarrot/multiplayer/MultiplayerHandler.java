@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.crackedcarrot.GameLoopGUI;
 
 public class MultiplayerHandler extends Thread {
@@ -25,6 +27,9 @@ public class MultiplayerHandler extends Thread {
     private final String SYNCH_LEVEL = "synchLevel";
     private final String PLAYER_SCORE = "Score";
     private final String PLAYER_DEAD = "Dead";
+    private final String INCREASE_ENEMY_SPEED = "incEnSp";
+    private final String DECREASE_OPP_LIFE = "decOppLife";
+    private final String DESTROY_TOWER = "desTower";
 	
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
@@ -62,7 +67,29 @@ public class MultiplayerHandler extends Thread {
 	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
 	                     opponentScore = Integer.parseInt(readMessage);
 	                     gameLoopGui.setOpponentScore(opponentScore);
-	                }else{
+	                }
+	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
+	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
+	                	CharSequence text = "An enemy has gained more health and speed";
+	            		int duration = Toast.LENGTH_SHORT;
+	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+	            		toast.show();
+	                }
+	                else if(readMessage.equals(DECREASE_OPP_LIFE)){
+	                	Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
+	                	CharSequence text = "Your life has been decreased";
+	            		int duration = Toast.LENGTH_SHORT;
+	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+	            		toast.show();
+	                }
+	                else if(readMessage.equals(DESTROY_TOWER)){
+	                	Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
+	                	CharSequence text = "A random tower has been destroyed";
+	            		int duration = Toast.LENGTH_SHORT;
+	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+	            		toast.show();
+	                }
+	                else{
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;

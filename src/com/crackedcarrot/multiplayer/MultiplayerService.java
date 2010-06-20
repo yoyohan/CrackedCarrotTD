@@ -64,31 +64,6 @@ public class MultiplayerService extends Thread {
                 if(bytes > 0){
                 	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, 
                     		bytes, buffer).sendToTarget();
-                	/**
-	                // construct a string from the valid bytes in the buffer
-	                String readMessage = new String(buffer);
-	                readMessage = readMessage.substring(0, bytes);
-	                Log.d("XXXXX", "BIG: " + bytes);
-	                if(readMessage.equals(SYNCH_LEVEL)){
-	                	 // Send the obtained bytes to the UI Activity
-	                    mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_SYNCH_LEVEL, 0, 
-	                    		bytes, buffer).sendToTarget();
-	                }
-	                else if(readMessage.equals(PLAYER_DEAD)){
-	                	Log.d("YYYYY", readMessage);
-	                	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_DEAD, 0, 
-                				bytes, buffer).sendToTarget();
-	                }
-	                // The data consists of the opponents score
-	                else {
-	                	readMessage = readMessage.substring(0, 5);
-	                	Log.d("YYYYY", readMessage);
-	                	if(readMessage.equals(PLAYER_SCORE)){
-	                		mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_PLAYER_SCORE, 0, 
-	                				bytes, buffer).sendToTarget();
-	                	}
-	                	
-	                }*/
                 }
          	   //Log.d("MPSERVICE LOOP", "Send to handler");
             } catch (IOException e) {

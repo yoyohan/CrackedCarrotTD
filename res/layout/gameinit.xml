@@ -13,6 +13,38 @@
 	    android:layout_height="wrap_content">
 	</com.crackedcarrot.SurfaceView>
 	
+	<com.crackedcarrot.ExpandMenu
+		android:id="@+id/expandable_menu"
+		android:layout_width="fill_parent" 
+	    android:layout_height="100dp" 
+	    android:gravity="top|center_horizontal"
+	    android:layout_alignParentBottom="true"
+	    android:background="#55007700"
+	    android:visibility="gone">
+	    
+	    <Button
+       		android:id="@+id/less_health"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_forward" />
+       		
+       	<Button
+       		android:id="@+id/enemy_fast"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_forward" />
+       		
+       	<Button
+       		android:id="@+id/destroy_tower"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_forward" />
+       		
+    </com.crackedcarrot.ExpandMenu>
+	
 	<LinearLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -24,6 +56,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
+			android:visibility="gone"
 			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_forward" />
 
@@ -34,6 +67,14 @@
 			android:scaleType="fitXY"
 			android:visibility="gone"
 			android:gravity="bottom|center"
+       		android:background="@drawable/xml_button_play" />
+       		
+       	<Button
+       		android:id="@+id/expand_menu"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+			android:visibility="gone"
        		android:background="@drawable/xml_button_play" />
 
         <Button
