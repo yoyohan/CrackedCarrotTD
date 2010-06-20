@@ -1,7 +1,5 @@
 package com.crackedcarrot.menu;
 
-import com.crackedcarrot.GameLoop;
-
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -10,8 +8,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-
-import com.crackedcarrot.GameLoop;
 
 /**
  * Class that functions as the instruction view. It creates the

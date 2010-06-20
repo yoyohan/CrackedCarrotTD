@@ -709,7 +709,7 @@ public class GameLoop implements Runnable {
     				showTowerUpgradeUI((int) t.x, (int) t.y);
     			}
     			else {
-    				gui.NotEnougMoney();
+    				gui.NotEnoughMoney();
     				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
@@ -753,7 +753,7 @@ public class GameLoop implements Runnable {
 				updateCurrency();
 			}
 			else {
-				gui.NotEnougMoney();
+				gui.NotEnoughMoney();
 				Log.d("GAMELOOP","No upgrade done");
 			}
 		}
