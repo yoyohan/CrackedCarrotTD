@@ -12,6 +12,7 @@ public class MultiplayerHandler extends Thread {
 	
 	public Handler mMultiplayerHandler;
 	private GameLoopGUI gameLoopGui;
+	private MultiplayerGameLoop mpGL;
 	
 	// Message types sent to the MultiplayerService Handler
 	public static final int MESSAGE_READ = 10;
@@ -35,6 +36,8 @@ public class MultiplayerHandler extends Thread {
 	
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
+		mpGL = (MultiplayerGameLoop) gameLoopGui.getGameInit()
+    	.gameLoop;
 	}
 	
 	public void run(){
@@ -59,8 +62,6 @@ public class MultiplayerHandler extends Thread {
  	                // The opponent is dead
 	                else if(readMessage.equals(PLAYER_DEAD)){
 	                	Log.d("YYYYY", readMessage);
-	                	MultiplayerGameLoop mpGL = (MultiplayerGameLoop) gameLoopGui.getGameInit()
-	                	.gameLoop;
 	                    mpGL.setOpponentLife(false);
 	                }
 	                // The data consists of the opponents score
@@ -72,36 +73,81 @@ public class MultiplayerHandler extends Thread {
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
 	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
-	                	CharSequence text = "An enemy has gained more health and speed";
-	            		int duration = Toast.LENGTH_SHORT;
-	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
-	            		toast.show();
+	                	if(mpGL.multiplayerShield){
+	                		mpGL.multiplayerShield = false;
+	                		CharSequence text = "Your shield was used against an enemy upgrade attack";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
+	                	else{
+		                	mpGL.incEnSp();
+		                	
+		                	CharSequence text = "An enemy has gained more health and speed";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
 	                }
 	                else if(readMessage.equals(DECREASE_OPP_LIFE)){
 	                	Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
-	                	CharSequence text = "Your life has been decreased";
-	            		int duration = Toast.LENGTH_SHORT;
-	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
-	            		toast.show();
+	                	if(mpGL.multiplayerShield){
+	                		mpGL.multiplayerShield = false;
+	                		CharSequence text = "Your shield was used against a life attack";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
+	                	else{
+		                	mpGL.decOppLife();
+		                	
+		                	CharSequence text = "Your life has been decreased";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
 	                }
 	                else if(readMessage.equals(DESTROY_TOWER)){
 	                	Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
-	                	CharSequence text = "A random tower has been destroyed";
-	            		int duration = Toast.LENGTH_SHORT;
-	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
-	            		toast.show();
+	                	if(mpGL.multiplayerShield){
+	                		mpGL.multiplayerShield = false;
+	                		CharSequence text = "Your shield was used against a tower attack";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
+	                	else {
+		                	mpGL.desTower();
+		                	
+		                	CharSequence text = "A random tower has been destroyed";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
 	                }
 	                else if(readMessage.equals(MAKE_ELEMENTAL)){
 	                	Log.d("MULTIPLAYERHANDLER", "Make elemental");
-	                	CharSequence text = "The enemies have gained special ability";
-	            		int duration = Toast.LENGTH_SHORT;
-	            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
-	            		toast.show();
+	                	if(mpGL.multiplayerShield){
+	                		mpGL.multiplayerShield = false;
+	                		CharSequence text = "Your shield was used against an elemental attack";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
+	                	else{
+		                	mpGL.mkElem();
+		                	
+		                	CharSequence text = "The enemies have gained special ability";
+		            		int duration = Toast.LENGTH_SHORT;
+		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+		            		toast.show();
+	                	}
 	                }
-	                
+	                /*
 	                else if(readMessage.equals(MAKE_SHIELD)){
 	                	Log.d("MULTIPLAYERHANDLER", "opponent made a shield");
-	                }
+	                	//Do something? No, don't notify opponent about this
+	                } */
 	                else {
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }

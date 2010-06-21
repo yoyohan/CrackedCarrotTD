@@ -1,5 +1,6 @@
 package com.crackedcarrot.multiplayer;
 
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import android.os.SystemClock;
@@ -21,6 +22,9 @@ public class MultiplayerGameLoop extends GameLoop {
 	private MultiplayerService mMultiplayerService;
 	private boolean opponentLife = true;
 	private boolean hurtOpponent;
+	
+	//The variable representing the shield in a multiplayer game
+	public boolean multiplayerShield = false;
 
 	public MultiplayerGameLoop(NativeRender renderHandle, Map gameMap,
 			Level[] waveList, Tower[] tTypes, Player p, GameLoopGUI gui,
@@ -342,16 +346,17 @@ public class MultiplayerGameLoop extends GameLoop {
     
     /** This method is called when the player wants to increase the speed 
      * and health of one of the opponents enemies. The method can only be
-     * called once (decreaseOppLife() and destroyTower() included) every level */
+     * called once every level */
     public boolean increaseEnemySpeed(){
     	if (hurtOpponent){
     		if(player.getMoney() >= 20){
+    			player.moneyFunction(-20);
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String increaseEnemySpeed = "incEnSp";
     			byte[] sendIncEnSp = increaseEnemySpeed.getBytes();
     			mMultiplayerService.write(sendIncEnSp);
-    			
+    			updateCurrency();
     			return true;
     		} else {
     			//Not enough money
@@ -364,16 +369,17 @@ public class MultiplayerGameLoop extends GameLoop {
     
     /** This method is called when the player wants to decrease 
      * the health of the opponent. The method can only be called once 
-     * (increaseEnemySpeed() and destroyTower() included) every level */
+     * every level */
     public boolean decreaseOppLife(){
     	if (hurtOpponent){
     		if(player.getMoney() >= 20){
+    			player.moneyFunction(-20);
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String decOppLife = "decOppLife";
     			byte[] sendDecOppL = decOppLife.getBytes();
     			mMultiplayerService.write(sendDecOppL);
-    			
+    			updateCurrency();
     			return true;
     		} else {
     			//Not enough money
@@ -386,16 +392,17 @@ public class MultiplayerGameLoop extends GameLoop {
     
     /** This method is called when the player wants to destroy 
      * one of the opponents random towers The method can only be called once 
-     * (increaseEnemySpeed() and decreaseOppLife() included) every level */
+     * every level */
     public boolean destroyTower(){
     	if (hurtOpponent){
     		if(player.getMoney() >= 20){
+    			player.moneyFunction(-20);
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String desTower = "desTower";
     			byte[] sendDesTow = desTower.getBytes();
     			mMultiplayerService.write(sendDesTow);
-    			
+    			updateCurrency();
     			return true;
     		} else {
     			//Not enough money
@@ -412,12 +419,13 @@ public class MultiplayerGameLoop extends GameLoop {
     public boolean makeElemental(){
     	if (hurtOpponent){
     		if(player.getMoney() >= 20){
+    			player.moneyFunction(-20);
     			this.hurtOpponent = false;
     			//send message over Bluetooth
     			String mkElem = "mkElem";
     			byte[] sendMkElem = mkElem.getBytes();
     			mMultiplayerService.write(sendMkElem);
-    			
+    			updateCurrency();
     			return true;
     		} else {
     			//Not enough money
@@ -434,12 +442,16 @@ public class MultiplayerGameLoop extends GameLoop {
     public boolean makeShield(){
     	if (hurtOpponent){
     		if(player.getMoney() >= 20){
+    			player.moneyFunction(-20);
+    			mkShield();
     			this.hurtOpponent = false;
     			//send message over Bluetooth
+    			/*
     			String mkShield = "mkShield";
     			byte[] sendMkShield = mkShield.getBytes();
     			mMultiplayerService.write(sendMkShield);
-    			
+    			*/
+    			updateCurrency();
     			return true;
     		} else {
     			//Not enough money
@@ -454,19 +466,29 @@ public class MultiplayerGameLoop extends GameLoop {
      * The five help functions for the multiplayer gameplay
      */
     public void incEnSp(){
+    	Random rand = new Random();
+    	int tmp = rand.nextInt(mCreatures.length);
     	
+    	//Först kolla så mCreatures[tmp] lever, annars välj nästa...kolla den ej död osv.
+    
+    	mCreatures[tmp].creatureFast = true;
+    	mCreatures[tmp].setHealth(200); //Bättre med tex faktor 2 ggr aktuell hälsa
     }
     public void decOppLife(){
-    	
+    	player.damage(5);
+    	updatePlayerHealth();
     }
     public void desTower(){
-    	
+    	Random rand = new Random();
+    	int tmp = rand.nextInt(mTower.length);
+		mTower[tmp].draw = false;
+		mTower[tmp].relatedShot.draw = false;
     }
     public void mkElem(){
     	
     }
     public void mkShield(){
-    	
+    	this.multiplayerShield = true;
     }
 
 }
