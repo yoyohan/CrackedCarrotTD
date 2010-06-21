@@ -43,6 +43,20 @@
 			android:scaleType="fitXY"
        		android:background="@drawable/xml_button_forward" />
        		
+       	<Button
+       		android:id="@+id/make_elemental"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_forward" />
+       		
+       	<Button
+       		android:id="@+id/make_shield"
+			android:layout_width="64dp"
+			android:layout_height="50dp"
+			android:scaleType="fitXY"
+       		android:background="@drawable/xml_button_forward" />
+       		
     </com.crackedcarrot.ExpandMenu>
 	
 	<LinearLayout
