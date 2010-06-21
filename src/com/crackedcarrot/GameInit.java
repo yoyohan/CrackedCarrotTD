@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;

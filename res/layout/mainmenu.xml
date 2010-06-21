@@ -9,7 +9,7 @@
 
   <TableLayout
 	android:layout_width="140dp"
-    android:layout_height="460dp"
+    android:layout_height="400dp"
     android:gravity="center"
 	android:layout_alignParentTop="true"
 	android:layout_centerHorizontal="true"
@@ -86,16 +86,6 @@
         	android:layout_width="wrap_content"
         	android:background="#00000000" />
 	</TableRow>
-
-    <TableRow>
-        <Button
-		android:id="@+id/ButtonHighscore"
-		android:layout_width="66dp"
-		android:layout_height="38dp"
-	    android:scaleType="fitXY"
-		android:background="@drawable/xml_button_highscore">
-		</Button>
-    </TableRow>
 
   </TableLayout>
 </RelativeLayout>

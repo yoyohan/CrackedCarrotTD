@@ -1230,7 +1230,7 @@ public class GameLoopGUI {
 	}
 
 
-	public void NotEnougMoney() {
+	public void NotEnoughMoney() {
 		CharSequence text = "Not enough money";
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(this.getGameInit(), text, duration);

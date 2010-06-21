@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
-
 public class Player {
 
 	private int difficulty;

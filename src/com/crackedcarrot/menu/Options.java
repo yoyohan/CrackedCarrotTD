@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 public class Options extends Activity {
 
@@ -101,6 +100,15 @@ public class Options extends Activity {
         buttonSave.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		setSave();
+        	}
+        });
+        
+        Button HighscoreButton = (Button) findViewById(R.id.MainMenuOptionsButton4);
+        HighscoreButton.setTypeface(face);
+        HighscoreButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		Intent Highscore = new Intent(Options.this,Highscore.class);
+        		startActivity(Highscore);
         	}
         });
     }
