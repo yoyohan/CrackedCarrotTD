@@ -7,9 +7,9 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 
                                                                   
     noOfSprites[type] = size;
-    if(noOfSprites[type] > 0){
-        renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type]);
-
+    if(noOfSprites[type] > 0 && (renderSprites[type] = malloc(sizeof(GLSprite) * noOfSprites[type])) == NULL){
+        
+        __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in nativeDataPoolSize");
     }
     __android_log_print(ANDROID_LOG_DEBUG, 
 		    				"NATIVE ALLOC",
@@ -27,9 +27,11 @@ void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, 
         //Gl begins to create identifiers from 1 not 0; pos 0 in texData will be unused.
         
         allocSize = length+1;
-        texData = malloc(sizeof(textureData)*allocSize);
+        if((texData = malloc(sizeof(textureData)*allocSize)) == NULL){
+            __android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC","MALLOC ERROR in allocTextureBuffers");
+        }
         texDataLength = allocSize;
-        __android_log_print(ANDROID_LOG_DEBUG, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
+        __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
     }
     else{
         __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Invalid buffer length! Buffer not allocated!");
@@ -52,7 +54,9 @@ void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, job
 	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
     GLfloat textureCoordBuffer[4*2];
 	
-	texData[index].textureBufferNames = malloc(nFrames * sizeof(GLuint));
+	if((texData[index].textureBufferNames = malloc(nFrames * sizeof(GLuint))) == NULL){
+	    __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in setTextureBuffer");
+	}
 	glGenBuffers(nFrames, texData[index].textureBufferNames);
 	
 	GLfloat texFraction = 1.0 / nFrames;
@@ -135,11 +139,6 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	id = (*env)->GetFieldID(env, class, "currTexName", "I");
 	thisSprite->textureName = id;
 	
-	thisSprite->bufferName = malloc(sizeof(GLuint)*2);
-	
-	thisSprite->bufferName[0] = 0; 
-	thisSprite->bufferName[1] = 0;
-	
 	//If this is not the first sprite of its type and its not an animation
 	//We can just use the same VBOs as the last sprite.
     GLSprite* last = NULL;
@@ -170,6 +169,14 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 		                "NATIVE ALLOC", 
 		                "Sprite No: %d of Type: %d and subType: %d .   Needs new buffers.",
 		                spriteNO, type, subType);*/
+		                
+		if((thisSprite->bufferName = malloc(sizeof(GLuint)*2)) == NULL){
+		    __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in nativeAlloc");
+		}
+	
+	    thisSprite->bufferName[0] = 0; 
+	    thisSprite->bufferName[1] = 0;
+	    
 		initHwBuffers(env, thisSprite);
 	}
 
@@ -182,7 +189,9 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	    }
 
 	    if((*env)->IsInstanceOf(env, thisSprite->object, creature)){
-            thisSprite->crExtens = malloc(sizeof(crExtensions));
+            if((thisSprite->crExtens = malloc(sizeof(crExtensions))) == NULL){
+                __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in nativeAlloc");
+            }
             thisSprite->crExtens->dead = (*env)->GetFieldID(env, creature, "dead", "Z");
 
 	    }
@@ -254,38 +263,54 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 
 }
 
-void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env){
+void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env, jobject thiz){
 	GLSprite* currSprt;
 	int spritesToFree;
 	int i;
 	int j;
+	int k;
 	
 	for(j = 0; j < 6; j++){
 		spritesToFree = noOfSprites[j];
 		for(i = 0; i < spritesToFree; i++){
 			currSprt = &renderSprites[j][i];
-			//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing sprite %d:%d", j,i);
-			(*env)->DeleteGlobalRef(env, currSprt->object);
-			/*if(currSprt->textureBufferNames != NULL){
-				glDeleteBuffers((*env)->GetIntField(env, currSprt->object, currSprt->nFrames),
-				 				currSprt->textureBufferNames);
-				//free(currSprt->textureBufferNames);
-				currSprt->textureBufferNames = NULL;
-			}*/
-			if(currSprt->bufferName != NULL){
-				glDeleteBuffers(2, currSprt->bufferName);
-				//free(currSprt->bufferName);
+			//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", 
+			//"Freeing sprite %d:%d of %d:%d", j,i,6,spritesToFree);
+            //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Trying to free the Global Ref");
+            (*env)->DeleteGlobalRef(env, currSprt->object);
+            if(currSprt->crExtens != NULL){
+                //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Trying to free the Creature Ext");
+                free(currSprt->crExtens);
+                currSprt->crExtens = NULL;
+            }
+                
+            if(currSprt->bufferName != NULL){
+                //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Deleteing GL buffers");
+			    glDeleteBuffers(2, currSprt->bufferName);
+				for(k = i+1; k < spritesToFree; k++){
+				    //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", 
+				    //"Adress0: %x Adress1: %x",currSprt->bufferName,renderSprites[j][k].bufferName);
+				    if(currSprt->bufferName  == renderSprites[j][k].bufferName){
+			            //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", 
+			            //"Shared buffer, avoid double free");
+			            renderSprites[j][k].bufferName = NULL;
+			        }
+			    }
+			    //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "All shared buffers clean, freeing mem");
+				free(currSprt->bufferName);
 				currSprt->bufferName = NULL;
 			}
-		}
-	
-		free(renderSprites[j]);
-		noOfSprites[j] = 0;
-	}
+        }
+    //__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_FREE_SPRITES", "Freeing list: %d", j);
+	free(renderSprites[j]);
+	renderSprites[j] = NULL;
+	noOfSprites[j] = 0;
+    }
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName){
     glDeleteBuffers(texData[textureName].nFrames, texData[textureName].textureBufferNames);
     free(texData[textureName].textureBufferNames);
+    texData[textureName].textureBufferNames = NULL;
 	glDeleteTextures(1, &textureName);
 }
