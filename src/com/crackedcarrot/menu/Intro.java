@@ -13,7 +13,7 @@ import android.os.Handler;
  */
 public class Intro extends Activity {
 	
-	private final int INTRO_LENGTH = 2000; 
+	private final int INTRO_LENGTH = 1000; 
 	
     /** Called when the activity is first created. */
     @Override
