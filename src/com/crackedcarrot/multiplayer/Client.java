@@ -30,6 +30,7 @@ public class Client extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_CONNECT_DEVICE = 2;
+    private static final int REQUEST_DISCOVERABLE = 3;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
     private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
@@ -74,6 +75,12 @@ public class Client extends Activity {
     public void onStart() {
         super.onStart();
         
+        /** Request that the device will be discoverable for 300 seconds 
+         *  Only need to do this for the server side of the connection */
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+        
         /** Request that Bluetooth will be activated if not on.
          *  setupClient() will then be called during onActivityResult */
         if (!mBluetoothAdapter.isEnabled()) {
@@ -112,13 +119,23 @@ public class Client extends Activity {
                 connect(device);
             }
             break;
+        case REQUEST_DISCOVERABLE:
+        	if (resultCode == 300) {
+                // The device is made discoverable and bluetooth is activated
+            } else {
+                // User did not accept the request or an error occured
+                Toast.makeText(this, "The device was not made discoverable. Leaving multiplayer"
+                		, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        	break;
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
                 // Bluetooth is now enabled, so do nothing
             } else {
                 // User did not enable Bluetooth or an error occured
-                Toast.makeText(this, "Bluetooth was not enabled. Leaving Bluetooth Chat."
+                Toast.makeText(this, "Bluetooth was not enabled. Leaving multiplayer."
                 		, Toast.LENGTH_SHORT).show();
                 finish();
             }

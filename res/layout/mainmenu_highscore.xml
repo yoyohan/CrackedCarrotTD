@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:gravity="center"
+<RelativeLayout
+	android:id="@+id/relLay1"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="@drawable/background" >
-	
+	android:background="@drawable/background"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
 	<LinearLayout
     	android:orientation="vertical"
-    	android:gravity="center"
+    	android:gravity="top"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent" >
 
 		<LinearLayout
-    		android:orientation="horizontal"
-    		android:gravity="center"
-    		android:layout_width="fill_parent"
-    		android:layout_height="60dp" >
-
-			<ImageView
-				android:src="@drawable/optionsimage"
-				android:gravity="center"
-    		    android:layout_width="fill_parent"
-      		    android:layout_height="fill_parent"
-				android:layout_weight="1" />
-     		   	    
- 		</LinearLayout>
+			android:layout_width="fill_parent"
+			android:layout_height="100dp"
+		    android:gravity="center">
+		    
+			    <ImageView
+					android:layout_width="200dp"
+					android:layout_height="40dp"
+					android:background="@drawable/highscoreimage">
+				</ImageView>
+				
+		</LinearLayout>	
 		
 		<LinearLayout
     		android:orientation="vertical"
@@ -50,14 +49,13 @@
     		android:layout_height="150dp" >
 
 					<Button
-						android:text="Show"
-						android:background="@drawable/xml_button_pause"
+						android:background="@drawable/xml_button_highscore"
 						android:id="@+id/MainMenuHighscoreButtonShow"
-			    		android:textSize="22sp"		
-			            android:layout_width="fill_parent"
-			            android:layout_height="fill_parent"
-			            android:layout_weight="1" />
-				
+						android:layout_width="140dp"
+						android:layout_height="38dp"
+	    				android:scaleType="fitXY"
+			        />
+			            
 					<Button
 						android:text="Back"
 						android:background="@drawable/xml_button_pause"
@@ -71,4 +69,4 @@
 		
 	</LinearLayout>
 	
-</LinearLayout>
+</RelativeLayout>

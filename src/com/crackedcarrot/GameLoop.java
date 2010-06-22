@@ -139,9 +139,9 @@ public class GameLoop implements Runnable {
 			
 			for(int i = 0; i < mLvl.length; i++){
 				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
-				Log.d("INIT", ""+mLvl[i].getResourceId());
+				//Log.d("INIT", ""+mLvl[i].getResourceId());
 				
-				Log.d("INIT", ""+test.mTextureName);
+				//Log.d("INIT", ""+test.mTextureName);
 				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
@@ -370,9 +370,9 @@ public class GameLoop implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            } else if (timeDelta > 300) {			
-	            	timeDelta = 300;
-	            	Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.3s");
+	            } else if (timeDelta > 50) {			
+	            	timeDelta = 50;
+	            	Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.05s");
 	            }
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
