@@ -24,16 +24,16 @@ Sköld.
 -- Emil
 
 Hjälp topic för multiplayer.
--- Fredrik.
+-- Fredrik. -- PÅBÖRJAT, kanske klart kanske inte :)
 
 Ny intro skärm:
--- Fredrik.
+-- Fredrik. -- DONE, egentligen gillar jag en liten söt logga men detta är inte copyrightat iaf..
 
 Multiplayer gameplay:
--- Henrik/Johan.
+-- Henrik/Johan. - 4/5 Done!
 
 BlueTooth pairing GUI + bättre grännssnitt.
--- Johan.
+-- Johan. - Bluetooth pairing GUI Done!
 
 MEDIUM PRIORITY:
 

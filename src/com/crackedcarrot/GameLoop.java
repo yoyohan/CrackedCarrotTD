@@ -139,9 +139,9 @@ public class GameLoop implements Runnable {
 			
 			for(int i = 0; i < mLvl.length; i++){
 				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
-				Log.d("INIT", ""+mLvl[i].getResourceId());
+				//Log.d("INIT", ""+mLvl[i].getResourceId());
 				
-				Log.d("INIT", ""+test.mTextureName);
+				//Log.d("INIT", ""+test.mTextureName);
 				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}

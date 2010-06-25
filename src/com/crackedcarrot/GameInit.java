@@ -166,10 +166,6 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", 0);
     		editor.commit();
         }
-    
-        // We will init soundmanager here insteed
-        soundManager = new SoundManager(getBaseContext());
-        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         
         // Create the map requested by the player
@@ -194,7 +190,11 @@ public class GameInit extends Activity {
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(gameMap.getTextureFile(),this),
         		hudHandler.getOverlayObjectsToRender());
-
+        mGLSurfaceView.setRenderer(nativeRenderer);
+        
+        // We will init soundmanager here insteed
+        soundManager = new SoundManager(getBaseContext());
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         //Define player specific variables depending on difficulty.
         Player p;
@@ -246,9 +246,7 @@ public class GameInit extends Activity {
         }
         
         gameLoopThread = new Thread(gameLoop);
-        
-        mGLSurfaceView.setRenderer(nativeRenderer);        
-        
+                
         mGLSurfaceView.setSimulationRuntime(gameLoop);
         mGLSurfaceView.setHUDHandler(hudHandler);
         
