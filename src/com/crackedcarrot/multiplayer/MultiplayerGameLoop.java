@@ -21,7 +21,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	private static Semaphore synchLevelSemaphore = new Semaphore(1);
 	private MultiplayerService mMultiplayerService;
 	private boolean opponentLife = true;
-	private boolean hurtOpponent;
+	//private boolean hurtOpponent;
 	
 	//The variable representing the shield in a multiplayer game
 	public boolean multiplayerShield = false;
@@ -45,9 +45,6 @@ public class MultiplayerGameLoop extends GameLoop {
 			e1.printStackTrace();
 		}
 		
-		//Every new level in multiplayer, itäs possible to hurt the opponent
-		this.hurtOpponent = true;
-    	
     	//Set the creatures texture size and other atributes.
     	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
     	remainingCreaturesALIVE = mLvl[lvlNbr].nbrCreatures;
@@ -119,7 +116,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
 		
 		//Make the five multiplayer buttons visible for the current level
-		gui.setButtonsVisible();
+		gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
 		
 		waitForDialogClick();
 		
@@ -335,7 +332,8 @@ public class MultiplayerGameLoop extends GameLoop {
     }
     
     /** Release the synchronization semaphore from outside this class */
-    public static void synchLevelClick() {
+    //public static void synchLevelClick() {
+    public void synchLevelClick() {
     	synchLevelSemaphore.release();
     }
     
@@ -348,145 +346,183 @@ public class MultiplayerGameLoop extends GameLoop {
      * and health of one of the opponents enemies. The method can only be
      * called once every level */
     public boolean increaseEnemySpeed(){
-    	if (hurtOpponent){
-    		if(player.getMoney() >= 20){
-    			player.moneyFunction(-20);
-    			this.hurtOpponent = false;
-    			//send message over Bluetooth
-    			String increaseEnemySpeed = "incEnSp";
-    			byte[] sendIncEnSp = increaseEnemySpeed.getBytes();
-    			mMultiplayerService.write(sendIncEnSp);
-    			updateCurrency();
-    			return true;
-    		} else {
-    			//Not enough money
-    			return false;
-    		}
-    	} else {
-    		return false;
-    	}
+		if(player.getMoney() >= 20){
+			player.moneyFunction(-20);
+			//send message over Bluetooth
+			String increaseEnemySpeed = "incEnSp";
+			byte[] sendIncEnSp = increaseEnemySpeed.getBytes();
+			mMultiplayerService.write(sendIncEnSp);
+			updateCurrency();
+			return true;
+		} else {
+			//Not enough money
+			return false;
+		}
     }
     
     /** This method is called when the player wants to decrease 
      * the health of the opponent. The method can only be called once 
      * every level */
     public boolean decreaseOppLife(){
-    	if (hurtOpponent){
-    		if(player.getMoney() >= 20){
-    			player.moneyFunction(-20);
-    			this.hurtOpponent = false;
-    			//send message over Bluetooth
-    			String decOppLife = "decOppLife";
-    			byte[] sendDecOppL = decOppLife.getBytes();
-    			mMultiplayerService.write(sendDecOppL);
-    			updateCurrency();
-    			return true;
-    		} else {
-    			//Not enough money
-    			return false;
-    		}
-    	} else {
-    		return false;
-    	}
+		if(player.getMoney() >= 20){
+			player.moneyFunction(-20);
+			//send message over Bluetooth
+			String decOppLife = "decOppLife";
+			byte[] sendDecOppL = decOppLife.getBytes();
+			mMultiplayerService.write(sendDecOppL);
+			updateCurrency();
+			return true;
+		} else {
+			//Not enough money
+			return false;
+		}
     }
     
     /** This method is called when the player wants to destroy 
      * one of the opponents random towers The method can only be called once 
      * every level */
     public boolean destroyTower(){
-    	if (hurtOpponent){
-    		if(player.getMoney() >= 20){
-    			player.moneyFunction(-20);
-    			this.hurtOpponent = false;
-    			//send message over Bluetooth
-    			String desTower = "desTower";
-    			byte[] sendDesTow = desTower.getBytes();
-    			mMultiplayerService.write(sendDesTow);
-    			updateCurrency();
-    			return true;
-    		} else {
-    			//Not enough money
-    			return false;
-    		}
-    	} else {
-    		return false;
-    	}
+		if(player.getMoney() >= 20){
+			player.moneyFunction(-20);
+			//send message over Bluetooth
+			String desTower = "desTower";
+			byte[] sendDesTow = desTower.getBytes();
+			mMultiplayerService.write(sendDesTow);
+			updateCurrency();
+			return true;
+		} else {
+			//Not enough money
+			return false;
+		}
     }
     
     /** This method is called when the player wants to make
      *  all the opponents enemies gain special ability (fast
      *  or resistance) */
     public boolean makeElemental(){
-    	if (hurtOpponent){
-    		if(player.getMoney() >= 20){
-    			player.moneyFunction(-20);
-    			this.hurtOpponent = false;
-    			//send message over Bluetooth
-    			String mkElem = "mkElem";
-    			byte[] sendMkElem = mkElem.getBytes();
-    			mMultiplayerService.write(sendMkElem);
-    			updateCurrency();
-    			return true;
-    		} else {
-    			//Not enough money
-    			return false;
-    		}
-    	} else {
-    		return false;
-    	}
+		if(player.getMoney() >= 20){
+			player.moneyFunction(-20);
+			//send message over Bluetooth
+			String mkElem = "mkElem";
+			byte[] sendMkElem = mkElem.getBytes();
+			mMultiplayerService.write(sendMkElem);
+			updateCurrency();
+			return true;
+		} else {
+			//Not enough money
+			return false;
+		}
     }
     
     /** This method is called when the player wants to make
      *  a shield to protect from the opponents nasty multiplayer-
      *  manipulations */
     public boolean makeShield(){
-    	if (hurtOpponent){
-    		if(player.getMoney() >= 20){
-    			player.moneyFunction(-20);
-    			mkShield();
-    			this.hurtOpponent = false;
-    			//send message over Bluetooth
-    			/*
-    			String mkShield = "mkShield";
-    			byte[] sendMkShield = mkShield.getBytes();
-    			mMultiplayerService.write(sendMkShield);
-    			*/
-    			updateCurrency();
-    			return true;
-    		} else {
-    			//Not enough money
-    			return false;
-    		}
-    	} else {
-    		return false;
-    	}
+		if(player.getMoney() >= 20){
+			player.moneyFunction(-20);
+			mkShield();
+			//send message over Bluetooth
+			/*
+			String mkShield = "mkShield";
+			byte[] sendMkShield = mkShield.getBytes();
+			mMultiplayerService.write(sendMkShield);
+			*/
+			updateCurrency();
+			return true;
+		} else {
+			//Not enough money
+			return false;
+		}
     }
     
     /**
      * The five help functions for the multiplayer gameplay
      */
-    public void incEnSp(){
-    	Random rand = new Random();
-    	int tmp = rand.nextInt(mCreatures.length);
+    public void incEnSp(int nbr){
     	
-    	//Först kolla så mCreatures[tmp] lever, annars välj nästa...kolla den ej död osv.
-    
-    	mCreatures[tmp].creatureFast = true;
-    	mCreatures[tmp].setHealth(200); //Bättre med tex faktor 2 ggr aktuell hälsa
+    	// If we fail to find a random creature in nbrCreatures tries. We will try to get
+    	// the first living creature and add special abillites to him.
+    	if (nbr >= mLvl[lvlNbr].nbrCreatures) {
+        	for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
+        		if (mCreatures[z].draw && mCreatures[z].getHealth() > 0) {
+        	    	mCreatures[z].creatureFast = true;
+        	    	mCreatures[z].setVelocity(mCreatures[z].getVelocity()*1.5f);        	    	
+        	    	mCreatures[z].setHealth(mLvl[lvlNbr].getHealth() * 4); 
+        	    	updateCreatureProgress(0);
+        			break;
+        		}
+        	}
+        	return;
+    	}
+    	
+    	// Tries to find a random living creature and speed and health to him
+    	Random rand = new Random();
+    	int tmp = rand.nextInt(mLvl[lvlNbr].nbrCreatures);
+		if (mCreatures[tmp].draw && mCreatures[tmp].getHealth() > 0) {
+	    	mCreatures[tmp].creatureFast = true;
+	    	mCreatures[tmp].setVelocity(mCreatures[tmp].getVelocity()*1.5f);        	    	
+	    	mCreatures[tmp].setHealth(mLvl[lvlNbr].getHealth() * 4); 
+	    	updateCreatureProgress(0);
+	    }
+		else {
+		    incEnSp(nbr++);
+		}
     }
     public void decOppLife(){
     	player.damage(5);
     	updatePlayerHealth();
     }
-    public void desTower(){
+    public void desTower(int nbr){
+    	if (nbr >= mTower.length) {
+        	for (int z = 0; z < mTower.length; z++) {
+        		if (mTower[z].draw) {
+        			mTower[z].draw = false;
+        			mTower[z].relatedShot.draw = false;
+        			break;
+        		}
+        	}
+        	return;
+    	}
+    	
     	Random rand = new Random();
     	int tmp = rand.nextInt(mTower.length);
-		mTower[tmp].draw = false;
-		mTower[tmp].relatedShot.draw = false;
+
+    	if (mTower[tmp].draw) {
+	    	mTower[tmp].draw = false;
+			mTower[tmp].relatedShot.draw = false;
+    	}
+    	else desTower(nbr++);
     }
     public void mkElem(){
+    	Random rand = new Random();
+    	int tmp = rand.nextInt(3);
     	
+    	boolean fast = false;
+    	boolean fireResistant = false;
+    	boolean frostResistant = false;
+    	boolean poisonResistant = false;
+    	
+    	if (tmp == 0) {
+        	fast = true;
+    	}
+    	if (tmp == 1) {
+        	fireResistant = true;
+    	}
+    	if (tmp == 2) {
+        	frostResistant = true;
+    	}
+    	else {
+        	poisonResistant = true;
+    	}
+    		
+    	Log.d("ELEMENTAL",""+tmp);
+    	
+    	for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
+    		mCreatures[z].setCreatureSpecials(fast,fireResistant,frostResistant,poisonResistant);
+    	}
     }
+
+    
     public void mkShield(){
     	this.multiplayerShield = true;
     }

@@ -89,6 +89,7 @@
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
 			android:visibility="gone"
+			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_play" />
 
         <Button

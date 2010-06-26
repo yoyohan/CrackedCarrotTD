@@ -228,11 +228,15 @@ public class GameInit extends Activity {
         
         if(multiplayerSocket != null) {
         	Log.d("GAMEINIT", "Create multiplayerGameLoop");
-    		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
-    		mMultiplayerService.start();
-    		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
+        	mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
+        	mMultiplayerService.start();
+        	
+        	gLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,soundManager, mMultiplayerService);
-    		gLoop = (MultiplayerGameLoop) gameLoop;
+    		gameLoop = gLoop;
+    		
+    		mMultiplayerService.setGameLoop(gLoop);
+
     	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");

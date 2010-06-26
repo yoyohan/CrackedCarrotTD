@@ -110,5 +110,11 @@ public class MultiplayerService extends Thread {
     		Log.e("MultiplayerService", "Exception when closing socket and streams", e);
     	}
     }
+
+
+	public void setGameLoop(MultiplayerGameLoop gLoop) {
+		mpHandler.setGameLoop(gLoop);
+		
+	}
     
 }
