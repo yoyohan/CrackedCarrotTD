@@ -27,13 +27,17 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-       		android:background="@drawable/xml_button_forward" />
+			android:text="20"
+			android:gravity="bottom|center"
+			android:background="@drawable/xml_button_forward" />
        		
        	<Button
        		android:id="@+id/enemy_fast"
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
+			android:text="20"
+			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_forward" />
        		
        	<Button
@@ -41,6 +45,8 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
+			android:text="20"
+			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_forward" />
        		
        	<Button
@@ -48,6 +54,8 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
+			android:text="20"
+			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_forward" />
        		
        	<Button
@@ -55,6 +63,8 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
+			android:text="20"
+			android:gravity="bottom|center"
        		android:background="@drawable/xml_button_forward" />
        		
     </com.crackedcarrot.ExpandMenu>
