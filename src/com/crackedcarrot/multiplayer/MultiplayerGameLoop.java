@@ -37,88 +37,16 @@ public class MultiplayerGameLoop extends GameLoop {
 	 * synchronization 
 	 */
 	protected void initializeLvl() {
-		try {
-			//Free last levels sprites to clear the video mem and ram from
-			//Unused creatures and settings that are no longer valid.
-			renderHandle.freeSprites();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		
-    	//Set the creatures texture size and other atributes.
-    	remainingCreaturesALL = mLvl[lvlNbr].nbrCreatures;
-    	remainingCreaturesALIVE = mLvl[lvlNbr].nbrCreatures;
-    	currentCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
-    	startCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
-    	
-    	//Need to reverse the list for to draw correctly.
-    	for (int z = 0; z < remainingCreaturesALL; z++) {
-			// The following line is used to add the following wave of creatures to the list of creatures.
-			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
-	    	//This is defined by the scale of this current lvl
-			Coords tmpCoord = mScaler.scale(14,0);
-	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
-	    	
-    	}
-		try {
-			//Finally send of the sprites to the render to be allocated
-			//And after that drawn.
-			renderHandle.finalizeSprites();
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		// Initialize the status, displaying the amount of currency
-		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
-		// Initialize the status, displaying the players health
-		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
-		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
-			
-		
-    	// This is a good time to save the current progress of the game.
-			// -2 = call the SaveGame-function.
-			// 1  = ask SaveGame to save all data.
-			// 0  = not used.
-		gui.sendMessage(-2, 1, 0);
 
-		// Initialize the status, displaying the amount of currency
-		gui.sendMessage(gui.GUI_PLAYERMONEY_ID, player.getMoney(), 0);
-		// Initialize the status, displaying the players health
-		gui.sendMessage(gui.GUI_PLAYERHEALTH_ID, player.getHealth(), 0);
-		// Initialize the status, displaying the creature image
-		gui.sendMessage(gui.GUI_CREATUREVIEW_ID, mLvl[lvlNbr].getDisplayResourceId(), 0);
+		super.initializeLvl();
 
-		// And set the progressbar with creature health to full again.
-		gui.sendMessage(gui.GUI_PROGRESSBAR_ID, 100, 0);
-		// And reset our internal counter for the creature health progress bar ^^
-		progressbarLastSent = 100;
-		
-		gui.sendMessage(gui.GUI_UPDATELVLNBRTEXT_ID, this.lvlNbr+1, 0);
-		
-		mLastTime = 0;
-		// Reset gamespeed between levels?
-		// gameSpeed = 1;
-    	
-		// Remove healthbar until game begins.
-		gui.sendMessage(gui.GUI_HIDEHEALTHBAR_ID, 0, 0);
-
-		player.setTimeUntilNextLevel(player.getTimeBetweenLevels());
-
-		// Initialize the status, displaying how long left until level starts
-		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, (int) player.getTimeUntilNextLevel(), 0);
-		
-		// We wait to show the status bar until everything is updated
-		gui.sendMessage(gui.GUI_SHOWSTATUSBAR_ID, 0, 0);
-		
 		//The dialog showing the players score is shown right after next level dialog
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
 		
+		waitForDialogClick();
+		
 		//Make the five multiplayer buttons visible for the current level
 		gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
-		
-		waitForDialogClick();
 		
 		//When player clicked ok, send message to opponent that it's done
 		String message2 = "synchLevel";
@@ -144,14 +72,6 @@ public class MultiplayerGameLoop extends GameLoop {
 		//Close "Waiting for opponent" message
 		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
 
-    	int reverse = remainingCreaturesALL; 
-		for (int z = 0; z < remainingCreaturesALL; z++) {
-			reverse--;
-			int special = 1;
-    		if (mCreatures[z].isCreatureFast())
-    			special = 2;
-    		mCreatures[z].setSpawndelay((player.getTimeBetweenLevels() + ((reverse*1.5f)/special)));
-		}
 	}
 	
 	/** Overriding the run method from super class GameLoop */
