@@ -40,7 +40,8 @@ public class MapOp extends Activity implements ViewFactory {
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected;
-
+    private int wave = 1;
+    
     private TextView    tv;
     private RadioButton radioEasy;
     private RadioButton radioNormal;
@@ -72,7 +73,7 @@ public class MapOp extends Activity implements ViewFactory {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
-            is = this.getResources().openRawResource(R.drawable.background);
+            is = this.getResources().openRawResource(R.drawable.map4);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
@@ -112,7 +113,7 @@ public class MapOp extends Activity implements ViewFactory {
         		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		// Since this is not a multiplayergame we will send 1 to gameinit
-        		StartGame.putExtra("com.crackedcarrot.menu.wave", 1);
+        		StartGame.putExtra("com.crackedcarrot.menu.wave", wave);
         		startActivity(StartGame);
         		finish();
         	}
@@ -225,16 +226,19 @@ public class MapOp extends Activity implements ViewFactory {
     	   _position =  _position%3;
     	   switch(_position){
 				case 0:
-					tv.setText("Map 1: The field of longest grass.");
+					tv.setText("Map 1: The field of long grass.");
 					mapSelected = 1;
+					wave = 1;
 					break;
 				case 1: 
 					mapSelected = 2;
 					tv.setText("Map 2: The field of very cold grass.");
+					wave = 1;
 					break;	
 				case 2: 
 					mapSelected = 3;
-					tv.setText("Map 3: The field of longer grass.");
+					tv.setText("Map 3: The field of no grass.");
+					wave = 2;
 					break;
 			}
 			

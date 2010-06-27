@@ -183,7 +183,10 @@ public class GameInit extends Activity {
         	gameMap = mapLoader.readLevel("level2");
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
         } else if (mapChoice == 3) {
-        	gameMap = mapLoader.readLevel("level3");
+        	gameMap = mapLoader.readLevel("level4");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+        } else if (mapChoice == 4) {
+        	gameMap = mapLoader.readLevel("level4");
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
         }
         
