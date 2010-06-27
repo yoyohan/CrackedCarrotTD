@@ -33,7 +33,7 @@ public class Client extends Activity {
     private static final int REQUEST_DISCOVERABLE = 3;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
+    private final int MAP = 4; // Default map for multiplayer
     
     public BluetoothSocket mmClientSocket = null;
 

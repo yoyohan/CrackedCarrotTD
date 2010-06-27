@@ -183,7 +183,10 @@ public class GameInit extends Activity {
         	gameMap = mapLoader.readLevel("level2");
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
         } else if (mapChoice == 3) {
-        	gameMap = mapLoader.readLevel("level3");
+        	gameMap = mapLoader.readLevel("level4");
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+        } else if (mapChoice == 4) {
+        	gameMap = mapLoader.readLevel("level4");
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
         }
         
@@ -228,11 +231,15 @@ public class GameInit extends Activity {
         
         if(multiplayerSocket != null) {
         	Log.d("GAMEINIT", "Create multiplayerGameLoop");
-    		mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
-    		mMultiplayerService.start();
-    		gameLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
+        	mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
+        	mMultiplayerService.start();
+        	
+        	gLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,soundManager, mMultiplayerService);
-    		gLoop = (MultiplayerGameLoop) gameLoop;
+    		gameLoop = gLoop;
+    		
+    		mMultiplayerService.setGameLoop(gLoop);
+
     	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");

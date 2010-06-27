@@ -4,10 +4,10 @@ And add more todos as you come up with them.
 HIGH PRIORITY:
 
 Loading screen
--- Albin
+-- Albin -- DONE!
 
 Random Crash
--- Albin
+-- Albin -- DONE! tror jag.. varken jag eller henke kan crasha spelet på emulator eller telefon. Uppdaterad emulator tycks döda buggen.
 
 Win/Lose Grafik
 -- Sillen

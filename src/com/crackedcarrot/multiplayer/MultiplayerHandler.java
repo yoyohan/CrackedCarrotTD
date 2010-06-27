@@ -36,8 +36,9 @@ public class MultiplayerHandler extends Thread {
 	
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
-		mpGL = (MultiplayerGameLoop) gameLoopGui.getGameInit()
-    	.gameLoop;
+		//mpGL = gameLoopGui.getGameInit()
+    	//.gLoop;
+		
 	}
 	
 	public void run(){
@@ -56,8 +57,9 @@ public class MultiplayerHandler extends Thread {
  	                // Level synchronization
  	                if(readMessage.equals(SYNCH_LEVEL)){
  	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
- 	                	MultiplayerGameLoop.synchLevelClick();
-	                    
+ 	                	//MultiplayerGameLoop.synchLevelClick();                    
+ 	                	mpGL.synchLevelClick();                    
+ 	 	                
  	                }
  	                // The opponent is dead
 	                else if(readMessage.equals(PLAYER_DEAD)){
@@ -81,7 +83,7 @@ public class MultiplayerHandler extends Thread {
 		            		toast.show();
 	                	}
 	                	else{
-		                	mpGL.incEnSp();
+		                	mpGL.incEnSp(0);
 		                	
 		                	CharSequence text = "An enemy has gained more health and speed";
 		            		int duration = Toast.LENGTH_SHORT;
@@ -117,7 +119,7 @@ public class MultiplayerHandler extends Thread {
 		            		toast.show();
 	                	}
 	                	else {
-		                	mpGL.desTower();
+		                	mpGL.desTower(0);
 		                	
 		                	CharSequence text = "A random tower has been destroyed";
 		            		int duration = Toast.LENGTH_SHORT;
@@ -166,6 +168,10 @@ public class MultiplayerHandler extends Thread {
 	
 	public int getOpponentScore(){
 		return this.opponentScore;
+	}
+
+	public void setGameLoop(MultiplayerGameLoop gLoop) {
+		mpGL = gLoop;
 	}
 	
 }

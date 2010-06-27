@@ -110,6 +110,7 @@ public class GameLoopGUI {
     public final int GUI_SHOWHEALTHBAR_ID   = 27;
     public final int GUI_HIDEHEALTHBAR_ID   = 28;
     public final int GUI_UPDATELVLNBRTEXT_ID= 29;
+    public final int SETMULTIPLAYERVISIBLE   =30;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -1045,7 +1046,13 @@ public class GameLoopGUI {
 	        		 playerScore = msg.arg1;
 	        		 gameInit.showDialog(COMPARE_PLAYERS);
 	        		 break;
-	        		 
+	        	 case SETMULTIPLAYERVISIBLE:
+    				lessHealthButton.setVisibility(View.VISIBLE);
+    			    enemyFastButton.setVisibility(View.VISIBLE);
+    			    destroyTowerButton.setVisibility(View.VISIBLE);
+    			    makeElementalButton.setVisibility(View.VISIBLE);
+    			    makeShieldButton.setVisibility(View.VISIBLE);
+    			    break;
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -1238,17 +1245,6 @@ public class GameLoopGUI {
 		hud.blinkRedRange();
 	}
 
-	/**
-	 * A method for making the five multiplayer buttons visible for each new level
-	 */
-	public void setButtonsVisible(){
-		lessHealthButton.setVisibility(View.VISIBLE);
-	    enemyFastButton.setVisibility(View.VISIBLE);
-	    destroyTowerButton.setVisibility(View.VISIBLE);
-	    makeElementalButton.setVisibility(View.VISIBLE);
-	    makeShieldButton.setVisibility(View.VISIBLE);
-	}
-	
 	private class InfoListener implements OnClickListener{
     	public void onClick(View v){
     		if (GameLoop.pause == false) {
