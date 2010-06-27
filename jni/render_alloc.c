@@ -148,28 +148,8 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	if(last != NULL && last->subType == thisSprite->subType){
 		thisSprite->bufferName = last->bufferName;
 		thisSprite->indexCount = last->indexCount;
-		/*__android_log_print(ANDROID_LOG_DEBUG, 
-						"NATIVE_ALLOC", 
-						"VBOs EQUAL: Vert: %d, Index: %d, Tex: %d",
-						thisSprite->bufferName[VERT_OBJECT] == last->bufferName[VERT_OBJECT],
-						thisSprite->bufferName[INDEX_OBJECT] == last->bufferName[INDEX_OBJECT],
-						thisSprite->textureBufferNames == last->textureBufferNames);*/
-		
-/*		__android_log_print(ANDROID_LOG_DEBUG, 
-						"NATIVE ALLOC",
-						"Sprite No: %d of Type: %d and subType: %d .  Can share data with the previous sprite",
-						 spriteNO, type, subType);
-		__android_log_print(ANDROID_LOG_DEBUG, 
-						"NATIVE ALLOC",
-						"It has been assigned the buffers: %d, %d and %d",
-						 thisSprite->bufferName[0], thisSprite->bufferName[1], thisSprite->textureBufferNames[0]);*/
 	}
-	else{
-	    /*__android_log_print(ANDROID_LOG_DEBUG, 
-		                "NATIVE ALLOC", 
-		                "Sprite No: %d of Type: %d and subType: %d .   Needs new buffers.",
-		                spriteNO, type, subType);*/
-		                
+	else{               
 		if((thisSprite->bufferName = malloc(sizeof(GLuint)*2)) == NULL){
 		    __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in nativeAlloc");
 		}

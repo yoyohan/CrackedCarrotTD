@@ -43,7 +43,7 @@ typedef struct {
 	crExtensions* crExtens;
 	
 	GLushort 	indexCount;
-	GLuint* bufferName;
+	GLuint*     bufferName;
 
 
 } GLSprite;

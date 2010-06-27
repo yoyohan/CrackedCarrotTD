@@ -121,7 +121,7 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	glLoadIdentity();
 			
 	glColor4f(r, g, b, a);
-	glScalef(scale,scale,1);
+	glScalef(scale,scale,0);
 	glTranslatef((*env)->GetFloatField(env, sprite->object, sprite->x),
 				(*env)->GetFloatField(env, sprite->object, sprite->y), 0);
 		
