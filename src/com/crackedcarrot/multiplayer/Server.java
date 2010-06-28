@@ -37,7 +37,7 @@ public class Server extends Activity {
     public BluetoothSocket socket = null;
     
     private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 1; // Default map for multiplayer is "The Field of Grass"
+    private final int MAP = 4; // Default map for multiplayer
 	
     /** if user presses back button, this activity will finish */
     @Override

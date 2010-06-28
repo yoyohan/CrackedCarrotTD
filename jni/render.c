@@ -121,7 +121,7 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	glLoadIdentity();
 			
 	glColor4f(r, g, b, a);
-	glScalef(scale,scale,1);
+	glScalef(scale,scale,0);
 	glTranslatef((*env)->GetFloatField(env, sprite->object, sprite->x),
 				(*env)->GetFloatField(env, sprite->object, sprite->y), 0);
 		
@@ -171,13 +171,30 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobj
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
 	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Resetting library to known state before drawing.");
 	
-	int i = 0;
-	
+	int i;
+	if(texData != NULL){
+	    for(i = 1; i < texDataLength; i++){
+	        glDeleteBuffers(texData[i].nFrames, texData[i].textureBufferNames);
+	        free(texData[i].textureBufferNames);
+	        texData[i].textureBufferNames = NULL;
+	    }
+	    free(texData);
+	}
 	texData = NULL;
 	texDataLength = 0;
 	
-	for(i = 0; i < 7; i++){
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Textures Clean");
+	
+	Java_com_crackedcarrot_NativeRender_nativeFreeSprites(env, thiz);
+	
+	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Sprites Clean");
+	
+	/*for(i = 0; i < 7; i++){
 	    noOfSprites[i] = 0;
 	    renderSprites[i] = NULL;
-	}	
+	}*/
+	
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Setting Loanding Screen.");
+	
+	//renderSprites[BACKGROUND] = &lScreen.screen;
 }

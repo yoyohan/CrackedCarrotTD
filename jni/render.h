@@ -43,15 +43,24 @@ typedef struct {
 	crExtensions* crExtens;
 	
 	GLushort 	indexCount;
-	GLuint* bufferName;
+	GLuint*     bufferName;
 
 
 } GLSprite;
 
-//The number of idividual sprites.
+typedef struct {
+    GLSprite screen;
+    GLfloat r,g,b;
+} loadingScreen;
+
+//pointers to arrays of sprites and the length of these arrays.
+
 int noOfSprites[7];
-//Array with pointers to GLSprites.
 GLSprite* renderSprites[7];
+
+//The loadingscreen
+loadingScreen lScreen;
+
 //Array with pointers to textuerData structures for saveing all data related
 //to a certain textures
 textureData* texData;
@@ -72,7 +81,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, job
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h);
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env, jobject thiz);
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobject thiz);
-
+void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env, jobject thiz);
 void drawSprite(JNIEnv* env, GLSprite* sprite);
 
 

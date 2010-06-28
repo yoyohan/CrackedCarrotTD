@@ -598,4 +598,49 @@ public class Creature extends Sprite{
 	public boolean isCreatureFast() {
 		return creatureFast;
 	}
+	
+	/**
+	 * Getter for health variable
+	 * @return health
+	 */
+	public float getHealth(){ return this.health; }
+	
+	
+	// If a creature is have a special ability we also want him to change color
+	public void setCreatureSpecials(boolean fast, boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
+		this.creatureFrostResistant = frostResistant;
+		this.creatureFireResistant = fireResistant;
+		this.creaturePoisonResistant = poisonResistant;
+		this.creatureFast = fast;
+		
+		this.rDefault = 1;
+		this.gDefault = 1;
+		this.bDefault = 1;
+
+		if (poisonResistant && !frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
+			this.bDefault = 0.7f;
+		}
+		if (!poisonResistant && frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
+			this.gDefault = 0.7f;
+		}
+		if (!poisonResistant && !frostResistant && fireResistant) {
+			this.gDefault = 0.7f;
+			this.bDefault = 0.7f;
+		}
+		if (poisonResistant && frostResistant && !fireResistant) {
+			this.rDefault = 0.7f;
+		}
+		if (poisonResistant && !frostResistant && fireResistant) {
+			this.bDefault = 0.7f;
+		}
+		if (!poisonResistant && frostResistant && fireResistant) {
+			this.gDefault = 0.7f;
+		}
+	}
+
+	public float getVelocity() {
+		return this.velocity;
+	}
 }

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ImageView.ScaleType;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.crackedcarrot.GameInit;
@@ -40,16 +41,28 @@ public class MapOp extends Activity implements ViewFactory {
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected;
-
+    private int wave = 1;
+        
     private TextView    tv;
+    
+    private ImageView mBackground;
+    
+    private ImageView easy;
+    private ImageView hard;
+    private ImageView normal;
+    
     private RadioButton radioEasy;
     private RadioButton radioNormal;
     private RadioButton radioHard;
     
+    private Button StartGameButton;
+    
+    private Gallery gallery;
+    
     private Bitmap bitmap1;
     private Bitmap bitmap2;
     private Bitmap bitmap3;
-
+    
     /** References to our images */
     private Bitmap[] mmaps = {
     		bitmap1,
@@ -60,9 +73,11 @@ public class MapOp extends Activity implements ViewFactory {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)  {
+    	
+    	
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainmenu_startgame);
-
+        setContentView(R.layout.mainmenu_startgame);    
+        
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize = 8;
         options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -72,7 +87,7 @@ public class MapOp extends Activity implements ViewFactory {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
-            is = this.getResources().openRawResource(R.drawable.background);
+            is = this.getResources().openRawResource(R.drawable.map4);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
@@ -84,9 +99,11 @@ public class MapOp extends Activity implements ViewFactory {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+    	
         /** identifying the image views and text view, 
          *  these are the ones that will be set. */
+    	mBackground = (ImageView) findViewById(R.id.mBackground);
+    	
         tv = (TextView) this.findViewById(R.id.maptext);
     	Typeface face = Typeface.createFromAsset(this.getAssets(), "fonts/MuseoSans_500.otf");
     	tv.setTypeface(face);
@@ -99,18 +116,38 @@ public class MapOp extends Activity implements ViewFactory {
 	    	scoreNinjaAdapter.show();
 	    }
     	
-        Gallery gallery = (Gallery) findViewById(R.id.gallery1);
+        gallery = (Gallery) findViewById(R.id.gallery1);
         gallery.setAdapter(new ImageAdapter(this));
         gallery.setOnItemSelectedListener(gItemSelectedHandler);
         gallery.setSelection((gallery.getCount()/2)+1, true);
 
-        Button StartGameButton = (Button)findViewById(R.id.startmap);
+        StartGameButton = (Button)findViewById(R.id.startmap);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		//Send the level variable to the game loop and start it
+        		
+        		StartGameButton.setVisibility(View.INVISIBLE);
+        		
+        		tv.setVisibility(View.INVISIBLE);
+        		
+        		radioEasy.setVisibility(View.INVISIBLE);
+        		radioNormal.setVisibility(View.INVISIBLE);
+        		radioHard.setVisibility(View.INVISIBLE);
+        		
+        		easy.setVisibility(View.INVISIBLE);
+        		normal.setVisibility(View.INVISIBLE);
+        		hard.setVisibility(View.INVISIBLE);
+        		
+        		gallery.setVisibility(View.INVISIBLE);
+        		
+        		mBackground.setImageResource(R.drawable.loadimage);
+        		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+        		        		
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
         		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
+        		// Since this is not a multiplayergame we will send 1 to gameinit
+        		StartGame.putExtra("com.crackedcarrot.menu.wave", wave);
         		startActivity(StartGame);
         		finish();
         	}
@@ -145,7 +182,7 @@ public class MapOp extends Activity implements ViewFactory {
 			}
         });
 
-        ImageView easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
+        easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
         easy.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
@@ -154,7 +191,7 @@ public class MapOp extends Activity implements ViewFactory {
         	}
         });
         
-        ImageView normal = (ImageView) findViewById(R.id.StartGameImageViewNormal);
+        normal = (ImageView) findViewById(R.id.StartGameImageViewNormal);
         normal.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
@@ -163,7 +200,7 @@ public class MapOp extends Activity implements ViewFactory {
         	}
         });
         
-        ImageView hard = (ImageView) findViewById(R.id.StartGameImageViewHard);
+        hard = (ImageView) findViewById(R.id.StartGameImageViewHard);
         hard.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
@@ -223,16 +260,19 @@ public class MapOp extends Activity implements ViewFactory {
     	   _position =  _position%3;
     	   switch(_position){
 				case 0:
-					tv.setText("Map 1: The field of longest grass.");
+					tv.setText("Map 1: The field of long grass.");
 					mapSelected = 1;
+					wave = 1;
 					break;
 				case 1: 
 					mapSelected = 2;
 					tv.setText("Map 2: The field of very cold grass.");
+					wave = 1;
 					break;	
 				case 2: 
 					mapSelected = 3;
-					tv.setText("Map 3: The field of longer grass.");
+					tv.setText("Map 3: The field of no grass.");
+					wave = 2;
 					break;
 			}
 			

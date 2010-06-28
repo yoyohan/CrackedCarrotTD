@@ -4,10 +4,10 @@ And add more todos as you come up with them.
 HIGH PRIORITY:
 
 Loading screen
--- Albin
+-- Albin -- DONE!
 
 Random Crash
--- Albin
+-- Albin -- DONE! tror jag.. varken jag eller henke kan crasha spelet på emulator eller telefon. Uppdaterad emulator tycks döda buggen.
 
 Win/Lose Grafik
 -- Sillen
@@ -24,10 +24,10 @@ Sköld.
 -- Emil
 
 Hjälp topic för multiplayer.
--- Fredrik.
+-- Fredrik. -- PÅBÖRJAT, kanske klart kanske inte :)
 
 Ny intro skärm:
--- Fredrik.
+-- Fredrik. -- DONE, egentligen gillar jag en liten söt logga men detta är inte copyrightat iaf..
 
 Multiplayer gameplay:
 -- Henrik/Johan. - 4/5 Done!
@@ -57,7 +57,7 @@ LOW PRIORITY:
 MultiplayerBana:
 -- Emil
 
-Snoffsa Till gräsbanans slut:
+Snoffsa Till gräsbanans slut: DONE!!. MÄSTER GRAFIKER ALLAN
 -- Henke
 
 Häftig about effekt:

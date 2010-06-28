@@ -4,6 +4,7 @@
 	android:interpolator="@android:anim/accelerate_interpolator"
     android:fromAlpha="0.0"
     android:toAlpha="1.0"
+    android:zAdjustment="top"
     android:duration="1000" />
     
     <!-- android:duration="@android:integer/config_longAnimTime" - Recommended duration, ca 0.5s*/-->
