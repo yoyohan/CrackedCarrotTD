@@ -426,56 +426,11 @@ public class GameLoop implements Runnable {
             if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
-
-           		// Show the You Lost-dialog.
-            	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
-            	// This is a good time clear all savegame data.
-            		// -2 = call the SaveGame-function.
-            		// 2  = ask SaveGame to clear all data.
-            		// 0  = not used.
-            	gui.sendMessage(-2, 2, 0);
-
-            	//Play fail sound
-            	soundManager.playSoundLoose();
-            	
-        		// Code to wait for the user to click ok on YouLost-dialog.
-        		waitForDialogClick();
-
+            	showYouLost();
             	run = false;
         	} 
         	else if (remainingCreaturesALL < 1) {
-        		//If you have survied the entire wave without dying. Proceed to next next level.
-            	Log.d("GAMETHREAD", "Wave complete");
-        		lvlNbr++;
-        		if (lvlNbr >= mLvl.length) {
-        			// You have completed this map
-                	Log.d("GAMETHREAD", "You have completed this map");
-                	
-            		// Show the You Won-dialog.
-                	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
-
-                	// This is a good time clear all savegame data.
-            			// -2 = call the SaveGame-function.
-            			// 2  = ask SaveGame to clear all data.
-            			// 0  = not used.
-                	gui.sendMessage(-2, 2, 0);
-
-                	//Play victory sound
-                	soundManager.playSoundVictory();
-                	
-            		// Code to wait for the user to click ok on YouWon-dialog.
-            		waitForDialogClick();
-                	
-                	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
-                	
-            		// Code to wait for the user to click ok on YouWon-dialog.
-            		// !!! MOVED !!! Put this before scoreninja instead!
-                	// Might fix some activity-focus problems we're having... /Fredrik
-                	//waitForDialogClick();
-
-        			run = false;
-        		}
+        		showYouCompletedWave();
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
@@ -483,6 +438,59 @@ public class GameLoop implements Runnable {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
+    // Basic function to show score and failure dialog
+    public void showYouLost() {
+   		// Show the You Lost-dialog.
+    	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
+    	// This is a good time clear all savegame data.
+    		// -2 = call the SaveGame-function.
+    		// 2  = ask SaveGame to clear all data.
+    		// 0  = not used.
+    	gui.sendMessage(-2, 2, 0);
+
+    	//Play fail sound
+    	soundManager.playSoundLoose();
+    	
+		// Code to wait for the user to click ok on YouLost-dialog.
+		waitForDialogClick();
+    }
+    
+    public void showYouCompletedWave() {
+		//If you have survied the entire wave without dying. Proceed to next next level.
+    	Log.d("GAMETHREAD", "Wave complete");
+		lvlNbr++;
+		if (lvlNbr >= mLvl.length) {
+			// You have completed this map
+        	Log.d("GAMETHREAD", "You have completed this map");
+        	
+    		// Show the You Won-dialog.
+        	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
+
+        	// This is a good time clear all savegame data.
+    			// -2 = call the SaveGame-function.
+    			// 2  = ask SaveGame to clear all data.
+    			// 0  = not used.
+        	gui.sendMessage(-2, 2, 0);
+
+        	//Play victory sound
+        	soundManager.playSoundVictory();
+        	
+    		// Code to wait for the user to click ok on YouWon-dialog.
+    		waitForDialogClick();
+        	
+        	// Show Ninjahighscore-thingie.
+        	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
+        	
+    		// Code to wait for the user to click ok on YouWon-dialog.
+    		// !!! MOVED !!! Put this before scoreninja instead!
+        	// Might fix some activity-focus problems we're having... /Fredrik
+        	//waitForDialogClick();
+			run = false;
+
+		}
+
+    }
+    
     public boolean createTower(Coords TowerPos, int towerType) {
 		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {

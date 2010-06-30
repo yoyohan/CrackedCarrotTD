@@ -76,179 +76,100 @@ public class MultiplayerGameLoop extends GameLoop {
 	
 	/** Overriding the run method from super class GameLoop */
     public void run() {
+    	super.run();
+    	String stopMsg = "Dead";
+		byte[] sendStop = stopMsg.getBytes();
+		mMultiplayerService.write(sendStop);    	
+	}
 
-    	 Log.d("GAMELOOP","INIT" + this.getClass().getName());
+    // Override
+    public void showYouLost() {
+		//If you have lost all your lives then the game ends.
+    	Log.d("GAMETHREAD", "You are dead");
     	
-	    initializeDataStructures();
-	    
-	    gameSpeed = 1;
-
-	    while(run){
-    		initializeLvl();
-    		int lastTime = (int) player.getTimeUntilNextLevel();
-
-    		while(remainingCreaturesALL > 0 && run){
-    			
-				final long time = SystemClock.uptimeMillis();
-
-				if (pause) {
-	    			try { pauseSemaphore.acquire(); }
-	    			catch (InterruptedException e1) { }
-	    			pauseSemaphore.release();
-				}
-    			
-	            // Used to calculate creature movement.
-				long timeDelta = time - mLastTime;
-	            // To save some cpu we will sleep the
-	            // gameloop when not needed. GOAL 60fps
-	            if (timeDelta <= 16) {
-	            	int naptime = (int) (16 - timeDelta);
-		            try {
-						Thread.sleep(naptime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-	            } else 				
-	            	timeDelta = timeDelta > 100 ? 100 : timeDelta;
-
-				final float timeDeltaSeconds = 
-	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
-	            mLastTime = time;
-	            
-	            // Displays the Countdown-to-next-wave text.
-	            if (player.getTimeUntilNextLevel() > 0) {
-	            	
-		    		// So we eventually reach the end of the countdown...
-	        		player.setTimeUntilNextLevel(player.getTimeUntilNextLevel() - timeDeltaSeconds);
-	            	
-	            	if (player.getTimeUntilNextLevel() < 0) {
-		            	// Show healthbar again.
-	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
-	
-	            			// Force the GUI to repaint the #-of-creatures-alive-counter.
-	            		creatureDiesOnMap(0);
-	
-	            		player.setTimeUntilNextLevel(0);
-	            	} else {
-		        		// Update the displayed text on the countdown.
-		            	if (lastTime - player.getTimeUntilNextLevel() > 0.5) {
-		            		lastTime = (int) player.getTimeUntilNextLevel();
-		            		gui.sendMessage(gui.GUI_NEXTLEVELINTEXT_ID, lastTime, 0);
-		            	}
-	            	}
-	            }
-
-	            
-	            //Calls the method that moves the creature.
-	        	for (int x = 0; x < mLvl[lvlNbr].nbrCreatures; x++) {
-	        		mCreatures[x].update(timeDeltaSeconds);
-	        	}       	
-	            //Calls the method that handles the monsterkilling.
-	        	for (int x = 0; x < mTower.length; x++) {
-	        		if(mTower[x].draw == true)
-	        			mTower[x].attackCreatures(timeDeltaSeconds,mLvl[lvlNbr].nbrCreatures);
-	        	}	              
-	            // Check if the GameLoop are to run the level loop one more time.
-	            if (player.getHealth() < 1) {
-            		//If you have lost all your lives then the game ends.
-	            	run = false;
-            	}
-	        }
+    	//Send info to opponent that player is dead
+    	String message = "Dead";
+		byte[] send = message.getBytes();
+		mMultiplayerService.write(send);
+    	
+		//Is the opponent still alive?
+		if(this.opponentLife){
+			// Send the synch message so opponent won't wait for eternity
+			String lastMessage = "synchLevel";
+    		byte[] sendMessage = lastMessage.getBytes();
+    		mMultiplayerService.write(sendMessage);
+			// Show the "You Lost"-dialog.
+        	gui.sendMessage(gui.MULTIPLAYER_LOST, 0, 0);
+    		waitForDialogClick();
+        	run = false;
+		} else {
+			//The one who dies first is the looser, so this player has won
+			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+			waitForDialogClick();
+			run = false;
+		}
+    }
+    
+    public void showYouCompletedWave() {
+    	//Send players score to opponent
+    	String message = "Score" + player.getScore();
+		byte[] send = message.getBytes();
+		mMultiplayerService.write(send);	
+    	Log.d("GAMETHREAD", "Wave complete");
+		lvlNbr++;
+		/**
+		
+		*/
+		
+		//Is the opponent dead, in that case you've won the game
+		if(!this.opponentLife){
+			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+			waitForDialogClick();
+			run = false;
+		} else {
+			//Show "Waiting for opponent" message
+    		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+			
+    		try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
     		
-    		player.calculateInterest();
-
-    		// Check if the GameLoop are to run the level loop one more time.
-            if (player.getHealth() < 1) {
-        		//If you have lost all your lives then the game ends.
-            	Log.d("GAMETHREAD", "You are dead");
-            	
-            	//Send info to opponent that player is dead
-            	String message = "Dead";
-    			byte[] send = message.getBytes();
-    			mMultiplayerService.write(send);
-            	
-    			//Is the opponent still alive?
-    			if(this.opponentLife){
-    				// Send the synch message so opponent won't wait for eternity
-    				String lastMessage = "synchLevel";
-            		byte[] sendMessage = lastMessage.getBytes();
-            		mMultiplayerService.write(sendMessage);
-    				// Show the "You Lost"-dialog.
-                	gui.sendMessage(gui.MULTIPLAYER_LOST, 0, 0);
-            		waitForDialogClick();
-                	run = false;
-    			} else {
-    				//The one who dies first is the looser, so this player has won
-    				gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
-    				waitForDialogClick();
-    				run = false;
-    			}
-        	} 
-            else if (remainingCreaturesALL < 1) {
-            	//Send players score to opponent
-            	String message = "Score" + player.getScore();
-    			byte[] send = message.getBytes();
-    			mMultiplayerService.write(send);	
-            	Log.d("GAMETHREAD", "Wave complete");
-        		lvlNbr++;
-        		/**
-        		
-        		*/
-        		
-        		//Is the opponent dead, in that case you've won the game
-        		if(!this.opponentLife){
-        			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
-        			waitForDialogClick();
-        			run = false;
-        		} else {
-        			//Show "Waiting for opponent" message
-            		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
-        			
-            		try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-            		
-            		String me = "synchLevel";
-            		byte[] sendThis = me.getBytes();
-            		mMultiplayerService.write(sendThis);
-            		
-            		Log.d("ZZZZZZZ", "Before first synchlevel");
-            		// Wait for the opponent
-            		try {
-            			synchLevelSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		Log.d("ZZZZZZZ", "Before second synchlevel");
-            		try {
-            			synchLevelSemaphore.acquire();
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		synchLevelSemaphore.release();
-            		
-            		Log.d("ZZZZZZZ", "close wait for....");
-            		//Close "Waiting for opponent" message
-            		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
-	        		// The game is not totally completed
-	        		if (lvlNbr < mLvl.length) {
-	        			//Do nothing here
-	        		}
-	        		else {
-	                	Log.d("GAMETHREAD", "You have completed this map");
-	                	//Both players have survived all the enemy waves
-	            		gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
-	            		waitForDialogClick();
-	            		run = false;
-	        		}
-        		}
-        	}
-	    }
-    	Log.d("GAMETHREAD", "dead thread");
-    	// Close activity/gameview.
-    	gui.sendMessage(-1, 0, 0); // gameInit.finish();
+    		String me = "synchLevel";
+    		byte[] sendThis = me.getBytes();
+    		mMultiplayerService.write(sendThis);
+    		
+    		Log.d("ZZZZZZZ", "Before first synchlevel");
+    		// Wait for the opponent
+    		try {
+    			synchLevelSemaphore.acquire();
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+    		Log.d("ZZZZZZZ", "Before second synchlevel");
+    		try {
+    			synchLevelSemaphore.acquire();
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+    		synchLevelSemaphore.release();
+    		
+    		Log.d("ZZZZZZZ", "close wait for....");
+    		//Close "Waiting for opponent" message
+    		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+    		// The game is not totally completed
+    		if (lvlNbr < mLvl.length) {
+    			//Do nothing here
+    		}
+    		else {
+            	Log.d("GAMETHREAD", "You have completed this map");
+            	//Both players have survived all the enemy waves
+        		gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
+        		waitForDialogClick();
+        		run = false;
+    		}
+		}
     }
     
     /** Release the synchronization semaphore from outside this class */
@@ -446,5 +367,15 @@ public class MultiplayerGameLoop extends GameLoop {
     public void mkShield(){
     	this.multiplayerShield = true;
     }
+    
+    //Override
+    public static void pause() {
+		//Do nothing
+	}
+	
+  //Override
+	public static void unPause() {
+		//Do nothing
+	}
 
 }
