@@ -31,6 +31,7 @@ public class Server extends Activity {
     private static final UUID MY_UUID = UUID.fromString("9a8aa173-eaf0-4370-80e1-3a13ed5efae9");
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private static final int REQUEST_DISCOVERABLE = 3;
     
     private final int PROGRESS_DIALOG = 1;
     
@@ -69,6 +70,12 @@ public class Server extends Activity {
             finish();
             return;
         }
+        
+        
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+        
         showDialog(PROGRESS_DIALOG);
     }
     
@@ -79,12 +86,12 @@ public class Server extends Activity {
         
         /** Request that Bluetooth will be activated if not on.
          *  setupServer() will then be called during onActivityResult */
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
-        } else {
-            setupServer();
-        } 
+       // if (!mBluetoothAdapter.isEnabled()) {
+       //     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        //    startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+        //} else {
+        //    setupServer();
+       // } 
     }
     
     private void setupServer() {
@@ -109,6 +116,16 @@ public class Server extends Activity {
             } else {
                 // If the user did not want to turn BT on, or error occurred
                 Toast.makeText(this, "Bluetooth not enabled...leaving", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        break;
+        case REQUEST_DISCOVERABLE:
+        	if (resultCode == 300) {
+                // The device is made discoverable and bluetooth is activated
+            } else {
+                // User did not accept the request or an error occured
+                Toast.makeText(this, "The device was not made discoverable. Leaving multiplayer"
+                		, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
