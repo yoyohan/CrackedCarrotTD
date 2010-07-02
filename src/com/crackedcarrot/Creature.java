@@ -122,7 +122,7 @@ public class Creature extends Sprite{
 	 * the gameloop.
 	 * @param dmg
 	 */
-	public void damage(float dmg, int sound){
+	public void damage(float dmg, int sound, boolean towerHasTeleport, boolean towerHasRemoveElement){
 		if (health > 0) {
 			dmg = health >= dmg ? dmg : health; 
 			health -= dmg;
@@ -131,8 +131,33 @@ public class Creature extends Sprite{
 				die();
 				soundManager.playSoundRandomDIE();
 			}
-			else if (sound != -1)
+			else { 
+				if (towerHasTeleport) {
+				    int randomInt = rand.nextInt(15);
+				    if (randomInt == 10) {
+				    	moveToWaypoint(0);
+			    		setNextWayPoint(1);
+				    	if (!this.creatureFast) {
+				    		this.creatureFast = true;
+				    		this.velocity = this.velocity*1.5f;
+				    	}
+				    }
+				}
+				if (towerHasRemoveElement) {
+				    int randomInt = rand.nextInt(20);
+				    if (randomInt == 10) {
+				    	if (this.creatureFrostResistant)
+				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, false, this.creaturePoisonResistant);
+				    	else if (this.creatureFireResistant)
+				    		setCreatureSpecials(this.creatureFast,false, this.creatureFrostResistant, this.creaturePoisonResistant);
+				    	else if (this.creaturePoisonResistant)
+				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, this.creatureFrostResistant, false);
+				    }
+				}
+				
+				if (sound != -1)
 				soundManager.playSound(sound);
+			}
 		}
 	}
 	
@@ -306,7 +331,7 @@ public class Creature extends Sprite{
 		this.b = tmpB;		
 
 		if (damage > 0)
-			damage(damage,-1);
+			damage(damage,-1, false, false);
 
 		return movement;
 	}

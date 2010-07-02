@@ -284,7 +284,14 @@
 					android:gravity="bottom|center"
 	       			android:background="@drawable/xml_upgrade_poison3"
 	       			android:id="@+id/upgrade_poison3" />
-		       			
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_special"
+	       			android:id="@+id/upgrade_special" />		       			
 	       	</LinearLayout>       	  	
      	  	<Button
      	  		android:layout_width="64dp"

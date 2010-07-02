@@ -336,7 +336,7 @@ public class MultiplayerGameLoop extends GameLoop {
     }
     public void mkElem(){
     	Random rand = new Random();
-    	int tmp = rand.nextInt(3);
+    	int tmp = rand.nextInt(4);
     	
     	boolean fast = false;
     	boolean fireResistant = false;

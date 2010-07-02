@@ -62,6 +62,8 @@ public class GameLoop implements Runnable {
     protected static boolean   pause = false;
     protected static Semaphore pauseSemaphore = new Semaphore(1);
     
+    private boolean superupgrade_teleport = false;
+    private boolean superupgrade_element = false;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -75,7 +77,7 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener());
+    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener(), new UpgradeSpecialListener());
     	gameTracker = new Tracker();
     }
     
@@ -677,8 +679,8 @@ public class GameLoop implements Runnable {
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-		int[] test = t.getUpgradeTypeIndex(this.mTTypes);
-		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+		int[] test = t.getUpgradeTypeIndex(this.mTTypes,superupgrade_teleport,superupgrade_element);
+		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8], test[9], test[10]);
 	}
 	
 	public static void pause() {
@@ -718,7 +720,6 @@ public class GameLoop implements Runnable {
     			}
     			else {
     				gui.NotEnoughMoney();
-    				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
     		else{
@@ -743,9 +744,13 @@ public class GameLoop implements Runnable {
     		upgradeTower(Tower.UpgradeOption.upgrade_poison);
     	}
     }
+    private class UpgradeSpecialListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeSuperTower();
+    	}
+    }
         
     private void upgradeTower(Tower.UpgradeOption opt) {
-		Log.d("GUI", "Upgrade B clicked!");
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 			int price = t.upgradeSpecialAbility(opt, player.getMoney());
@@ -770,6 +775,30 @@ public class GameLoop implements Runnable {
 		}
 
     }
+
+    private void upgradeSuperTower() {
+		if(selectedTower != null){
+			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+			int price = t.upgradeSuperAbility(player.getMoney());
+			if (price != 0) {
+				if (t.getTowerType() == Tower.AOE)
+					this.superupgrade_element = true;
+				else
+					this.superupgrade_teleport = true;
+
+				player.moneyFunction(-price);
+				showTowerUpgradeUI((int) t.x, (int) t.y);
+				updateCurrency();
+			}
+			else {
+				gui.NotEnoughMoney();
+			}
+		}
+		else{
+			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+		}
+
+    }
     
     private class SellListener implements OnClickListener{
     	public void onClick(View v){
@@ -782,6 +811,12 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.draw = false;
     			t.relatedShot.draw = false;
+    			if (t.getSuperElement()) {
+					superupgrade_element = false;
+    			}
+    			if (t.getSuperTeleport()) {
+					superupgrade_teleport = false;
+    			}
     			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}
