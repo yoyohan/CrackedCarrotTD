@@ -122,6 +122,7 @@ public class Server extends Activity {
         case REQUEST_DISCOVERABLE:
         	if (resultCode == 300) {
                 // The device is made discoverable and bluetooth is activated
+        		setupServer();
             } else {
                 // User did not accept the request or an error occured
                 Toast.makeText(this, "The device was not made discoverable. Leaving multiplayer"
