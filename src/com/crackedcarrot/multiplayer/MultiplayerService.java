@@ -21,7 +21,7 @@ public class MultiplayerService extends Thread {
     public static final int MESSAGE_PLAYER_SCORE = 2;
     public static final int MESSAGE_PLAYER_DEAD = 3;
     public static final int MESSAGE_DEVICE_NAME = 30;
-    public static final int MESSAGE_TOAST = 40;
+    public static final int MESSAGE_BT_KILLED = 40;
     
     private boolean runBluetooth = true;
     
@@ -96,7 +96,7 @@ public class MultiplayerService extends Thread {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_TOAST).sendToTarget();
+        mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_BT_KILLED).sendToTarget();
     }
     
     /** Closes the Bluetooth socket and streams */
