@@ -29,7 +29,7 @@
 			android:scaleType="fitXY"
 			android:text="20"
 			android:gravity="bottom|center"
-			android:background="@drawable/xml_button_forward" />
+			android:background="@drawable/xml_multi_lifetap" />
        		
        	<Button
        		android:id="@+id/enemy_fast"
@@ -38,7 +38,7 @@
 			android:scaleType="fitXY"
 			android:text="20"
 			android:gravity="bottom|center"
-       		android:background="@drawable/xml_button_forward" />
+       		android:background="@drawable/xml_multi_enchantcreep" />
        		
        	<Button
        		android:id="@+id/destroy_tower"
@@ -47,7 +47,7 @@
 			android:scaleType="fitXY"
 			android:text="20"
 			android:gravity="bottom|center"
-       		android:background="@drawable/xml_button_forward" />
+       		android:background="@drawable/xml_multi_destroy" />
        		
        	<Button
        		android:id="@+id/make_elemental"
@@ -56,7 +56,7 @@
 			android:scaleType="fitXY"
 			android:text="20"
 			android:gravity="bottom|center"
-       		android:background="@drawable/xml_button_forward" />
+       		android:background="@drawable/xml_multi_random" />
        		
        	<Button
        		android:id="@+id/make_shield"
@@ -65,7 +65,7 @@
 			android:scaleType="fitXY"
 			android:text="20"
 			android:gravity="bottom|center"
-       		android:background="@drawable/xml_button_forward" />
+       		android:background="@drawable/xml_multi_shield" />
        		
     </com.crackedcarrot.ExpandMenu>
 	
@@ -100,7 +100,7 @@
 			android:scaleType="fitXY"
 			android:visibility="gone"
 			android:gravity="bottom|center"
-       		android:background="@drawable/xml_button_play" />
+       		android:background="@drawable/xml_multi_expand" />
 
         <Button
        		android:id="@+id/t1"
