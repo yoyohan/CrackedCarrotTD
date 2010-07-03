@@ -27,7 +27,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-			android:text="20"
+			android:text="100"
 			android:gravity="bottom|center"
 			android:background="@drawable/xml_multi_lifetap" />
        		
@@ -36,7 +36,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-			android:text="20"
+			android:text="40"
 			android:gravity="bottom|center"
        		android:background="@drawable/xml_multi_enchantcreep" />
        		
@@ -45,7 +45,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-			android:text="20"
+			android:text="200"
 			android:gravity="bottom|center"
        		android:background="@drawable/xml_multi_destroy" />
        		
@@ -63,7 +63,7 @@
 			android:layout_width="64dp"
 			android:layout_height="50dp"
 			android:scaleType="fitXY"
-			android:text="20"
+			android:text="50"
 			android:gravity="bottom|center"
        		android:background="@drawable/xml_multi_shield" />
        		
