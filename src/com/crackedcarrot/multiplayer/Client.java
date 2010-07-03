@@ -76,10 +76,10 @@ public class Client extends Activity {
         super.onStart();
         
         /** Request that the device will be discoverable for 300 seconds 
-         *  Only need to do this for the server side of the connection */
+         *  Only need to do this for the server side of the connection */ /*
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE); */
         
         /** Request that Bluetooth will be activated if not on.
          *  setupClient() will then be called during onActivityResult */
