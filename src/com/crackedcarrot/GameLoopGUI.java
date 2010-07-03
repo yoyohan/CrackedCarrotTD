@@ -565,8 +565,16 @@ public class GameLoopGUI {
 	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogQuit.setContentView(R.layout.levelquit);
 	    	dialogQuit.setCancelable(true);
+
+	    	Typeface faceSniglet = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	
+	    	// Text
+	    	TextView quitTv = (TextView) dialogQuit.findViewById(R.id.LevelQuit_Text);
+	    	quitTv.setTypeface(faceSniglet);
+	    	
 	    	// First button
 	    	Button quitYes = (Button) dialogQuit.findViewById(R.id.LevelQuit_Yes);
+	    	quitYes.setTypeface(faceSniglet);
 	        quitYes.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
 	        		gameInit.finish();
@@ -575,6 +583,7 @@ public class GameLoopGUI {
 	    	
 	    	// Second button
 	    	Button quitNo = (Button) dialogQuit.findViewById(R.id.LevelQuit_No);
+	    	quitNo.setTypeface(faceSniglet);
 	    	quitNo.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
@@ -614,7 +623,7 @@ public class GameLoopGUI {
 	    			}
 	    		});
 	    	
-	    	// Continue button
+	    	// Sound on/off button
 	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
 	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
 	    	buttonPauseSound.setTypeface(face);

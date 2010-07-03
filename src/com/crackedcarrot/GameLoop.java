@@ -330,7 +330,15 @@ public class GameLoop implements Runnable {
 					}
     			}
 
-
+    			// Is the tower a Super-upgraded tower?
+    				// (we dont need sanity checking here, unless the game corrupts itself this cannot be abused)
+    			if (Integer.parseInt(tower[7]) == 1) {
+    			    superupgrade_teleport = true;
+    			    t.upgradeSuperAbility(10000);
+    			} else if (Integer.parseInt(tower[7]) == 2) {
+    				t.upgradeSuperAbility(10000);
+    			    superupgrade_element = true;
+    			}
     			
 	    	}
 
@@ -627,7 +635,8 @@ public class GameLoop implements Runnable {
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
     			s = s + t.getTowerType() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
-    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
+    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() +
+    			    "," + t.getUpgradeSuper() + "@";
     		}
     	}
     	
