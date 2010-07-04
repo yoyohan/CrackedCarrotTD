@@ -59,7 +59,7 @@ public class Highscore extends Activity {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
-            is = this.getResources().openRawResource(R.drawable.background);
+            is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
