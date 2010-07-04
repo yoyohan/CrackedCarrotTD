@@ -85,12 +85,4 @@ public class InstructionWebView extends Activity {
         mWebView.loadUrl(url);
 	}
 	
-    protected void onPause() {
-    	super.onPause();
-    	Log.d("INSTRWEBVIEW", "onPause");
-    	
-    	Log.d("INSTWEBVIEW", "OnPause: (we lost focus!) calling finish() on ourselves to kill everything.");
-    	this.finish();
-    }
-	
 }
