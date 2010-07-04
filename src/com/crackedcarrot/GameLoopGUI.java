@@ -49,7 +49,7 @@ public class GameLoopGUI {
 	private Dialog dialogQuit = null;
 	private Dialog dialogWon = null;
 	private Dialog dialogLost = null;
-	private ProgressDialog dialogWait = null;
+	private Dialog dialogWait = null; //ProgressDialog before
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
 	private Dialog dialogMpWon = null;
@@ -683,11 +683,18 @@ public class GameLoopGUI {
 	    	return dialogPause;
 	    	
 	    case WAIT_OPPONENT_ID:
+	    	dialogWait = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialogWait.setContentView(R.layout.multiplayer_opponent);
+	    	dialogWait.setCancelable(false);
+	    	return dialogWait;
+	    	
+	    	/*
 	    	dialogWait = new ProgressDialog(gameInit);
 	    	dialogWait.setMessage("Waiting for opponent...");
 	    	dialogWait.setIndeterminate(true);
 	    	dialogWait.setCancelable(false);
 	    	return dialogWait;
+	    	*/
 	    	
 	    case LEVEL_SCORE:
 	    	dialogScore = new Dialog(gameInit,R.style.NextlevelTheme);
