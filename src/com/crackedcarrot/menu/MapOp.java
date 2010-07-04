@@ -87,7 +87,7 @@ public class MapOp extends Activity implements ViewFactory {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
-            is = this.getResources().openRawResource(R.drawable.map4);
+            is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
@@ -272,7 +272,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 2: 
 					mapSelected = 3;
 					tv.setText("Map 3: The field of no grass.");
-					wave = 2;
+					wave = 1;
 					break;
 			}
 			

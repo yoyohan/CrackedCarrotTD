@@ -137,9 +137,21 @@ public class MultiplayerHandler extends Thread {
 		            		toast.show();
 	                	}
 	                	else{
-		                	mpGL.mkElem();
+		                	int tmp = mpGL.mkElem();
+		                	CharSequence text = "";
 		                	
-		                	CharSequence text = "The enemies have gained special ability";
+		            		if (tmp == 0) {
+			                	text = "The enemies have gained speed";
+		            		}
+		            		else if (tmp == 1) {
+			                	text = "The enemies have gained fire resistans";
+		            		}
+		            		else if (tmp == 2) {
+			                	text = "The enemies have gained frost resistans";
+		            		} else {
+			                	text = "The enemies have gained poison resistans";
+		            		}
+
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();

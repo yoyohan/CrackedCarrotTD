@@ -12,7 +12,7 @@
         android:layout_weight="1">
 
 		<ImageView
-			android:src="@drawable/mrrabbitdead"
+			android:src="@drawable/win"
 			android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
