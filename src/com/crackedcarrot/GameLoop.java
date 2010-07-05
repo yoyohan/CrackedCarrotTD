@@ -447,6 +447,11 @@ public class GameLoop implements Runnable {
     	Log.d("GAMETHREAD", "dead thread");
     	
 		Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
+		if (lvlNbr >= mLvl.length) {
+			gameFinished.putExtra("win", true);
+		} else {
+			gameFinished.putExtra("win", false);
+		}
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
 		gameFinished.putExtra("score", player.getScore());
 		// Since this is not a multiplayergame we will send 1 to gameinit
@@ -459,7 +464,7 @@ public class GameLoop implements Runnable {
     // Basic function to show score and failure dialog
     public void showYouLost() {
    		// Show the You Lost-dialog.
-    	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
+    	//gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
     	// This is a good time clear all savegame data.
     		// -2 = call the SaveGame-function.
     		// 2  = ask SaveGame to clear all data.
@@ -470,7 +475,7 @@ public class GameLoop implements Runnable {
     	soundManager.playSoundLoose();
     	
 		// Code to wait for the user to click ok on YouLost-dialog.
-		waitForDialogClick();
+		//waitForDialogClick();
     }
     
     public void showYouCompletedWave() {
@@ -482,7 +487,7 @@ public class GameLoop implements Runnable {
         	Log.d("GAMETHREAD", "You have completed this map");
         	
     		// Show the You Won-dialog.
-        	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
+        	//gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
 
         	// This is a good time clear all savegame data.
     			// -2 = call the SaveGame-function.
@@ -494,7 +499,7 @@ public class GameLoop implements Runnable {
         	soundManager.playSoundVictory();
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
-    		waitForDialogClick();
+    		//waitForDialogClick();
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
     		// !!! MOVED !!! Put this before scoreninja instead!

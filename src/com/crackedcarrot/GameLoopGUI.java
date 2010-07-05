@@ -86,8 +86,6 @@ public class GameLoopGUI {
     
     	// For readability-reasons.
     public final int DIALOG_NEXTLEVEL_ID = 1;
-    public final int DIALOG_WON_ID       = 2;
-    public final int DIALOG_LOST_ID      = 3;
            final int DIALOG_QUIT_ID	     = 5;
     public final int DIALOG_TOWERINFO_ID = 6;
            final int DIALOG_PAUSE_ID     = 7;
@@ -521,44 +519,6 @@ public class GameLoopGUI {
 	        
 	        return dialogTowerInfo;
 	    	
-	    case DIALOG_WON_ID:
-	    	dialogWon = new Dialog(gameInit,R.style.NextlevelTheme);
-	    	dialogWon.setContentView(R.layout.levelwon);
-	    	dialogWon.setCancelable(false);
-	    	
-	    	// Score
-	    	TextView textViewWonScore = (TextView) dialogWon.findViewById(R.id.LevelWon_Score);
-	    	textViewWonScore.setText("Score: " + gameInit.gameLoop.player.getScore());
-	    	
-	    	// First button
-	    	Button buttonWon = (Button) dialogWon.findViewById(R.id.LevelWon_OK);
-	        buttonWon.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		gameInit.gameLoop.dialogClick();
-	        	}
-	        });
-	        return dialogWon;
-	    	//break;
-	    	
-	    case DIALOG_LOST_ID:
-	    	dialogLost = new Dialog(gameInit,R.style.NextlevelTheme);
-	    	dialogLost.setContentView(R.layout.levellost);
-	    	dialogLost.setCancelable(false);
-	    	
-	    	// Score
-	    	TextView textViewLostScore = (TextView) dialogLost.findViewById(R.id.LevelLost_Score);
-	    	textViewLostScore.setText("Score: " + gameInit.gameLoop.player.getScore());
-	    	
-	    	// First button
-	    	Button buttonLost = (Button) dialogLost.findViewById(R.id.LevelLost_OK);
-	        buttonLost.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		gameInit.gameLoop.dialogClick();
-	        	}
-	        });
-	        return dialogLost;
-	    	//break;
-	    	
 	    case DIALOG_QUIT_ID:
 	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogQuit.setContentView(R.layout.levelquit);
@@ -957,12 +917,6 @@ public class GameLoopGUI {
 	        	    	 Log.d("GAMELOOPGUI", "Simulate next level dialog");
 	        	    	 gameInit.gameLoop.dialogClick();
 	        	     }
-	        		 break;
-	        	 case DIALOG_WON_ID:
-	        		 gameInit.showDialog(DIALOG_WON_ID);
-	        		 break;
-	        	 case DIALOG_LOST_ID:
-	        		 gameInit.showDialog(DIALOG_LOST_ID);
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:

@@ -40,11 +40,13 @@
 
 		<ImageView
 			android:src="@drawable/win"
+			android:id="@+id/GameFinishedImageViewImage"
 			android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 		<TextView
+			android:id="@+id/GameFinishedTextViewTitle"
 			android:text="Congratulations!"
 			android:textColor="#000000"
 			android:textStyle="bold"
@@ -61,6 +63,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="1">
         <TextView
+       		android:id="@+id/GameFinishedTextViewText"
 			android:text="You've slain all the vile rabbits and their evil companions and saved your precious carrots!"
 			android:textColor="#000000"
 			android:gravity="center"
@@ -95,13 +98,11 @@
     		android:layout_height="150dp" >
 			            
 					<Button
-						android:text="Back"
-						android:background="@drawable/xml_button_pause"
 						android:id="@+id/GameFinished_Button_Ok"
-			    		android:textSize="22sp"		
-			            android:layout_width="fill_parent"
-			            android:layout_height="fill_parent"
-			            android:layout_weight="1" />
+			    		android:layout_width="120dp"
+						android:layout_height="38dp"
+	    				android:scaleType="fitXY"
+						android:background="@drawable/xml_button_menu_back" />
     		
     	</LinearLayout>
 		
