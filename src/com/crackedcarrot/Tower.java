@@ -18,7 +18,7 @@ public class Tower extends Sprite {
 	public final static int BUNKER = 3;
 	public final static int TELSA = 4;
 	
-	public enum UpgradeOption{upgrade_lvl, upgrade_fire, upgrade_frost, upgrade_poison};
+	public enum UpgradeOption{upgrade_lvl, upgrade_fire, upgrade_frost, upgrade_poison, upgrade_special};
 	
 	//towertype
 	public int towerType;
@@ -57,6 +57,9 @@ public class Tower extends Sprite {
 	private int upgradeFire;
 	private int upgradeFrost;
 	private int upgradePoison;
+	// If this tower have a super ability one of the following booelans will be set
+	private boolean hasSuper_teleport = false;
+	private boolean hasSuper_element = false;
 	// The type of shot related to this tower
 	public Shot relatedShot;
     // The time existing between each fired shot
@@ -240,7 +243,7 @@ public class Tower extends Sprite {
 								float damageFactor = specialDamage(tmpCreature,true);
 								randomInt = this.aoeDamage * damageFactor;
 							}
-						tmpCreature.damage(randomInt,-1);
+						tmpCreature.damage(randomInt,-1, this.hasSuper_teleport, this.hasSuper_element);
 						nbrOfHits++;
 						}
 					}
@@ -353,7 +356,7 @@ public class Tower extends Sprite {
 		this.tmpCoolDown = this.coolDown;
 		float damageFactor = specialDamage(this.targetCreature,false);
 		float randomInt = (rand.nextInt(this.maxDamage-this.minDamage) + this.minDamage) * damageFactor;
-		targetCreature.damage(randomInt,sound_i);
+		targetCreature.damage(randomInt,sound_i, this.hasSuper_teleport, this.hasSuper_element);
 		
 		this.ImpactdAnimate = true;
 		relatedShot.tmpAnimationTime = relatedShot.animationTime;
@@ -523,6 +526,8 @@ public class Tower extends Sprite {
 			this.relatedShot.r = 1;
 			this.relatedShot.g = 1;
 			this.relatedShot.b = 1;
+			this.hasSuper_element = false;
+			this.hasSuper_teleport = false;
 		}
 
 		// Tracker
@@ -638,6 +643,34 @@ public class Tower extends Sprite {
 		return price;
 	}
 
+	
+	public int upgradeSuperAbility(int money) {
+		int price = 0;
+		if (money >= 100) {
+			if (this.towerType == Tower.AOE) {
+				this.hasSuper_element = true;
+				this.r = 0.7f;
+				this.g = 0.7f;
+				this.b = 1f;
+				this.relatedShot.r = 0.7f;
+				this.relatedShot.g = 0.7f;
+				this.relatedShot.b = 1f;
+				price = 100;
+			}
+			if (this.towerType == Tower.TELSA) {
+				this.hasSuper_teleport = true;
+				this.r = 0.7f;
+				this.g = 1f;
+				this.b = 0.7f;
+				this.relatedShot.r = 0.7f;
+				this.relatedShot.g = 1f;
+				this.relatedShot.b = 0.7f;
+				price = 100;
+			}
+		}
+		return price;
+	}
+
 	//////////////////////////////////////////////
 	// Getter for tower
 	//////////////////////////////////////////////
@@ -686,11 +719,15 @@ public class Tower extends Sprite {
 		if (this.upgradePoison > 0) {
 			resell = 15 + upgradePoison * 15;			
 		}
+		
+		if (hasSuper_teleport || hasSuper_element)
+			resell =  50;
+		
 		return resell + this.resellPrice;
 	}
 	
-	public int[] getUpgradeTypeIndex(Tower[] towerTypes) {
-		int[] Upgrade = new int[9];
+	public int[] getUpgradeTypeIndex(Tower[] towerTypes,boolean specialupgrade_teleport,boolean specialupgrade_element_remove) {
+		int[] Upgrade = new int[11];
 		
 		if (upgradeLvl == -1)
 			Upgrade[0] = -1;
@@ -726,7 +763,18 @@ public class Tower extends Sprite {
 			else Upgrade[6] = -1;
 		else Upgrade[6] = -1;
 		
-		Upgrade[8] = this.getResellPrice();
+		if (!specialupgrade_teleport && towerType == Tower.TELSA) {
+			Upgrade[8] = 1;
+			Upgrade[9] = 100;
+		}
+
+		if (!specialupgrade_element_remove && towerType == Tower.AOE) {
+			Upgrade[8] = 1;
+			Upgrade[9] = 100;
+		}
+			
+		
+		Upgrade[10] = this.getResellPrice();
 	
 		return Upgrade;
 	}
@@ -792,6 +840,19 @@ public class Tower extends Sprite {
 	 */
 	public int getTowerTypeId() {
 		return this.towerTypeId;
+	}
+	
+	/**
+	 * @return true if this tower has a element superupgrade
+	 */
+	public boolean getSuperElement() {
+		return this.hasSuper_element;
+	}
+	/**
+	 * @return true if this tower has a teleport superupgrade
+	 */
+	public boolean getSuperTeleport() {
+		return this.hasSuper_teleport;
 	}
 	
 }

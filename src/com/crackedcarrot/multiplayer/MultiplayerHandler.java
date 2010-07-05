@@ -20,7 +20,7 @@ public class MultiplayerHandler extends Thread {
     public static final int MESSAGE_PLAYER_SCORE = 2;
     public static final int MESSAGE_PLAYER_DEAD = 3;
     public static final int MESSAGE_DEVICE_NAME = 30;
-    public static final int MESSAGE_TOAST = 40;
+    public static final int MESSAGE_BT_KILLED = 40;
     
     private int opponentScore;
     
@@ -137,9 +137,21 @@ public class MultiplayerHandler extends Thread {
 		            		toast.show();
 	                	}
 	                	else{
-		                	mpGL.mkElem();
+		                	int tmp = mpGL.mkElem();
+		                	CharSequence text = "";
 		                	
-		                	CharSequence text = "The enemies have gained special ability";
+		            		if (tmp == 0) {
+			                	text = "The enemies have gained speed";
+		            		}
+		            		else if (tmp == 1) {
+			                	text = "The enemies have gained fire resistans";
+		            		}
+		            		else if (tmp == 2) {
+			                	text = "The enemies have gained frost resistans";
+		            		} else {
+			                	text = "The enemies have gained poison resistans";
+		            		}
+
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
@@ -154,10 +166,12 @@ public class MultiplayerHandler extends Thread {
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;
-                case MESSAGE_TOAST:
-                	//Do something to inform user that connection is lost
-                    //Toast.makeText(getApplicationContext(), msg.getData().getString("toast"),
-                    //               Toast.LENGTH_SHORT).show();
+                case MESSAGE_BT_KILLED:
+                	CharSequence text = "Bluetooth connection was lost, closing battle...";
+            		int duration = Toast.LENGTH_SHORT;
+            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
+            		toast.show();
+            		mpGL.stopGameLoop();
                     break;
                 }
             }

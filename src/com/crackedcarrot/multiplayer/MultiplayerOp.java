@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.crackedcarrot.menu.*;
 
@@ -21,6 +22,11 @@ public class MultiplayerOp extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
+        TextView tv = (TextView)findViewById(R.id.MpInfo);
+        tv.setText("Multiplayer uses bluetooth to connect to your opponent. " + 
+        	"If connection fails, try activating Blutooth and make the device discoverable " +
+        	"in Android settings");
+    	
     	Button HostButton = (Button)findViewById(R.id.host);
     	HostButton.setOnClickListener(new OnClickListener() {
         	

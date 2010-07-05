@@ -132,6 +132,7 @@ public class GameLoopGUI {
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
+    final Button upgradeSpecial;
     
     final Button tower1Information;
     final Button tower2Information;
@@ -163,6 +164,7 @@ public class GameLoopGUI {
     	upgradePoison1 = (Button) gameInit.findViewById(R.id.upgrade_poison1);
     	upgradePoison2 = (Button) gameInit.findViewById(R.id.upgrade_poison2);
     	upgradePoison3 = (Button) gameInit.findViewById(R.id.upgrade_poison3);
+    	upgradeSpecial = (Button) gameInit.findViewById(R.id.upgrade_special);
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
 
@@ -1126,6 +1128,7 @@ public class GameLoopGUI {
 								int showFireUpgrade, int FirePrice, 
 								int showFrostUpgrade, int FrostPrice, 
 								int showPoisonUpgrade, int PoisonPrice,
+								int showSpecialUpgrade, int SpecialPrice,
 								int recellValue) {
 		
 		this.upgradeFire1.setVisibility(View.GONE);
@@ -1139,6 +1142,7 @@ public class GameLoopGUI {
 		this.upgradePoison3.setVisibility(View.GONE);
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
+		this.upgradeSpecial.setVisibility(View.GONE);
 		
     	this.sellTower.setText("+"+recellValue);
 		
@@ -1196,6 +1200,11 @@ public class GameLoopGUI {
 		break;
 		}
 
+		if (showSpecialUpgrade == 1) {
+			this.upgradeSpecial.setText("-"+SpecialPrice);
+			this.upgradeSpecial.setVisibility(View.VISIBLE);
+		}
+		
 		gameInit.mGLSurfaceView.setTowerType(-1);
 		hud.hideGrid();
 		this.towertext.setVisibility(View.GONE);
@@ -1219,7 +1228,9 @@ public class GameLoopGUI {
 									OnClickListener upgradeFireListener,
 									OnClickListener upgradeFrostListener,
 									OnClickListener upgradePoisonListener,
-									OnClickListener sellListener){
+									OnClickListener sellListener,
+									OnClickListener upgradeSpecialListener
+									){
 		
 		this.upgradeLvl2.setOnClickListener(upgradeTowerLvlListener);
 		this.upgradeLvl3.setOnClickListener(upgradeTowerLvlListener);
@@ -1233,7 +1244,7 @@ public class GameLoopGUI {
 		this.upgradePoison2.setOnClickListener(upgradePoisonListener);
 		this.upgradePoison3.setOnClickListener(upgradePoisonListener);
 		this.sellTower.setOnClickListener(sellListener);
-		
+		this.upgradeSpecial.setOnClickListener(upgradeSpecialListener);
 	}
 
 

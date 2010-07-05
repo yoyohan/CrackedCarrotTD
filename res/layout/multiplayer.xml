@@ -80,8 +80,8 @@
 
 	<TableRow>
 		<TextView
+			android:id="@+id/MpInfo"
 			android:gravity="center"
-        	android:text="Multiplayer uses bluetooth to connect to your opponent."
         	android:layout_width="wrap_content"
         	android:textColor="#000000" />
 	</TableRow>

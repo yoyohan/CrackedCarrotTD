@@ -62,6 +62,8 @@ public class GameLoop implements Runnable {
     protected static boolean   pause = false;
     protected static Semaphore pauseSemaphore = new Semaphore(1);
     
+    private boolean superupgrade_teleport = false;
+    private boolean superupgrade_element = false;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm){
@@ -75,7 +77,7 @@ public class GameLoop implements Runnable {
     	this.soundManager = sm;
     	this.player = p;
     	this.gui = gui;
-    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener());
+    	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener(), new UpgradeSpecialListener());
     	gameTracker = new Tracker();
     }
     
@@ -426,56 +428,11 @@ public class GameLoop implements Runnable {
             if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
             	Log.d("GAMETHREAD", "You are dead");
-
-           		// Show the You Lost-dialog.
-            	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
-            	// This is a good time clear all savegame data.
-            		// -2 = call the SaveGame-function.
-            		// 2  = ask SaveGame to clear all data.
-            		// 0  = not used.
-            	gui.sendMessage(-2, 2, 0);
-
-            	//Play fail sound
-            	soundManager.playSoundLoose();
-            	
-        		// Code to wait for the user to click ok on YouLost-dialog.
-        		waitForDialogClick();
-
+            	showYouLost();
             	run = false;
         	} 
         	else if (remainingCreaturesALL < 1) {
-        		//If you have survied the entire wave without dying. Proceed to next next level.
-            	Log.d("GAMETHREAD", "Wave complete");
-        		lvlNbr++;
-        		if (lvlNbr >= mLvl.length) {
-        			// You have completed this map
-                	Log.d("GAMETHREAD", "You have completed this map");
-                	
-            		// Show the You Won-dialog.
-                	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
-
-                	// This is a good time clear all savegame data.
-            			// -2 = call the SaveGame-function.
-            			// 2  = ask SaveGame to clear all data.
-            			// 0  = not used.
-                	gui.sendMessage(-2, 2, 0);
-
-                	//Play victory sound
-                	soundManager.playSoundVictory();
-                	
-            		// Code to wait for the user to click ok on YouWon-dialog.
-            		waitForDialogClick();
-                	
-                	// Show Ninjahighscore-thingie.
-                	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
-                	
-            		// Code to wait for the user to click ok on YouWon-dialog.
-            		// !!! MOVED !!! Put this before scoreninja instead!
-                	// Might fix some activity-focus problems we're having... /Fredrik
-                	//waitForDialogClick();
-
-        			run = false;
-        		}
+        		showYouCompletedWave();
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
@@ -483,6 +440,59 @@ public class GameLoop implements Runnable {
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
 
+    // Basic function to show score and failure dialog
+    public void showYouLost() {
+   		// Show the You Lost-dialog.
+    	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
+    	// This is a good time clear all savegame data.
+    		// -2 = call the SaveGame-function.
+    		// 2  = ask SaveGame to clear all data.
+    		// 0  = not used.
+    	gui.sendMessage(-2, 2, 0);
+
+    	//Play fail sound
+    	soundManager.playSoundLoose();
+    	
+		// Code to wait for the user to click ok on YouLost-dialog.
+		waitForDialogClick();
+    }
+    
+    public void showYouCompletedWave() {
+		//If you have survied the entire wave without dying. Proceed to next next level.
+    	Log.d("GAMETHREAD", "Wave complete");
+		lvlNbr++;
+		if (lvlNbr >= mLvl.length) {
+			// You have completed this map
+        	Log.d("GAMETHREAD", "You have completed this map");
+        	
+    		// Show the You Won-dialog.
+        	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
+
+        	// This is a good time clear all savegame data.
+    			// -2 = call the SaveGame-function.
+    			// 2  = ask SaveGame to clear all data.
+    			// 0  = not used.
+        	gui.sendMessage(-2, 2, 0);
+
+        	//Play victory sound
+        	soundManager.playSoundVictory();
+        	
+    		// Code to wait for the user to click ok on YouWon-dialog.
+    		waitForDialogClick();
+        	
+        	// Show Ninjahighscore-thingie.
+        	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
+        	
+    		// Code to wait for the user to click ok on YouWon-dialog.
+    		// !!! MOVED !!! Put this before scoreninja instead!
+        	// Might fix some activity-focus problems we're having... /Fredrik
+        	//waitForDialogClick();
+			run = false;
+
+		}
+
+    }
+    
     public boolean createTower(Coords TowerPos, int towerType) {
 		if (mTTypes.length > towerType) {
 			if (!mScaler.insideGrid(TowerPos.x,TowerPos.y)) {
@@ -669,8 +679,8 @@ public class GameLoop implements Runnable {
 	public void showTowerUpgradeUI(int x, int y) {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-		int[] test = t.getUpgradeTypeIndex(this.mTTypes);
-		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+		int[] test = t.getUpgradeTypeIndex(this.mTTypes,superupgrade_teleport,superupgrade_element);
+		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8], test[9], test[10]);
 	}
 	
 	public static void pause() {
@@ -710,7 +720,6 @@ public class GameLoop implements Runnable {
     			}
     			else {
     				gui.NotEnoughMoney();
-    				Log.d("GAMELOOP","No upgrade avialible");
     			}
     		}
     		else{
@@ -735,9 +744,13 @@ public class GameLoop implements Runnable {
     		upgradeTower(Tower.UpgradeOption.upgrade_poison);
     	}
     }
+    private class UpgradeSpecialListener implements OnClickListener{
+    	public void onClick(View v){
+    		upgradeSuperTower();
+    	}
+    }
         
     private void upgradeTower(Tower.UpgradeOption opt) {
-		Log.d("GUI", "Upgrade B clicked!");
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 			int price = t.upgradeSpecialAbility(opt, player.getMoney());
@@ -762,6 +775,30 @@ public class GameLoop implements Runnable {
 		}
 
     }
+
+    private void upgradeSuperTower() {
+		if(selectedTower != null){
+			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
+			int price = t.upgradeSuperAbility(player.getMoney());
+			if (price != 0) {
+				if (t.getTowerType() == Tower.AOE)
+					this.superupgrade_element = true;
+				else
+					this.superupgrade_teleport = true;
+
+				player.moneyFunction(-price);
+				showTowerUpgradeUI((int) t.x, (int) t.y);
+				updateCurrency();
+			}
+			else {
+				gui.NotEnoughMoney();
+			}
+		}
+		else{
+			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+		}
+
+    }
     
     private class SellListener implements OnClickListener{
     	public void onClick(View v){
@@ -774,6 +811,12 @@ public class GameLoop implements Runnable {
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			t.draw = false;
     			t.relatedShot.draw = false;
+    			if (t.getSuperElement()) {
+					superupgrade_element = false;
+    			}
+    			if (t.getSuperTeleport()) {
+					superupgrade_teleport = false;
+    			}
     			player.moneyFunction(t.getResellPrice());
     			updateCurrency();
     		}

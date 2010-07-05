@@ -91,7 +91,7 @@
 		        		android:scaleType="fitXY"
 						android:layout_gravity="center"
 						android:gravity="center"
-		        		android:src="@drawable/level_normal" />
+		        		android:src="@drawable/mrrabbit" />
 	
 			        <RadioButton android:id="@+id/radioNormal" 
 						 android:text="Normal" 

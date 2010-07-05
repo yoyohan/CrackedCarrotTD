@@ -74,13 +74,11 @@ public class SoundManager {
         this.addSound(1.0f, 500, R.raw.die_kalle2);
         randomEndDIE = this.addSound(1.0f, 500, R.raw.die_tomat);
         randomEndDIE = randomEndDIE - randomStartDIE;
-        randomStartScore = this.addSound(1.0f, 500, R.raw.die_albin);
-        this.addSound(1.0f, 500, R.raw.score_albin1);
+        randomStartScore = this.addSound(1.0f, 500, R.raw.score_albin1);
         this.addSound(1.0f, 500, R.raw.score_albin2);
         this.addSound(1.0f, 500, R.raw.score_albin3);
         this.addSound(1.0f, 500, R.raw.score_albin4);
-        this.addSound(1.0f, 500, R.raw.score_fredrik);
-        randomEndScore = this.addSound(1.0f, 500, R.raw.die_tomat);
+        randomEndScore = this.addSound(1.0f, 500, R.raw.score_fredrik);
         randomEndScore = randomEndScore - randomStartScore;
         
         createTower = this.addSound(1.0f, 500, R.raw.open_beer);

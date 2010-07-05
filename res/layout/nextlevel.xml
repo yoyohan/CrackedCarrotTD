@@ -34,7 +34,7 @@
 							android:layout_width="60dp"
 							android:layout_height="60dp"
 							android:scaleType="fitXY"
-							android:src="@drawable/bunny_pink_alive"  
+							android:src="@drawable/mrrabbit"  
 							/>
 			</LinearLayout>
 		</TableRow>
