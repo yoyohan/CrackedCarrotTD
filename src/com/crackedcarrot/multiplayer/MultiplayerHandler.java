@@ -23,6 +23,7 @@ public class MultiplayerHandler extends Thread {
     public static final int MESSAGE_BT_KILLED = 40;
     
     private int opponentScore;
+    private int opponentEnLeft;
     
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
@@ -33,6 +34,7 @@ public class MultiplayerHandler extends Thread {
     private final String DESTROY_TOWER = "desTower";
     private final String MAKE_ELEMENTAL = "mkElem";
     private final String MAKE_SHIELD = "mkShield";
+    private final String OPP_CRE_LEFT = "cre";
 	
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
@@ -72,6 +74,14 @@ public class MultiplayerHandler extends Thread {
 	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
 	                     opponentScore = Integer.parseInt(readMessage);
 	                     gameLoopGui.setOpponentScore(opponentScore);
+	                }
+ 	                // The data consists of the opponents enemies left
+	                else if((readMessage.substring(0, 3)).equals(OPP_CRE_LEFT)){
+	                	readMessage = readMessage.substring(3, msg.arg2);
+	                	Log.d("MULTIPLAYERHANDLER", "Opponents enemies left: " + readMessage);
+	                    opponentEnLeft = Integer.parseInt(readMessage);
+	                    gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_WON, opponentEnLeft, 0);
+
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
 	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");

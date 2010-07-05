@@ -1,7 +1,6 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,7 +45,7 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
-	private ProgressDialog dialogWait = null;
+	private Dialog dialogWait = null; //ProgressDialog before
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
 	private Dialog dialogMpWon = null;
@@ -63,6 +62,7 @@ public class GameLoopGUI {
     private int			 playerScore;
     private int			 opponentScore;
     public  int          towerInfo;
+    private int			 opponentEnLeft;
     
     private WebView mWebView; // used by TowerInfo-dialog to display html-pages.
 
@@ -78,6 +78,7 @@ public class GameLoopGUI {
     private TextView     playerHealthView;
     private TextView     scoreCounter;
     private TextView	 lvlNbr;
+    private TextView	 enemyLeft;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -95,6 +96,7 @@ public class GameLoopGUI {
     public final int MULTIPLAYER_WON     = 11;
     public final int MULTIPLAYER_LOST    = 12;
     public final int COMPARE_PLAYERS     = 13;
+    public final int OPP_CREATURELEFT	 = 14;
     
     public final int GUI_PLAYERMONEY_ID     = 20;
     public final int GUI_PLAYERHEALTH_ID    = 21;
@@ -651,11 +653,18 @@ public class GameLoopGUI {
 	    	return dialogPause;
 	    	
 	    case WAIT_OPPONENT_ID:
+	    	dialogWait = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialogWait.setContentView(R.layout.multiplayer_opponent);
+	    	dialogWait.setCancelable(false);
+	    	return dialogWait;
+	    	
+	    	/*
 	    	dialogWait = new ProgressDialog(gameInit);
 	    	dialogWait.setMessage("Waiting for opponent...");
 	    	dialogWait.setIndeterminate(true);
 	    	dialogWait.setCancelable(false);
 	    	return dialogWait;
+	    	*/
 	    	
 	    case LEVEL_SCORE:
 	    	dialogScore = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -862,7 +871,13 @@ public class GameLoopGUI {
 		    wL.setText(chS);
 		    CharSequence chS2 = Html.fromHtml(compareScores);
 		    cS.setText(chS2);
-	    	break;		    
+	    	break;
+	    case WAIT_OPPONENT_ID:
+	    	enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
+	    	String enLeft = "Your opponent has " + this.opponentEnLeft + " enemies left.";
+	    	CharSequence chaS = Html.fromHtml(enLeft);
+	    	enemyLeft.setText(chaS);
+	    	break;
 	    case DIALOG_PAUSE_ID:
 	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
@@ -1003,6 +1018,9 @@ public class GameLoopGUI {
 	        		 playerScore = msg.arg1;
 	        		 gameInit.showDialog(COMPARE_PLAYERS);
 	        		 break;
+	        	 case OPP_CREATURELEFT:
+	        	 	 opponentEnLeft = msg.arg1;
+	        	 	 enemyLeft.setText("Your opponent has " + opponentEnLeft + " enemies left.");
 	        	 case SETMULTIPLAYERVISIBLE:
     				lessHealthButton.setVisibility(View.VISIBLE);
     			    enemyFastButton.setVisibility(View.VISIBLE);

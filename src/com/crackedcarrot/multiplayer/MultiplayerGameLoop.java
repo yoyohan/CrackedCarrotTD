@@ -395,5 +395,14 @@ public class MultiplayerGameLoop extends GameLoop {
 	public static void unPause() {
 		// Do nothing
 	}
+	
+	// Override
+	public void creatureDiesOnMap(int n) {
+		super.creatureDiesOnMap(n);
+		String creDies = "cre" + remainingCreaturesALIVE;
+		byte[] sendCreDies = creDies.getBytes();
+		mMultiplayerService.write(sendCreDies);
+		
+	}
 
 }
