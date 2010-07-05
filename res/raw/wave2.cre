@@ -4,7 +4,7 @@ Total number of levels::20
 Texture animate::mrbabyrabbit_animate
 Texture display::mrbabyrabbit
 Texture dead::mrbabyrabbitdead
-scale::0.8
+scale::0.9
 Wave title::Baby Rabbit
 health::100
 fast level::false
@@ -88,7 +88,7 @@ nbrOfCreaturs::20
 Texture animate::mrmouse_animate
 Texture display::mrmouse
 Texture dead::mrmousedead
-scale::0.8
+scale::0.9
 Wave title::Mr Mouse
 health::380
 fast level::false
@@ -200,7 +200,7 @@ nbrOfCreaturs::20
 Texture animate::mrghostrabbit_animate
 Texture display::mrghostrabbit
 Texture dead::mrghostrabbitdead
-scale::0.8
+scale::0.9
 Wave title::Ghostly Mr Rabbit
 health::12600
 fast level::false

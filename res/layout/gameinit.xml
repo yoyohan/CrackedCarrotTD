@@ -396,7 +396,7 @@
 				android:paddingTop="0dp"
 				android:layout_width="22dp" 
 				android:layout_height="22dp"
-				android:src="@drawable/bunny_pink_alive" >
+				android:src="@drawable/mrrabbit" >
 			</ImageView>
 
 	        <TextView
