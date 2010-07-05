@@ -251,7 +251,7 @@ public class Creature extends Sprite{
     		}
     			
     		this.healthBar.x = this.x;
-    		this.healthBar.y = this.y;
+    		this.healthBar.y = this.y + this.getHeight();
 		}
 	}
 
