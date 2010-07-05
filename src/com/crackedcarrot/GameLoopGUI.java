@@ -46,8 +46,6 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
-	private Dialog dialogWon = null;
-	private Dialog dialogLost = null;
 	private ProgressDialog dialogWait = null;
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
@@ -56,6 +54,8 @@ public class GameLoopGUI {
 	private Dialog dialogCompare = null;
 	
 	private boolean multiplayerMode;
+	
+	public boolean  quitDialogPressed = false;
 	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
@@ -535,6 +535,7 @@ public class GameLoopGUI {
 	    	quitYes.setTypeface(faceSniglet);
 	        quitYes.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
+	        		quitDialogPressed = true;
 	        		gameInit.finish();
 	        	}
 	        });
