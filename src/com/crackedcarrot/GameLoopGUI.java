@@ -64,7 +64,7 @@ public class GameLoopGUI {
     private int			 playerScore;
     private int			 opponentScore;
     public  int          towerInfo;
-    private int			 oppCreLeft;
+    private int			 opponentEnLeft;
     
     private WebView mWebView; // used by TowerInfo-dialog to display html-pages.
 
@@ -80,6 +80,7 @@ public class GameLoopGUI {
     private TextView     playerHealthView;
     private TextView     scoreCounter;
     private TextView	 lvlNbr;
+    private TextView	 enemyLeft;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -905,8 +906,8 @@ public class GameLoopGUI {
 		    cS.setText(chS2);
 	    	break;
 	    case WAIT_OPPONENT_ID:
-	    	TextView enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
-	    	String enLeft = "Your opponent has " + this.oppCreLeft + " enemies left.";
+	    	enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
+	    	String enLeft = "Your opponent has " + this.opponentEnLeft + " enemies left.";
 	    	CharSequence chaS = Html.fromHtml(enLeft);
 	    	enemyLeft.setText(chaS);
 	    	break;
@@ -1064,7 +1065,8 @@ public class GameLoopGUI {
 	        		 gameInit.showDialog(COMPARE_PLAYERS);
 	        		 break;
 	        	 case OPP_CREATURELEFT:
-	        	 	 oppCreLeft = msg.arg1;
+	        	 	 opponentEnLeft = msg.arg1;
+	        	 	 enemyLeft.setText("Your opponent has " + opponentEnLeft + " enemies left.");
 	        	 case SETMULTIPLAYERVISIBLE:
     				lessHealthButton.setVisibility(View.VISIBLE);
     			    enemyFastButton.setVisibility(View.VISIBLE);
