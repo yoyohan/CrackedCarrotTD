@@ -18,7 +18,7 @@
     		android:layout_height="50dp" >
 	
 			<ImageView
-				android:src="@drawable/bunny_pink_alive"
+				android:src="@drawable/mrcat"
 				android:gravity="center"
 	            android:layout_width="wrap_content"
 	            android:layout_height="fill_parent"
