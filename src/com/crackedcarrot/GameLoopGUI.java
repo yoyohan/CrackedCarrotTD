@@ -79,6 +79,7 @@ public class GameLoopGUI {
     private TextView     playerHealthView;
     private TextView     scoreCounter;
     private TextView	 lvlNbr;
+    private TextView	 oppCreLeft;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -99,6 +100,7 @@ public class GameLoopGUI {
     public final int MULTIPLAYER_WON     = 11;
     public final int MULTIPLAYER_LOST    = 12;
     public final int COMPARE_PLAYERS     = 13;
+    public final int OPP_CREATURELEFT	 = 14;
     
     public final int GUI_PLAYERMONEY_ID     = 20;
     public final int GUI_PLAYERHEALTH_ID    = 21;
@@ -198,6 +200,11 @@ public class GameLoopGUI {
         nrCreText = (TextView) gameInit.findViewById(R.id.nrEnemyLeft);
     	Typeface MuseoSans = Typeface.createFromAsset(gameInit.getAssets(), "fonts/MuseoSans_500.otf");
     	nrCreText.setTypeface(MuseoSans);
+    	
+    	// Create the TextView showing number of enemies left for the opponent
+    	oppCreLeft = (TextView) gameInit.findViewById(R.id.enemyText);
+    	Typeface MuseSans = Typeface.createFromAsset(gameInit.getAssets(), "fonts/MuseoSans_500.otf");
+    	oppCreLeft.setTypeface(MuseSans);
     	
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
@@ -1055,6 +1062,8 @@ public class GameLoopGUI {
 	        		 playerScore = msg.arg1;
 	        		 gameInit.showDialog(COMPARE_PLAYERS);
 	        		 break;
+	        	 case OPP_CREATURELEFT:
+	        	 	 oppCreLeft.setText("Your opponent has " + msg.arg1 + "enemies left");
 	        	 case SETMULTIPLAYERVISIBLE:
     				lessHealthButton.setVisibility(View.VISIBLE);
     			    enemyFastButton.setVisibility(View.VISIBLE);
