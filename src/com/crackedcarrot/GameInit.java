@@ -25,7 +25,10 @@ import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
-
+	
+		// DEMO. Is this a demo-release? Only let the player play on 1 map.
+	boolean demo = false;
+	
 	public GameLoop     gameLoop;
 	public MultiplayerGameLoop gLoop = null;
     public SurfaceView  mGLSurfaceView;
@@ -175,7 +178,7 @@ public class GameInit extends Activity {
         
         mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
-        if (mapChoice == 1) {
+        if (mapChoice == 1 || demo == true) {
         	gameMap = mapLoader.readLevel("level1");
         } else if (mapChoice == 2) {
         	gameMap = mapLoader.readLevel("level2");

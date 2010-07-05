@@ -36,6 +36,9 @@ import com.crackedcarrot.GameInit;
  */
 public class MapOp extends Activity implements ViewFactory {
 	
+		// DEMO. Only let the player play on Normal difficulty.
+	boolean demo = false;
+	
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected;
@@ -151,24 +154,30 @@ public class MapOp extends Activity implements ViewFactory {
        	radioNormal.setTypeface(face);
         radioHard = (RadioButton) findViewById(R.id.radioHard);
        	radioHard.setTypeface(face);
-
-        radioEasy.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		difficulty = 0;
-        		setRadioButtons(0);
-			}
-
-        });
+       	
+       		// DEMO. Only let people play on Normal in the demo-release.
+       	if (demo == true) {
+       		radioEasy.setEnabled(false);
+       		radioHard.setEnabled(false);
+       	} else {
+	        radioEasy.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		difficulty = 0;
+	        		setRadioButtons(0);
+				}
+	
+	        });
+	        radioHard.setOnClickListener(new OnClickListener() {
+	        	public void onClick(View v) {
+	        		difficulty = 2;
+	        		setRadioButtons(2);
+				}
+	        });  		
+       	}
         radioNormal.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		difficulty = 1;
         		setRadioButtons(1);
-			}
-        });
-        radioHard.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		difficulty = 2;
-        		setRadioButtons(2);
 			}
         });
 
