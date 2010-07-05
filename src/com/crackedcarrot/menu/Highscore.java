@@ -103,6 +103,10 @@ public class Highscore extends Activity {
     
     
     private void show() {
+    	
+    		// Forget any previous instances of scoreninja.
+    	scoreNinjaAdapter = null;
+    	
         if (mapSelected == 1) {
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
         } else if (mapSelected == 2) {
@@ -115,9 +119,8 @@ public class Highscore extends Activity {
     }
 
     
-    public OnItemSelectedListener gItemSelectedHandler = new
-    OnItemSelectedListener() {
-       //@Override
+    public OnItemSelectedListener gItemSelectedHandler = new OnItemSelectedListener() {
+       
         public void onItemSelected(AdapterView<?> parent, View v, int _position, long id) {
      	   _position =  _position%3;
      	   switch(_position){
@@ -133,15 +136,14 @@ public class Highscore extends Activity {
  			}
  			
         }
-         //@Override
-         public void onNothingSelected(AdapterView<?> arg0) {
-             // TODO Auto-generated method stub
-         }
+         
+        public void onNothingSelected(AdapterView<?> arg0) {
+        	// nothing.
+        }
+        
      };
      
-     
-     private class ImageAdapter extends BaseAdapter 
-     {
+     private class ImageAdapter extends BaseAdapter {
          private Context context;
          //private int itemBackground;
          public int position;
@@ -154,7 +156,6 @@ public class Highscore extends Activity {
              y = (int) (165 * getResources().getDisplayMetrics().density);
          }
   
-         //---returns the number of images---
          public int getCount() {
          	return 1000;
          }
@@ -167,17 +168,16 @@ public class Highscore extends Activity {
              return position%3;
          }
   
-         //---returns an ImageView view---
-         public View getView(int position, View convertView, ViewGroup parent)
-         {
+         public View getView(int position, View convertView, ViewGroup parent) {
          	this.position = position%3;
          	ImageView imageView = new ImageView(context);
-             imageView.setImageBitmap(mmaps[this.position]);
-             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-             imageView.setLayoutParams(new Gallery.LayoutParams(x,y));
-             imageView.setBackgroundResource(R.drawable.xml_gallery);
-             return imageView;
+            imageView.setImageBitmap(mmaps[this.position]);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setLayoutParams(new Gallery.LayoutParams(x,y));
+            imageView.setBackgroundResource(R.drawable.xml_gallery);
+            return imageView;
          }
-    }
+    
+     }
     
 }

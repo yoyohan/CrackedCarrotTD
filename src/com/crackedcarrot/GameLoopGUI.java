@@ -89,7 +89,6 @@ public class GameLoopGUI {
     public final int DIALOG_NEXTLEVEL_ID = 1;
     public final int DIALOG_WON_ID       = 2;
     public final int DIALOG_LOST_ID      = 3;
-    public final int DIALOG_HIGHSCORE_ID = 4;
            final int DIALOG_QUIT_ID	     = 5;
     public final int DIALOG_TOWERINFO_ID = 6;
            final int DIALOG_PAUSE_ID     = 7;
@@ -965,13 +964,6 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case DIALOG_LOST_ID:
 	        		 gameInit.showDialog(DIALOG_LOST_ID);
-	        		 break;
-	        	 case DIALOG_HIGHSCORE_ID:
-	        		 SharedPreferences settings2 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings2.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(gameInit)) {
-	        	    	 	// If ScoreNinja is enabled and installed we show it to the player: 
-	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
-	        	     }
 	        		 break;
 	        		 
 	        	 case GUI_PLAYERMONEY_ID:

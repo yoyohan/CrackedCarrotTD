@@ -3,6 +3,7 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -444,6 +445,13 @@ public class GameLoop implements Runnable {
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
+    	
+		Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
+		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
+		gameFinished.putExtra("score", player.getScore());
+		// Since this is not a multiplayergame we will send 1 to gameinit
+		gui.getGameInit().startActivity(gameFinished);
+    	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
@@ -487,9 +495,6 @@ public class GameLoop implements Runnable {
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
     		waitForDialogClick();
-        	
-        	// Show Ninjahighscore-thingie.
-        	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
     		// !!! MOVED !!! Put this before scoreninja instead!
