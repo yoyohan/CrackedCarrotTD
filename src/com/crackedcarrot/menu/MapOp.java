@@ -5,7 +5,6 @@ import java.io.InputStream;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,7 +27,6 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.crackedcarrot.GameInit;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 /**
  * This class/activity consists of three clickable objects, two buttons that
@@ -107,14 +105,6 @@ public class MapOp extends Activity implements ViewFactory {
         tv = (TextView) this.findViewById(R.id.maptext);
     	Typeface face = Typeface.createFromAsset(this.getAssets(), "fonts/MuseoSans_500.otf");
     	tv.setTypeface(face);
-    	
-		// Handle scoreninja-thingie before starting game.
-    	ScoreNinjaAdapter scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
-		SharedPreferences settings = getSharedPreferences("Options", 0);
-	    if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this) == false) {
-	    		// If ScoreNinja is enabled but not installed we try to install it:
-	    	scoreNinjaAdapter.show();
-	    }
     	
         gallery = (Gallery) findViewById(R.id.gallery1);
         gallery.setAdapter(new ImageAdapter(this));

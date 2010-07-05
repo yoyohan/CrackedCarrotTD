@@ -5,7 +5,6 @@ import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ public class GameFinished extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainmenu_options);
+        setContentView(R.layout.gamefinished);
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -38,9 +37,9 @@ public class GameFinished extends Activity {
         }
         
         
-        TextView score = (TextView) findViewById(R.id.GameFinished_TextView_Score);
-    	score.setTypeface(typefaceSniglet);
-    	score.setText("Final score: " + extras.getInt("score"));
+        TextView tvScore = (TextView) findViewById(R.id.GameFinishedTextViewScore);
+        tvScore.setTypeface(typefaceSniglet);
+        tvScore.setText("Final score: " + extras.getInt("score"));
     }
     
 

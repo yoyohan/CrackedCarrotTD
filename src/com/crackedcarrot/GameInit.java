@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -24,7 +23,6 @@ import com.crackedcarrot.menu.R;
 import com.crackedcarrot.multiplayer.MultiplayerGameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
 

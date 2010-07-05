@@ -47,6 +47,10 @@
     		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
     		android:screenOrientation="portrait"
     		android:configChanges="keyboardHidden|orientation" />
+    		
+    	<activity
+    		android:name="com.crackedcarrot.GameFinished"
+    		android:screenOrientation="portrait" />
 
     	<activity android:name="com.crackedcarrot.multiplayer.MultiplayerOp"
 			android:screenOrientation="portrait" />
