@@ -46,6 +46,12 @@ public class GameFinished extends Activity {
 	    	scoreNinjaAdapter.show();
 	    }
 	    
+	    ImageView imageTitle = (ImageView) findViewById(R.id.GameFinishedImageViewTitle);
+	    if (win)
+	    	imageTitle.setImageResource(R.drawable.defeat);
+	    else
+	    	imageTitle.setImageResource(R.drawable.victory);
+
 	    
 	    ImageView image = (ImageView) findViewById(R.id.GameFinishedImageViewImage);
 	    if (win)
