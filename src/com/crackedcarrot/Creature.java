@@ -2,6 +2,7 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import com.crackedcarrot.menu.R;
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -20,6 +21,9 @@ public class Creature extends Sprite{
 	private int yoffset;
 	// A creatures health
     protected float health;
+    //Is this creature dead USED BY ALBIN
+    private boolean dead;
+    private Sprite healthBar;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -36,8 +40,6 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
-    //Is this creature dead USED BY ALBIN
-    private boolean dead;
     // All creatures are dead:
     private boolean allDead = false;
     // Creature special abilty
@@ -114,6 +116,7 @@ public class Creature extends Sprite{
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
 		this.tracker = tracker;
+		this.healthBar = new Sprite(R.drawable.healthbar, Sprite.HEALTHBAR, 0);
 	}
 
 	/**
@@ -124,6 +127,7 @@ public class Creature extends Sprite{
 	 */
 	public void damage(float dmg, int sound){
 		if (health > 0) {
+			healthBar.draw = true;
 			dmg = health >= dmg ? dmg : health; 
 			health -= dmg;
 			GL.updateCreatureProgress(dmg);
@@ -221,7 +225,8 @@ public class Creature extends Sprite{
     			trackerY = tmp.y;
     		}
     			
-    		
+    		this.healthBar.x = this.x;
+    		this.healthBar.y = this.y;
 		}
 	}
 
@@ -249,6 +254,7 @@ public class Creature extends Sprite{
 	 */
 	private void die() {
 		this.dead = true;
+		this.healthBar.draw = false;
 		setCurrentTexture(this.mDeadTextureData);
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
@@ -604,7 +610,15 @@ public class Creature extends Sprite{
 	 * @return health
 	 */
 	public float getHealth(){ return this.health; }
+
+	public Sprite getHealthBar() {
+		return healthBar;
+	}
 	
+	public void setHealthBar(Sprite sprite) {
+		this.healthBar = sprite;
+		
+	}
 	
 	// If a creature is have a special ability we also want him to change color
 	public void setCreatureSpecials(boolean fast, boolean fireResistant,boolean frostResistant,boolean poisonResistant) {

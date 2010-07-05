@@ -9,10 +9,10 @@ enum spriteType {
 	BACKGROUND = 0,
 	EFFECT     = 1,
 	CREATURE   = 2,
-	SHOT       = 3,
-	OVERLAY    = 4,
-	TOWER      = 5,
-	UI         = 6
+	HEALTHBAR  = 3,
+	SHOT       = 4,
+	OVERLAY    = 5,
+	TOWER      = 6,
 };
 
 typedef struct {
@@ -48,18 +48,10 @@ typedef struct {
 
 } GLSprite;
 
-typedef struct {
-    GLSprite screen;
-    GLfloat r,g,b;
-} loadingScreen;
-
 //pointers to arrays of sprites and the length of these arrays.
 
 int noOfSprites[7];
 GLSprite* renderSprites[7];
-
-//The loadingscreen
-loadingScreen lScreen;
 
 //Array with pointers to textuerData structures for saveing all data related
 //to a certain textures
