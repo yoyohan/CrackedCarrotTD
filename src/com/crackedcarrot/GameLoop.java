@@ -3,6 +3,7 @@ package com.crackedcarrot;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -330,7 +331,15 @@ public class GameLoop implements Runnable {
 					}
     			}
 
-
+    			// Is the tower a Super-upgraded tower?
+    				// (we dont need sanity checking here, unless the game corrupts itself this cannot be abused)
+    			if (Integer.parseInt(tower[7]) == 1) {
+    			    superupgrade_teleport = true;
+    			    t.upgradeSuperAbility(10000);
+    			} else if (Integer.parseInt(tower[7]) == 2) {
+    				t.upgradeSuperAbility(10000);
+    			    superupgrade_element = true;
+    			}
     			
 	    	}
 
@@ -436,6 +445,22 @@ public class GameLoop implements Runnable {
         	}
 	    }
     	Log.d("GAMETHREAD", "dead thread");
+
+    		// If we lost or won the game, we load the GameFinished screen.
+    	if (!gui.quitDialogPressed) {
+	    	
+			Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
+			if (lvlNbr >= mLvl.length) {
+				gameFinished.putExtra("win", true);
+			} else {
+				gameFinished.putExtra("win", false);
+			}
+			gameFinished.putExtra("map", gui.getGameInit().mapChoice);
+			gameFinished.putExtra("score", player.getScore());
+			// Since this is not a multiplayergame we will send 1 to gameinit
+			gui.getGameInit().startActivity(gameFinished);
+    	}
+    	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
     }
@@ -443,7 +468,7 @@ public class GameLoop implements Runnable {
     // Basic function to show score and failure dialog
     public void showYouLost() {
    		// Show the You Lost-dialog.
-    	gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
+    	//gui.sendMessage(gui.DIALOG_LOST_ID, 0, 0);
     	// This is a good time clear all savegame data.
     		// -2 = call the SaveGame-function.
     		// 2  = ask SaveGame to clear all data.
@@ -454,7 +479,7 @@ public class GameLoop implements Runnable {
     	soundManager.playSoundLoose();
     	
 		// Code to wait for the user to click ok on YouLost-dialog.
-		waitForDialogClick();
+		//waitForDialogClick();
     }
     
     public void showYouCompletedWave() {
@@ -466,7 +491,7 @@ public class GameLoop implements Runnable {
         	Log.d("GAMETHREAD", "You have completed this map");
         	
     		// Show the You Won-dialog.
-        	gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
+        	//gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
 
         	// This is a good time clear all savegame data.
     			// -2 = call the SaveGame-function.
@@ -478,10 +503,7 @@ public class GameLoop implements Runnable {
         	soundManager.playSoundVictory();
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
-    		waitForDialogClick();
-        	
-        	// Show Ninjahighscore-thingie.
-        	gui.sendMessage(gui.DIALOG_HIGHSCORE_ID, player.getScore(), 0);
+    		//waitForDialogClick();
         	
     		// Code to wait for the user to click ok on YouWon-dialog.
     		// !!! MOVED !!! Put this before scoreninja instead!
@@ -627,7 +649,8 @@ public class GameLoop implements Runnable {
     			tmp = mScaler.getGridXandY((int)t.x, (int)t.y);
     			//int[] towerUpgrades = t.getUpgradeTypeIndex(this.mTTypes);
     			s = s + t.getTowerType() + "," + (int) tmp.x + "," + (int) tmp.y + "," + t.getTowerTypeId() +
-    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() + "@";
+    			    "," + t.getUpgradeFire() + "," + t.getUpgradeFrost() + "," + t.getUpgradePoison() +
+    			    "," + t.getUpgradeSuper() + "@";
     		}
     	}
     	

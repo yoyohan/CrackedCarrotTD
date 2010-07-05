@@ -23,8 +23,6 @@ public class Options extends Activity {
 	private Button button2;
 	private Button button3;
 
-    private ScoreNinjaAdapter scoreNinjaAdapter;
-
 	
 	/** Called when the activity is first created. */
     @Override
@@ -34,9 +32,6 @@ public class Options extends Activity {
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-    	// Register on ScoreNinja.
-        scoreNinjaAdapter = new ScoreNinjaAdapter(this, "crackedcarrotd", "25912218B4FA767CCBE9F34735C93589");
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
@@ -46,6 +41,7 @@ public class Options extends Activity {
         
         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Sniglet.ttf");
         
+        	// Enable/disable sounds during the game.
         button1 = (Button) findViewById(R.id.MainMenuOptionsButton1);
         button1.setTypeface(face);
         button1.setOnClickListener(new OnClickListener() {
@@ -58,10 +54,10 @@ public class Options extends Activity {
         		}
         	}
         });
-        	// Update the Sound on/off image.
+        	// Update the sound-text
         setSound(optionsSound);
 
-        
+        	// Enable/disable Highscore.
         button2 = (Button) findViewById(R.id.MainMenuOptionsButton2);
         button2.setTypeface(face);
         button2.setOnClickListener(new OnClickListener() {
@@ -74,7 +70,7 @@ public class Options extends Activity {
         		}
         	}
         });
-        	// Update highscore-image
+        	// Update highscore-text
         setHighscore(optionsHighscore);
 
         
@@ -91,18 +87,11 @@ public class Options extends Activity {
         		}
         	}
         });
-        	// Update highscore-image
+        	// Update nextlevel-text
         setNextLevel(optionsNextLevel);
         
         
-        Button buttonSave = (Button) findViewById(R.id.MainMenuOptionsButtonOk);
-        buttonSave.setTypeface(face);
-        buttonSave.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		setSave();
-        	}
-        });
-        
+        	// Show the highscore-activity.
         Button HighscoreButton = (Button) findViewById(R.id.MainMenuOptionsButton4);
         HighscoreButton.setTypeface(face);
         HighscoreButton.setOnClickListener(new OnClickListener() {
@@ -111,13 +100,17 @@ public class Options extends Activity {
         		startActivity(Highscore);
         	}
         });
-    }
+        
+        
+        	// Save everything and return to mainmenu.
+        Button buttonSave = (Button) findViewById(R.id.MainMenuOptionsButtonOk);
+        buttonSave.setTypeface(face);
+        buttonSave.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		setSave();
+        	}
+        });
 
-    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      scoreNinjaAdapter.onActivityResult(
-          requestCode, resultCode, data);
     }
 
     

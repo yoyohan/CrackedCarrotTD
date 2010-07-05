@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -24,10 +23,12 @@ import com.crackedcarrot.menu.R;
 import com.crackedcarrot.multiplayer.MultiplayerGameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerService;
 import com.crackedcarrot.textures.TextureLibraryLoader;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class GameInit extends Activity {
-
+	
+		// DEMO. Is this a demo-release? Only let the player play on 1 map.
+	boolean demo = false;
+	
 	public GameLoop     gameLoop;
 	public MultiplayerGameLoop gLoop = null;
     public SurfaceView  mGLSurfaceView;
@@ -37,6 +38,9 @@ public class GameInit extends Activity {
     public  UIHandler   hudHandler;
     private MapLoader   mapLoader;
     private SoundManager soundManager;
+    
+    	// GameFinished wants this to determine highscores.
+    public int          mapChoice;
     
 
     ///////////////// Multiplayer ////////////////////////////
@@ -58,7 +62,7 @@ public class GameInit extends Activity {
     }
     //////////////////////////////////////////////////////////
 
-    public ScoreNinjaAdapter scoreNinjaAdapter;
+    //public ScoreNinjaAdapter scoreNinjaAdapter;
 
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
@@ -135,7 +139,7 @@ public class GameInit extends Activity {
         // Fetch information from previous intent. The information will contain the
         // map and difficulty decided by the player.
         Bundle extras  = getIntent().getExtras();
-        int mapChoice = 0;
+        mapChoice = 0;
         int difficulty = 0;
         int wave = 0;
         
@@ -144,8 +148,6 @@ public class GameInit extends Activity {
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         	wave =  extras.getInt("com.crackedcarrot.menu.wave");
-        } else {
-        	Log.d("GAMEINIT", "WTF?! Extras == null, please tell fredrik how you did this?!");
         }
         
         	// Are we resuming an old saved game?
@@ -176,18 +178,14 @@ public class GameInit extends Activity {
         
         mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
-        if (mapChoice == 1) {
+        if (mapChoice == 1 || demo == true) {
         	gameMap = mapLoader.readLevel("level1");
-        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
         } else if (mapChoice == 2) {
         	gameMap = mapLoader.readLevel("level2");
-        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
         } else if (mapChoice == 3) {
         	gameMap = mapLoader.readLevel("level3");
-        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
         } else if (mapChoice == 4) {
         	gameMap = mapLoader.readLevel("level4");
-        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
         }
         
         NativeRender nativeRenderer = new NativeRender(this, 
@@ -264,15 +262,6 @@ public class GameInit extends Activity {
         // Start GameLoop
         gameLoopThread.start();
     }
-    
-    
-    	// According to ScoreNinja we need this here, so I left it in:
-    // Unfortunate API, but you must notify ScoreNinja onActivityResult.
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      scoreNinjaAdapter.onActivityResult(
-          requestCode, resultCode, data);
-    }
 
     
     public void onConfigurationChanged(Configuration newConfig) {
@@ -287,9 +276,6 @@ public class GameInit extends Activity {
     protected void onPause() {
     	super.onPause();
     	Log.d("GAMEINIT", "onPause");
-    	
-    	Log.d("GAMEINIT", "OnPause: (we lost focus!) calling finish() on gameinit to kill everything.");
-    	this.finish();
     }
     
     protected void onRestart() {
