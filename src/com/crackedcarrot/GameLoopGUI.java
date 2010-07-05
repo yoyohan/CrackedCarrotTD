@@ -1,7 +1,6 @@
 package com.crackedcarrot;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +28,6 @@ import com.crackedcarrot.UI.UIHandler;
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.menu.InstructionWebView;
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 	/*
 	 * 
@@ -47,9 +45,7 @@ public class GameLoopGUI {
 	private Dialog dialogNextLevel = null;
 	private Dialog dialogPause = null;
 	private Dialog dialogQuit = null;
-	private Dialog dialogWon = null;
-	private Dialog dialogLost = null;
-	private ProgressDialog dialogWait = null;
+	private Dialog dialogWait = null; //ProgressDialog before
 	private Dialog dialogTowerInfo = null;
 	private Dialog dialogScore = null;
 	private Dialog dialogMpWon = null;
@@ -58,12 +54,15 @@ public class GameLoopGUI {
 	
 	private boolean multiplayerMode;
 	
+	public boolean  quitDialogPressed = false;
+	
     private int          healthBarState = 3;
     private int          healthProgress = 100;
     //private int          resume;
     private int			 playerScore;
     private int			 opponentScore;
     public  int          towerInfo;
+    private int			 opponentEnLeft;
     
     private WebView mWebView; // used by TowerInfo-dialog to display html-pages.
 
@@ -79,6 +78,7 @@ public class GameLoopGUI {
     private TextView     playerHealthView;
     private TextView     scoreCounter;
     private TextView	 lvlNbr;
+    private TextView	 enemyLeft;
     private UIHandler	 hud;
 
     // Used when we ask for the instruction view
@@ -87,9 +87,6 @@ public class GameLoopGUI {
     
     	// For readability-reasons.
     public final int DIALOG_NEXTLEVEL_ID = 1;
-    public final int DIALOG_WON_ID       = 2;
-    public final int DIALOG_LOST_ID      = 3;
-    public final int DIALOG_HIGHSCORE_ID = 4;
            final int DIALOG_QUIT_ID	     = 5;
     public final int DIALOG_TOWERINFO_ID = 6;
            final int DIALOG_PAUSE_ID     = 7;
@@ -99,6 +96,7 @@ public class GameLoopGUI {
     public final int MULTIPLAYER_WON     = 11;
     public final int MULTIPLAYER_LOST    = 12;
     public final int COMPARE_PLAYERS     = 13;
+    public final int OPP_CREATURELEFT	 = 14;
     
     public final int GUI_PLAYERMONEY_ID     = 20;
     public final int GUI_PLAYERHEALTH_ID    = 21;
@@ -523,58 +521,30 @@ public class GameLoopGUI {
 	        
 	        return dialogTowerInfo;
 	    	
-	    case DIALOG_WON_ID:
-	    	dialogWon = new Dialog(gameInit,R.style.NextlevelTheme);
-	    	dialogWon.setContentView(R.layout.levelwon);
-	    	dialogWon.setCancelable(false);
-	    	
-	    	// Score
-	    	TextView textViewWonScore = (TextView) dialogWon.findViewById(R.id.LevelWon_Score);
-	    	textViewWonScore.setText("Score: " + gameInit.gameLoop.player.getScore());
-	    	
-	    	// First button
-	    	Button buttonWon = (Button) dialogWon.findViewById(R.id.LevelWon_OK);
-	        buttonWon.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		gameInit.gameLoop.dialogClick();
-	        	}
-	        });
-	        return dialogWon;
-	    	//break;
-	    	
-	    case DIALOG_LOST_ID:
-	    	dialogLost = new Dialog(gameInit,R.style.NextlevelTheme);
-	    	dialogLost.setContentView(R.layout.levellost);
-	    	dialogLost.setCancelable(false);
-	    	
-	    	// Score
-	    	TextView textViewLostScore = (TextView) dialogLost.findViewById(R.id.LevelLost_Score);
-	    	textViewLostScore.setText("Score: " + gameInit.gameLoop.player.getScore());
-	    	
-	    	// First button
-	    	Button buttonLost = (Button) dialogLost.findViewById(R.id.LevelLost_OK);
-	        buttonLost.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {
-	        		gameInit.gameLoop.dialogClick();
-	        	}
-	        });
-	        return dialogLost;
-	    	//break;
-	    	
 	    case DIALOG_QUIT_ID:
 	    	dialogQuit = new Dialog(gameInit,R.style.NextlevelTheme);
 	    	dialogQuit.setContentView(R.layout.levelquit);
 	    	dialogQuit.setCancelable(true);
+
+	    	Typeface faceSniglet = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
+	    	
+	    	// Text
+	    	TextView quitTv = (TextView) dialogQuit.findViewById(R.id.LevelQuit_Text);
+	    	quitTv.setTypeface(faceSniglet);
+	    	
 	    	// First button
 	    	Button quitYes = (Button) dialogQuit.findViewById(R.id.LevelQuit_Yes);
+	    	quitYes.setTypeface(faceSniglet);
 	        quitYes.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {
+	        		quitDialogPressed = true;
 	        		gameInit.finish();
 	        	}
 	        });
 	    	
 	    	// Second button
 	    	Button quitNo = (Button) dialogQuit.findViewById(R.id.LevelQuit_No);
+	    	quitNo.setTypeface(faceSniglet);
 	    	quitNo.setOnClickListener(
 	    			new View.OnClickListener() {
 	    				public void onClick(View v) {
@@ -614,7 +584,7 @@ public class GameLoopGUI {
 	    			}
 	    		});
 	    	
-	    	// Continue button
+	    	// Sound on/off button
 	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
 	    	face = Typeface.createFromAsset(gameInit.getAssets(), "fonts/Sniglet.ttf");
 	    	buttonPauseSound.setTypeface(face);
@@ -683,11 +653,18 @@ public class GameLoopGUI {
 	    	return dialogPause;
 	    	
 	    case WAIT_OPPONENT_ID:
+	    	dialogWait = new Dialog(gameInit,R.style.NextlevelTheme);
+	        dialogWait.setContentView(R.layout.multiplayer_opponent);
+	    	dialogWait.setCancelable(false);
+	    	return dialogWait;
+	    	
+	    	/*
 	    	dialogWait = new ProgressDialog(gameInit);
 	    	dialogWait.setMessage("Waiting for opponent...");
 	    	dialogWait.setIndeterminate(true);
 	    	dialogWait.setCancelable(false);
 	    	return dialogWait;
+	    	*/
 	    	
 	    case LEVEL_SCORE:
 	    	dialogScore = new Dialog(gameInit,R.style.NextlevelTheme);
@@ -894,7 +871,13 @@ public class GameLoopGUI {
 		    wL.setText(chS);
 		    CharSequence chS2 = Html.fromHtml(compareScores);
 		    cS.setText(chS2);
-	    	break;		    
+	    	break;
+	    case WAIT_OPPONENT_ID:
+	    	enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
+	    	String enLeft = "Your opponent has " + this.opponentEnLeft + " enemies left.";
+	    	CharSequence chaS = Html.fromHtml(enLeft);
+	    	enemyLeft.setText(chaS);
+	    	break;
 	    case DIALOG_PAUSE_ID:
 	    	final Button buttonPauseSound = (Button) dialogPause.findViewById(R.id.LevelPause_Sound);
     		// And update the image to match the current setting.
@@ -949,19 +932,6 @@ public class GameLoopGUI {
 	        	    	 	// Simulate clicking the dialog.
 	        	    	 Log.d("GAMELOOPGUI", "Simulate next level dialog");
 	        	    	 gameInit.gameLoop.dialogClick();
-	        	     }
-	        		 break;
-	        	 case DIALOG_WON_ID:
-	        		 gameInit.showDialog(DIALOG_WON_ID);
-	        		 break;
-	        	 case DIALOG_LOST_ID:
-	        		 gameInit.showDialog(DIALOG_LOST_ID);
-	        		 break;
-	        	 case DIALOG_HIGHSCORE_ID:
-	        		 SharedPreferences settings2 = gameInit.getSharedPreferences("Options", 0);
-	        	     if (settings2.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(gameInit)) {
-	        	    	 	// If ScoreNinja is enabled and installed we show it to the player: 
-	        	    	 gameInit.scoreNinjaAdapter.show(msg.arg1);
 	        	     }
 	        		 break;
 	        		 
@@ -1048,6 +1018,9 @@ public class GameLoopGUI {
 	        		 playerScore = msg.arg1;
 	        		 gameInit.showDialog(COMPARE_PLAYERS);
 	        		 break;
+	        	 case OPP_CREATURELEFT:
+	        	 	 opponentEnLeft = msg.arg1;
+	        	 	 enemyLeft.setText("Your opponent has " + opponentEnLeft + " enemies left.");
 	        	 case SETMULTIPLAYERVISIBLE:
     				lessHealthButton.setVisibility(View.VISIBLE);
     			    enemyFastButton.setVisibility(View.VISIBLE);

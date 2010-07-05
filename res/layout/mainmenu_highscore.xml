@@ -46,24 +46,23 @@
     		android:orientation="vertical"
     		android:gravity="center"
     		android:layout_width="fill_parent"
-    		android:layout_height="150dp" >
+    		android:layout_height="120dp" >
 
 					<Button
 						android:background="@drawable/xml_button_highscore"
 						android:id="@+id/MainMenuHighscoreButtonShow"
 						android:layout_width="140dp"
 						android:layout_height="38dp"
-	    				android:scaleType="fitXY"
-			        />
+	    				android:scaleType="fitXY"/>
 			            
-					<Button
-						android:text="Back"
-						android:background="@drawable/xml_button_pause"
+			        <Button
 						android:id="@+id/MainMenuHighscoreButtonOk"
-			    		android:textSize="22sp"		
-			            android:layout_width="fill_parent"
-			            android:layout_height="fill_parent"
-			            android:layout_weight="1" />
+			    		android:layout_width="120dp"
+						android:layout_height="38dp"
+	    				android:scaleType="fitXY"
+						android:background="@drawable/xml_button_menu_back"
+						android:layout_marginTop="20dp"
+						/>
     		
     	</LinearLayout>
 		

@@ -806,6 +806,16 @@ public class Tower extends Sprite {
 	public int getUpgradeFire() {
 		return upgradeFire;
 	}
+	
+	public int getUpgradeSuper() {
+		if (hasSuper_teleport) {
+			return 1;
+		} else if (hasSuper_element) {
+			return 2;
+		}
+		
+		return 0;
+	}
 
 	/**
 	 * @param upgradeFrost the upgradeFrost to set
