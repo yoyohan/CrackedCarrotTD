@@ -12,12 +12,13 @@
         android:layout_weight="1">
 
 		<ImageView
-			android:src="@drawable/bunny_pink_alive"
+			android:src="@drawable/level_easy"
 			android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 		<TextView
+			android:id="@+id/LevelQuit_Text"
 			android:text="Do you really want to quit?"
 			android:textColor="#000000"
 			android:textStyle="bold"
