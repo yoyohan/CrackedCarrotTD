@@ -11,10 +11,10 @@ public class Sprite{
 	public	static final int BACKGROUND = 0;
 	public  static final int EFFECT		= 1;
 	public 	static final int CREATURE	= 2;
-	public  static final int HEALTHBAR  = 3;
-	public 	static final int SHOT		= 4;
-	public  static final int OVERLAY	= 5;
-	public	static final int TOWER		= 6;	
+	public 	static final int SHOT		= 3;
+	public  static final int OVERLAY	= 4;
+	public	static final int TOWER		= 5;
+	public  static final int HEALTHBAR  = 6;
 	private int type;
 	private int subType;
     // Position.

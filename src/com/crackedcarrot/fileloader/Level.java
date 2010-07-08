@@ -15,7 +15,7 @@ public class Level extends Creature {
 		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
-		return health;
+		return currentHealth;
 	}
 
 	public void cloneCreature(Creature clone) {
@@ -27,7 +27,8 @@ public class Level extends Creature {
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
 		
-		clone.setHealth(this.health);
+		clone.setCurrentHealth(this.startHealth);
+		clone.setStartHealth(this.startHealth);
 		clone.setVelocity(this.velocity);
 		clone.setWidth(this.getWidth());
 		clone.setHeight(this.getHeight());

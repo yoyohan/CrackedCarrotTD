@@ -19,8 +19,10 @@ public class Creature extends Sprite{
 	private int xoffset;
 	//Variable to move creature up and down
 	private int yoffset;
-	// A creatures health
-    protected float health;
+	// A creatures starting health
+    protected float startHealth;
+	// A creatures current health
+    protected float currentHealth;
     //Is this creature dead USED BY ALBIN
     private boolean dead;
     private Sprite healthBar;
@@ -117,21 +119,30 @@ public class Creature extends Sprite{
 		tmpAnimationTime = (float)randomDouble/2;
 		this.tracker = tracker;
 		this.healthBar = new Sprite(R.drawable.healthbar, Sprite.HEALTHBAR, 0);
+		this.healthBar.r = 0; this.healthBar.g = 1; this.healthBar.b = 0;
 	}
 
 	/**
-	 * Method used to applie damage to this creature.
+	 * Method used to applies damage to this creature.
 	 * Will also send the amount of damage inflicted to 
 	 * the gameloop.
 	 * @param dmg
 	 */
 	public void damage(float dmg, int sound, boolean towerHasTeleport, boolean towerHasRemoveElement){
-		if (health > 0) {
+		if (currentHealth > 0) {
+			dmg = currentHealth >= dmg ? dmg : currentHealth; 
+			currentHealth -= dmg;
 			healthBar.draw = true;
-			dmg = health >= dmg ? dmg : health; 
-			health -= dmg;
+			
+			float fraction = startHealth / this.getNbrOfFrames();
+			fraction = 0.5f + currentHealth/fraction;
+			
+			healthBar.cFrame = this.getNbrOfFrames() - (int) fraction;			
+			healthBar.g -= 0.2f;
+			healthBar.r += 0.2f;
+			
 			GL.updateCreatureProgress(dmg);
-			if(health <= 0){
+			if(currentHealth <= 0){
 				die();
 				soundManager.playSoundRandomDIE();
 			}
@@ -203,10 +214,10 @@ public class Creature extends Sprite{
 		}
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0) {
+		if (draw && currentHealth > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
-			if (health > 0) {
+			if (currentHealth > 0) {
 				move(movement);
 				animate(timeDeltaSeconds);
 			}
@@ -250,8 +261,8 @@ public class Creature extends Sprite{
     			trackerY = tmp.y;
     		}
     			
-    		this.healthBar.x = this.x;
-    		this.healthBar.y = this.y + this.getHeight();
+    		this.healthBar.x = this.x * scale;
+    		this.healthBar.y = this.y * scale + this.getHeight()*scale;
 		}
 	}
 
@@ -412,8 +423,16 @@ public class Creature extends Sprite{
 	 * Setter for health variable
 	 * @param health
 	 */
-	public void setHealth(float health){ this.health = health; }
+	public void setCurrentHealth(float health){ this.currentHealth = health; }
 	
+	public float getStartHealth() {
+		return startHealth;
+	}
+
+	public void setStartHealth(float startHealth) {
+		this.startHealth = startHealth;
+	}
+
 	/**
 	 * Setter for spawndelay. Time between each creature enters the map
 	 * @param delay
@@ -634,7 +653,7 @@ public class Creature extends Sprite{
 	 * Getter for health variable
 	 * @return health
 	 */
-	public float getHealth(){ return this.health; }
+	public float getHealth(){ return this.currentHealth; }
 
 	public Sprite getHealthBar() {
 		return healthBar;

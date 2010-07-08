@@ -300,7 +300,7 @@ public class MultiplayerGameLoop extends GameLoop {
 					mCreatures[z].creatureFast = true;
 					mCreatures[z]
 							.setVelocity(mCreatures[z].getVelocity() * 1.5f);
-					mCreatures[z].setHealth(mLvl[lvlNbr].getHealth() * 4);
+					mCreatures[z].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 					updateCreatureProgress(0);
 					break;
 				}
@@ -314,7 +314,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		if (mCreatures[tmp].draw && mCreatures[tmp].getHealth() > 0) {
 			mCreatures[tmp].creatureFast = true;
 			mCreatures[tmp].setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
-			mCreatures[tmp].setHealth(mLvl[lvlNbr].getHealth() * 4);
+			mCreatures[tmp].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 			updateCreatureProgress(0);
 		} else {
 			incEnSp(1);
