@@ -81,9 +81,9 @@ public class MultiplayerGameLoop extends GameLoop {
 	public void run() {
 		super.run();
 		Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
-		//String stopMsg = "Dead";
-		//byte[] sendStop = stopMsg.getBytes();
-		//mMultiplayerService.write(sendStop);
+		String stopMsg = "Dead";
+		byte[] sendStop = stopMsg.getBytes();
+		mMultiplayerService.write(sendStop);
 	}
 
 	// Override
