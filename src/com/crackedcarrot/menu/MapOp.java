@@ -137,7 +137,10 @@ public class MapOp extends Activity implements ViewFactory {
         		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
         		        		
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
-        		StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
+        		if (demo) // If demo we always play map #1.
+        			StartGame.putExtra("com.crackedcarrot.menu.map", 1);
+        		else
+        			StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
         		// Since this is not a multiplayergame we will send 1 to gameinit
         		StartGame.putExtra("com.crackedcarrot.menu.wave", wave);
