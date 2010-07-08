@@ -80,7 +80,7 @@ public class MultiplayerHandler extends Thread {
 	                	readMessage = readMessage.substring(3, msg.arg2);
 	                	Log.d("MULTIPLAYERHANDLER", "Opponents enemies left: " + readMessage);
 	                    opponentEnLeft = Integer.parseInt(readMessage);
-	                    gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_WON, opponentEnLeft, 0);
+	                    gameLoopGui.sendMessage(gameLoopGui.OPP_CREATURELEFT, opponentEnLeft, 0);
 
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
