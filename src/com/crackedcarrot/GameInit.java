@@ -183,8 +183,10 @@ public class GameInit extends Activity {
         	gameMap = mapLoader.readLevel("level3");
         } else if (mapChoice == 4) {
         	gameMap = mapLoader.readLevel("level4");
-        }
-        
+        } else if (mapChoice == 5) {
+    		gameMap = mapLoader.readLevel("level5");
+    	}
+    	
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(gameMap.getTextureFile(),this),
         		hudHandler.getOverlayObjectsToRender());
