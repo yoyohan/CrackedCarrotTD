@@ -15,7 +15,7 @@ public class Level extends Creature {
 		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
-		return currentHealth;
+		return startHealth;
 	}
 
 	public void cloneCreature(Creature clone) {
