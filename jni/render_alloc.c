@@ -28,7 +28,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, 
         
         allocSize = length+1;
         if((texData = malloc(sizeof(textureData)*allocSize)) == NULL){
-            __android_log_print(ANDROID_LOG_DEBUG, "NATIVE ALLOC","MALLOC ERROR in allocTextureBuffers");
+            __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in allocTextureBuffers");
         }
         texDataLength = allocSize;
         __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);

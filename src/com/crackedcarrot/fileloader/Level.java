@@ -1,6 +1,8 @@
 package com.crackedcarrot.fileloader;
 
 import com.crackedcarrot.Creature;
+import com.crackedcarrot.Sprite;
+import com.crackedcarrot.menu.R;
 
 // Class contains level information. Number of creatures creature type etc.
 public class Level extends Creature {
@@ -13,7 +15,7 @@ public class Level extends Creature {
 		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
-		return health;
+		return currentHealth;
 	}
 
 	public void cloneCreature(Creature clone) {
@@ -24,10 +26,20 @@ public class Level extends Creature {
 		clone.creatureFireResistant = this.creatureFireResistant;
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
-		clone.setHealth(this.health);
+		
+		clone.setCurrentHealth(this.startHealth);
+		clone.setStartHealth(this.startHealth);
 		clone.setVelocity(this.velocity);
 		clone.setWidth(this.getWidth());
 		clone.setHeight(this.getHeight());
+		
+		Sprite healthBar = clone.getHealthBar();
+		healthBar.draw = false;
+		healthBar.x = 0;
+		healthBar.y = 0;
+		healthBar.setHeight(8);
+		healthBar.setWidth(this.getWidth());
+		
 		clone.setGoldValue(this.goldValue);
 		clone.draw = false;
 		clone.opacity = 1;

@@ -165,6 +165,15 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		sprites[type] = spriteArray;
 	}
 	
+	public void setSprites(Creature[] creatureArray){
+		sprites[Sprite.CREATURE] = creatureArray;
+		Sprite[] temp = new Sprite[creatureArray.length];
+		for(int i = 0; i < creatureArray.length; i++){
+			temp[i] = creatureArray[i].getHealthBar();
+		}
+		sprites[Sprite.HEALTHBAR] = temp;
+	}
+	
 	/**
 	 * Frees all allocated sprite data in the render.
 	 * this means nothing is left on the screen after this.
