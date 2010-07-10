@@ -41,7 +41,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	protected void initializeLvl() {
 
 		super.initializeLvl();
-
+        this.gui.sendMessage(gui.OPP_CREATURELEFT, mLvl[this.lvlNbr].nbrCreatures, 0);
 		// The dialog showing the players score is shown right after next level
 		// dialog
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
@@ -80,6 +80,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	/** Overriding the run method from super class GameLoop */
 	public void run() {
 		super.run();
+		Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
 		String stopMsg = "Dead";
 		byte[] sendStop = stopMsg.getBytes();
 		mMultiplayerService.write(sendStop);
