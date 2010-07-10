@@ -175,7 +175,7 @@ public class Tower extends Sprite {
 				Creature tmpCreature = tmpData.first;
 				while ((tmpCreature != tmpData.last) && tmpCreature != null) {
 			
-					if(tmpCreature.draw == true && tmpCreature.health > 0){ // Is the creature still alive?
+					if(tmpCreature.draw == true && tmpCreature.currentHealth > 0){ // Is the creature still alive?
 						double distance = Math.sqrt(
 									Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
 									Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
@@ -230,7 +230,7 @@ public class Tower extends Sprite {
 			if (tmpData != null) {
 				Creature tmpCreature = tmpData.first;
 				while ((tmpCreature != tmpData.last) && tmpCreature != null) {
-					if(tmpCreature.draw == true && tmpCreature.health > 0){ // Is the creature still alive?
+					if(tmpCreature.draw == true && tmpCreature.currentHealth > 0){ // Is the creature still alive?
 						double distance = Math.sqrt(
 								Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
 								Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );

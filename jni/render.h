@@ -9,10 +9,10 @@ enum spriteType {
 	BACKGROUND = 0,
 	EFFECT     = 1,
 	CREATURE   = 2,
-	HEALTHBAR  = 3,
-	SHOT       = 4,
-	OVERLAY    = 5,
-	TOWER      = 6,
+	SHOT       = 3,
+	OVERLAY    = 4,
+	TOWER      = 5,
+	HEALTHBAR  = 6
 };
 
 typedef struct {
