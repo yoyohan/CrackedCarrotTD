@@ -63,6 +63,8 @@ public class MapOp extends Activity implements ViewFactory {
     private Bitmap bitmap1;
     private Bitmap bitmap2;
     private Bitmap bitmap3;
+    private Bitmap bitmap4;
+    private Bitmap bitmap5;
     
     /** References to our images */
     private Bitmap[] mmaps = {
