@@ -4,7 +4,7 @@ Total number of levels::30
 Texture animate::mrbabyrabbit_animate
 Texture display::mrbabyrabbit
 Texture dead::mrbabyrabbitdead
-scale::0.8
+scale::0.9
 Wave title::Baby Rabbit
 health::100
 fast level::false
@@ -88,7 +88,7 @@ nbrOfCreaturs::20
 Texture animate::mrmouse_animate
 Texture display::mrmouse
 Texture dead::mrmousedead
-scale::0.8
+scale::0.9
 Wave title::Sneaky Mr Mouse
 health::380
 fast level::false
@@ -284,7 +284,7 @@ nbrOfCreaturs::1
 Texture animate::mrghostrabbit_animate
 Texture display::mrghostrabbit
 Texture dead::mrghostrabbitdead
-scale::0.8
+scale::0.9
 Wave title::Ghostly Mr Rabbit
 health::2650
 fast level::false
@@ -298,7 +298,7 @@ nbrOfCreaturs::20
 Texture animate::mrlion_animate
 Texture display::mrlion
 Texture dead::mrliondead
-scale::0.8
+scale::0.9
 Wave title::Boarish Mr Lion
 health::3150
 fast level::true
@@ -340,7 +340,7 @@ nbrOfCreaturs::20
 Texture animate::misspiggy_animate
 Texture display::misspiggy
 Texture dead::misspiggydead
-scale::0.8
+scale::0.9
 Wave title::Miss Piggy
 health::5050
 fast level::true
@@ -354,7 +354,7 @@ nbrOfCreaturs::20
 Texture animate::mrrabbit_animate
 Texture display::mrrabbit
 Texture dead::mrrabbitdead
-scale::0.8
+scale::0.9
 Wave title::Brutal Mr Rabbit
 health::5900
 fast level::false

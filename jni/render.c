@@ -107,7 +107,7 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 	
 	currTexture = (*env)->GetIntField(env,sprite->object, sprite->textureName);
 	if(currTexture == 0){
-		__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
+		__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
 	}
 			
 	if(currTexture != prevTexture){ 

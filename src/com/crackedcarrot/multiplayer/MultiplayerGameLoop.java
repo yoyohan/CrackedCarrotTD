@@ -41,7 +41,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	protected void initializeLvl() {
 
 		super.initializeLvl();
-
+        this.gui.sendMessage(gui.OPP_CREATURELEFT, mLvl[this.lvlNbr].nbrCreatures, 0);
 		// The dialog showing the players score is shown right after next level
 		// dialog
 		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
@@ -80,6 +80,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	/** Overriding the run method from super class GameLoop */
 	public void run() {
 		super.run();
+		Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
 		String stopMsg = "Dead";
 		byte[] sendStop = stopMsg.getBytes();
 		mMultiplayerService.write(sendStop);
@@ -300,7 +301,7 @@ public class MultiplayerGameLoop extends GameLoop {
 					mCreatures[z].creatureFast = true;
 					mCreatures[z]
 							.setVelocity(mCreatures[z].getVelocity() * 1.5f);
-					mCreatures[z].setHealth(mLvl[lvlNbr].getHealth() * 4);
+					mCreatures[z].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 					updateCreatureProgress(0);
 					break;
 				}
@@ -314,7 +315,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		if (mCreatures[tmp].draw && mCreatures[tmp].getHealth() > 0) {
 			mCreatures[tmp].creatureFast = true;
 			mCreatures[tmp].setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
-			mCreatures[tmp].setHealth(mLvl[lvlNbr].getHealth() * 4);
+			mCreatures[tmp].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 			updateCreatureProgress(0);
 		} else {
 			incEnSp(1);

@@ -197,6 +197,9 @@ public class GameLoopGUI {
     	Typeface MuseoSans = Typeface.createFromAsset(gameInit.getAssets(), "fonts/MuseoSans_500.otf");
     	nrCreText.setTypeface(MuseoSans);
     	
+    	//Create text view for enemies left in multiplayer
+    	enemyLeft = (TextView) gameInit.findViewById(R.id.enemyText);
+    	
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
     	counterText.setTypeface(MuseoSans);
@@ -873,7 +876,6 @@ public class GameLoopGUI {
 		    cS.setText(chS2);
 	    	break;
 	    case WAIT_OPPONENT_ID:
-	    	enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
 	    	String enLeft = "Your opponent has " + this.opponentEnLeft + " enemies left.";
 	    	CharSequence chaS = Html.fromHtml(enLeft);
 	    	enemyLeft.setText(chaS);

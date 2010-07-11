@@ -160,7 +160,7 @@ public class GameLoop implements Runnable {
 		//END UGLY HACK!!
 		
 		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
-		renderHandle.setSprites(mCreatures, Sprite.CREATURE);
+		renderHandle.setSprites(mCreatures);
 		renderHandle.setSprites(mTower, Sprite.TOWER);
 		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);

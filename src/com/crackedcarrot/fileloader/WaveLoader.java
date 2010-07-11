@@ -102,7 +102,7 @@ public class WaveLoader {
 							break;
 						case 7:
 			            	int tmpHealth = Integer.parseInt(tmpStr[1].trim());
-			            	tmpLvl.setHealth((int)(tmpHealth * gameDifficulty));
+			            	tmpLvl.setStartHealth((int)(tmpHealth * gameDifficulty));
 							break;
 						case 8:
 			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
