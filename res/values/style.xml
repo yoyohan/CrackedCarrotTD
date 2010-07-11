@@ -3,7 +3,7 @@
   <!-- Base application theme is the dialog theme. -->
   <style name="NextlevelTheme" parent="@android:style/Theme.Dialog">
 	<item name="android:windowNoTitle">true</item>
-	<item name="android:windowBackground">@drawable/test</item>
+	<item name="android:windowBackground">@drawable/dialog_back</item>
 	<item name="android:backgroundDimEnabled">true</item>
 	<item name="android:layout_width">200dp</item> 
   </style>
@@ -11,7 +11,7 @@
   <!-- This theme is for the dialog showing the "how to play"-instructions -->
   <style name="InstructionDialog" parent="@android:style/Theme.Dialog">
 	<item name="android:windowNoTitle">true</item>
-	<item name="android:windowBackground">@drawable/test</item>
+	<item name="android:windowBackground">@drawable/dialog_back</item>
 	<item name="android:backgroundDimEnabled">true</item>
 	<item name="android:layout_width">200dp</item>
   </style>
