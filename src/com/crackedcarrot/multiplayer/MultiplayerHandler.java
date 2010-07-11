@@ -56,6 +56,9 @@ public class MultiplayerHandler extends Thread {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuff);
  	                readMessage = readMessage.substring(0, msg.arg2);
+ 	                
+ 	                Log.d("MULTIPLAYER!", "Message: " + readMessage);
+ 	                
  	                // Level synchronization
  	                if(readMessage.equals(SYNCH_LEVEL)){
  	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
@@ -68,13 +71,6 @@ public class MultiplayerHandler extends Thread {
 	                	Log.d("YYYYY", readMessage);
 	                    mpGL.setOpponentLife(false);
 	                }
-	                // The data consists of the opponents score
-	                else if((readMessage.substring(0, 5)).equals(PLAYER_SCORE)){
-	                	readMessage = readMessage.substring(5, msg.arg2);
-	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
-	                     opponentScore = Integer.parseInt(readMessage);
-	                     gameLoopGui.setOpponentScore(opponentScore);
-	                }
  	                // The data consists of the opponents enemies left
 	                else if((readMessage.substring(0, 3)).equals(OPP_CRE_LEFT)){
 	                	readMessage = readMessage.substring(3, msg.arg2);
@@ -82,6 +78,13 @@ public class MultiplayerHandler extends Thread {
 	                    opponentEnLeft = Integer.parseInt(readMessage);
 	                    gameLoopGui.sendMessage(gameLoopGui.OPP_CREATURELEFT, opponentEnLeft, 0);
 
+	                }
+	                // The data consists of the opponents score
+	                else if((readMessage.substring(0, 5)).equals(PLAYER_SCORE)){
+	                	readMessage = readMessage.substring(5, msg.arg2);
+	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
+	                     opponentScore = Integer.parseInt(readMessage);
+	                     gameLoopGui.setOpponentScore(opponentScore);
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
 	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");

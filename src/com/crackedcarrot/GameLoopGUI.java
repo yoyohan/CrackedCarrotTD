@@ -52,7 +52,7 @@ public class GameLoopGUI {
 	private Dialog dialogMpLost = null;
 	private Dialog dialogCompare = null;
 	
-	private boolean multiplayerMode;
+	public boolean multiplayerMode;
 	
 	public boolean  quitDialogPressed = false;
 	
@@ -198,7 +198,8 @@ public class GameLoopGUI {
     	nrCreText.setTypeface(MuseoSans);
     	
     	//Create text view for enemies left in multiplayer
-    	enemyLeft = (TextView) gameInit.findViewById(R.id.enemyText);
+    		//Moved to onCreateDialog!!
+    	//enemyLeft = (TextView) gameInit.findViewById(R.id.enemyText);
     	
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
@@ -659,6 +660,9 @@ public class GameLoopGUI {
 	    	dialogWait = new Dialog(gameInit,R.style.NextlevelTheme);
 	        dialogWait.setContentView(R.layout.multiplayer_opponent);
 	    	dialogWait.setCancelable(false);
+	    	
+	    	enemyLeft = (TextView) dialogWait.findViewById(R.id.enemyText);
+	    	
 	    	return dialogWait;
 	    	
 	    	/*
@@ -1022,7 +1026,9 @@ public class GameLoopGUI {
 	        		 break;
 	        	 case OPP_CREATURELEFT:
 	        	 	 opponentEnLeft = msg.arg1;
-	        	 	 enemyLeft.setText("Your opponent has " + opponentEnLeft + " enemies left.");
+	        	 	 if (enemyLeft != null)
+	        	 		 enemyLeft.setText("Your opponent has " + opponentEnLeft + " enemies left.");
+	        	 	 break;
 	        	 case SETMULTIPLAYERVISIBLE:
     				lessHealthButton.setVisibility(View.VISIBLE);
     			    enemyFastButton.setVisibility(View.VISIBLE);
