@@ -65,6 +65,7 @@ public class MapOp extends Activity implements ViewFactory {
     private Bitmap bitmap3;
     private Bitmap bitmap4;
     private Bitmap bitmap5;
+    private Bitmap bitmap6;
     
     /** References to our images */
     private Bitmap[] mmaps = {
@@ -73,7 +74,7 @@ public class MapOp extends Activity implements ViewFactory {
     		bitmap3,
     		bitmap4,
     		bitmap5,
-
+    		bitmap6,
     };
     
     /** Called when the activity is first created. */
@@ -99,6 +100,8 @@ public class MapOp extends Activity implements ViewFactory {
             mmaps[3] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map5);
             mmaps[4] = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.map6);
+            mmaps[5] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
                 is.close();
@@ -121,7 +124,7 @@ public class MapOp extends Activity implements ViewFactory {
         gallery = (Gallery) findViewById(R.id.gallery1);
         gallery.setAdapter(new ImageAdapter(this));
         gallery.setOnItemSelectedListener(gItemSelectedHandler);
-        gallery.setSelection((gallery.getCount()/2), true);
+        gallery.setSelection((gallery.getCount()/2)-2, true);
 
         StartGameButton = (Button)findViewById(R.id.startmap);
         StartGameButton.setOnClickListener(new OnClickListener() {
@@ -268,7 +271,7 @@ public class MapOp extends Activity implements ViewFactory {
    OnItemSelectedListener() {
       //@Override
        public void onItemSelected(AdapterView<?> parent, View v, int _position, long id) {
-    	   _position =  _position%5;
+    	   _position =  _position%6;
     	   switch(_position){
 				case 0:
 					tv.setText("Map 1: The field of long grass.");
@@ -277,7 +280,7 @@ public class MapOp extends Activity implements ViewFactory {
 					break;
 				case 1: 
 					mapSelected = 2;
-					tv.setText("Map 2: The field of very cold grass.");
+					tv.setText("Map 2: The field of cold grass.");
 					wave = 1;
 					break;	
 				case 2: 
@@ -292,10 +295,14 @@ public class MapOp extends Activity implements ViewFactory {
 					break;
 				case 4: 
 					mapSelected = 5;
-					tv.setText("Map 5: The field of very cold grass v2.");
+					tv.setText("Map 5: The field of cold grass v2.");
 					wave = 1;
 					break;	
-
+				case 5: 
+					mapSelected = 6;
+					tv.setText("Map 6: The field of no grass v2.");
+					wave = 1;
+					break;
 			}
 			
        }
@@ -325,7 +332,7 @@ public class MapOp extends Activity implements ViewFactory {
         }
  
         public Object getItem(int position) {
-            return position%5;
+            return position%6;
         }
  
         public long getItemId(int position) {
@@ -335,7 +342,7 @@ public class MapOp extends Activity implements ViewFactory {
         //---returns an ImageView view---
         public View getView(int position, View convertView, ViewGroup parent)
         {
-        	this.position = position%5;
+        	this.position = position%6;
         	ImageView imageView = new ImageView(context);
             imageView.setImageBitmap(mmaps[this.position]);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
