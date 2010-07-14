@@ -148,10 +148,11 @@ public class Creature extends Sprite{
 			}
 			else { 
 				if (towerHasTeleport) {
-				    int randomInt = rand.nextInt(5);
-				    if (randomInt == 2) {
+				    int randomInt = rand.nextInt(10);
+				    if (randomInt == 7) {
 				    	moveToWaypoint(0);
 			    		setNextWayPoint(1);
+			    		this.mapLap++;
 				    	if (!this.creatureFast) {
 				    		this.creatureFast = true;
 				    		this.velocity = this.velocity*1.5f;
@@ -159,8 +160,8 @@ public class Creature extends Sprite{
 				    }
 				}
 				if (towerHasRemoveElement) {
-				    int randomInt = rand.nextInt(15);
-				    if (randomInt == 7) {
+				    int randomInt = rand.nextInt(5);
+				    if (randomInt == 2) {
 				    	if (this.creatureFrostResistant)
 				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, false, this.creaturePoisonResistant);
 				    	else if (this.creatureFireResistant)

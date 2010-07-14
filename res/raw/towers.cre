@@ -26,7 +26,7 @@ price::15
 resell value::8
 minDamage::33
 maxDamage::37
-Shot-velocity::250
+Shot-velocity::300
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink::5
@@ -98,7 +98,7 @@ price::41
 resell value::28
 minDamage::99
 maxDamage::111
-Shot-velocity::250
+Shot-velocity::300
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink::9
@@ -170,7 +170,7 @@ price::109
 resell value::90
 minDamage::297
 maxDamage::333
-Shot-velocity::250
+Shot-velocity::300
 cooldown between shots::2
 Cannon-1,Poisontower-2,Bunker-3,Tesla-4::1
 upgradelink::-1

@@ -16,7 +16,7 @@
 		android:layout_centerHorizontal="true"
 	    android:layout_centerVertical="true"
 	    android:gravity="right"
-		android:background="@drawable/test"
+		android:background="@drawable/dialog_back"
 		android:padding="10dp"
 		>
 		
