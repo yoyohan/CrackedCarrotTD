@@ -134,12 +134,12 @@ public class Creature extends Sprite{
 			currentHealth -= dmg;
 			healthBar.draw = true;
 			
-			float fraction = startHealth / this.getNbrOfFrames();
-			fraction = 0.5f + currentHealth/fraction;
+			float frame = (currentHealth / (startHealth / this.healthBar.getNbrOfFrames())) + 0.5f;
 			
-			healthBar.cFrame = this.getNbrOfFrames() - (int) fraction;			
-			healthBar.g -= 0.2f;
-			healthBar.r += 0.2f;
+			healthBar.cFrame = (int)frame;
+			
+			healthBar.g = currentHealth / startHealth;
+			healthBar.r = 1 - healthBar.g;
 			
 			GL.updateCreatureProgress(dmg);
 			if(currentHealth <= 0){
