@@ -6,13 +6,30 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.crackedcarrot.menu.*;
+import com.crackedcarrot.menu.R;
 
 public class MultiplayerOp extends Activity {
 
+	private Button HostButton;
+   	private Button JoinButton;
+   	private Button StartButton;   	
+	private Spinner mapChooser;
+	private Spinner difChooser;
+	private Spinner modeChooser;
+	private TextView tv;
+	private LinearLayout hostoptions;
+	private int mapId = 0;
+	private int difId = 0;
+	private int modeId = 0;
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,23 +39,44 @@ public class MultiplayerOp extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
-        TextView tv = (TextView)findViewById(R.id.MpInfo);
-        tv.setText("Multiplayer uses bluetooth to connect to your opponent. " + 
-        	"If connection fails, try activating Blutooth and make the device discoverable " +
-        	"in Android settings");
-    	
-    	Button HostButton = (Button)findViewById(R.id.host);
-    	HostButton.setOnClickListener(new OnClickListener() {
-        	
+        tv = (TextView)findViewById(R.id.MpInfo);
+        
+        HostButton = (Button)findViewById(R.id.host);
+       	JoinButton = (Button)findViewById(R.id.join);
+	    hostoptions = (LinearLayout) findViewById  (R.id.hostOpt);
+       	
+		mapChooser = (Spinner) findViewById  (R.id.mapChooser);
+	    ArrayAdapter adapter = ArrayAdapter.createFromResource(
+	            this, R.array.maps, android.R.layout.simple_spinner_item);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    mapChooser.setAdapter(adapter);
+	    mapChooser.setOnItemSelectedListener(mapListener);
+
+		difChooser = (Spinner) findViewById  (R.id.difChooser);
+	    ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
+	            this, R.array.difficulty, android.R.layout.simple_spinner_item);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    difChooser.setAdapter(adapter2);
+	    difChooser.setOnItemSelectedListener(difListener);
+	    difChooser.setSelection(1);
+	    
+		modeChooser = (Spinner) findViewById  (R.id.modeChooser);
+	    ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
+	            this, R.array.gamemode, android.R.layout.simple_spinner_item);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    modeChooser.setAdapter(adapter3);
+	    modeChooser.setOnItemSelectedListener(modeListener);
+	    
+    	HostButton.setOnClickListener(new OnClickListener() {	
         	public void onClick(View v) {
-        		Intent StartServer = new Intent(v.getContext(),Server.class);
-        		startActivity(StartServer);
+        		JoinButton.setVisibility(View.GONE);
+        		HostButton.setVisibility(View.GONE);
+        		hostoptions.setVisibility(View.VISIBLE);
+        		tv.setVisibility(View.GONE);
         	}
         });
     	
-    	Button JoinButton = (Button)findViewById(R.id.join);
     	JoinButton.setOnClickListener(new OnClickListener() {
-        	
         	public void onClick(View v) {
         		Intent StartClient = new Intent(v.getContext(),Client.class);
         		startActivity(StartClient);
@@ -52,6 +90,63 @@ public class MultiplayerOp extends Activity {
         		finish();
         	}
         });
+
+        StartButton = (Button)findViewById(R.id.startHost);
+    	StartButton.setOnClickListener(new OnClickListener() {	
+        	public void onClick(View v) {
+        		Intent StartServer = new Intent(v.getContext(),Server.class);
+        		startActivity(StartServer);
+        	}
+        });
   
     }
+    
+    private Spinner.OnItemSelectedListener mapListener =
+       new Spinner.OnItemSelectedListener() {
+       public void onItemSelected(AdapterView parent, View v, int position, long id) {
+    	   mapId = parent.getSelectedItemPosition();
+    	   if (mapId != 0) {
+    		    mapId = 0;
+        	    parent.setSelection(0);
+           		CharSequence text = "This map is not avaible in this version.";
+           		int duration = Toast.LENGTH_SHORT;
+           		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+           		toast.show();
+    	   }
+       }
+       public void onNothingSelected(AdapterView parent) { }            
+     };
+     
+     private Spinner.OnItemSelectedListener difListener =
+         new Spinner.OnItemSelectedListener() {
+         public void onItemSelected(AdapterView parent, View v, int position, long id) {
+      	   difId = parent.getSelectedItemPosition();
+      	   if (difId == 2) {
+      		    difId = 0;
+          	    parent.setSelection(1);
+             		CharSequence text = "This difficulty is not avaible in this version.";
+             		int duration = Toast.LENGTH_SHORT;
+             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+             		toast.show();
+      	   }
+         }
+         public void onNothingSelected(AdapterView parent) { }            
+       };
+
+       private Spinner.OnItemSelectedListener modeListener =
+           new Spinner.OnItemSelectedListener() {
+           public void onItemSelected(AdapterView parent, View v, int position, long id) {
+        	   modeId = parent.getSelectedItemPosition();
+        	   if (modeId != 0) {
+        		    modeId = 0;
+            	    parent.setSelection(0);
+               		CharSequence text = "This game mode is not avaible in this version.";
+               		int duration = Toast.LENGTH_SHORT;
+               		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+               		toast.show();
+        	   }
+           }
+           public void onNothingSelected(AdapterView parent) { }            
+         };
+
 }
