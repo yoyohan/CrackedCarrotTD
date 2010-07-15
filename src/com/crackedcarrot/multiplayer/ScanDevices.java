@@ -3,10 +3,13 @@ package com.crackedcarrot.multiplayer;
 import java.util.Set;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -36,6 +39,8 @@ public class ScanDevices extends Activity {
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
+    
+    private final int PROGRESS_DIALOG = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +152,8 @@ public class ScanDevices extends Activity {
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);
-            finish();
+            showDialog(PROGRESS_DIALOG);
+            //finish();
         }
     };
 
@@ -178,5 +184,25 @@ public class ScanDevices extends Activity {
             }
         }
     };
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case PROGRESS_DIALOG: {
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("Connecting to server. Press back button to cancel connection.");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(true);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+                	
+                	public void onCancel(DialogInterface dialog){
+                		ScanDevices.this.finish();
+                	}
+                });
+                return dialog;
+            }
+        }
+        return null;
+    }
 
 }

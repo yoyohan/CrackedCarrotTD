@@ -166,7 +166,10 @@ public class Client extends Activity {
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-            	// Send a message that connection failed? Like in the BT code example?
+            	// Send a message that connection failed
+            	Toast.makeText(Client.this, "Connection to server failed...leaving"
+                		, Toast.LENGTH_SHORT).show();
+            	finish();
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
