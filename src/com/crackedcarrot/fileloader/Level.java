@@ -15,7 +15,7 @@ public class Level extends Creature {
 		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
-		return currentHealth;
+		return startHealth;
 	}
 
 	public void cloneCreature(Creature clone) {
@@ -39,10 +39,14 @@ public class Level extends Creature {
 		healthBar.y = 0;
 		healthBar.setHeight(8);
 		healthBar.setWidth(this.getWidth());
+		healthBar.r = 0;
+		healthBar.g = 1;
+		healthBar.b = 0;
 		
 		clone.setGoldValue(this.goldValue);
 		clone.draw = false;
 		clone.opacity = 1;
+		
 		clone.creatureFrozenTime = 0;
 		clone.creaturePoisonTime = 0;
 		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
