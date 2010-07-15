@@ -38,7 +38,7 @@ public class Level extends Creature {
 		healthBar.x = 0;
 		healthBar.y = 0;
 		healthBar.setHeight(8);
-		healthBar.setWidth(this.getWidth());
+		healthBar.setWidth(this.getWidth() * this.scale);
 		healthBar.r = 0;
 		healthBar.g = 1;
 		healthBar.b = 0;
