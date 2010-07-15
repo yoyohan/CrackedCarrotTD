@@ -26,9 +26,6 @@ import com.crackedcarrot.textures.TextureLibraryLoader;
 
 public class GameInit extends Activity {
 	
-		// DEMO. Is this a demo-release? Only let the player play on 1 map.
-	boolean demo = false;
-	
 	public GameLoop     gameLoop;
 	public MultiplayerGameLoop gLoop = null;
     public SurfaceView  mGLSurfaceView;
@@ -178,7 +175,7 @@ public class GameInit extends Activity {
         
         mapLoader = new MapLoader(this, scaler);
         Map gameMap = null;
-        if (mapChoice == 1 || demo == true) {
+        if (mapChoice == 1) {
         	gameMap = mapLoader.readLevel("level1");
         } else if (mapChoice == 2) {
         	gameMap = mapLoader.readLevel("level2");
@@ -186,8 +183,12 @@ public class GameInit extends Activity {
         	gameMap = mapLoader.readLevel("level3");
         } else if (mapChoice == 4) {
         	gameMap = mapLoader.readLevel("level4");
-        }
-        
+        } else if (mapChoice == 5) {
+    		gameMap = mapLoader.readLevel("level5");
+    	} else {
+			gameMap = mapLoader.readLevel("level6");
+		}
+    	
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(gameMap.getTextureFile(),this),
         		hudHandler.getOverlayObjectsToRender());
@@ -295,6 +296,8 @@ public class GameInit extends Activity {
     
     protected void onStop() {
     	super.onStop();
+    		// Fix for user pressing Home during the game.
+    	gameLoopGui.quitDialogPressed = true;
     	gameLoop.stopGameLoop();
     	gameLoop.soundManager.release();
     	if(multiplayerMode()){

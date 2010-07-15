@@ -73,13 +73,13 @@ public class SoundManager {
         this.addSound(1.0f, 500, R.raw.die_kalle);
         this.addSound(1.0f, 500, R.raw.die_kalle2);
         randomEndDIE = this.addSound(1.0f, 500, R.raw.die_tomat);
-        randomEndDIE = randomEndDIE - randomStartDIE;
+        randomEndDIE = randomEndDIE -  randomStartDIE + 1;
         randomStartScore = this.addSound(1.0f, 500, R.raw.score_albin1);
         this.addSound(1.0f, 500, R.raw.score_albin2);
         this.addSound(1.0f, 500, R.raw.score_albin3);
         this.addSound(1.0f, 500, R.raw.score_albin4);
         randomEndScore = this.addSound(1.0f, 500, R.raw.score_fredrik);
-        randomEndScore = randomEndScore - randomStartScore;
+        randomEndScore = randomEndScore - randomStartScore + 1;
         
         createTower = this.addSound(1.0f, 500, R.raw.open_beer);
         victory = this.addSound(1.0f, 500, R.raw.victory);
@@ -194,7 +194,10 @@ public class SoundManager {
 	 * @return			void
 	 */
 	public void playSoundRandomDIE() {
-		playSound(randomStartDIE + random.nextInt(randomEndDIE));
+        // compute a fraction of the range, 0 <= frac < range
+        int fraction = (int)(randomEndDIE * random.nextDouble());
+        int randomNumber =  (int)(fraction + randomStartDIE);    
+		playSound(randomNumber);
 	}
     /**
 	 * Plays a random sound from the array of sounds cached. Creature scores sounds
@@ -204,7 +207,9 @@ public class SoundManager {
 		scoreOrder++;
 		if (scoreOrder == 3) {
 			scoreOrder = 0;
-			playSound(randomStartScore + random.nextInt(randomEndScore));
+	        int fraction = (int)(randomEndScore * random.nextDouble());
+	        int randomNumber =  (int)(fraction + randomStartScore);    
+			playSound(randomNumber);
 		}
 	}
 	

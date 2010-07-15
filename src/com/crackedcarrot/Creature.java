@@ -2,6 +2,7 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import com.crackedcarrot.menu.R;
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -18,8 +19,13 @@ public class Creature extends Sprite{
 	private int xoffset;
 	//Variable to move creature up and down
 	private int yoffset;
-	// A creatures health
-    protected float health;
+	// A creatures starting health
+    protected float startHealth;
+	// A creatures current health
+    protected float currentHealth;
+    //Is this creature dead USED BY ALBIN
+    private boolean dead;
+    private Sprite healthBar;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -36,8 +42,6 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
-    //Is this creature dead USED BY ALBIN
-    private boolean dead;
     // All creatures are dead:
     private boolean allDead = false;
     // Creature special abilty
@@ -114,29 +118,41 @@ public class Creature extends Sprite{
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
 		this.tracker = tracker;
+		this.healthBar = new Sprite(R.drawable.healthbar, Sprite.HEALTHBAR, 0);
+		this.healthBar.r = 0; this.healthBar.g = 1; this.healthBar.b = 0;
 	}
 
 	/**
-	 * Method used to applie damage to this creature.
+	 * Method used to applies damage to this creature.
 	 * Will also send the amount of damage inflicted to 
 	 * the gameloop.
 	 * @param dmg
 	 */
 	public void damage(float dmg, int sound, boolean towerHasTeleport, boolean towerHasRemoveElement){
-		if (health > 0) {
-			dmg = health >= dmg ? dmg : health; 
-			health -= dmg;
+		if (currentHealth > 0) {
+			dmg = currentHealth >= dmg ? dmg : currentHealth; 
+			currentHealth -= dmg;
+			healthBar.draw = true;
+			
+			float frame = (currentHealth / (startHealth / this.healthBar.getNbrOfFrames())) + 0.5f;
+			
+			healthBar.cFrame = (int)frame;
+			
+			healthBar.g = currentHealth / startHealth;
+			healthBar.r = 1 - healthBar.g;
+			
 			GL.updateCreatureProgress(dmg);
-			if(health <= 0){
+			if(currentHealth <= 0){
 				die();
 				soundManager.playSoundRandomDIE();
 			}
 			else { 
 				if (towerHasTeleport) {
-				    int randomInt = rand.nextInt(5);
-				    if (randomInt == 2) {
+				    int randomInt = rand.nextInt(10);
+				    if (randomInt == 7) {
 				    	moveToWaypoint(0);
 			    		setNextWayPoint(1);
+			    		this.mapLap++;
 				    	if (!this.creatureFast) {
 				    		this.creatureFast = true;
 				    		this.velocity = this.velocity*1.5f;
@@ -144,8 +160,8 @@ public class Creature extends Sprite{
 				    }
 				}
 				if (towerHasRemoveElement) {
-				    int randomInt = rand.nextInt(15);
-				    if (randomInt == 7) {
+				    int randomInt = rand.nextInt(5);
+				    if (randomInt == 2) {
 				    	if (this.creatureFrostResistant)
 				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, false, this.creaturePoisonResistant);
 				    	else if (this.creatureFireResistant)
@@ -199,10 +215,10 @@ public class Creature extends Sprite{
 		}
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0) {
+		if (draw && currentHealth > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
-			if (health > 0) {
+			if (currentHealth > 0) {
 				move(movement);
 				animate(timeDeltaSeconds);
 			}
@@ -246,7 +262,8 @@ public class Creature extends Sprite{
     			trackerY = tmp.y;
     		}
     			
-    		
+    		this.healthBar.x = this.x * scale;
+    		this.healthBar.y = this.y * scale + this.getHeight()*scale;
 		}
 	}
 
@@ -274,6 +291,7 @@ public class Creature extends Sprite{
 	 */
 	private void die() {
 		this.dead = true;
+		this.healthBar.draw = false;
 		setCurrentTexture(this.mDeadTextureData);
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
@@ -406,8 +424,16 @@ public class Creature extends Sprite{
 	 * Setter for health variable
 	 * @param health
 	 */
-	public void setHealth(float health){ this.health = health; }
+	public void setCurrentHealth(float health){ this.currentHealth = health; }
 	
+	public float getStartHealth() {
+		return startHealth;
+	}
+
+	public void setStartHealth(float startHealth) {
+		this.startHealth = startHealth;
+	}
+
 	/**
 	 * Setter for spawndelay. Time between each creature enters the map
 	 * @param delay
@@ -628,8 +654,16 @@ public class Creature extends Sprite{
 	 * Getter for health variable
 	 * @return health
 	 */
-	public float getHealth(){ return this.health; }
+	public float getHealth(){ return this.currentHealth; }
+
+	public Sprite getHealthBar() {
+		return healthBar;
+	}
 	
+	public void setHealthBar(Sprite sprite) {
+		this.healthBar = sprite;
+		
+	}
 	
 	// If a creature is have a special ability we also want him to change color
 	public void setCreatureSpecials(boolean fast, boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
