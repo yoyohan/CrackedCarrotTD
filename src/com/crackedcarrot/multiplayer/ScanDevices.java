@@ -40,8 +40,6 @@ public class ScanDevices extends Activity {
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
     
-    private final int PROGRESS_DIALOG = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,8 +150,7 @@ public class ScanDevices extends Activity {
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);
-            showDialog(PROGRESS_DIALOG);
-            //finish();
+            finish();
         }
     };
 
@@ -184,25 +181,5 @@ public class ScanDevices extends Activity {
             }
         }
     };
-    
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case PROGRESS_DIALOG: {
-                ProgressDialog dialog = new ProgressDialog(this);
-                dialog.setMessage("Connecting to server. Press back button to cancel connection.");
-                dialog.setIndeterminate(true);
-                dialog.setCancelable(true);
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
-                	
-                	public void onCancel(DialogInterface dialog){
-                		ScanDevices.this.finish();
-                	}
-                });
-                return dialog;
-            }
-        }
-        return null;
-    }
 
 }
