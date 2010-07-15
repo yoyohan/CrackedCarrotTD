@@ -198,12 +198,9 @@ public class GameLoopGUI {
     	nrCreText.setTypeface(MuseoSans);
     	
     	//Create text view for enemies left in multiplayer
-<<<<<<< HEAD
     	enemyLeft = (TextView) gameInit.findViewById(R.id.enemyText);
-=======
-    		//Moved to onCreateDialog!!
+    	//Moved to onCreateDialog!!
     	//enemyLeft = (TextView) gameInit.findViewById(R.id.enemyText);
->>>>>>> 8dc606b7df87099a7011a71866432c5203453c15
     	
 		// Create the TextView showing counter
     	counterText = (TextView) gameInit.findViewById(R.id.countertext);
