@@ -168,6 +168,9 @@ public class Client extends Activity {
         	
         	Looper.prepare();
         	
+        	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+            		, Toast.LENGTH_LONG).show();
+        	
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
             Log.d("CLIENT", "Connectthread runs");
@@ -178,16 +181,18 @@ public class Client extends Activity {
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
             	// Send a message that connection failed
-            	Toast.makeText(Client.this, "Connection to server failed...leaving"
-                		, Toast.LENGTH_SHORT).show();
+            	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+                		, Toast.LENGTH_LONG).show();
+            	
             	finish();
+            	
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
                 	Log.e("CLIENT", "Can't close socket", closeException);
                 }
                 
-                return;
+            	return;
             }
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
