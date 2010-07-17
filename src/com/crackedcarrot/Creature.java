@@ -134,7 +134,7 @@ public class Creature extends Sprite{
 			currentHealth -= dmg;
 			healthBar.draw = true;
 			
-			float frame = (currentHealth / (startHealth / this.healthBar.getNbrOfFrames())) + 0.5f;
+			float frame = (currentHealth / (startHealth / this.healthBar.getNbrOfFrames()));
 			
 			healthBar.cFrame = (int)frame;
 			

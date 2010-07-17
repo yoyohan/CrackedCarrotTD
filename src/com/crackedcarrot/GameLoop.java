@@ -83,14 +83,9 @@ public class GameLoop implements Runnable {
     }
     
 	protected void initializeDataStructures() {
-		//this allocates the space we need for shots towers and creatures.
-	    //this.mTower = new Tower[60];
-	    this.mShots = new Shot[mTower.length];
-	    this.mCreatures = new Creature[50];
-		
+	    this.mShots = new Shot[mTower.length];		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-
 	    	mTower[i].initTower(R.drawable.tesla1, 0, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.throwingstar,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
@@ -100,25 +95,8 @@ public class GameLoop implements Runnable {
 	    	mTower[i].relatedShot.setWidth(this.mTTypes[0].relatedShot.getWidth());
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
-	    } 
-
-	    Random rand = new Random();	    
-	    //same as for the towers and shots.
-	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.mrrabbit_animate, 
-	    								0,player, soundManager, 
-	    								mGameMap.getWaypoints().getCoords(), 
-	    								this,
-	    								i, 
-	    								gameTracker
-	    								);
-
-	    	mCreatures[i].draw = false;
-	    	int tmpOffset = rand.nextInt(10) - 5;
-	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
-	    	mCreatures[i].setXOffset(tmpCoord.getX());
 	    }
-	    //Set grid attributes.
+	    
 	    //Free all allocated data in the render
 	    //Not needed really.. but now we know for sure that
 	    //we don't have any garbage anywhere.
@@ -142,9 +120,6 @@ public class GameLoop implements Runnable {
 			
 			for(int i = 0; i < mLvl.length; i++){
 				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
-				//Log.d("INIT", ""+mLvl[i].getResourceId());
-				//Log.d("INIT", ""+i);
-				//Log.d("INIT", ""+test.mTextureName);
 				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
@@ -158,9 +133,8 @@ public class GameLoop implements Runnable {
 		//UGLY HACK!!
 		mGameMap.getBackground()[0].setType(Sprite.BACKGROUND, 0);
 		//END UGLY HACK!!
-		
 		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
-		renderHandle.setSprites(mCreatures);
+		//renderHandle.setSprites(mCreatures);
 		renderHandle.setSprites(mTower, Sprite.TOWER);
 		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);
@@ -189,6 +163,14 @@ public class GameLoop implements Runnable {
     	currentCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
     	startCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
     	
+    	mCreatures = new Creature[remainingCreaturesALL];
+	    for (int i = 0; i < mCreatures.length; i++) {
+	    	mCreatures[i] = new Creature(R.drawable.mrrabbit_animate, 0,player, soundManager, 
+	    			mGameMap.getWaypoints().getCoords(), this, i, gameTracker);
+	    }
+    	
+	    renderHandle.setSprites(mCreatures);
+	    
     	//Need to reverse the list for to draw correctly.
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
@@ -198,6 +180,9 @@ public class GameLoop implements Runnable {
 	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
 	    	
     	}
+    	
+    	System.gc();
+    	
 		try {
 			//Finally send of the sprites to the render to be allocated
 			//And after that drawn.
