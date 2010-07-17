@@ -52,6 +52,9 @@ public class MultiplayerHandler extends Thread {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                 case MESSAGE_READ:
+                	
+                	try {
+                	
                 	byte[] readBuff = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuff);
@@ -179,6 +182,12 @@ public class MultiplayerHandler extends Thread {
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;
+                	
+                	}
+                	catch (NumberFormatException nfe) {
+                		// do nothing really. a message was distorted, we consider it lost and move on.
+                	}
+                	
                 case MESSAGE_BT_KILLED:
                 	CharSequence text = "Bluetooth connection was lost, closing battle...";
             		int duration = Toast.LENGTH_SHORT;
