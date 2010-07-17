@@ -59,6 +59,7 @@ public class Sprite{
         mResourceId = resourceId;
         this.type = type;
         this.subType = subType;
+        this.cFrame = 0;
     }
     
 	/**
