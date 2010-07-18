@@ -320,6 +320,10 @@ public class GameInit extends Activity {
     	// This is probably (read: only meant to work with) best called
     	// in between levels when the NextLevel-dialog is shown.
     	
+    		// Never save multiplayer-status.
+    	if (gameLoopGui.multiplayerMode == true)
+    		return;
+    	
     	if (i == 1) {
     		Log.d("GAMEINIT", "Saving game status...");
     			// Save everything.

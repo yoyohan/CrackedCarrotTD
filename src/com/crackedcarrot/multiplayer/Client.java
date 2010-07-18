@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.util.UUID;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -115,6 +119,10 @@ public class Client extends Activity {
                                      .getString(ScanDevices.EXTRA_DEVICE_ADDRESS);
                 // Get the BLuetoothDevice object
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                
+                	// Show connecting-progress-dialog.
+                showDialog(1);
+                
                 // Try to connect to the device
                 connect(device);
             }
@@ -157,6 +165,12 @@ public class Client extends Activity {
         }
 
         public void run() {
+        	
+        	Looper.prepare();
+        	
+        	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+            		, Toast.LENGTH_LONG).show();
+        	
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
             Log.d("CLIENT", "Connectthread runs");
@@ -167,16 +181,18 @@ public class Client extends Activity {
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
             	// Send a message that connection failed
-            	Toast.makeText(Client.this, "Connection to server failed...leaving"
-                		, Toast.LENGTH_SHORT).show();
+            	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+                		, Toast.LENGTH_LONG).show();
+            	
             	finish();
+            	
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
                 	Log.e("CLIENT", "Can't close socket", closeException);
                 }
                 
-                return;
+            	return;
             }
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
@@ -194,5 +210,26 @@ public class Client extends Activity {
         mConnectThread = null;
 		finish();
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case 1: {
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("Connecting to server. Press back button to cancel connection.");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(true);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+                	
+                	public void onCancel(DialogInterface dialog){
+                		dialog.dismiss();
+                	}
+                });
+                return dialog;
+            }
+        }
+        return null;
+    }
+
     
 }

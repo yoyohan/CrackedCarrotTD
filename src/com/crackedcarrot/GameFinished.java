@@ -104,13 +104,19 @@ public class GameFinished extends Activity {
        SharedPreferences settings = getSharedPreferences("Options", 0);
        if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this)) {
     	   
-	        if (mapChoice == 1) {
-	        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
-	        } else if (mapChoice == 2) {
-	        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
-	        } else if (mapChoice == 3) {
-	        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
-	        }
+           if (mapChoice == 1) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
+           } else if (mapChoice == 2) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
+           } else if (mapChoice == 3) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+           } else if (mapChoice == 4) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerofour", "EF3428A86CD2387E603C7CE41B9AAD34");
+           } else if (mapChoice == 5) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerofive", "FDF504FBDF1BF8E53968ED55CA591213");
+           } else if (mapChoice == 6) {
+           	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerosix", "28E2D9AB8D002455400C1D93B09D9A64");
+           }
     	   
     	   scoreNinjaAdapter.show(score);
        }
