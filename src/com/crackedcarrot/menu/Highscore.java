@@ -30,12 +30,18 @@ public class Highscore extends Activity {
     private Bitmap bitmap1;
     private Bitmap bitmap2;
     private Bitmap bitmap3;
+    private Bitmap bitmap4;
+    private Bitmap bitmap5;
+    private Bitmap bitmap6;
     
     /** References to our images */
     private Bitmap[] mmaps = {
     		bitmap1,
     		bitmap2,
     		bitmap3,
+    		bitmap4,
+    		bitmap5,
+    		bitmap6,
     };
 	
     private ScoreNinjaAdapter scoreNinjaAdapter;
@@ -61,6 +67,12 @@ public class Highscore extends Activity {
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.map4);
+            mmaps[3] = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.map5);
+            mmaps[4] = BitmapFactory.decodeStream(is, null, options);
+            is = this.getResources().openRawResource(R.drawable.map6);
+            mmaps[5] = BitmapFactory.decodeStream(is, null, options);
         } finally {
             try {
                 is.close();
@@ -113,6 +125,12 @@ public class Highscore extends Activity {
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerotwo", "26CCAFB5B609DEB078F18D52778FA70B");
         } else if (mapSelected == 3) {
         	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerothree", "41F4C7AEF5A4DEF7BDC050AEB3EA37FC");
+        } else if (mapSelected == 4) {
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerofour", "EF3428A86CD2387E603C7CE41B9AAD34");
+        } else if (mapSelected == 5) {
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerofive", "FDF504FBDF1BF8E53968ED55CA591213");
+        } else if (mapSelected == 6) {
+        	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzerosix", "28E2D9AB8D002455400C1D93B09D9A64");
         }
         
         scoreNinjaAdapter.show();
