@@ -83,6 +83,10 @@ public class Tower extends Sprite {
 	//Sound. impact
 	private int sound_i;
     
+	// Testing. Used to calculate correct distance
+	private float aspectRatio = 0;
+	
+	
     /**
      * Constructor used when defining a new tower in the game. Needs the texture resource,
      * subtype, list of creatures and soundmanager.
@@ -177,8 +181,8 @@ public class Tower extends Sprite {
 			
 					if(tmpCreature.draw == true && tmpCreature.currentHealth > 0){ // Is the creature still alive?
 						double distance = Math.sqrt(
-									Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
-									Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
+									Math.pow((this.relatedShot.getX() - (tmpCreature.getScaledX())) , 2) + 
+									Math.pow((this.relatedShot.getY() - (tmpCreature.getScaledY()))*this.aspectRatio , 2)  );
 
 						if(distance < range){ // Is the creature within tower range?
 							if (targetCreature == null) {
@@ -233,7 +237,8 @@ public class Tower extends Sprite {
 					if(tmpCreature.draw == true && tmpCreature.currentHealth > 0){ // Is the creature still alive?
 						double distance = Math.sqrt(
 								Math.pow((this.relatedShot.x - (tmpCreature.getScaledX())) , 2) + 
-								Math.pow((this.relatedShot.y - (tmpCreature.getScaledY())) , 2)  );
+								Math.pow((this.relatedShot.y - (tmpCreature.getScaledY()))*this.aspectRatio , 2)  );
+						
 						if(distance <= range){ 
 							float randomInt;
 							if (doFullDamage) {
@@ -557,6 +562,8 @@ public class Tower extends Sprite {
 				currentTrackerList = currentTrackerList.next;
 			}
 		}
+		
+		this.aspectRatio = mScaler.aspectRatio();
 		
 		this.draw = true;
 		this.relatedShot.resetShotCordinates();//Same location of Shot as midpoint of Tower

@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 /**
 * Class defining a shot in the game. This can be both a projectile and a aoen
 * */
@@ -25,6 +27,12 @@ public class Shot extends Sprite{
 		y = tower.y + tower.getHeight()/2 - this.getHeight()/2;
 	}
 	
+	public float getX() {
+		return x+this.getWidth()/2;
+	}
+	public float getY() {
+		return y+this.getHeight()/2;
+	}
 
 	/**
 	 * Shows the animation for a shot. Requiers system time, size of animation
@@ -54,9 +62,12 @@ public class Shot extends Sprite{
 				this.resetShotCordinates();
 			if (this.tower.towerType == Tower.BUNKER || this.tower.towerType == Tower.TELSA)
 	    		cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()/2)))+(this.getNbrOfFrames()/2);
-			else 
+			else  {
 				cFrame = (int)(((1-(tmpAnimationTime/animationTime))*(this.getNbrOfFrames()-1)))+1;
-			
+				if (cFrame == 0) {
+					cFrame = 1;
+				}
+			}
 			scaleSprite(size);
 			return true;
 		}

@@ -45,7 +45,6 @@ public class MapOp extends Activity implements ViewFactory {
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected;
-    private int wave = 1;
         
     private TextView    tv;
     
@@ -98,6 +97,8 @@ public class MapOp extends Activity implements ViewFactory {
         
         try {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
+        	if (fullversion == 0)
+        		options.inSampleSize = 1;        	
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map3);
@@ -157,8 +158,7 @@ public class MapOp extends Activity implements ViewFactory {
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
        			StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
-        		// Since this is not a multiplayergame we will send 1 to gameinit
-        		StartGame.putExtra("com.crackedcarrot.menu.wave", wave);
+        		StartGame.putExtra("com.crackedcarrot.menu.wave", 0);
         		startActivity(StartGame);
         		finish();
         	}
@@ -292,7 +292,6 @@ public class MapOp extends Activity implements ViewFactory {
 				case 0:
 					tv.setText("Map 1: The field of long grass.");
 					mapSelected = 1;
-					wave = 1;
 					break;
 				case 1: 
 			       	if (fullversion == 0) {
@@ -303,7 +302,6 @@ public class MapOp extends Activity implements ViewFactory {
 			       		mapSelected = 2;
 						tv.setText("Map 2: The field of cold grass.");
 			       	}
-					wave = 1;
 					break;	
 				case 2: 
 			       	if (fullversion == 0) {
@@ -314,7 +312,6 @@ public class MapOp extends Activity implements ViewFactory {
 			       		mapSelected = 3;
 			       		tv.setText("Map 3: The field of no grass.");
 			       	}
-			       	wave = 1;
 					break;
 				case 3: 
 			       	if (fullversion == 0) {
@@ -325,7 +322,6 @@ public class MapOp extends Activity implements ViewFactory {
 			       		mapSelected = 4;
 			       		tv.setText("Map 4: The field of long grass v2.");
 			       	}
-			       	wave = 1;
 					break;
 				case 4: 
 			       	if (fullversion == 0) {
@@ -336,7 +332,6 @@ public class MapOp extends Activity implements ViewFactory {
 			       		mapSelected = 5;
 			       		tv.setText("Map 5: The field of cold grass v2.");
 			       	}
-		       		wave = 1;
 			       	break;	
 				case 5: 
 			       	if (fullversion == 0) {
@@ -347,7 +342,6 @@ public class MapOp extends Activity implements ViewFactory {
 			       		mapSelected = 6;
 			       		tv.setText("Map 6: The field of no grass v2.");
 			       	}
-			       	wave = 1;
 					break;
 			}
 			

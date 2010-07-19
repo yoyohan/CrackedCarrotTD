@@ -59,5 +59,6 @@ public class Level extends Creature {
 		clone.setSpawnPoint();
 		clone.setNextWayPoint(1);
 		clone.setDamagePerCreep(this.getDamagePerCreep());
+		clone.setSurvivalMode(this.getSurvivalMode());
 	}
 }

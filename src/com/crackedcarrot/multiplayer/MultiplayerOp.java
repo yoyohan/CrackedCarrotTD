@@ -106,9 +106,9 @@ public class MultiplayerOp extends Activity {
     	StartButton.setOnClickListener(new OnClickListener() {	
         	public void onClick(View v) {
         		Intent StartServer = new Intent(v.getContext(),Server.class);
-        		StartServer.putExtra("com.crackedcarrot.multiplayer.map", mapId);
+        		StartServer.putExtra("com.crackedcarrot.multiplayer.map", mapId+1);
         		StartServer.putExtra("com.crackedcarrot.multiplayer.difficulty", difId);
-        		StartServer.putExtra("com.crackedcarrot.multiplayer.gamemode", modeId);
+        		StartServer.putExtra("com.crackedcarrot.multiplayer.gamemode", modeId+1);
         		startActivity(StartServer);
         	}
         });

@@ -15,8 +15,6 @@ public class Creature extends Sprite{
 	// Creatures needs to know gridlocation
 	//Waypoints for this creature
 	private Coords[] wayP;
-	//Variable keeping all creatures from going in a straight line
-	private int xoffset;
 	//Variable to move creature up and down
 	private int yoffset;
 	// A creatures starting health
@@ -83,6 +81,7 @@ public class Creature extends Sprite{
 	//How mutch a creature will damage the player
 	private int damagePerCreep;
 	
+	private boolean survivalgame = false;
 	
     /**
      * Constructor. When a new creature is definced we will also
@@ -141,7 +140,10 @@ public class Creature extends Sprite{
 			healthBar.g = currentHealth / startHealth;
 			healthBar.r = 1 - healthBar.g;
 			
-			GL.updateCreatureProgress(dmg);
+			if (!this.survivalgame)
+				GL.updateCreatureProgress(dmg);
+			
+			
 			if(currentHealth <= 0){
 				die();
 				soundManager.playSoundRandomDIE();
@@ -224,7 +226,7 @@ public class Creature extends Sprite{
 			}
 		}
 	    // Creature is dead and fading...
-		else if (allDead) {
+		else if (allDead && draw) {
 			fade(timeDeltaSeconds/3);
 		}
 	}
@@ -236,7 +238,7 @@ public class Creature extends Sprite{
 	 */
 	private void move(float movement){
 		float yDistance = this.wayPointY - this.y+yoffset;
-		float xDistance = this.wayPointX - this.x+xoffset;
+		float xDistance = this.wayPointX - this.x;
 			
 		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
 			// We have reached our destination!!!
@@ -292,14 +294,23 @@ public class Creature extends Sprite{
 	private void die() {
 		this.dead = true;
 		this.healthBar.draw = false;
-		setCurrentTexture(this.mDeadTextureData);
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
 		player.scoreFunction(this.goldValue);
 		GL.updateCurrency();
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
-		GL.creatureDiesOnMap(1);
+		if (this.survivalgame) {
+			this.allDead = true;
+			TextureData tmp = this.getCurrentTexture();
+			setCurrentTexture(this.mDeadTextureData);
+			this.setDeadTexture(tmp);
+		}
+		else {
+			setCurrentTexture(this.mDeadTextureData);
+			GL.creatureDiesOnMap(1);
+		}
+		
 		// Remove creature from tracker
 		TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
 		tmpTrac.removeCreatureFromList(this);
@@ -361,10 +372,39 @@ public class Creature extends Sprite{
 	 */
 	private void fade(float reduceOpacity){
 		this.opacity -= reduceOpacity;
+
 		if (opacity <= 0.0f) {
+
 			draw = false;
-			//The creature is now completely gone from the map, tell the loop.
-			GL.creatureLeavesMAP(1);
+			
+			if (this.survivalgame) {
+		    	moveToWaypoint(0);
+	    		setNextWayPoint(1);
+	    		setSpawnPoint();
+	    		this.dead = false;
+    			startHealth = startHealth*1.15f;
+    			currentHealth = startHealth;
+    			opacity = 1;
+    			this.creaturePoisonDamage = 0;
+    			this.creaturePoisonTime = 0;
+    			this.creatureFrozenAmount = 0;
+    			this.creatureFrozenTime = 0;
+
+    			TextureData tmp = this.getCurrentTexture();
+    			setCurrentTexture(this.mDeadTextureData);
+    			this.setDeadTexture(tmp);
+    			
+    			Random generator = new Random();
+    			spawndelay = generator.nextFloat();
+    			
+    			this.goldValue = 1+mapLap/3;
+    			mapLap++;
+    			
+			}
+			else {
+				//The creature is now completely gone from the map, tell the loop.
+				GL.creatureLeavesMAP(1);
+			}
 		}
 	}
 	
@@ -508,14 +548,6 @@ public class Creature extends Sprite{
 		this.g = this.gDefault;
 		this.b = this.bDefault;
 	}
-
-	/**
-	 * To make the walking of creatures more intresting
-	 * we have a this setter to change standard position
-	 * of a creature
-	 * @param xoffset
-	 */
-	public void setXOffset(int xoffset) { this.xoffset = xoffset; }
 
 	/**
 	 * To make the walking of creatures more intresting
@@ -702,4 +734,11 @@ public class Creature extends Sprite{
 	public float getVelocity() {
 		return this.velocity;
 	}
+	public boolean getSurvivalMode() {
+		return this.survivalgame;
+	}
+	public void setSurvivalMode(boolean tmp) {
+		this.survivalgame = tmp;
+	}
+
 }

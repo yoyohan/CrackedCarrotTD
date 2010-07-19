@@ -50,7 +50,7 @@ public class UIHandler extends Thread{
 	
 	public void showRangeIndicator(int towerX, int towerY, int towerRange, int width, int height){
 		this.mHandler.removeCallbacks(range.getShowRunner());
-		range.scaleSprite( towerX, towerY, towerRange, width, height);
+		range.scaleSprite( towerX, towerY, towerRange, (int)(width*1.04), (int)(height*1.04));
 		this.mHandler.post(range.getShowRunner());
 	}
 	

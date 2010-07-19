@@ -65,9 +65,10 @@ public class GameLoop implements Runnable {
     
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
+    protected boolean survivalGame = false;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
-			Player p, GameLoopGUI gui, SoundManager sm){
+			Player p, GameLoopGUI gui, SoundManager sm, boolean survivalGame){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
    		this.mTowerGrid = gameMap.get2DGrid();
@@ -80,6 +81,7 @@ public class GameLoop implements Runnable {
     	this.gui = gui;
     	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener(), new UpgradeSpecialListener());
     	gameTracker = new Tracker();
+    	this.survivalGame = survivalGame;
     }
     
 	protected void initializeDataStructures() {
@@ -174,7 +176,13 @@ public class GameLoop implements Runnable {
     	//Need to reverse the list for to draw correctly.
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
-			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
+			
+			if (survivalGame) {
+       			mLvl[z].cloneCreature(mCreatures[z]);
+			}
+			else 
+				mLvl[lvlNbr].cloneCreature(mCreatures[z]);
+			
 	    	//This is defined by the scale of this current lvl
 			Coords tmpCoord = mScaler.scale(14,0);
 	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
@@ -382,11 +390,14 @@ public class GameLoop implements Runnable {
 	            	
 	            	if (player.getTimeUntilNextLevel() < 0) {
 		            	// Show healthbar again.
-	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
-	
+	            		if (this.survivalGame) {
+            				gui.sendMessage(gui.GUI_HIDECREATUREDATA_ID, 0, 0);
+	            		}
+	            		else {
+            				gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            			// Force the GUI to repaint the #-of-creatures-alive-counter.
-	            		creatureDiesOnMap(0);
-	
+            				creatureDiesOnMap(0);
+	            		}	
 	            		player.setTimeUntilNextLevel(0);
 	            	} else {
 		        		// Update the displayed text on the countdown.
