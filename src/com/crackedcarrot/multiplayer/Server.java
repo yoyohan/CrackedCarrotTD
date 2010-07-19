@@ -16,7 +16,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ImageView.ScaleType;
 
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
@@ -43,6 +45,8 @@ public class Server extends Activity {
     private int MAP = 1;
     private int GAMEMODE = 0;
     protected static Semaphore handshakeSemaphore = new Semaphore(0);
+   
+    private ImageView mBackground;
     
     /** if user presses back button, this activity will finish */
     @Override
@@ -64,6 +68,8 @@ public class Server extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
+    	mBackground = (ImageView) findViewById(R.id.ServerBackground);
+    	
     	// Get the local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
@@ -201,8 +207,11 @@ public class Server extends Activity {
     
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
-        
-    	mMultiplayerService = new MultiplayerService(socket);
+		
+    	mBackground.setImageResource(R.drawable.loadimage);
+		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+    	
+		mMultiplayerService = new MultiplayerService(socket);
     	mMultiplayerService.start();
     	
 		String mapMsg = "SERVER:"+MAP+":"+DIFFICULTY+":"+GAMEMODE;

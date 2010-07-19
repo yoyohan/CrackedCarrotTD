@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -24,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Highscore extends Activity {
+
+	// If this is set to 0 let the player play on Normal difficulty. Will read data from integers.xml to set this
+	int fullversion = 0;	
 	
     private int mapSelected;
 	
@@ -55,6 +59,9 @@ public class Highscore extends Activity {
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    	Resources r = getResources();
+        fullversion = r.getInteger(R.integer.app_type);
     	
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize = 8;
@@ -63,7 +70,9 @@ public class Highscore extends Activity {
         
         try {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
-            is = this.getResources().openRawResource(R.drawable.map2);
+            if (fullversion == 0)
+        		options.inSampleSize = 1;  
+        	is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
