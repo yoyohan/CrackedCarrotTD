@@ -2,10 +2,12 @@ package com.crackedcarrot.menu;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -37,8 +39,8 @@ import com.crackedcarrot.GameInit;
  */
 public class MapOp extends Activity implements ViewFactory {
 	
-		// DEMO. Only let the player play on Normal difficulty.
-	boolean demo = false;
+	// If this is set to 0 let the player play on Normal difficulty. Will read data from integers.xml to set this
+	int fullversion = 0;
 	
     /** The index for our "maps" array */
     private int difficulty = 1;
@@ -85,6 +87,9 @@ public class MapOp extends Activity implements ViewFactory {
     	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainmenu_startgame);    
+        
+        Resources r = getResources();
+        fullversion = r.getInteger(R.integer.app_type);
         
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize = 8;
@@ -185,7 +190,7 @@ public class MapOp extends Activity implements ViewFactory {
 
         radioHard.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		if (demo) {
+        		if (fullversion == 0) {
                 	CharSequence text = "Hard is not avaible in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
@@ -222,7 +227,7 @@ public class MapOp extends Activity implements ViewFactory {
         hard.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		if (demo) {
+        		if (fullversion == 0) {
                 	CharSequence text = "Hard is not avaible in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
@@ -290,7 +295,7 @@ public class MapOp extends Activity implements ViewFactory {
 					wave = 1;
 					break;
 				case 1: 
-			       	if (demo == true) {
+			       	if (fullversion == 0) {
 						mapSelected = 1;
 						tv.setText("Map 2: Not avaible in this version.");
 			       	}
@@ -301,7 +306,7 @@ public class MapOp extends Activity implements ViewFactory {
 					wave = 1;
 					break;	
 				case 2: 
-			       	if (demo == true) {
+			       	if (fullversion == 0) {
 						mapSelected = 1;
 						tv.setText("Map 3: Not avaible in this version.");
 			       	}
@@ -312,7 +317,7 @@ public class MapOp extends Activity implements ViewFactory {
 			       	wave = 1;
 					break;
 				case 3: 
-			       	if (demo == true) {
+			       	if (fullversion == 0) {
 						mapSelected = 1;
 						tv.setText("Map 4: Not avaible in this version.");
 			       	}
@@ -323,7 +328,7 @@ public class MapOp extends Activity implements ViewFactory {
 			       	wave = 1;
 					break;
 				case 4: 
-			       	if (demo == true) {
+			       	if (fullversion == 0) {
 						mapSelected = 1;
 						tv.setText("Map 5: Not avaible in this version.");
 			       	}
@@ -334,7 +339,7 @@ public class MapOp extends Activity implements ViewFactory {
 		       		wave = 1;
 			       	break;	
 				case 5: 
-			       	if (demo == true) {
+			       	if (fullversion == 0) {
 						mapSelected = 1;
 						tv.setText("Map 6: Not avaible in this version.");
 			       	}

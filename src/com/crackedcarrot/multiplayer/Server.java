@@ -1,5 +1,6 @@
 package com.crackedcarrot.multiplayer;
 
+import java.util.Random;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -37,8 +38,9 @@ public class Server extends Activity {
     
     public BluetoothSocket socket = null;
     
-    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 4; // Default map for multiplayer
+    private int DIFFICULTY = 1;
+    private int MAP = 1;
+    private int GAMEMODE = 0;
 	
     /** if user presses back button, this activity will finish */
     @Override
@@ -71,6 +73,20 @@ public class Server extends Activity {
             return;
         }
         
+        
+        // Fetch information from previous intent. The information will contain the
+        // map and difficulty decided by the player.
+        Bundle extras  = getIntent().getExtras();
+        
+        if (extras != null) {
+        	MAP = extras.getInt("com.crackedcarrot.multiplayer.map");
+        	if (MAP == 6) {
+        		Random randomGenerator = new Random();
+        		MAP = randomGenerator.nextInt(6);
+        	}
+        	DIFFICULTY =  extras.getInt("com.crackedcarrot.multiplayer.difficulty");
+        	GAMEMODE =  extras.getInt("com.crackedcarrot.multiplayer.gamemode");
+        } 
         
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);

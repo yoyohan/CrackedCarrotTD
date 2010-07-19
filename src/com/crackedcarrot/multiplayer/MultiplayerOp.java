@@ -3,6 +3,7 @@ package com.crackedcarrot.multiplayer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,9 @@ import com.crackedcarrot.menu.R;
 
 public class MultiplayerOp extends Activity {
 
+	// If this is set to 0 let the player play on Normal difficulty. Will read data from integers.xml to set this
+	int fullversion = 0;
+	
 	private Button HostButton;
    	private Button JoinButton;
    	private Button StartButton;   	
@@ -27,7 +31,7 @@ public class MultiplayerOp extends Activity {
 	private TextView tv;
 	private LinearLayout hostoptions;
 	private int mapId = 0;
-	private int difId = 0;
+	private int difId = 1;
 	private int modeId = 0;
 	
 	/** Called when the activity is first created. */
@@ -41,6 +45,10 @@ public class MultiplayerOp extends Activity {
         
         tv = (TextView)findViewById(R.id.MpInfo);
         
+        Resources r = getResources();
+        fullversion = r.getInteger(R.integer.app_type);
+        
+        
         HostButton = (Button)findViewById(R.id.host);
        	JoinButton = (Button)findViewById(R.id.join);
 	    hostoptions = (LinearLayout) findViewById  (R.id.hostOpt);
@@ -51,7 +59,10 @@ public class MultiplayerOp extends Activity {
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    mapChooser.setAdapter(adapter);
 	    mapChooser.setOnItemSelectedListener(mapListener);
-
+	    if (fullversion != 0)
+	    	mapChooser.setSelection(6);
+	    
+	    
 		difChooser = (Spinner) findViewById  (R.id.difChooser);
 	    ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
 	            this, R.array.difficulty, android.R.layout.simple_spinner_item);
@@ -95,17 +106,19 @@ public class MultiplayerOp extends Activity {
     	StartButton.setOnClickListener(new OnClickListener() {	
         	public void onClick(View v) {
         		Intent StartServer = new Intent(v.getContext(),Server.class);
+        		StartServer.putExtra("com.crackedcarrot.multiplayer.map", mapId);
+        		StartServer.putExtra("com.crackedcarrot.multiplayer.difficulty", difId);
+        		StartServer.putExtra("com.crackedcarrot.multiplayer.gamemode", modeId);
         		startActivity(StartServer);
         	}
         });
-  
     }
     
     private Spinner.OnItemSelectedListener mapListener =
        new Spinner.OnItemSelectedListener() {
        public void onItemSelected(AdapterView parent, View v, int position, long id) {
     	   mapId = parent.getSelectedItemPosition();
-    	   if (mapId != 0) {
+    	   if (fullversion == 0 && mapId != 0) {
     		    mapId = 0;
         	    parent.setSelection(0);
            		CharSequence text = "This map is not avaible in this version.";
@@ -121,7 +134,7 @@ public class MultiplayerOp extends Activity {
          new Spinner.OnItemSelectedListener() {
          public void onItemSelected(AdapterView parent, View v, int position, long id) {
       	   difId = parent.getSelectedItemPosition();
-      	   if (difId == 2) {
+      	   if (fullversion == 0 && difId == 2) {
       		    difId = 0;
           	    parent.setSelection(1);
              		CharSequence text = "This difficulty is not avaible in this version.";
@@ -137,7 +150,7 @@ public class MultiplayerOp extends Activity {
            new Spinner.OnItemSelectedListener() {
            public void onItemSelected(AdapterView parent, View v, int position, long id) {
         	   modeId = parent.getSelectedItemPosition();
-        	   if (modeId != 0) {
+        	   if (fullversion == 0 && modeId != 0) {
         		    modeId = 0;
             	    parent.setSelection(0);
                		CharSequence text = "This game mode is not avaible in this version.";

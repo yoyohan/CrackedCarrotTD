@@ -6,6 +6,7 @@
         <item>Map 4: The field of long grass v2.</item>
         <item>Map 5: The field of cold grass v2.</item>
         <item>Map 6: The field of no grass v2.</item>
+        <item>Random</item>
     </string-array>
     <string-array name="difficulty">
         <item>Easy</item>
