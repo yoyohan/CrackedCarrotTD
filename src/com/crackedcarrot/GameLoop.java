@@ -878,6 +878,6 @@ public class GameLoop implements Runnable {
     }
 
 	public void alertTeleport() {
-		gui.alertTeleportSuccess();
+		gui.sendMessage(gui.GUI_TELEPORTSUCCESS, 0, 0);
 	}
 }
