@@ -459,20 +459,24 @@ public class GameLoop implements Runnable {
     		// If we lost or won the game, we load the GameFinished screen.
     	if (!gui.quitDialogPressed) {
 	    	
-			Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
-			if (lvlNbr >= mLvl.length) {
-				gameFinished.putExtra("win", true);
-			} else {
-				gameFinished.putExtra("win", false);
-			}
-			gameFinished.putExtra("map", gui.getGameInit().mapChoice);
-			gameFinished.putExtra("score", player.getScore());
-			// Since this is not a multiplayergame we will send 1 to gameinit
-			gui.getGameInit().startActivity(gameFinished);
+			gameFinished();
     	}
     	
     	// Close activity/gameview.
     	gui.sendMessage(-1, 0, 0); // gameInit.finish();
+    }
+    
+    public void gameFinished() {
+    	Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
+		if (lvlNbr >= mLvl.length) {
+			gameFinished.putExtra("win", true);
+		} else {
+			gameFinished.putExtra("win", false);
+		}
+		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
+		gameFinished.putExtra("score", player.getScore());
+		// Since this is not a multiplayergame we will send 1 to gameinit
+		gui.getGameInit().startActivity(gameFinished);
     }
 
     // Basic function to show score and failure dialog
