@@ -207,7 +207,8 @@ public class Server extends Activity {
     
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
-		
+    	mAcceptThread = null;
+    	
     	mBackground.setImageResource(R.drawable.loadimage);
 		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
     	
@@ -239,7 +240,6 @@ public class Server extends Activity {
 		StartGame.putExtra("com.crackedcarrot.menu.wave", GAMEMODE);
 		startActivity(StartGame);
 		// Cancel the accept thread because we only want to connect to one device
-		mAcceptThread = null;
 		finish();
     }
     

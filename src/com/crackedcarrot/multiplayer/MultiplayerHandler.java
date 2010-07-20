@@ -37,10 +37,10 @@ public class MultiplayerHandler extends Thread {
     private final String OPP_CRE_LEFT = "cre";
 	
     //Handshake variables
- 	public int MAP;
- 	public int DIFFICULTY;
- 	public int GAMEMODE;
- 	public boolean OK;
+ 	public int MAP = 1;
+ 	public int DIFFICULTY = 1;
+ 	public int GAMEMODE = 0;
+ 	public boolean OK = false;
     
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
