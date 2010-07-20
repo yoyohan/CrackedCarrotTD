@@ -54,7 +54,7 @@ public class GameLoop implements Runnable {
     protected Tower[]    mTower;
     protected Tower[][]  mTowerGrid;
     protected Tower[]    mTTypes;
-
+    protected Sprite[]   mSpecialTowers;
     // Tracker for finding creatures
     private Tracker gameTracker;
     
@@ -126,6 +126,20 @@ public class GameLoop implements Runnable {
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
+			mSpecialTowers = new Sprite[6];
+			mSpecialTowers[0] = new Sprite();
+			mSpecialTowers[0].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_1));
+			mSpecialTowers[1] = new Sprite();
+			mSpecialTowers[1].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_2));
+			mSpecialTowers[2] = new Sprite();
+			mSpecialTowers[2].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_3));
+			mSpecialTowers[3] = new Sprite();
+			mSpecialTowers[3].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_1));
+			mSpecialTowers[4] = new Sprite();
+			mSpecialTowers[4].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_2));
+			mSpecialTowers[5] = new Sprite();
+			mSpecialTowers[5].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_3));
+				
 						
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -328,9 +342,9 @@ public class GameLoop implements Runnable {
     				// (we dont need sanity checking here, unless the game corrupts itself this cannot be abused)
     			if (Integer.parseInt(tower[7]) == 1) {
     			    superupgrade_teleport = true;
-    			    t.upgradeSuperAbility(10000);
+    			    t.upgradeSuperAbility(10000,mSpecialTowers);
     			} else if (Integer.parseInt(tower[7]) == 2) {
-    				t.upgradeSuperAbility(10000);
+    				t.upgradeSuperAbility(10000,mSpecialTowers);
     			    superupgrade_element = true;
     			}
     			
@@ -723,10 +737,28 @@ public class GameLoop implements Runnable {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
     				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker, true);
+    				
+    				
     				try {
-    					TextureData tex = renderHandle.getTexture(t.getResourceId());
-    					t.setCurrentTexture(tex);
-    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+        				if (t.towerType == Tower.TELSA && t.getSuperTeleport()) {
+        					if (t.getUpgradeTowerLvl() == 11)
+        						t.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
+        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
+
+        				}
+        				else if (t.towerType == Tower.AOE && t.getSuperElement()) {
+        					if (t.getUpgradeTowerLvl() == 10)
+        						t.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
+        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
+
+        				}
+        				else {
+        					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    						t.setCurrentTexture(tex);
+        				}
+   						//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
     					//t.relatedShot.setCurrentTexture(tex);
     				} catch (InterruptedException e) {
     					e.printStackTrace();
@@ -798,7 +830,7 @@ public class GameLoop implements Runnable {
     private void upgradeSuperTower() {
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-			int price = t.upgradeSuperAbility(player.getMoney());
+			int price = t.upgradeSuperAbility(player.getMoney(),mSpecialTowers);
 			if (price != 0) {
 				if (t.getTowerType() == Tower.AOE)
 					this.superupgrade_element = true;

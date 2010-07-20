@@ -627,9 +627,9 @@ public class Tower extends Sprite {
 			if (this.getUpgradePoison() == 0 && money >= 30) {
 				this.hasPoisonDamage = true;
 				this.poisonFactor = 0.2f;
-				this.r = 0.7f;
+				this.r = 0.6f;
 				this.g = 1;
-				this.b = 0.7f;
+				this.b = 0.6f;
 				this.relatedShot.r = 0.7f;
 				this.relatedShot.g = 1;
 				this.relatedShot.b = 0.7f;
@@ -651,14 +651,18 @@ public class Tower extends Sprite {
 	}
 
 	
-	public int upgradeSuperAbility(int money) {
+	public int upgradeSuperAbility(int money, Sprite[] mSpecialTowers) {
 		int price = 0;
 		if (money >= 100) {
 			if (this.towerType == Tower.AOE) {
 				this.hasSuper_element = true;
-				this.r = 0.7f;
-				this.g = 0.7f;
-				this.b = 1f;
+				if (this.upgradeLvl == 6)
+					this.setCurrentTexture(mSpecialTowers[3].getCurrentTexture());
+				else if (this.upgradeLvl == 10)
+					this.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
+				else if (this.upgradeLvl == -1)
+					this.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
+				
 				this.relatedShot.r = 0.7f;
 				this.relatedShot.g = 0.7f;
 				this.relatedShot.b = 1f;
@@ -666,10 +670,14 @@ public class Tower extends Sprite {
 			}
 			if (this.towerType == Tower.TELSA) {
 				this.hasSuper_teleport = true;
-				this.r = 0.7f;
-				this.g = 1f;
-				this.b = 0.7f;
-				this.relatedShot.r = 0.7f;
+				if (this.upgradeLvl == 7)
+					this.setCurrentTexture(mSpecialTowers[0].getCurrentTexture());
+				else if (this.upgradeLvl == 11)
+					this.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
+				else if (this.upgradeLvl == -1)
+					this.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
+
+				this.relatedShot.r = 1f;
 				this.relatedShot.g = 1f;
 				this.relatedShot.b = 0.7f;
 				price = 100;
