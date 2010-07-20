@@ -161,13 +161,13 @@ public class Highscore extends Activity {
 					mapSelected = 3;
 					break;
 				case 3:
-	 				mapSelected = 1;
+	 				mapSelected = 4;
 	 				break;
 	 			case 4: 
-	 				mapSelected = 2;
+	 				mapSelected = 5;
 	 				break;	
 	 			case 5: 
-	 				mapSelected = 3;
+	 				mapSelected = 6;
 	 				break;
  			}
  			
