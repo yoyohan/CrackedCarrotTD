@@ -282,5 +282,8 @@ public class Server extends Activity {
     
     protected void onResume(){
     	super.onResume();
+    	
+    		// So we dont hang around in the empty server activity.
+    	finish();
     }
 }
