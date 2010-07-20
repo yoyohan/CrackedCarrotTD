@@ -38,7 +38,7 @@ public class Sprite{
     //Scale.
     public float scale = 1.0f;
     // The OpenGL ES texture handle to draw.
-    private int currTexName;
+    private int texIndex;
     public TextureData texData;
     // The id of the original resource that the firstCurrTexName is based on.
     private int mResourceId;
@@ -204,7 +204,7 @@ public class Sprite{
 	public void setCurrentTexture(TextureData texture) {
 		this.cFrame = 0;
 		this.texData = texture;
-		this.currTexName = this.texData.mTextureName;
+		this.texIndex = this.texData.texIndex;
 	}
 
 	/**

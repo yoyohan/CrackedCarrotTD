@@ -19,19 +19,13 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
 
 void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length){
 
-    int allocSize=0;
-
     if(length > 0){
-    
-        //This is just to make room for the last pice of data in the buffer,
-        //Gl begins to create identifiers from 1 not 0; pos 0 in texData will be unused.
         
-        allocSize = length+1;
-        if((texData = malloc(sizeof(textureData)*allocSize)) == NULL){
+        if((texData = malloc(sizeof(textureData)*length)) == NULL){
             __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in allocTextureBuffers");
         }
-        texDataLength = allocSize;
-        __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
+        texDataLength = length;
+        __android_log_print(ANDROID_LOG_DEBUG, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
     }
     else{
         __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Invalid buffer length! Buffer not allocated!");
@@ -41,9 +35,15 @@ void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, 
 void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData){
     jclass class = (*env)->GetObjectClass(env, textureData);
 
-    jfieldID id = (*env)->GetFieldID(env, class, "mTextureName", "I");
+    jfieldID id = (*env)->GetFieldID(env, class, "texIndex", "I");
     jint index = (*env)->GetIntField(env, textureData, id);
+    
+    id = (*env)->GetFieldID(env, class, "mTextureName", "I");
+    jint textureName = (*env)->GetIntField(env, textureData, id);
+    
+    texData[index].textureName = textureName;
 
+    
     id = (*env)->GetFieldID(env, class, "nFrames", "I");
     jint nFrames = (*env)->GetIntField(env, textureData, id);
     
@@ -54,10 +54,10 @@ void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, job
 	textCoordBufSize = sizeof(GLfloat) * 4 * 2;
     GLfloat textureCoordBuffer[4*2];
 	
-	if((texData[index].textureBufferNames = malloc(nFrames * sizeof(GLuint))) == NULL){
+	if((texData[index].texCoBuffNames = malloc(nFrames * sizeof(GLuint))) == NULL){
 	    __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in setTextureBuffer");
 	}
-	glGenBuffers(nFrames, texData[index].textureBufferNames);
+	glGenBuffers(nFrames, texData[index].texCoBuffNames);
 	
 	GLfloat texFraction = 1.0 / nFrames;
 	GLfloat startFraction = 0.0;
@@ -73,7 +73,7 @@ void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, job
 		textureCoordBuffer[2] = endFraction; 	textureCoordBuffer[3] = 1.0;
 		textureCoordBuffer[4] = startFraction; 	textureCoordBuffer[5] = 0.0;
 		textureCoordBuffer[6] = endFraction; 	textureCoordBuffer[7] = 0.0;
-		glBindBuffer(GL_ARRAY_BUFFER, texData[index].textureBufferNames[i]);
+		glBindBuffer(GL_ARRAY_BUFFER, texData[index].texCoBuffNames[i]);
 		glBufferData(GL_ARRAY_BUFFER, textCoordBufSize, textureCoordBuffer,GL_STATIC_DRAW);
 		startFraction = endFraction;
 	}
@@ -136,8 +136,8 @@ void Java_com_crackedcarrot_NativeRender_nativeAlloc(JNIEnv*  env,
 	thisSprite->cFrame = id;
 	
 		//cache TextureName
-	id = (*env)->GetFieldID(env, class, "currTexName", "I");
-	thisSprite->textureName = id;
+	id = (*env)->GetFieldID(env, class, "texIndex", "I");
+	thisSprite->textureIndex = id;
 	
 	//If this is not the first sprite of its type and its not an animation
 	//We can just use the same VBOs as the last sprite.
@@ -237,7 +237,7 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite){
 	/*__android_log_print(ANDROID_LOG_DEBUG, 
 		                "HWBUFFER ALLOC", 
 		                "Sprite has been assigned the new buffers: %d, %d and %d", 
-		                sprite->bufferName[INDEX_OBJECT] ,sprite->bufferName[VERT_OBJECT], sprite->textureBufferNames[0] );*/
+		                sprite->bufferName[INDEX_OBJECT] ,sprite->bufferName[VERT_OBJECT], sprite->texCoBuffNames[0] );*/
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -288,9 +288,9 @@ void Java_com_crackedcarrot_NativeRender_nativeFreeSprites(JNIEnv* env, jobject 
     }
 }
 
-void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint textureName){
-    glDeleteBuffers(texData[textureName].nFrames, texData[textureName].textureBufferNames);
-    free(texData[textureName].textureBufferNames);
-    texData[textureName].textureBufferNames = NULL;
-	glDeleteTextures(1, &textureName);
+void Java_com_crackedcarrot_NativeRender_nativeFreeTex(JNIEnv* env, jobject thiz, jint index){
+    glDeleteTextures(1, &texData[index].textureName);
+    glDeleteBuffers(texData[index].nFrames, texData[index].texCoBuffNames);
+    free(texData[index].texCoBuffNames);
+    texData[index].texCoBuffNames = NULL;
 }
