@@ -2,6 +2,7 @@ package com.crackedcarrot;
 
 import java.util.Random;
 
+import com.crackedcarrot.menu.R;
 import com.crackedcarrot.textures.TextureData;
 /**
 * Class defining a creature in the game
@@ -14,12 +15,15 @@ public class Creature extends Sprite{
 	// Creatures needs to know gridlocation
 	//Waypoints for this creature
 	private Coords[] wayP;
-	//Variable keeping all creatures from going in a straight line
-	private int xoffset;
 	//Variable to move creature up and down
 	private int yoffset;
-	// A creatures health
-    protected float health;
+	// A creatures starting health
+    protected float startHealth;
+	// A creatures current health
+    protected float currentHealth;
+    //Is this creature dead USED BY ALBIN
+    private boolean dead;
+    private Sprite healthBar;
     // The next way point for a given creature
     private int nextWayPoint;
     // SPRITE DEAD RESOURCE
@@ -36,8 +40,6 @@ public class Creature extends Sprite{
     protected int goldValue;
     //Ref to gameloop that runs this creature.
     private GameLoop GL;
-    //Is this creature dead USED BY ALBIN
-    private boolean dead;
     // All creatures are dead:
     private boolean allDead = false;
     // Creature special abilty
@@ -79,6 +81,7 @@ public class Creature extends Sprite{
 	//How mutch a creature will damage the player
 	private int damagePerCreep;
 	
+	private boolean survivalgame = false;
 	
     /**
      * Constructor. When a new creature is definced we will also
@@ -114,38 +117,54 @@ public class Creature extends Sprite{
 		double randomDouble = (rand.nextDouble());
 		tmpAnimationTime = (float)randomDouble/2;
 		this.tracker = tracker;
+		this.healthBar = new Sprite(R.drawable.healthbar, Sprite.HEALTHBAR, 0);
+		this.healthBar.r = 0; this.healthBar.g = 1; this.healthBar.b = 0;
 	}
 
 	/**
-	 * Method used to applie damage to this creature.
+	 * Method used to applies damage to this creature.
 	 * Will also send the amount of damage inflicted to 
 	 * the gameloop.
 	 * @param dmg
 	 */
 	public void damage(float dmg, int sound, boolean towerHasTeleport, boolean towerHasRemoveElement){
-		if (health > 0) {
-			dmg = health >= dmg ? dmg : health; 
-			health -= dmg;
-			GL.updateCreatureProgress(dmg);
-			if(health <= 0){
+		if (currentHealth > 0) {
+			dmg = currentHealth >= dmg ? dmg : currentHealth; 
+			currentHealth -= dmg;
+			healthBar.draw = true;
+			
+			float frame = (currentHealth / (startHealth / this.healthBar.getNbrOfFrames()));
+			
+			healthBar.cFrame = (int)frame;
+			
+			healthBar.g = currentHealth / startHealth;
+			healthBar.r = 1 - healthBar.g;
+			
+			if (!this.survivalgame)
+				GL.updateCreatureProgress(dmg);
+			
+			
+			if(currentHealth <= 0){
 				die();
 				soundManager.playSoundRandomDIE();
 			}
 			else { 
 				if (towerHasTeleport) {
-				    int randomInt = rand.nextInt(5);
-				    if (randomInt == 2) {
+				    int randomInt = rand.nextInt(10);
+				    if (randomInt == 7) {
 				    	moveToWaypoint(0);
 			    		setNextWayPoint(1);
+			    		this.mapLap++;
 				    	if (!this.creatureFast) {
 				    		this.creatureFast = true;
 				    		this.velocity = this.velocity*1.5f;
 				    	}
+				    	this.GL.alertTeleport();
 				    }
 				}
 				if (towerHasRemoveElement) {
-				    int randomInt = rand.nextInt(15);
-				    if (randomInt == 7) {
+				    int randomInt = rand.nextInt(5);
+				    if (randomInt == 2) {
 				    	if (this.creatureFrostResistant)
 				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, false, this.creaturePoisonResistant);
 				    	else if (this.creatureFireResistant)
@@ -199,16 +218,16 @@ public class Creature extends Sprite{
 		}
 		//If still alive move the creature.
 		float movement = 0;
-		if (draw && health > 0) {
+		if (draw && currentHealth > 0) {
 			// If the creature is living calculate tower effects.
 			movement = applyEffects(timeDeltaSeconds);
-			if (health > 0) {
+			if (currentHealth > 0) {
 				move(movement);
 				animate(timeDeltaSeconds);
 			}
 		}
 	    // Creature is dead and fading...
-		else if (allDead) {
+		else if (allDead && draw) {
 			fade(timeDeltaSeconds/3);
 		}
 	}
@@ -220,7 +239,7 @@ public class Creature extends Sprite{
 	 */
 	private void move(float movement){
 		float yDistance = this.wayPointY - this.y+yoffset;
-		float xDistance = this.wayPointX - this.x+xoffset;
+		float xDistance = this.wayPointX - this.x;
 			
 		if ((Math.abs(yDistance) <= movement) && (Math.abs(xDistance) <= movement)) {
 			// We have reached our destination!!!
@@ -246,7 +265,8 @@ public class Creature extends Sprite{
     			trackerY = tmp.y;
     		}
     			
-    		
+    		this.healthBar.x = this.x * scale;
+    		this.healthBar.y = this.y * scale + this.getHeight()*scale;
 		}
 	}
 
@@ -274,14 +294,24 @@ public class Creature extends Sprite{
 	 */
 	private void die() {
 		this.dead = true;
-		setCurrentTexture(this.mDeadTextureData);
+		this.healthBar.draw = false;
 		this.resetRGB();
 		player.moneyFunction(this.goldValue);
 		player.scoreFunction(this.goldValue);
 		GL.updateCurrency();
 		//we dont remove the creature from the gameloop just yet
 		//that is done when it has faded completely, see the fade method.
-		GL.creatureDiesOnMap(1);
+		if (this.survivalgame) {
+			this.allDead = true;
+			TextureData tmp = this.getCurrentTexture();
+			setCurrentTexture(this.mDeadTextureData);
+			this.setDeadTexture(tmp);
+		}
+		else {
+			setCurrentTexture(this.mDeadTextureData);
+			GL.creatureDiesOnMap(1);
+		}
+		
 		// Remove creature from tracker
 		TrackerData tmpTrac = tracker.getTrackerData(trackerX, trackerY);
 		tmpTrac.removeCreatureFromList(this);
@@ -343,10 +373,39 @@ public class Creature extends Sprite{
 	 */
 	private void fade(float reduceOpacity){
 		this.opacity -= reduceOpacity;
+
 		if (opacity <= 0.0f) {
+
 			draw = false;
-			//The creature is now completely gone from the map, tell the loop.
-			GL.creatureLeavesMAP(1);
+			
+			if (this.survivalgame) {
+		    	moveToWaypoint(0);
+	    		setNextWayPoint(1);
+	    		setSpawnPoint();
+	    		this.dead = false;
+    			startHealth = startHealth*1.15f;
+    			currentHealth = startHealth;
+    			opacity = 1;
+    			this.creaturePoisonDamage = 0;
+    			this.creaturePoisonTime = 0;
+    			this.creatureFrozenAmount = 0;
+    			this.creatureFrozenTime = 0;
+
+    			TextureData tmp = this.getCurrentTexture();
+    			setCurrentTexture(this.mDeadTextureData);
+    			this.setDeadTexture(tmp);
+    			
+    			Random generator = new Random();
+    			spawndelay = generator.nextFloat();
+    			
+    			this.goldValue = 1+mapLap/3;
+    			mapLap++;
+    			
+			}
+			else {
+				//The creature is now completely gone from the map, tell the loop.
+				GL.creatureLeavesMAP(1);
+			}
 		}
 	}
 	
@@ -406,8 +465,16 @@ public class Creature extends Sprite{
 	 * Setter for health variable
 	 * @param health
 	 */
-	public void setHealth(float health){ this.health = health; }
+	public void setCurrentHealth(float health){ this.currentHealth = health; }
 	
+	public float getStartHealth() {
+		return startHealth;
+	}
+
+	public void setStartHealth(float startHealth) {
+		this.startHealth = startHealth;
+	}
+
 	/**
 	 * Setter for spawndelay. Time between each creature enters the map
 	 * @param delay
@@ -482,14 +549,6 @@ public class Creature extends Sprite{
 		this.g = this.gDefault;
 		this.b = this.bDefault;
 	}
-
-	/**
-	 * To make the walking of creatures more intresting
-	 * we have a this setter to change standard position
-	 * of a creature
-	 * @param xoffset
-	 */
-	public void setXOffset(int xoffset) { this.xoffset = xoffset; }
 
 	/**
 	 * To make the walking of creatures more intresting
@@ -628,8 +687,16 @@ public class Creature extends Sprite{
 	 * Getter for health variable
 	 * @return health
 	 */
-	public float getHealth(){ return this.health; }
+	public float getHealth(){ return this.currentHealth; }
+
+	public Sprite getHealthBar() {
+		return healthBar;
+	}
 	
+	public void setHealthBar(Sprite sprite) {
+		this.healthBar = sprite;
+		
+	}
 	
 	// If a creature is have a special ability we also want him to change color
 	public void setCreatureSpecials(boolean fast, boolean fireResistant,boolean frostResistant,boolean poisonResistant) {
@@ -668,4 +735,11 @@ public class Creature extends Sprite{
 	public float getVelocity() {
 		return this.velocity;
 	}
+	public boolean getSurvivalMode() {
+		return this.survivalgame;
+	}
+	public void setSurvivalMode(boolean tmp) {
+		this.survivalgame = tmp;
+	}
+
 }

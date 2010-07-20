@@ -2,14 +2,20 @@ package com.crackedcarrot.multiplayer;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +27,9 @@ import com.crackedcarrot.menu.R;
 
 public class Client extends Activity {
 
+	// If this is set to 0 this game is a LITE game. Will read data from integers.xml to set this
+	int fullversion = 0;
+	
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // The client thread
@@ -32,11 +41,14 @@ public class Client extends Activity {
     private static final int REQUEST_CONNECT_DEVICE = 2;
     private static final int REQUEST_DISCOVERABLE = 3;
     
-    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 4; // Default map for multiplayer
-    
     public BluetoothSocket mmClientSocket = null;
+    private MultiplayerService mMultiplayerService;
 
+    private int DIFFICULTY = 1;
+    private int MAP = 1;
+    private int GAMEMODE = 0;
+    protected static Semaphore handshakeSemaphore = new Semaphore(0);
+    
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
 	
@@ -48,6 +60,9 @@ public class Client extends Activity {
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    	
+        Resources r = getResources();
+        fullversion = r.getInteger(R.integer.app_type);
     	
     	Button ScanButton = (Button)findViewById(R.id.scan);
     	ScanButton.setOnClickListener(new OnClickListener() {
@@ -115,6 +130,10 @@ public class Client extends Activity {
                                      .getString(ScanDevices.EXTRA_DEVICE_ADDRESS);
                 // Get the BLuetoothDevice object
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                
+                	// Show connecting-progress-dialog.
+                showDialog(1);
+                
                 // Try to connect to the device
                 connect(device);
             }
@@ -157,6 +176,12 @@ public class Client extends Activity {
         }
 
         public void run() {
+        	
+        	Looper.prepare();
+        	
+        	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+            		, Toast.LENGTH_LONG).show();
+        	
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
             Log.d("CLIENT", "Connectthread runs");
@@ -166,14 +191,19 @@ public class Client extends Activity {
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-            	// Send a message that connection failed? Like in the BT code example?
+            	// Send a message that connection failed
+            	Toast.makeText(getBaseContext(), "Connection to server failed...leaving"
+                		, Toast.LENGTH_LONG).show();
+            	
+            	finish();
+            	
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
                 	Log.e("CLIENT", "Can't close socket", closeException);
                 }
                 
-                return;
+            	return;
             }
             Log.d("CLIENT", "Ansluten!!!");
             startGame();
@@ -182,14 +212,62 @@ public class Client extends Activity {
 
     private void startGame(){
     	Log.d("CLIENT", "Start game");
-    	GameInit.setMultiplayer(mmClientSocket);
+    	
+    	mMultiplayerService = new MultiplayerService(mmClientSocket);
+    	mMultiplayerService.start();
+    	
+		try { handshakeSemaphore.acquire(); }
+		catch (InterruptedException e1) { }
+    	
+		MAP = mMultiplayerService.mpHandler.MAP;
+		DIFFICULTY = mMultiplayerService.mpHandler.DIFFICULTY;
+		GAMEMODE = mMultiplayerService.mpHandler.GAMEMODE;
+		
+		//The following is used to determine if the Server is trying to start a fullversion game while the
+		//client only can run a lite version game.
+		boolean serverSettingsOK = true;
+		if (fullversion == 0) {
+			MAP = 1;
+			if (DIFFICULTY == 3)
+				DIFFICULTY = 2;
+			GAMEMODE = 1;
+			serverSettingsOK = false;
+		}
+		
+		String mapMsg = "CLIENT:"+serverSettingsOK;
+		byte[] sendMsg = mapMsg.getBytes();
+		mMultiplayerService.write(sendMsg);    	
+    	
+    	GameInit.setMultiplayer(mMultiplayerService);
     	Intent StartGame = new Intent(this ,GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		StartGame.putExtra("com.crackedcarrot.menu.wave", GAMEMODE);
 		startActivity(StartGame);
 		// Cancel the thread that completed the connection
         mConnectThread = null;
 		finish();
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case 1: {
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setMessage("Connecting to server. Press back button to cancel connection.");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(true);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+                	
+                	public void onCancel(DialogInterface dialog){
+                		dialog.dismiss();
+                	}
+                });
+                return dialog;
+            }
+        }
+        return null;
+    }
+
     
 }

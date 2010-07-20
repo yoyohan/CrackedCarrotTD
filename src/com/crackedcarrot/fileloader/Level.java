@@ -1,6 +1,8 @@
 package com.crackedcarrot.fileloader;
 
 import com.crackedcarrot.Creature;
+import com.crackedcarrot.Sprite;
+import com.crackedcarrot.menu.R;
 
 // Class contains level information. Number of creatures creature type etc.
 public class Level extends Creature {
@@ -13,7 +15,7 @@ public class Level extends Creature {
 		super(resourceId, 0, null, null, null, null, 0, null);
 	}
     public float getHealth() {
-		return health;
+		return startHealth;
 	}
 
 	public void cloneCreature(Creature clone) {
@@ -24,13 +26,27 @@ public class Level extends Creature {
 		clone.creatureFireResistant = this.creatureFireResistant;
 		clone.creatureFrostResistant = this.creatureFrostResistant;
 		clone.creaturePoisonResistant = this.creaturePoisonResistant;
-		clone.setHealth(this.health);
+		
+		clone.setCurrentHealth(this.startHealth);
+		clone.setStartHealth(this.startHealth);
 		clone.setVelocity(this.velocity);
 		clone.setWidth(this.getWidth());
 		clone.setHeight(this.getHeight());
+		
+		Sprite healthBar = clone.getHealthBar();
+		healthBar.draw = false;
+		healthBar.x = 0;
+		healthBar.y = 0;
+		healthBar.setHeight(8);
+		healthBar.setWidth(this.getWidth() * this.scale);
+		healthBar.r = 0;
+		healthBar.g = 1;
+		healthBar.b = 0;
+		
 		clone.setGoldValue(this.goldValue);
 		clone.draw = false;
 		clone.opacity = 1;
+		
 		clone.creatureFrozenTime = 0;
 		clone.creaturePoisonTime = 0;
 		clone.setRGB(this.rDefault,this.gDefault,this.bDefault);
@@ -43,5 +59,6 @@ public class Level extends Creature {
 		clone.setSpawnPoint();
 		clone.setNextWayPoint(1);
 		clone.setDamagePerCreep(this.getDamagePerCreep());
+		clone.setSurvivalMode(this.getSurvivalMode());
 	}
 }

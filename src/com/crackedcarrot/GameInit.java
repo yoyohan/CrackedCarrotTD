@@ -41,25 +41,14 @@ public class GameInit extends Activity {
     
 
     ///////////////// Multiplayer ////////////////////////////
-    private MultiplayerService mMultiplayerService;
-    private static BluetoothSocket multiplayerSocket = null;
-   
-    /** Makes the Bluetooth socket available from GameInit */
-    public static void setMultiplayer(BluetoothSocket socket){
-        multiplayerSocket = socket;
-    }
+    private static MultiplayerService mMultiplayerService;
+    public static boolean multiplayergame = false;
     
-    /** Used by next level dialog to check if it should be shown */
-    public static boolean multiplayerMode(){
-    	if(multiplayerSocket != null){
-    		return true;
-    	} else{
-    		return false;
-    	}
+    /** Makes the Bluetooth socket available from GameInit */
+    public static void setMultiplayer(MultiplayerService service){
+    	mMultiplayerService = service;
+    	multiplayergame = true;
     }
-    //////////////////////////////////////////////////////////
-
-    //public ScoreNinjaAdapter scoreNinjaAdapter;
 
     /*
      *  DONT CHANGE THESE @Override FUNCTIONS UNLESS YOU KNOW WHAT YOU'RE DOING.
@@ -125,7 +114,7 @@ public class GameInit extends Activity {
         
         
     	// We need this to communicate with our GUI.
-        if(multiplayerMode()){
+        if(multiplayergame){
         	gameLoopGui = new GameLoopGUI(this, hudHandler, true);
         } else {
         	gameLoopGui = new GameLoopGUI(this, hudHandler, false);
@@ -183,8 +172,12 @@ public class GameInit extends Activity {
         	gameMap = mapLoader.readLevel("level3");
         } else if (mapChoice == 4) {
         	gameMap = mapLoader.readLevel("level4");
-        }
-        
+        } else if (mapChoice == 5) {
+    		gameMap = mapLoader.readLevel("level5");
+    	} else {
+			gameMap = mapLoader.readLevel("level6");
+		}
+    	
         NativeRender nativeRenderer = new NativeRender(this, 
         		mGLSurfaceView,TextureLibraryLoader.loadTextures(gameMap.getTextureFile(),this),
         		hudHandler.getOverlayObjectsToRender());
@@ -212,34 +205,43 @@ public class GameInit extends Activity {
         //Load the creature waves and apply the correct difficulty
         WaveLoader waveLoad = new WaveLoader(this, scaler);
         Level[] waveList;
-        // INcase 1 this game is not a multiplayer game and we will launch the ordinary wavefile
+        
+        boolean survivalGame = false;
+        
         if (wave == 1) {
-            waveList  = waveLoad.readWave("wave1",difficulty);
+        	// Normal multiplayer game
+        	waveList  = waveLoad.readWave("wave2",difficulty);
         }
-        else 
-        	//Multiplayer game
-            waveList  = waveLoad.readWave("wave2",difficulty);
-
+        else if (wave == 2) {
+        	// Survival multiplayer game
+        	waveList  = waveLoad.readWave(difficulty);
+        	survivalGame = true;
+        }
+        else {
+        	//Normal game
+        	//waveList  = waveLoad.readWave("wave1",difficulty);
+        	// Survival multiplayer game
+        	waveList  = waveLoad.readWave(difficulty);
+        	survivalGame = true;
+        }
        	// Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
-        if(multiplayerSocket != null) {
+        if(multiplayergame) {
         	Log.d("GAMEINIT", "Create multiplayerGameLoop");
-        	mMultiplayerService = new MultiplayerService(multiplayerSocket, gameLoopGui);
-        	mMultiplayerService.start();
         	
         	gLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-    				gameLoopGui,soundManager, mMultiplayerService);
+    				gameLoopGui,soundManager, mMultiplayerService,survivalGame);
     		gameLoop = gLoop;
     		
-    		mMultiplayerService.setGameLoop(gLoop);
+    		mMultiplayerService.setLoopAndGUI(gLoop,gameLoopGui);
 
     	} else {
     		// Sending data to GAMELOOP
         	Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
-            		gameLoopGui,soundManager);
+            		gameLoopGui,soundManager,survivalGame);
     	}
 
         	// Resuming old game? Prepare GameLoop for this...
@@ -292,9 +294,11 @@ public class GameInit extends Activity {
     
     protected void onStop() {
     	super.onStop();
+    		// Fix for user pressing Home during the game.
+    	gameLoopGui.quitDialogPressed = true;
     	gameLoop.stopGameLoop();
     	gameLoop.soundManager.release();
-    	if(multiplayerMode()){
+    	if(multiplayergame){
     		this.mMultiplayerService.endBluetooth();
     		this.mMultiplayerService = null;
     		Log.d("GAMEINIT", "End Bluetooth");
@@ -313,6 +317,10 @@ public class GameInit extends Activity {
     	// beginning of the next wave of creatures.
     	// This is probably (read: only meant to work with) best called
     	// in between levels when the NextLevel-dialog is shown.
+    	
+    		// Never save multiplayer-status.
+    	if (gameLoopGui.multiplayerMode == true)
+    		return;
     	
     	if (i == 1) {
     		Log.d("GAMEINIT", "Saving game status...");

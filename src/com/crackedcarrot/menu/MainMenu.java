@@ -12,14 +12,20 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.ImageView.ScaleType;
+
 import com.crackedcarrot.GameInit;
-import com.crackedcarrot.multiplayer.*;
+import com.crackedcarrot.multiplayer.MultiplayerOp;
 
 public class MainMenu extends Activity {
 	
 	Dialog dialog;
 	private int resumes;
+    private ImageView mBackground;
+    private TableLayout mTable;
 	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -59,6 +65,11 @@ public class MainMenu extends Activity {
 		        	public void onClick(View v) {
 		        		//Send the level variable to the game loop and start it
 		        		dialog.dismiss();
+		        		
+		            	mBackground.setImageResource(R.drawable.loadimage);
+		        		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+		        		mTable.setVisibility(View.INVISIBLE);
+		        		
 		        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
 		        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
 		        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
@@ -107,6 +118,9 @@ public class MainMenu extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+    	mBackground = (ImageView) findViewById(R.id.mainmenuBackground);    	
+    	mTable = (TableLayout) findViewById(R.id.mainmenutable);
+    	
         Button StartGameButton = (Button)findViewById(R.id.StartGame);
         StartGameButton.setOnClickListener(new OnClickListener() {
         	
@@ -159,7 +173,11 @@ public class MainMenu extends Activity {
     public void onResume() {
     	super.onResume();
     	
-    		// Update the resumes variable in case it's changed.
+    	mBackground.setImageResource(R.drawable.mainmenu);
+		mBackground.setScaleType(ScaleType.FIT_XY);
+		mTable.setVisibility(View.VISIBLE);       
+
+    	// Update the resumes variable in case it's changed.
         // If you touch this please tell fredrik about it.
     	SharedPreferences resume = getSharedPreferences("resume", 0);
     	resumes = resume.getInt("resumes", -1);
@@ -170,7 +188,11 @@ public class MainMenu extends Activity {
     public void onRestart() {
         super.onRestart();
         
-        	// Update the resumes variable in case it's changed.
+    	mBackground.setImageResource(R.drawable.mainmenu);
+		mBackground.setScaleType(ScaleType.FIT_XY);
+		mTable.setVisibility(View.VISIBLE);       
+        
+		// Update the resumes variable in case it's changed.
         // If you touch this please tell fredrik about it.
     	SharedPreferences resume = getSharedPreferences("resume", 0);
     	resumes = resume.getInt("resumes", -1);

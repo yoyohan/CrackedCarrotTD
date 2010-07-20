@@ -29,12 +29,11 @@ public class MultiplayerService extends Thread {
     public GameLoopGUI gameLoopGui;
 
 
-    public MultiplayerService(BluetoothSocket socket, GameLoopGUI glGui) {
+    public MultiplayerService(BluetoothSocket socket) {
         Log.d("MultiplayerService", "create ConnectedThread");
         mmSocket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
-        gameLoopGui = glGui;
 
         // Get the BluetoothSocket input and output streams
         try {
@@ -112,9 +111,9 @@ public class MultiplayerService extends Thread {
     }
 
 
-	public void setGameLoop(MultiplayerGameLoop gLoop) {
+	public void setLoopAndGUI(MultiplayerGameLoop gLoop, GameLoopGUI glGui) {
 		mpHandler.setGameLoop(gLoop);
-		
+        gameLoopGui = glGui;
 	}
     
 }

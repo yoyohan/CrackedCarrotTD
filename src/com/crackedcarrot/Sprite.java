@@ -14,8 +14,7 @@ public class Sprite{
 	public 	static final int SHOT		= 3;
 	public  static final int OVERLAY	= 4;
 	public	static final int TOWER		= 5;
-	public  static final int UI			= 6;
-	
+	public  static final int HEALTHBAR  = 6;
 	private int type;
 	private int subType;
     // Position.
@@ -60,6 +59,7 @@ public class Sprite{
         mResourceId = resourceId;
         this.type = type;
         this.subType = subType;
+        this.cFrame = 0;
     }
     
 	/**

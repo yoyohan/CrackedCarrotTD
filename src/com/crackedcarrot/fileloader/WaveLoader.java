@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.crackedcarrot.Coords;
 import com.crackedcarrot.Scaler;
+import com.crackedcarrot.menu.R;
 
 /**
  * A class that reads the requested waveSet and returns an Level list.
@@ -102,7 +103,7 @@ public class WaveLoader {
 							break;
 						case 7:
 			            	int tmpHealth = Integer.parseInt(tmpStr[1].trim());
-			            	tmpLvl.setHealth((int)(tmpHealth * gameDifficulty));
+			            	tmpLvl.setStartHealth((int)(tmpHealth * gameDifficulty));
 							break;
 						case 8:
 			            	fast = Boolean.parseBoolean(tmpStr[1].trim());
@@ -152,4 +153,57 @@ public class WaveLoader {
 		
 		return levelList;
 	}
+	
+	public Level[] readWave(int difficulty){
+		levelList = new Level[10];
+		for (int i = 0; i < 10; i++) {
+			Level tmpLevel = new Level(R.drawable.mrrabbit_animate);
+			tmpLevel.setDisplayResourceId(R.drawable.mrrabbit);
+			tmpLevel.setDeadResourceId(R.drawable.mrrabbitdead);
+			tmpLevel.scale = 1;
+			tmpLevel.creepTitle = "Survival";
+			double gameDifficulty;
+			if (difficulty == 1) gameDifficulty = 1;
+			else if (difficulty == 2) gameDifficulty = 1.5;
+			else gameDifficulty = 0.6;
+			tmpLevel.setStartHealth((int)(100 * gameDifficulty));
+	    	// Define creature size
+	    	Coords recalc = scaler.scale(60,60);
+	    	tmpLevel.setWidth(recalc.getX());
+	    	tmpLevel.setHeight(recalc.getY());
+	    	recalc = scaler.scale(60,0);
+	    	tmpLevel.setVelocity(recalc.getX());
+	    	tmpLevel.setCreatureSpecials(false,false,false,false);
+	    	tmpLevel.setDamagePerCreep(1);
+	    	tmpLevel.setGoldValue(1);
+	    	tmpLevel.nbrCreatures = 10;
+	    	tmpLevel.setSurvivalMode(true);
+	    	levelList[i] = tmpLevel;
+		}
+    	
+    	levelList[9].setResourceId(R.drawable.mrbabyrabbit_animate);
+    	levelList[9].setDeadResourceId(R.drawable.mrbabyrabbitdead);
+    	levelList[8].setResourceId(R.drawable.mrmonkey_animate);
+    	levelList[8].setDeadResourceId(R.drawable.mrmonkeydead);
+    	levelList[7].setResourceId(R.drawable.mrelephant_animate);
+    	levelList[7].setDeadResourceId(R.drawable.mrelephantdead);
+    	levelList[7].scale = 1.1f;
+    	levelList[6].setResourceId(R.drawable.mrbear_animate);
+    	levelList[6].setDeadResourceId(R.drawable.mrbeardead);
+    	levelList[5].setResourceId(R.drawable.mrevilrabbit_animate);
+    	levelList[5].setDeadResourceId(R.drawable.mrevilrabbitdead);
+    	levelList[4].setResourceId(R.drawable.mrlion_animate);
+    	levelList[4].setDeadResourceId(R.drawable.mrliondead);
+    	levelList[3].setResourceId(R.drawable.mrcat_animate);
+    	levelList[3].setDeadResourceId(R.drawable.mrcatdead);
+    	levelList[2].setResourceId(R.drawable.mrmouse_animate);
+    	levelList[2].setDeadResourceId(R.drawable.mrmousedead);
+    	levelList[1].setResourceId(R.drawable.misspiggy_animate);
+    	levelList[1].setDeadResourceId(R.drawable.misspiggydead);
+    	
+    	
+		return levelList;
+	}
+	
+	
 }

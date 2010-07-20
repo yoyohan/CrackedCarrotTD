@@ -1,5 +1,7 @@
 package com.crackedcarrot;
 
+import android.util.Log;
+
 /** 
  * Class defining the relation between different screen resolutions
  */
@@ -93,4 +95,12 @@ public class Scaler {
 		int tmp = ((g / tmpGridSize.x)) + 1;
 		return tmp;
 	}
+	
+	public float aspectRatio() {
+		Coords tmp = scale(60,60);
+		float tmpy = tmp.y;
+		float tmpx = tmp.x;
+		return tmpy/tmpx;
+	}
+	
 }
