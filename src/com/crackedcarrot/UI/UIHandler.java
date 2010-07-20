@@ -28,12 +28,12 @@ public class UIHandler extends Thread{
 	}
 	
 	public void showGrid(){
-		Log.d("HUD","Showing grid.");
+		// Log.d("HUD","Showing grid.");
 		this.mHandler.post(g.getShowRunner());
 	}
 	
 	public void hideGrid(){
-		Log.d("HUD","Showing grid.");
+		// Log.d("HUD","Showing grid.");
 		this.mHandler.post(g.getHideRunner());
 
 	}

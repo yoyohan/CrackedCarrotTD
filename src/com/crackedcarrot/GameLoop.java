@@ -277,23 +277,23 @@ public class GameLoop implements Runnable {
 
     public void run() {
 
-    	Log.d("GAMELOOP","INIT GAMELOOP 1");
+    	// Log.d("GAMELOOP","INIT GAMELOOP 1");
    	
 	    initializeDataStructures();
 	    
-	    Log.d("GAMELOOP", "INIT GAMELOOP 2");
+	    // Log.d("GAMELOOP", "INIT GAMELOOP 2");
 
 	    	// Resuming an old game? Rebuild all the old towers.
 	    if (resumeTowers != "") {
 	    	
-	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
+	    	// Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
 	    	
 	    	String[] towers = resumeTowers.split("@");
 	    	
 	    	for (int i = 0; i < towers.length; i ++) {
 	    		String[] tower = towers[i].split(",");
 	    		Coords c = mScaler.getPosFromGrid(Integer.parseInt(tower[1]), Integer.parseInt(tower[2]));
-	    		Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[3]);
+	    		// Log.d("GAMELOOP", "Resume CreateTower Type: " + tower[3]);
 	    		
 	    			// First we build the tower.
     			Tower t = mTowerGrid[Integer.parseInt(tower[1])][Integer.parseInt(tower[2])];
@@ -352,7 +352,7 @@ public class GameLoop implements Runnable {
 
 	    }
 	    
-	    Log.d("GAMELOOP","INIT GAMELOOP 3");
+	    // Log.d("GAMELOOP","INIT GAMELOOP 3");
 
 	    gameSpeed = 1;
 
@@ -390,7 +390,7 @@ public class GameLoop implements Runnable {
 					}
 	            } else if (timeDelta > 70) {			
 	            	timeDelta = 70;
-	            	Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.07s");
+	            	// Log.d("GAMELOOP", "One lap in gameLoop is taking more than 0.07s");
 	            }
 				final float timeDeltaSeconds = 
 	                mLastTime > 0.0f ? (timeDelta / 1000.0f) * gameSpeed : 0.0f;
@@ -446,7 +446,7 @@ public class GameLoop implements Runnable {
     		// Check if the GameLoop are to run the level loop one more time.
             if (player.getHealth() < 1) {
         		//If you have lost all your lives then the game ends.
-            	Log.d("GAMETHREAD", "You are dead");
+            	// Log.d("GAMETHREAD", "You are dead");
             	showYouLost();
             	run = false;
         	} 
@@ -454,7 +454,7 @@ public class GameLoop implements Runnable {
         		showYouCompletedWave();
         	}
 	    }
-    	Log.d("GAMETHREAD", "dead thread");
+    	// Log.d("GAMETHREAD", "dead thread");
 
     		// If we lost or won the game, we load the GameFinished screen.
     	if (!gui.quitDialogPressed) {
@@ -494,11 +494,11 @@ public class GameLoop implements Runnable {
     
     public void showYouCompletedWave() {
 		//If you have survied the entire wave without dying. Proceed to next next level.
-    	Log.d("GAMETHREAD", "Wave complete");
+    	// Log.d("GAMETHREAD", "Wave complete");
 		lvlNbr++;
 		if (lvlNbr >= mLvl.length) {
 			// You have completed this map
-        	Log.d("GAMETHREAD", "You have completed this map");
+        	// Log.d("GAMETHREAD", "You have completed this map");
         	
     		// Show the You Won-dialog.
         	//gui.sendMessage(gui.DIALOG_WON_ID, 0, 0);
@@ -664,7 +664,7 @@ public class GameLoop implements Runnable {
     		}
     	}
     	
-    	Log.d("GAMELOOP", "DEBUG, resumeGetTowers: " + s);
+    	// Log.d("GAMELOOP", "DEBUG, resumeGetTowers: " + s);
 
     	return s;
     }
@@ -729,7 +729,7 @@ public class GameLoop implements Runnable {
 	
 	private class UpgradeTowerLvlListener implements OnClickListener{
     	public void onClick(View v){
-    		Log.d("GUI", "Upgrade A clicked!");
+    		// Log.d("GUI", "Upgrade A clicked!");
     		if(selectedTower != null){
     			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
     			int upgradeIndex = t.getUpgradeTowerLvl();
@@ -774,7 +774,7 @@ public class GameLoop implements Runnable {
     			}
     		}
     		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+    			// Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
     		}
     		
     	}
@@ -818,11 +818,11 @@ public class GameLoop implements Runnable {
 			}
 			else {
 				gui.NotEnoughMoney();
-				Log.d("GAMELOOP","No upgrade done");
+				// Log.d("GAMELOOP","No upgrade done");
 			}
 		}
 		else{
-			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+			// Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
 		}
 
     }
@@ -846,14 +846,14 @@ public class GameLoop implements Runnable {
 			}
 		}
 		else{
-			Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
+			// Log.d("GAMELOOP","Error, no tower selected, can not upgrade");
 		}
 
     }
     
     private class SellListener implements OnClickListener{
     	public void onClick(View v){
-    		Log.d("GameLoop", "Sell Tower clicked!");
+    		// Log.d("GameLoop", "Sell Tower clicked!");
     		if(selectedTower != null){
     			
     			gui.getGameInit().hudHandler.hideRangeIndicator();
@@ -872,7 +872,7 @@ public class GameLoop implements Runnable {
     			updateCurrency();
     		}
     		else{
-    			Log.d("GAMELOOP","Error, no tower selected, can not sell");
+    			// Log.d("GAMELOOP","Error, no tower selected, can not sell");
     		}
     	}
     }

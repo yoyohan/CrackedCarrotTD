@@ -78,7 +78,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	//@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		Log.d("GL_INFO", gl.glGetString(GL11.GL_EXTENSIONS));
+		// Log.d("GL_INFO", gl.glGetString(GL11.GL_EXTENSIONS));
 		
 		/*if(renderList != null){
 			for(int i = 0; i < renderList.length; i++){
@@ -143,7 +143,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 						//Try to load textures
 						int resource = sprites[j][i].getResourceId();
 						if(resource == 0){
-							Log.d("FIN SPRITES", "Error Invalid resource ID");
+							// Log.d("FIN SPRITES", "Error Invalid resource ID");
 						}
 						if (!textureMap.containsKey(resource)) {
 							TextureData d = loadTexture(resource);
@@ -210,7 +210,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @throws InterruptedException 
 	 */
 	private TextureData loadTexture(int rId){
-		//Log.d("loadTexture id:", ""+rId);
+		//// Log.d("loadTexture id:", ""+rId);
 		final int resourceId = rId;
 		int lastTextureId = 0;
 		if (!textureMap.containsKey(resourceId)) {
@@ -311,7 +311,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	}
 	
 	private int loadBitmap(Context context, GL10 gl, int resourceId) {
-		//Log.d("JAVA_LOADTEXTURE","Resource id:"+resourceId);
+		//// Log.d("JAVA_LOADTEXTURE","Resource id:"+resourceId);
 		
 		
         int textureName = -1;
@@ -329,7 +329,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 
             gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
             
-            //Log.d("JAVA_LOADTEXTURE","Trying to load texture: " + context.getResources().getResourceName(resourceId));
+            //// Log.d("JAVA_LOADTEXTURE","Trying to load texture: " + context.getResources().getResourceName(resourceId));
             InputStream is = context.getResources().openRawResource(resourceId);
             Bitmap bitmap;
             try {
@@ -358,7 +358,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             }
         
         }
-        //Log.d("JAVA_LOADTEXTURE", "Loading texture, id is: " + textureName);
+        //// Log.d("JAVA_LOADTEXTURE", "Loading texture, id is: " + textureName);
         return textureName;
     }
 }

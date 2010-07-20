@@ -28,10 +28,10 @@ public class TextureLibraryLoader {
 				else{
 					trimmer = buf.toString();
 					resIdAndFrames = trimmer.split(" ");
-					if(resIdAndFrames.length != 2)
-						Log.d("TEXTURE LIBRARY", "Mallformed Texture Meta Data");
+					if(resIdAndFrames.length != 2){
+						//Log.d("TEXTURE LIBRARY", "Mallformed Texture Meta Data");
 					
-					else{
+					}else{
 						int resId = context.getResources().getIdentifier(resIdAndFrames[0].trim(), "drawable", context.getPackageName());
 						if(resId == 0)
 							Log.e("TEXTURE LIBRARY", "Invalid resourceId from context, Rid fetch failed!");
