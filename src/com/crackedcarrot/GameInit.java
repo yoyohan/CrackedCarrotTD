@@ -69,11 +69,11 @@ public class GameInit extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
+    		// Log.d("GAMEINIT", "onKeyDown KEYCODE_BACK");
     		showDialog(gameLoopGui.DIALOG_QUIT_ID);
     		return true;
        	} else if (keyCode == KeyEvent.KEYCODE_MENU) {
-       		Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
+       		//Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
        		if (!multiplayergame)
        			GameLoop.pause();
        		showDialog(gameLoopGui.DIALOG_PAUSE_ID);
@@ -88,7 +88,7 @@ public class GameInit extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	
-    	Log.d("GAMEINIT", "onCreate");
+    	// Log.d("GAMEINIT", "onCreate");
     	
     	/** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -131,7 +131,7 @@ public class GameInit extends Activity {
         int wave = 0;
         
         if (extras != null) {
-        	Log.d("GAMEINIT", "Extras != null, fetching intents...");
+        	// Log.d("GAMEINIT", "Extras != null, fetching intents...");
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
         	wave =  extras.getInt("com.crackedcarrot.menu.wave");
@@ -230,7 +230,7 @@ public class GameInit extends Activity {
         Tower[] tTypes  = towerLoad.readTowers("towers");
         
         if(multiplayergame) {
-        	Log.d("GAMEINIT", "Create multiplayerGameLoop");
+        	// Log.d("GAMEINIT", "Create multiplayerGameLoop");
         	
         	gLoop = new MultiplayerGameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
     				gameLoopGui,soundManager, mMultiplayerService,survivalGame);
@@ -240,7 +240,7 @@ public class GameInit extends Activity {
 
     	} else {
     		// Sending data to GAMELOOP
-        	Log.d("GAMEINIT", "Create ordinary GameLoop");
+        	// Log.d("GAMEINIT", "Create ordinary GameLoop");
             gameLoop = new GameLoop(nativeRenderer,gameMap,waveList,tTypes,p,
             		gameLoopGui,soundManager,survivalGame);
     	}
@@ -270,27 +270,27 @@ public class GameInit extends Activity {
 
     protected void onDestroy() {
     	super.onDestroy();
-    	Log.d("GAMEINIT", "onDestroy");
+    	// Log.d("GAMEINIT", "onDestroy");
     }
     
     protected void onPause() {
     	super.onPause();
-    	Log.d("GAMEINIT", "onPause");
+    	// Log.d("GAMEINIT", "onPause");
     }
     
     protected void onRestart() {
     	super.onRestart();
-    	Log.d("GAMEINIT", "onRestart");
+    	// Log.d("GAMEINIT", "onRestart");
     }
     
     protected void onResume() {
     	super.onResume();
-    	Log.d("GAMEINIT", "onResume");
+    	// Log.d("GAMEINIT", "onResume");
     }
     
     protected void onStart() {
     	super.onStart();
-    	Log.d("GAMEINIT", "onStart");
+    	// Log.d("GAMEINIT", "onStart");
     }
     
     protected void onStop() {
@@ -302,9 +302,9 @@ public class GameInit extends Activity {
     	if(multiplayergame){
     		this.mMultiplayerService.endBluetooth();
     		this.mMultiplayerService = null;
-    		Log.d("GAMEINIT", "End Bluetooth");
+    		// Log.d("GAMEINIT", "End Bluetooth");
     	}
-    	Log.d("GAMEINIT", "onStop");
+    	// Log.d("GAMEINIT", "onStop");
 
     	//You also need to stop the trace when you are done!
     	//Debug.stopMethodTracing();
@@ -324,7 +324,7 @@ public class GameInit extends Activity {
     		return;
     	
     	if (i == 1) {
-    		Log.d("GAMEINIT", "Saving game status...");
+    		// Log.d("GAMEINIT", "Saving game status...");
     			// Save everything.
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
@@ -336,15 +336,15 @@ public class GameInit extends Activity {
     		editor.putInt("resumes", resume.getInt("resumes", 0));
     		editor.putString("towers", gameLoop.resumeGetTowers());
     		editor.commit();
-    		Log.d("GAMEINIT","resumes: " + resume.getInt("resumes", 0));
+    		// Log.d("GAMEINIT","resumes: " + resume.getInt("resumes", 0));
     	} else {
-    		Log.d("GAMEINIT", "Erasing saved game status.");
+    		// Log.d("GAMEINIT", "Erasing saved game status.");
     			// Dont allow resume. Clears the main resume flag!
     		SharedPreferences resume = getSharedPreferences("resume", 0);
     		SharedPreferences.Editor editor = resume.edit();
     		editor.putInt("resumes", -1);
     		editor.commit();
-    		Log.d("GAMEINIT","resumes: " + -1);
+    		// Log.d("GAMEINIT","resumes: " + -1);
     	}
     }
 }

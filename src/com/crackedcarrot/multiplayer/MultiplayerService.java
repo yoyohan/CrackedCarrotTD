@@ -65,7 +65,7 @@ public class MultiplayerService extends Thread {
                 	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, 
                     		bytes, buffer).sendToTarget();
                 }
-         	   //Log.d("MPSERVICE LOOP", "Send to handler");
+         	   	Log.d("MPSERVICE LOOP", "Send to handler");
             } catch (IOException e) {
             	Log.d("MPSERVICE LOOP", "Connection lost", e);
                 connectionLost();

@@ -365,7 +365,7 @@ public class GameLoopGUI {
         
         closeUpgrade.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
-        		Log.d("GUI", "Close Upgrade clicked!");
+        		// Log.d("GUI", "Close Upgrade clicked!");
         		
         		gameInit.hudHandler.hideRangeIndicator();
 
@@ -765,7 +765,7 @@ public class GameLoopGUI {
 	    	return dialogCompare;
 	    	
 	    default:
-	    	Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
+	    	// Log.d("GAMEINIT", "onCreateDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	    return dialog;
@@ -924,7 +924,7 @@ public class GameLoopGUI {
 	        break;
 			
 	    default:
-	    	Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
+	    	// Log.d("GAMEINIT", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	}
@@ -942,11 +942,11 @@ public class GameLoopGUI {
 	        		 SharedPreferences settings1 = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings1.getBoolean("optionsNextLevel", true)
 	        	    		 && !GameInit.multiplayergame) {
-	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
+	        	    	 // Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
 	        	    	 	// Simulate clicking the dialog.
-	        	    	 Log.d("GAMELOOPGUI", "Simulate next level dialog");
+	        	    	 // Log.d("GAMELOOPGUI", "Simulate next level dialog");
 	        	    	 gameInit.gameLoop.dialogClick();
 	        	     }
 	        		 break;
@@ -1078,7 +1078,7 @@ public class GameLoopGUI {
 	public void sendMessage(int i, int j, int k) {
 
 		// TODO: remove this when done debugging msgs.
-		//Log.d("GAMELOOPGUI", "sendMessage: " + i);
+		//// Log.d("GAMELOOPGUI", "sendMessage: " + i);
 		
 		Message msg = Message.obtain();
 		msg.what = i;
@@ -1270,12 +1270,5 @@ public class GameLoopGUI {
     		}
     	}
     }
-
-	public void alertTeleportSuccess() {
-		CharSequence text = "A enemy has been teleported back to spawnpoint";
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
-		toast.show();
-	}
 
 }

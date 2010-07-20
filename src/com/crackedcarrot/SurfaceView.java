@@ -51,7 +51,7 @@ public class SurfaceView extends GLSurfaceView {
 					test = true;
 				}
 				else{
-					Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
+					// Log.d("SURFACEVIEW","Guru Meditation: Cant get towerdata");
 				}
 			} if (buildTower &&	!test && ui != null) {
 				

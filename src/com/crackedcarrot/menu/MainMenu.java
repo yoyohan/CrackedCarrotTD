@@ -30,8 +30,8 @@ public class MainMenu extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		Log.d("MAINMENU", "onKeyDown KEYCODE_BACK");
-    		Log.d("MAINMENU", "Calling System.exit(0)");
+    		// Log.d("MAINMENU", "onKeyDown KEYCODE_BACK");
+    		// Log.d("MAINMENU", "Calling System.exit(0)");
     		System.exit(0);
     		return true;
        	}
@@ -89,7 +89,7 @@ public class MainMenu extends Activity {
 		    	break;
 		    	
 		    default:
-		    	Log.d("MAINMENU", "onCreateDialog got unknown dialog id: " + id);
+		    	// Log.d("MAINMENU", "onCreateDialog got unknown dialog id: " + id);
 		        dialog = null;
     	}
     	return dialog;
@@ -102,7 +102,7 @@ public class MainMenu extends Activity {
 	    	textView.setText("Resume last game? You have " + (3 - resumes) + " resume(s) left.");
 	    	
 	    default:
-	    	Log.d("MAINMENU", "onPrepareDialog got unknown dialog id: " + id);
+	    	// Log.d("MAINMENU", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
 	    }
 	}
@@ -128,7 +128,7 @@ public class MainMenu extends Activity {
             	// See if there's any old game saved that can be resumed.
             	SharedPreferences resume = getSharedPreferences("resume", 0);
             	resumes = resume.getInt("resumes", -1);
-            	Log.d("MAINMENU", "resumes: " + resumes);
+            	// Log.d("MAINMENU", "resumes: " + resumes);
             	
             	if (resumes > -1 && resumes < 3) {
             		showDialog(1);
