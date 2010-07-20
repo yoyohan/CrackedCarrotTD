@@ -111,6 +111,7 @@ public class GameLoopGUI {
     public final int SETMULTIPLAYERVISIBLE   =30;
     public final int GUI_HIDECREATUREDATA_ID = 31;
     public final int GUI_SHOWSHIELDBUTTON = 32;
+    public final int GUI_TELEPORTSUCCESS = 33;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -1050,6 +1051,12 @@ public class GameLoopGUI {
     			    break;
 	        	 case GUI_SHOWSHIELDBUTTON:
 	   			    	makeShieldButton.setVisibility(View.VISIBLE);
+	    			    break;
+	        	 case GUI_TELEPORTSUCCESS:
+	    				CharSequence text = "A enemy has been teleported back to spawnpoint";
+	    				int duration = Toast.LENGTH_SHORT;
+	    				Toast toast = Toast.makeText(getGameInit(), text, duration);
+	    				toast.show();
 	    			    break;
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
