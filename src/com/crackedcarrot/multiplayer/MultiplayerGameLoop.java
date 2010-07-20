@@ -432,13 +432,13 @@ public class MultiplayerGameLoop extends GameLoop {
 			}
 		}
 		for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
+			if (fast && !mCreatures[z].creatureFast) {
+				mCreatures[z].setVelocity(mCreatures[z].getVelocity()*1.5f);
+			}
+
 			mCreatures[z].setCreatureSpecials(fast, fireResistant,
 					frostResistant, poisonResistant);
 			
-			if (fast && !mCreatures[z].creatureFast) {
-				mCreatures[z].setVelocity(mCreatures[z].getVelocity()*1.5f);
-				
-			}
 		}
 		
 		int returnint = 0;
