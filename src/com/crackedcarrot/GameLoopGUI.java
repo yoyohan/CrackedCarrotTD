@@ -109,6 +109,9 @@ public class GameLoopGUI {
     public final int GUI_HIDEHEALTHBAR_ID   = 28;
     public final int GUI_UPDATELVLNBRTEXT_ID= 29;
     public final int SETMULTIPLAYERVISIBLE   =30;
+    public final int GUI_HIDECREATUREDATA_ID = 31;
+    public final int GUI_SHOWSHIELDBUTTON = 32;
+    public final int GUI_TELEPORTSUCCESS = 33;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -264,7 +267,8 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		if(gameInit.gLoop.decreaseOppLife()){
         			expandMenu.switchMenu();
-        			lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
+        			if (!gameInit.gLoop.survivalGame)
+        				lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
         			CharSequence text = "Not enough money";
@@ -280,7 +284,8 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		if(gameInit.gLoop.increaseEnemySpeed()){
         			expandMenu.switchMenu();
-        			enemyFastButton.setVisibility(View.INVISIBLE); //set visible when new level
+        			if (!gameInit.gLoop.survivalGame)
+        				enemyFastButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
         			CharSequence text = "Not enough money";
@@ -296,7 +301,8 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		if(gameInit.gLoop.destroyTower()){
         			expandMenu.switchMenu();
-        			destroyTowerButton.setVisibility(View.INVISIBLE); //set visible when new level
+        			if (!gameInit.gLoop.survivalGame)
+        				destroyTowerButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
         			CharSequence text = "Not enough money";
@@ -312,7 +318,8 @@ public class GameLoopGUI {
         	public void onClick(View v) {
         		if(gameInit.gLoop.makeElemental()){
         			expandMenu.switchMenu();
-        			makeElementalButton.setVisibility(View.INVISIBLE); //set visible when new level
+        			if (!gameInit.gLoop.survivalGame) 
+        				makeElementalButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
         			//Not enough money, show in the menu below
         			CharSequence text = "Not enough money";
@@ -932,7 +939,7 @@ public class GameLoopGUI {
 	        	 case DIALOG_NEXTLEVEL_ID:
 	        		 SharedPreferences settings1 = gameInit.getSharedPreferences("Options", 0);
 	        	     if (settings1.getBoolean("optionsNextLevel", true)
-	        	    		 && !GameInit.multiplayerMode()) {
+	        	    		 && !GameInit.multiplayergame) {
 	        	    	 Log.d("GAMELOOPGUI", "Start next level dialog");
 	        	    	 gameInit.showDialog(DIALOG_NEXTLEVEL_ID);
 	        	     } else {
@@ -1004,6 +1011,11 @@ public class GameLoopGUI {
 	        		 creatureBar.setVisibility(View.GONE);
 	        		 counterBar.setVisibility(View.VISIBLE);
 	        		 break;
+	        	 case GUI_HIDECREATUREDATA_ID:
+	        		 //If we play a survival game nonen of the following bars are of use
+	        		 creatureBar.setVisibility(View.GONE);
+	        		 counterBar.setVisibility(View.INVISIBLE);
+	        		 break;
 	        	 case WAIT_OPPONENT_ID:
 	        		 gameInit.showDialog(WAIT_OPPONENT_ID);
 	        		 break;
@@ -1035,8 +1047,17 @@ public class GameLoopGUI {
     			    enemyFastButton.setVisibility(View.VISIBLE);
     			    destroyTowerButton.setVisibility(View.VISIBLE);
     			    makeElementalButton.setVisibility(View.VISIBLE);
-    			    makeShieldButton.setVisibility(View.VISIBLE);
+   			    	makeShieldButton.setVisibility(View.VISIBLE);
     			    break;
+	        	 case GUI_SHOWSHIELDBUTTON:
+	   			    	makeShieldButton.setVisibility(View.VISIBLE);
+	    			    break;
+	        	 case GUI_TELEPORTSUCCESS:
+	    				CharSequence text = "A enemy has been teleported back to spawnpoint";
+	    				int duration = Toast.LENGTH_SHORT;
+	    				Toast toast = Toast.makeText(getGameInit(), text, duration);
+	    				toast.show();
+	    			    break;
 	        	 case -1: // GAME IS DONE, CLOSE ACTIVITY.
 	        		 gameInit.finish();
 	        		 break;
@@ -1247,5 +1268,12 @@ public class GameLoopGUI {
     		}
     	}
     }
+
+	public void alertTeleportSuccess() {
+		CharSequence text = "A enemy has been teleported back to spawnpoint";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
+		toast.show();
+	}
 
 }

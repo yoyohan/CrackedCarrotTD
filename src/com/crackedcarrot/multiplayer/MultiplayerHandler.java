@@ -36,6 +36,12 @@ public class MultiplayerHandler extends Thread {
     private final String MAKE_SHIELD = "mkShield";
     private final String OPP_CRE_LEFT = "cre";
 	
+    //Handshake variables
+ 	public int MAP;
+ 	public int DIFFICULTY;
+ 	public int GAMEMODE;
+ 	public boolean OK;
+    
 	public MultiplayerHandler(GameLoopGUI glGui){
 		gameLoopGui = glGui;
 		//mpGL = gameLoopGui.getGameInit()
@@ -52,6 +58,9 @@ public class MultiplayerHandler extends Thread {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                 case MESSAGE_READ:
+                	
+                	try {
+                	
                 	byte[] readBuff = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuff);
@@ -59,8 +68,25 @@ public class MultiplayerHandler extends Thread {
  	                
  	                Log.d("MULTIPLAYER!", "Message: " + readMessage);
  	                
+ 	                
+ 	                if(readMessage.startsWith("SERVER")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	MAP = Integer.parseInt(temp[1]);
+ 	                	DIFFICULTY = Integer.parseInt(temp[2]);
+ 	                	GAMEMODE = Integer.parseInt(temp[3]);
+ 	                	Client.handshakeSemaphore.release();
+
+ 	                }
+ 	                if(readMessage.startsWith("CLIENT")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	// If we receive an ok from client then run with map selection otherwise set to default.
+ 	                	OK = Boolean.parseBoolean(temp[1]);
+ 	                	Server.handshakeSemaphore.release();
+
+ 	                }
+ 	                
  	                // Level synchronization
- 	                if(readMessage.equals(SYNCH_LEVEL)){
+ 	                else if(readMessage.equals(SYNCH_LEVEL)){
  	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
  	                	//MultiplayerGameLoop.synchLevelClick();                    
  	                	mpGL.synchLevelClick();                    
@@ -94,6 +120,9 @@ public class MultiplayerHandler extends Thread {
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
+		            		
+		            		if (mpGL.isSurvivalGame())
+		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else{
 		                	mpGL.incEnSp(0);
@@ -112,12 +141,19 @@ public class MultiplayerHandler extends Thread {
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
+
+		            		if (mpGL.isSurvivalGame())
+		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else{
-		                	mpGL.decOppLife();
+		                	boolean tmp = mpGL.decOppLife();
 		                	
-		                	CharSequence text = "Your life has been decreased";
-		            		int duration = Toast.LENGTH_SHORT;
+		                	CharSequence text;
+		                	if (tmp)
+		                		text = "Your health has been decreased";
+		                	else 
+		                		text = "Your opponent tried to decrease your health below zero and failed";
+		                	int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
 	                	}
@@ -130,6 +166,9 @@ public class MultiplayerHandler extends Thread {
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
+		            		
+		            		if (mpGL.isSurvivalGame())
+		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else {
 		                	mpGL.desTower(0);
@@ -148,37 +187,38 @@ public class MultiplayerHandler extends Thread {
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
+		            		
+		            		if (mpGL.isSurvivalGame())
+		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else{
-		                	int tmp = mpGL.mkElem();
-		                	CharSequence text = "";
+		                	String tmp = String.valueOf(mpGL.mkElem());
+		                	String text = "Enemies have gained: ";
 		                	
-		            		if (tmp == 0) {
-			                	text = "The enemies have gained speed";
-		            		}
-		            		else if (tmp == 1) {
-			                	text = "The enemies have gained fire resistans";
-		            		}
-		            		else if (tmp == 2) {
-			                	text = "The enemies have gained frost resistans";
-		            		} else {
-			                	text = "The enemies have gained poison resistans";
-		            		}
+		            		if (tmp.charAt(0) == '1')
+			                	text += "speed ";
+		            		else if (tmp.charAt(1) == '1')
+			                	text = "fireresistans ";
+		            		else if (tmp.charAt(2) == '1')
+			                	text = "frostresistans ";
+			                else if (tmp.charAt(1) == '1')
+			                	text = "poisonresistans";
 
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
 		            		toast.show();
 	                	}
 	                }
-	                /*
-	                else if(readMessage.equals(MAKE_SHIELD)){
-	                	Log.d("MULTIPLAYERHANDLER", "opponent made a shield");
-	                	//Do something? No, don't notify opponent about this
-	                } */
 	                else {
 	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;
+                	
+                	}
+                	catch (NumberFormatException nfe) {
+                		// do nothing really. a message was distorted, we consider it lost and move on.
+                	}
+                	
                 case MESSAGE_BT_KILLED:
                 	CharSequence text = "Bluetooth connection was lost, closing battle...";
             		int duration = Toast.LENGTH_SHORT;

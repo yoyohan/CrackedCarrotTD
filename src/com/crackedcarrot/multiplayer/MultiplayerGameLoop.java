@@ -29,8 +29,8 @@ public class MultiplayerGameLoop extends GameLoop {
 
 	public MultiplayerGameLoop(NativeRender renderHandle, Map gameMap,
 			Level[] waveList, Tower[] tTypes, Player p, GameLoopGUI gui,
-			SoundManager sm, MultiplayerService mpS) {
-		super(renderHandle, gameMap, waveList, tTypes, p, gui, sm);
+			SoundManager sm, MultiplayerService mpS, boolean survivalGame) {
+		super(renderHandle, gameMap, waveList, tTypes, p, gui, sm, survivalGame);
 		this.mMultiplayerService = mpS;
 	}
 
@@ -49,8 +49,10 @@ public class MultiplayerGameLoop extends GameLoop {
 		waitForDialogClick();
 
 		// Make the five multiplayer buttons visible for the current level
-		gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
-
+		if (this.multiplayerShield)
+			gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
+		else gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 1, 0);
+		
 		// When player clicked ok, send message to opponent that it's done
 		String message2 = "synchLevel";
 		byte[] send2 = message2.getBytes();
@@ -74,6 +76,8 @@ public class MultiplayerGameLoop extends GameLoop {
 
 		// Close "Waiting for opponent" message
 		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+		
+		this.multiplayerShield = false;
 
 	}
 
@@ -274,11 +278,6 @@ public class MultiplayerGameLoop extends GameLoop {
 		if (player.getMoney() >= 50) {
 			player.moneyFunction(-50);
 			mkShield();
-			// send message over Bluetooth
-			/*
-			 * String mkShield = "mkShield"; byte[] sendMkShield =
-			 * mkShield.getBytes(); mMultiplayerService.write(sendMkShield);
-			 */
 			updateCurrency();
 			return true;
 		} else {
@@ -322,9 +321,13 @@ public class MultiplayerGameLoop extends GameLoop {
 		}
 	}
 
-	public void decOppLife() {
-		player.damage(5);
-		updatePlayerHealth();
+	public boolean decOppLife() {
+		if (player.getHealth() > 5) {
+			player.damage(5);
+			updatePlayerHealth();
+			return true;
+		}
+		else return false;
 	}
 
 	public void desTower(int nbr) {
@@ -350,26 +353,82 @@ public class MultiplayerGameLoop extends GameLoop {
 	}
 
 	public int mkElem() {
+		
+		boolean fast = mCreatures[0].creatureFast;
+		boolean fireResistant = mCreatures[0].creatureFireResistant;
+		boolean frostResistant = mCreatures[0].creatureFrostResistant;
+		boolean poisonResistant = mCreatures[0].creaturePoisonResistant;
+		
 		Random rand = new Random();
 		int tmp = rand.nextInt(4);
 
-		boolean fast = false;
-		boolean fireResistant = false;
-		boolean frostResistant = false;
-		boolean poisonResistant = false;
-
 		if (tmp == 0) {
-			fast = true;
+			if (fast) 
+				tmp++;
+			else fast = true;
 		}
-		else if (tmp == 1) {
-			fireResistant = true;
+		
+		if (tmp == 1) {
+			if (fireResistant)
+				tmp++;
+			else fireResistant = true;
 		}
-		else if (tmp == 2) {
-			frostResistant = true;
-		} else {
-			poisonResistant = true;
+		
+		if (tmp == 2) {
+			if (frostResistant)
+				tmp++;
+			else frostResistant = true;
 		}
 
+		if (tmp == 3) {
+			if (poisonResistant) {
+				if (fast)
+					if (fireResistant)
+						frostResistant = true;
+					else fireResistant = true;
+				else fast = true;
+			}
+			else poisonResistant = true;
+		}
+		int tmp2 = 0;
+		int tmp3 = 0;
+		int tmp4 = 0;
+		
+		if (!this.survivalGame) {
+			if (this.lvlNbr > 7) {
+				tmp2 = rand.nextInt(4);
+				if (tmp2 == 0)
+					fast = true;
+				if (tmp2 == 1)
+					fireResistant = true;
+				if (tmp2 == 2)
+					frostResistant = true;
+				if (tmp2 == 3)
+					poisonResistant = true;
+			}
+			if (this.lvlNbr > 12) {
+				tmp3 = rand.nextInt(4);
+				if (tmp3 == 0)
+					fast = true;
+				if (tmp3 == 1)
+					fireResistant = true;
+				if (tmp3 == 2)
+					frostResistant = true;
+				if (tmp3 == 3)
+					poisonResistant = true;
+			}
+			if (this.lvlNbr > 16) {
+				tmp4 = rand.nextInt(4);
+				if (tmp4 == 0)
+					fast = true;
+				if (tmp4 == 1)
+					fireResistant = true;
+				if (tmp4 == 2)
+					frostResistant = true;
+				if (tmp4 == 3)
+					poisonResistant = true;
+			}
+		}
 		for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
 			mCreatures[z].setCreatureSpecials(fast, fireResistant,
 					frostResistant, poisonResistant);
@@ -380,7 +439,17 @@ public class MultiplayerGameLoop extends GameLoop {
 			}
 		}
 		
-		return tmp;
+		int returnint = 0;
+		if (fast)
+			returnint = 1;
+		if (fireResistant)
+			returnint += 10;
+		if (frostResistant)
+			returnint += 100;
+		if (poisonResistant)
+			returnint += 1000;
+
+		return returnint;
 	}
 
 	public void mkShield() {
@@ -405,5 +474,8 @@ public class MultiplayerGameLoop extends GameLoop {
 		mMultiplayerService.write(sendCreDies);
 		
 	}
-
+	
+	public boolean isSurvivalGame() {
+		return this.survivalGame;
+	}
 }

@@ -1,6 +1,8 @@
 package com.crackedcarrot.multiplayer;
 
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -14,7 +16,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ImageView.ScaleType;
 
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
@@ -32,14 +36,18 @@ public class Server extends Activity {
     // The request codes for startActivity and onActivityResult
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_DISCOVERABLE = 3;
-    
     private final int PROGRESS_DIALOG = 1;
     
     public BluetoothSocket socket = null;
+    private MultiplayerService mMultiplayerService;
     
-    private final int DIFFICULTY = 1; //Default diff. for multiplayer is normal
-    private final int MAP = 4; // Default map for multiplayer
-	
+    private int DIFFICULTY = 1;
+    private int MAP = 1;
+    private int GAMEMODE = 0;
+    protected static Semaphore handshakeSemaphore = new Semaphore(0);
+   
+    private ImageView mBackground;
+    
     /** if user presses back button, this activity will finish */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -60,6 +68,8 @@ public class Server extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
+    	mBackground = (ImageView) findViewById(R.id.ServerBackground);
+    	
     	// Get the local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         
@@ -71,6 +81,20 @@ public class Server extends Activity {
             return;
         }
         
+        
+        // Fetch information from previous intent. The information will contain the
+        // map and difficulty decided by the player.
+        Bundle extras  = getIntent().getExtras();
+        
+        if (extras != null) {
+        	MAP = extras.getInt("com.crackedcarrot.multiplayer.map");
+        	if (MAP == 7) {
+        		Random randomGenerator = new Random();
+        		MAP = randomGenerator.nextInt(6) + 1;
+        	}
+        	DIFFICULTY =  extras.getInt("com.crackedcarrot.multiplayer.difficulty");
+        	GAMEMODE =  extras.getInt("com.crackedcarrot.multiplayer.gamemode");
+        } 
         
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
@@ -183,12 +207,36 @@ public class Server extends Activity {
     
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
-        // Start the game and finish the activity
-    	Log.d("SERVER", "Start game");
-    	GameInit.setMultiplayer(socket);
+		
+    	mBackground.setImageResource(R.drawable.loadimage);
+		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+    	
+		mMultiplayerService = new MultiplayerService(socket);
+    	mMultiplayerService.start();
+    	
+		String mapMsg = "SERVER:"+MAP+":"+DIFFICULTY+":"+GAMEMODE;
+		byte[] sendMsg = mapMsg.getBytes();
+		mMultiplayerService.write(sendMsg);
+    	
+		try { handshakeSemaphore.acquire(); }
+		catch (InterruptedException e1) { }
+
+		// Is the client ok with the selected map, difficulty and gamemode. No if
+		// the client is running a lite version.
+		Boolean clientOK = mMultiplayerService.mpHandler.OK;
+		if (!clientOK) {
+			MAP = 1;
+			if (DIFFICULTY == 3)
+				DIFFICULTY = 2;
+			GAMEMODE = 1;
+		}
+		
+    	// Start the game and finish the activity
+    	GameInit.setMultiplayer(mMultiplayerService);
     	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
 		StartGame.putExtra("com.crackedcarrot.menu.difficulty", DIFFICULTY);
+		StartGame.putExtra("com.crackedcarrot.menu.wave", GAMEMODE);
 		startActivity(StartGame);
 		// Cancel the accept thread because we only want to connect to one device
 		mAcceptThread = null;

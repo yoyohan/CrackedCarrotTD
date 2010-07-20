@@ -54,7 +54,7 @@ public class GameLoop implements Runnable {
     protected Tower[]    mTower;
     protected Tower[][]  mTowerGrid;
     protected Tower[]    mTTypes;
-
+    protected Sprite[]   mSpecialTowers;
     // Tracker for finding creatures
     private Tracker gameTracker;
     
@@ -65,9 +65,10 @@ public class GameLoop implements Runnable {
     
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
+    protected boolean survivalGame = false;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
-			Player p, GameLoopGUI gui, SoundManager sm){
+			Player p, GameLoopGUI gui, SoundManager sm, boolean survivalGame){
     	this.renderHandle = renderHandle;
 		this.mGameMap = gameMap;
    		this.mTowerGrid = gameMap.get2DGrid();
@@ -80,17 +81,13 @@ public class GameLoop implements Runnable {
     	this.gui = gui;
     	this.gui.setUpgradeListeners(new UpgradeTowerLvlListener(), new UpgradeFireListener(), new UpgradeFrostListener(), new UpgradePoisonListener(), new SellListener(), new UpgradeSpecialListener());
     	gameTracker = new Tracker();
+    	this.survivalGame = survivalGame;
     }
     
 	protected void initializeDataStructures() {
-		//this allocates the space we need for shots towers and creatures.
-	    //this.mTower = new Tower[60];
-	    this.mShots = new Shot[mTower.length];
-	    this.mCreatures = new Creature[50];
-		
+	    this.mShots = new Shot[mTower.length];		
 	    //Initialize the all the elements in the arrays with garbage data
 	    for (int i = 0; i < mTower.length; i++) {
-
 	    	mTower[i].initTower(R.drawable.tesla1, 0, mCreatures, soundManager);
 	    	mShots[i] = new Shot(R.drawable.throwingstar,0, mTower[i]);
 	    	mTower[i].setHeight(this.mTTypes[0].getHeight());
@@ -100,25 +97,8 @@ public class GameLoop implements Runnable {
 	    	mTower[i].relatedShot.setWidth(this.mTTypes[0].relatedShot.getWidth());
 	    	mTower[i].draw = false;
 	    	mShots[i].draw = false;
-	    } 
-
-	    Random rand = new Random();	    
-	    //same as for the towers and shots.
-	    for (int i = 0; i < mCreatures.length; i++) {
-	    	mCreatures[i] = new Creature(R.drawable.mrrabbit_animate, 
-	    								0,player, soundManager, 
-	    								mGameMap.getWaypoints().getCoords(), 
-	    								this,
-	    								i, 
-	    								gameTracker
-	    								);
-
-	    	mCreatures[i].draw = false;
-	    	int tmpOffset = rand.nextInt(10) - 5;
-	    	Coords tmpCoord = mScaler.scale(tmpOffset,0);
-	    	mCreatures[i].setXOffset(tmpCoord.getX());
 	    }
-	    //Set grid attributes.
+	    
 	    //Free all allocated data in the render
 	    //Not needed really.. but now we know for sure that
 	    //we don't have any garbage anywhere.
@@ -142,13 +122,24 @@ public class GameLoop implements Runnable {
 			
 			for(int i = 0; i < mLvl.length; i++){
 				TextureData test = renderHandle.getTexture(mLvl[i].getResourceId());
-				//Log.d("INIT", ""+mLvl[i].getResourceId());
-				//Log.d("INIT", ""+i);
-				//Log.d("INIT", ""+test.mTextureName);
 				mLvl[i].setCurrentTexture(test);
 				mLvl[i].setDeadTexture(renderHandle.getTexture(mLvl[i].getDeadResourceId()));
 			}
 			
+			mSpecialTowers = new Sprite[6];
+			mSpecialTowers[0] = new Sprite();
+			mSpecialTowers[0].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_1));
+			mSpecialTowers[1] = new Sprite();
+			mSpecialTowers[1].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_2));
+			mSpecialTowers[2] = new Sprite();
+			mSpecialTowers[2].setCurrentTexture(renderHandle.getTexture(R.drawable.tesla_special_3));
+			mSpecialTowers[3] = new Sprite();
+			mSpecialTowers[3].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_1));
+			mSpecialTowers[4] = new Sprite();
+			mSpecialTowers[4].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_2));
+			mSpecialTowers[5] = new Sprite();
+			mSpecialTowers[5].setCurrentTexture(renderHandle.getTexture(R.drawable.poisontower_special_3));
+				
 						
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -158,9 +149,8 @@ public class GameLoop implements Runnable {
 		//UGLY HACK!!
 		mGameMap.getBackground()[0].setType(Sprite.BACKGROUND, 0);
 		//END UGLY HACK!!
-		
 		renderHandle.setSprites(mGameMap.getBackground(), Sprite.BACKGROUND);
-		renderHandle.setSprites(mCreatures);
+		//renderHandle.setSprites(mCreatures);
 		renderHandle.setSprites(mTower, Sprite.TOWER);
 		renderHandle.setSprites(mShots, Sprite.SHOT);
 		//renderHandle.setSprites(mGrid, NativeRender.HUD);
@@ -189,15 +179,32 @@ public class GameLoop implements Runnable {
     	currentCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
     	startCreatureHealth = mLvl[lvlNbr].getHealth() * remainingCreaturesALL;
     	
+    	mCreatures = new Creature[remainingCreaturesALL];
+	    for (int i = 0; i < mCreatures.length; i++) {
+	    	mCreatures[i] = new Creature(R.drawable.mrrabbit_animate, 0,player, soundManager, 
+	    			mGameMap.getWaypoints().getCoords(), this, i, gameTracker);
+	    }
+    	
+	    renderHandle.setSprites(mCreatures);
+	    
     	//Need to reverse the list for to draw correctly.
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
-			mLvl[lvlNbr].cloneCreature(mCreatures[z]);
+			
+			if (survivalGame) {
+       			mLvl[z].cloneCreature(mCreatures[z]);
+			}
+			else 
+				mLvl[lvlNbr].cloneCreature(mCreatures[z]);
+			
 	    	//This is defined by the scale of this current lvl
 			Coords tmpCoord = mScaler.scale(14,0);
 	    	mCreatures[z].setYOffset((int)(tmpCoord.getX()*mCreatures[z].scale));
 	    	
     	}
+    	
+    	System.gc();
+    	
 		try {
 			//Finally send of the sprites to the render to be allocated
 			//And after that drawn.
@@ -335,9 +342,9 @@ public class GameLoop implements Runnable {
     				// (we dont need sanity checking here, unless the game corrupts itself this cannot be abused)
     			if (Integer.parseInt(tower[7]) == 1) {
     			    superupgrade_teleport = true;
-    			    t.upgradeSuperAbility(10000);
+    			    t.upgradeSuperAbility(10000,mSpecialTowers);
     			} else if (Integer.parseInt(tower[7]) == 2) {
-    				t.upgradeSuperAbility(10000);
+    				t.upgradeSuperAbility(10000,mSpecialTowers);
     			    superupgrade_element = true;
     			}
     			
@@ -397,11 +404,14 @@ public class GameLoop implements Runnable {
 	            	
 	            	if (player.getTimeUntilNextLevel() < 0) {
 		            	// Show healthbar again.
-	            		gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
-	
+	            		if (this.survivalGame) {
+            				gui.sendMessage(gui.GUI_HIDECREATUREDATA_ID, 0, 0);
+	            		}
+	            		else {
+            				gui.sendMessage(gui.GUI_SHOWHEALTHBAR_ID, 0, 0);
 	            			// Force the GUI to repaint the #-of-creatures-alive-counter.
-	            		creatureDiesOnMap(0);
-	
+            				creatureDiesOnMap(0);
+	            		}	
 	            		player.setTimeUntilNextLevel(0);
 	            	} else {
 		        		// Update the displayed text on the countdown.
@@ -727,10 +737,28 @@ public class GameLoop implements Runnable {
     				player.moneyFunction(-mTTypes[upgradeIndex].getPrice());
     				updateCurrency();
     				t.createTower(mTTypes[upgradeIndex], null, mScaler, gameTracker, true);
+    				
+    				
     				try {
-    					TextureData tex = renderHandle.getTexture(t.getResourceId());
-    					t.setCurrentTexture(tex);
-    					//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
+        				if (t.towerType == Tower.TELSA && t.getSuperTeleport()) {
+        					if (t.getUpgradeTowerLvl() == 11)
+        						t.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
+        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
+
+        				}
+        				else if (t.towerType == Tower.AOE && t.getSuperElement()) {
+        					if (t.getUpgradeTowerLvl() == 10)
+        						t.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
+        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
+
+        				}
+        				else {
+        					TextureData tex = renderHandle.getTexture(t.getResourceId());
+    						t.setCurrentTexture(tex);
+        				}
+   						//tex = renderHandle.getTexture(t.relatedShot.getResourceId());
     					//t.relatedShot.setCurrentTexture(tex);
     				} catch (InterruptedException e) {
     					e.printStackTrace();
@@ -802,7 +830,7 @@ public class GameLoop implements Runnable {
     private void upgradeSuperTower() {
 		if(selectedTower != null){
 			Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
-			int price = t.upgradeSuperAbility(player.getMoney());
+			int price = t.upgradeSuperAbility(player.getMoney(),mSpecialTowers);
 			if (price != 0) {
 				if (t.getTowerType() == Tower.AOE)
 					this.superupgrade_element = true;
@@ -848,4 +876,8 @@ public class GameLoop implements Runnable {
     		}
     	}
     }
+
+	public void alertTeleport() {
+		gui.sendMessage(gui.GUI_TELEPORTSUCCESS, 0, 0);
+	}
 }
