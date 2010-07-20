@@ -42,8 +42,8 @@ public class MultiplayerHandler extends Thread {
  	public int GAMEMODE;
  	public boolean OK;
     
-	public MultiplayerHandler(GameLoopGUI glGui){
-		gameLoopGui = glGui;
+	public MultiplayerHandler(){
+		//gameLoopGui = glGui;
 		//mpGL = gameLoopGui.getGameInit()
     	//.gLoop;
 		
@@ -56,6 +56,9 @@ public class MultiplayerHandler extends Thread {
 		mMultiplayerHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+            	
+            	Log.d("MULTIPLAYER!", "Message: " + msg.arg1);
+            	
                 switch (msg.what) {
                 case MESSAGE_READ:
                 	
@@ -68,6 +71,8 @@ public class MultiplayerHandler extends Thread {
  	                
  	                Log.d("MULTIPLAYER!", "Message: " + readMessage);
  	                
+ 	                if (readMessage.equals("0"))
+ 	                	return;
  	                
  	                if(readMessage.startsWith("SERVER")) {
  	                	String[] temp = readMessage.split(":");
@@ -77,7 +82,7 @@ public class MultiplayerHandler extends Thread {
  	                	Client.handshakeSemaphore.release();
 
  	                }
- 	                if(readMessage.startsWith("CLIENT")) {
+ 	                else if(readMessage.startsWith("CLIENT")) {
  	                	String[] temp = readMessage.split(":");
  	                	// If we receive an ok from client then run with map selection otherwise set to default.
  	                	OK = Boolean.parseBoolean(temp[1]);
@@ -102,6 +107,10 @@ public class MultiplayerHandler extends Thread {
 	                	readMessage = readMessage.substring(3, msg.arg2);
 	                	Log.d("MULTIPLAYERHANDLER", "Opponents enemies left: " + readMessage);
 	                    opponentEnLeft = Integer.parseInt(readMessage);
+	                    
+	                    if (gameLoopGui == null)
+	                    	Log.d("MULTIPLAYER", "HH");
+	                    
 	                    gameLoopGui.sendMessage(gameLoopGui.OPP_CREATURELEFT, opponentEnLeft, 0);
 
 	                }
@@ -239,6 +248,11 @@ public class MultiplayerHandler extends Thread {
 
 	public void setGameLoop(MultiplayerGameLoop gLoop) {
 		mpGL = gLoop;
+	}
+
+	public void setGameLoopGui(GameLoopGUI glGui) {
+		gameLoopGui = glGui;
+		
 	}
 	
 }

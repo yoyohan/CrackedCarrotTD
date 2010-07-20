@@ -284,7 +284,7 @@ public class GameLoop implements Runnable {
 	    Log.d("GAMELOOP", "INIT GAMELOOP 2");
 
 	    	// Resuming an old game? Rebuild all the old towers.
-	    if (resumeTowers != "") {
+	    if ((resumeTowers != "") && (resumeTowers != null)) {
 	    	
 	    	Log.d("GAMEINIT", "RESUME - Rebuilding towers: " + resumeTowers);
 	    	
