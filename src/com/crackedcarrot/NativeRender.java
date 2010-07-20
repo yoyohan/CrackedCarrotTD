@@ -50,6 +50,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	
 	private TextureLibrary texLib;
 	private HashMap<Integer,TextureData> textureMap = new HashMap<Integer,TextureData>();
+	private int noLoadedTextures;
 	
 	public NativeRender(Context context, GLSurfaceView view, 
 						TextureLibrary texLib, Sprite[] OverlayObjects) {
@@ -65,6 +66,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		this.mContext = context;
 		this.view = view;
 		this.sprites[Sprite.OVERLAY] = OverlayObjects;
+		noLoadedTextures = 0;
 		System.loadLibrary("render");
 	}
 	
@@ -215,7 +217,16 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		int lastTextureId = 0;
 		if (!textureMap.containsKey(resourceId)) {
 			lastTextureId = loadBitmap(mContext, glContext, resourceId);
-			TextureData d = new TextureData(lastTextureId, texLib.getFrameData(resourceId));
+			TextureData d = new TextureData(noLoadedTextures, lastTextureId, texLib.getFrameData(resourceId));
+			noLoadedTextures++;
+			if(noLoadedTextures > texLib.size()){
+				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+				
+				Log.e("NATIVE RENDER", "lastTexture Id was: " + lastTextureId);
+				Log.e("NATIVE RENDER", "Maximum was: " + texLib.size());
+			}
 			textureMap.put(resourceId, d);
 			nativeSetTextureBuffer(d);
 			return d;
@@ -251,7 +262,8 @@ public class NativeRender implements GLSurfaceView.Renderer {
 	 * @param resourceId
 	 * @throws InterruptedException 
 	 */
-	public void freeTexture(int resourceId) throws InterruptedException{
+	/*
+	private void freeTexture(int resourceId) throws InterruptedException{
 		lock1.acquire();
 		final int rId = resourceId;
 		view.queueEvent(new Runnable(){
@@ -269,7 +281,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 		lock2.acquire();
 		lock1.release();
 	}
-	
+	*/
 	/**
 	 * Free all textures from buffers.
 	 * To draw anything after this new textures must be loaded.
@@ -293,6 +305,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			}
 		});
 		lock2.acquire();
+		noLoadedTextures = 0;
 		lock1.release();
 	}
 	

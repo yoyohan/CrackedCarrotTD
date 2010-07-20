@@ -657,10 +657,12 @@ public class GameLoopGUI {
 	    		});
 	    	
 	    		// Makes the background of the dialog blurred.
-	        lp = dialogPause.getWindow().getAttributes();
-	        dialogPause.getWindow().setAttributes(lp);
-	        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+	    	if (!multiplayerMode) {
+		        lp = dialogPause.getWindow().getAttributes();
+		        dialogPause.getWindow().setAttributes(lp);
+		        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+		            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+	    	}
 
 	    	return dialogPause;
 	    	

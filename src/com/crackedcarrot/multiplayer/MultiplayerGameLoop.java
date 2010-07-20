@@ -3,11 +3,13 @@ package com.crackedcarrot.multiplayer;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.crackedcarrot.Coords;
+import com.crackedcarrot.GameFinished;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.GameLoopGUI;
 import com.crackedcarrot.NativeRender;
@@ -477,5 +479,19 @@ public class MultiplayerGameLoop extends GameLoop {
 	
 	public boolean isSurvivalGame() {
 		return this.survivalGame;
+	}
+	
+	@Override
+	public void gameFinished() {
+		Intent gameFinished = new Intent(gui.getGameInit(),GameFinished.class);
+		if (this.opponentLife) {
+			gameFinished.putExtra("win", false);
+		} else {
+			gameFinished.putExtra("win", true);
+		}
+		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
+		gameFinished.putExtra("score", player.getScore());
+		// Since this is not a multiplayergame we will send 1 to gameinit
+		gui.getGameInit().startActivity(gameFinished);
 	}
 }

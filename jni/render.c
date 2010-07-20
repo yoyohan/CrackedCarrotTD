@@ -105,17 +105,15 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 			
 	scale = (*env)->GetFloatField(env, sprite->object, sprite->scale);
 	
-	currTexture = (*env)->GetIntField(env,sprite->object, sprite->textureName);
-	if(currTexture == 0){
-		__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "EEEK! INVALID TEXTUREID BAD ! BAD! %d", currTexture);
-	}
-			
+	currTexture = (*env)->GetIntField(env,sprite->object, sprite->textureIndex);
+	
 	if(currTexture != prevTexture){ 
-    	glBindTexture(GL_TEXTURE_2D, currTexture);
+    	glBindTexture(GL_TEXTURE_2D, texData[currTexture].textureName);
 		prevTexture = currTexture;
 	}
+	
 	nFrames = texData[currTexture].nFrames;
-	texBufNames = texData[currTexture].textureBufferNames;
+	texBufNames = texData[currTexture].texCoBuffNames;
 	
 	glPushMatrix();
 	glLoadIdentity();
@@ -174,9 +172,9 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobj
 	int i;
 	if(texData != NULL){
 	    for(i = 1; i < texDataLength; i++){
-	        glDeleteBuffers(texData[i].nFrames, texData[i].textureBufferNames);
-	        free(texData[i].textureBufferNames);
-	        texData[i].textureBufferNames = NULL;
+	        glDeleteBuffers(texData[i].nFrames, texData[i].texCoBuffNames);
+	        free(texData[i].texCoBuffNames);
+	        texData[i].texCoBuffNames = NULL;
 	    }
 	    free(texData);
 	}
