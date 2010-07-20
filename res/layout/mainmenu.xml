@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-	android:id="@+id/relLay1"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:background="@drawable/mainmenu"
-	xmlns:android="http://schemas.android.com/apk/res/android">
-
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+   <ImageView
+		android:id="@+id/mainmenuBackground"
+		android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+		android:scaleType="fitXY"
+        android:src="@drawable/mainmenu" />
+	
   <TableLayout
 	android:layout_width="140dp"
     android:layout_height="400dp"
     android:gravity="center"
 	android:layout_alignParentTop="true"
 	android:layout_centerHorizontal="true"
+	android:layout_gravity="center_horizontal"
 	android:paddingTop="0dp"
-	android:background="#00000000">
+	android:background="#00000000"
+	android:id="@+id/mainmenutable"
+	>
 	/** the first two hex digits, represent
     the alpha channel which is used to define 
     opacity. */
@@ -88,4 +95,5 @@
 	</TableRow>
 
   </TableLayout>
-</RelativeLayout>
+
+</FrameLayout>

@@ -1262,4 +1262,11 @@ public class GameLoopGUI {
     	}
     }
 
+	public void alertTeleportSuccess() {
+		CharSequence text = "A enemy has been teleported back to spawnpoint";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
+		toast.show();
+	}
+
 }

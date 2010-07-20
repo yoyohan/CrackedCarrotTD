@@ -159,6 +159,7 @@ public class Creature extends Sprite{
 				    		this.creatureFast = true;
 				    		this.velocity = this.velocity*1.5f;
 				    	}
+				    	this.GL.alertTeleport();
 				    }
 				}
 				if (towerHasRemoveElement) {
