@@ -207,20 +207,34 @@ public class Server extends Activity {
     
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
-		
-    	mBackground.setImageResource(R.drawable.loadimage);
-		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+
+    	//mBackground.setImageResource(R.drawable.loadimage);
+		//mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+    	
+    	mAcceptThread = null;
     	
 		mMultiplayerService = new MultiplayerService(socket);
     	mMultiplayerService.start();
+    	
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
 		String mapMsg = "SERVER:"+MAP+":"+DIFFICULTY+":"+GAMEMODE;
 		byte[] sendMsg = mapMsg.getBytes();
 		mMultiplayerService.write(sendMsg);
     	
+		Log.d("SERVER","SEMAPHORE1");
+		
 		try { handshakeSemaphore.acquire(); }
 		catch (InterruptedException e1) { }
 
+		Log.d("SERVER","SEMAPHORE2");
+
+		
 		// Is the client ok with the selected map, difficulty and gamemode. No if
 		// the client is running a lite version.
 		Boolean clientOK = mMultiplayerService.mpHandler.OK;
@@ -239,7 +253,6 @@ public class Server extends Activity {
 		StartGame.putExtra("com.crackedcarrot.menu.wave", GAMEMODE);
 		startActivity(StartGame);
 		// Cancel the accept thread because we only want to connect to one device
-		mAcceptThread = null;
 		finish();
     }
     
@@ -270,5 +283,8 @@ public class Server extends Activity {
     
     protected void onResume(){
     	super.onResume();
+    	
+    		// So we dont hang around in the empty server activity.
+    	finish();
     }
 }

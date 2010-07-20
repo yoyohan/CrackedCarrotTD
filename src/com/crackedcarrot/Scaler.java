@@ -100,7 +100,7 @@ public class Scaler {
 		Coords tmp = scale(60,60);
 		float tmpy = tmp.y;
 		float tmpx = tmp.x;
-		return tmpy/tmpx;
+		return tmpx/tmpy;
 	}
 	
 }

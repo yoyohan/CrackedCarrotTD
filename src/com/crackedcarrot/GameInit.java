@@ -73,8 +73,9 @@ public class GameInit extends Activity {
     		showDialog(gameLoopGui.DIALOG_QUIT_ID);
     		return true;
        	} else if (keyCode == KeyEvent.KEYCODE_MENU) {
-       		// Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
-       		GameLoop.pause();
+       		//Log.d("GAMEINIT", "onKeyDown KEYCODE_MENU");
+       		if (!multiplayergame)
+       			GameLoop.pause();
        		showDialog(gameLoopGui.DIALOG_PAUSE_ID);
        		return true;
        	}

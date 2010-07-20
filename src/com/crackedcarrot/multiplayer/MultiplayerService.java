@@ -43,7 +43,7 @@ public class MultiplayerService extends Thread {
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
-        mpHandler = new MultiplayerHandler(gameLoopGui);
+        mpHandler = new MultiplayerHandler();
         mpHandler.start();
     }
     
@@ -61,6 +61,7 @@ public class MultiplayerService extends Thread {
                 bytes = mmInStream.read(buffer);
                 
                 if(bytes > 0){
+                	Log.d("MPSERVICE__", "read bytes: " + bytes);
                 	mpHandler.mMultiplayerHandler.obtainMessage(MESSAGE_READ, 0, 
                     		bytes, buffer).sendToTarget();
                 }
@@ -113,6 +114,7 @@ public class MultiplayerService extends Thread {
 
 	public void setLoopAndGUI(MultiplayerGameLoop gLoop, GameLoopGUI glGui) {
 		mpHandler.setGameLoop(gLoop);
+		mpHandler.setGameLoopGui(glGui);
         gameLoopGui = glGui;
 	}
     

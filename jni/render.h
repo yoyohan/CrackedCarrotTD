@@ -21,9 +21,9 @@ typedef struct {
 } crExtensions;
 
 typedef struct {
-    //GLuint  textureName;
+    GLuint  textureName;
     GLuint  nFrames;
-    GLuint* textureBufferNames;
+    GLuint* texCoBuffNames;
 } textureData;
 
 typedef struct {
@@ -36,7 +36,7 @@ typedef struct {
     jfieldID width, height, scale;
     jfieldID x, y, z;
 	jfieldID draw;
-    jfieldID textureName;
+    jfieldID textureIndex;
 	jfieldID r, g, b, opacity;
 	jfieldID cFrame;
 
@@ -69,7 +69,6 @@ void initHwBuffers(JNIEnv* env, GLSprite* sprite);
 
 void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length);
 void Java_com_crackedcarrot_NativeRender_nativeSetTextureBuffer(JNIEnv* env, jobject thiz, jobject textureData);
-
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h);
 void Java_com_crackedcarrot_NativeRender_nativeDrawFrame(JNIEnv*  env, jobject thiz);
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobject thiz);

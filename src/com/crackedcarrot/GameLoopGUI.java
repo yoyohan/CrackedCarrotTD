@@ -657,10 +657,12 @@ public class GameLoopGUI {
 	    		});
 	    	
 	    		// Makes the background of the dialog blurred.
-	        lp = dialogPause.getWindow().getAttributes();
-	        dialogPause.getWindow().setAttributes(lp);
-	        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-	            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+	    	if (!multiplayerMode) {
+		        lp = dialogPause.getWindow().getAttributes();
+		        dialogPause.getWindow().setAttributes(lp);
+		        dialogPause.getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+		            WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+	    	}
 
 	    	return dialogPause;
 	    	
@@ -1268,12 +1270,5 @@ public class GameLoopGUI {
     		}
     	}
     }
-
-	public void alertTeleportSuccess() {
-		CharSequence text = "A enemy has been teleported back to spawnpoint";
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(this.getGameInit(), text, duration);
-		toast.show();
-	}
 
 }
