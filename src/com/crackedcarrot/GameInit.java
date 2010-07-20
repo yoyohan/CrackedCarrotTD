@@ -219,10 +219,7 @@ public class GameInit extends Activity {
         }
         else {
         	//Normal game
-        	//waveList  = waveLoad.readWave("wave1",difficulty);
-        	// Survival multiplayer game
-        	waveList  = waveLoad.readWave(difficulty);
-        	survivalGame = true;
+        	waveList  = waveLoad.readWave("wave1",difficulty);
         }
        	// Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
