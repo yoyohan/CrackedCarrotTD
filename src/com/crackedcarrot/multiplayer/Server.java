@@ -26,6 +26,8 @@ import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 
 public class Server extends Activity {
+	
+	private boolean finishOnResume = false;
 
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -261,6 +263,9 @@ public class Server extends Activity {
 		}
 		
     	// Start the game and finish the activity
+		
+		finishOnResume = true;
+		
     	GameInit.setMultiplayer(mMultiplayerService);
     	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
@@ -300,7 +305,12 @@ public class Server extends Activity {
     	super.onResume();
     	// So we dont hang around in the empty server activity.
     	// Fucks up onactivityresult
-    	//finish();
+    	//   Fixed!?
+    	
+    	if (finishOnResume) {
+    		finishOnResume = false;
+    		finish();
+    	}
     }
     
 

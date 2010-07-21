@@ -721,7 +721,9 @@ public class GameLoopGUI {
 	    case MULTIPLAYER_SCOREBOARD:
 	    	
 
-	        o_health.setText("Health: "+gameInit.gameLoop.player.getHealth());
+	        o_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
+	        o_enemies_left.setText("Enemies left: -");
+	        o_score.setText("Score: 0");
 	        
 	        dialogSCOREBOARD.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
