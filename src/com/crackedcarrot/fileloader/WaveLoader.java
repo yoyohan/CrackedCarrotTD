@@ -118,6 +118,8 @@ public class WaveLoader {
 			        		if (fast)
 				            	tmpLvl.setVelocity(recalc.getX()* 1.5f);
 			        		else tmpLvl.setVelocity(recalc.getX());
+			        		
+			        		tmpLvl.setBaseVelocity(recalc.getX());
 							break;
 						case 9:
 							fireResistant = (Boolean.parseBoolean(tmpStr[1].trim()));
@@ -173,6 +175,7 @@ public class WaveLoader {
 	    	tmpLevel.setHeight(recalc.getY());
 	    	recalc = scaler.scale(60,0);
 	    	tmpLevel.setVelocity(recalc.getX());
+	    	tmpLevel.setBaseVelocity(recalc.getX());
 	    	tmpLevel.setCreatureSpecials(false,false,false,false);
 	    	tmpLevel.setDamagePerCreep(1);
 	    	tmpLevel.setGoldValue(1);

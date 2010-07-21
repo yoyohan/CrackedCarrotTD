@@ -299,9 +299,12 @@ public class MultiplayerGameLoop extends GameLoop {
 		if (nbr >= 1) {
 			for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
 				if (mCreatures[z].draw && mCreatures[z].getHealth() > 0) {
-					mCreatures[z].creatureFast = true;
-					mCreatures[z]
+					
+					if (!mCreatures[z].creatureFast) {
+						mCreatures[z].creatureFast = true;
+						mCreatures[z]
 							.setVelocity(mCreatures[z].getVelocity() * 1.5f);
+					}
 					mCreatures[z].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 					updateCreatureProgress(0);
 					break;
@@ -314,8 +317,11 @@ public class MultiplayerGameLoop extends GameLoop {
 		Random rand = new Random();
 		int tmp = rand.nextInt(mLvl[lvlNbr].nbrCreatures);
 		if (mCreatures[tmp].draw && mCreatures[tmp].getHealth() > 0) {
-			mCreatures[tmp].creatureFast = true;
-			mCreatures[tmp].setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
+			if (!mCreatures[tmp].creatureFast) {
+				mCreatures[tmp].creatureFast = true;
+				mCreatures[tmp]
+					.setVelocity(mCreatures[z].getVelocity() * 1.5f);
+			}
 			mCreatures[tmp].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 			updateCreatureProgress(0);
 		} else {
