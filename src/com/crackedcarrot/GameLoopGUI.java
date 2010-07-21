@@ -985,7 +985,7 @@ public class GameLoopGUI {
 	        		 opponentScore = msg.arg1;
 	        		 opponentEnLeft = msg.arg2;
 	     	    	 o_score.setText("Score" + opponentScore);
-	    	    	 o_enemies_left.setText("Enemies left: " + opponentEnLeft);
+	    	    	 o_enemies_left.setText("Kills: " + opponentEnLeft);
 	        	 	 break;
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_HEALTH:
 	        		 opponentScore = msg.arg1;
