@@ -307,6 +307,8 @@ public class Server extends Activity {
     	// Fucks up onactivityresult
     	//   Fixed!?
     	
+    	Log.d("SERVER", "onResume()");
+    	
     	if (finishOnResume) {
     		finishOnResume = false;
     		finish();
@@ -316,6 +318,8 @@ public class Server extends Activity {
 
     protected void onRestart(){
     	super.onRestart();
+    	
+    	Log.d("SERVER", "onRestart()");
     	
     	// So we dont hang around in the empty server activity.
     	finish();
