@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class GameFinished extends Activity {
         score          = extras.getInt("score");
         mapChoice  = extras.getInt("map");
         boolean win    = extras.getBoolean("win");
-        multiplayer = extras.getBoolean("multiplayer", false);
+        multiplayer = extras.getBoolean("multiplayer");
 
         
 		// Handle scoreninja-thingie.
@@ -101,10 +102,15 @@ public class GameFinished extends Activity {
     @Override
     protected void onStop() {
        super.onStop();
+       
+       Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
+       
+       if (this.multiplayer == false)
+    	   return;
 
            // Load/prepare Scoreninja if it's active and installed.
        SharedPreferences settings = getSharedPreferences("Options", 0);
-       if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this) && this.multiplayer == false) {
+       if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this)) {
     	   
            if (mapChoice == 1) {
            	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");

@@ -305,7 +305,7 @@ public class Server extends Activity {
     
 
     protected void onRestart(){
-    	super.onResume();
+    	super.onRestart();
     	
     	// So we dont hang around in the empty server activity.
     	finish();
