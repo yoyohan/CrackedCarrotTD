@@ -113,6 +113,12 @@ public class MultiplayerService extends Thread {
 
 
 	public void setLoopAndGUI(MultiplayerGameLoop gLoop, GameLoopGUI glGui) {
+		
+		Log.d("MPSERVICE", "setLoopAdnGUI");
+		
+		if (gLoop == null)
+			Log.d("MPSERVICE", "is null!");
+		
 		mpHandler.setGameLoop(gLoop);
 		mpHandler.setGameLoopGui(glGui);
         gameLoopGui = glGui;

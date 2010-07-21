@@ -449,6 +449,22 @@ public class GameLoopGUI {
         		hud.hideGrid();
         	}
         });
+        
+        if (this.multiplayerMode) {
+        		// This needs to be initalized before we try using any of it.
+        	dialogSCOREBOARD = new Dialog(gameInit, R.style.InGameMenu);
+	    	dialogSCOREBOARD.setContentView(R.layout.multiplayer_scoreboard);
+	    	//dialogWait.setCancelable(false);
+	    	
+	        o_waiting = (TextView) dialogSCOREBOARD.findViewById(R.id.o_waiting);
+	        o_health = (TextView) dialogSCOREBOARD.findViewById(R.id.o_health);    
+	        o_score = (TextView) dialogSCOREBOARD.findViewById(R.id.o_score);    
+	        o_enemies_left = (TextView) dialogSCOREBOARD.findViewById(R.id.o_enemies_left);
+	        y_health = (TextView) dialogSCOREBOARD.findViewById(R.id.y_health);    
+	        y_score = (TextView) dialogSCOREBOARD.findViewById(R.id.y_score);    
+	        y_enemies_left = (TextView) dialogSCOREBOARD.findViewById(R.id.y_enemies_left);
+	        ScoreBoardButton = (Button) dialogSCOREBOARD.findViewById(R.id.ScoreBoardButton);
+        }
 
     }
     
@@ -662,10 +678,11 @@ public class GameLoopGUI {
 		    		});
 	    	}
 	    	else {
-	    		buttonPauseHelp.setText("Multiplayer Scoreboard");
+	    		buttonPauseHelp.setText("Scoreboard");
 		    	buttonPauseHelp.setOnClickListener(
 			    		new OnClickListener() {
 			    			public void onClick(View v) {
+			    				dialogPause.dismiss();
 			    				dialogSCOREBOARD.show();
 			    			}
 			    		});
@@ -702,25 +719,13 @@ public class GameLoopGUI {
 	    	return dialogPause;
 	    
 	    case MULTIPLAYER_SCOREBOARD:
-	    	dialogSCOREBOARD = new Dialog(gameInit,R.style.NextlevelTheme);
-	    	dialogSCOREBOARD.setContentView(R.layout.multiplayer_scoreboard);
-	    	//dialogWait.setCancelable(false);
 	    	
-	        o_waiting = (TextView) dialogSCOREBOARD.findViewById(R.id.o_waiting);
-	        o_health = (TextView) dialogSCOREBOARD.findViewById(R.id.o_health);    
-	        o_score = (TextView) dialogSCOREBOARD.findViewById(R.id.o_score);    
-	        o_enemies_left = (TextView) dialogSCOREBOARD.findViewById(R.id.o_enemies_left);
-	        y_health = (TextView) dialogSCOREBOARD.findViewById(R.id.y_health);    
-	        y_score = (TextView) dialogSCOREBOARD.findViewById(R.id.y_score);    
-	        y_enemies_left = (TextView) dialogSCOREBOARD.findViewById(R.id.y_enemies_left);
-	        ScoreBoardButton = (Button) dialogSCOREBOARD.findViewById(R.id.ScoreBoardButton);
 
 	        o_health.setText("Health: "+gameInit.gameLoop.player.getHealth());
 	        
 	        dialogSCOREBOARD.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
-			        		 gameInit.showDialog(DIALOG_QUIT_ID);
 			        		 dialogSCOREBOARD.dismiss();
 						}
 	    			});
@@ -729,7 +734,7 @@ public class GameLoopGUI {
 	        ScoreBoardButton.setOnClickListener(
 		    		new OnClickListener() {
 		    			public void onClick(View v) {
-			        		quitDialogPressed = true;
+			        		quitDialogPressed = false;
 			        		gameInit.finish();
 		    			}
 		    		});	        
@@ -972,7 +977,11 @@ public class GameLoopGUI {
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES:
 	        		 opponentScore = msg.arg1;
 	        		 opponentEnLeft = msg.arg2;
+<<<<<<< HEAD
 	     	    	 o_score.setText("Score" + opponentScore);
+=======
+	     	    	 o_score.setText("Score: " + opponentScore);
+>>>>>>> b4cdb70ae00a11dddc827d0ac74a006f0d425ea8
 	    	    	 o_enemies_left.setText("Enemies left: " + opponentEnLeft);
 	        		 break;
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL:
@@ -994,15 +1003,15 @@ public class GameLoopGUI {
 	     	    		o_waiting.setText("You win!");
 	     	    	}
 	     	    	else if (tmp == 1) {
-	     	    		o_waiting.setText("You loose!");
+	     	    		o_waiting.setText("You lose!");
 	     	    	}
 	     	    	else {
 		     	    	String winLoose;
 		    	    	//Is player score better than opponents, if so player is the winner
 		    	    	if(playerScore > opponentScore)
-		    	    		winLoose = "You win!";
+		    	    		winLoose = "You Win!";
 		    	    	else if (playerScore < opponentScore)
-		    	    		winLoose = "You Loose!";
+		    	    		winLoose = "You Lose!";
 		    	    	else
 		    	    		winLoose = "It's a tie!";
 		    	    	o_waiting.setText(winLoose);
@@ -1013,12 +1022,14 @@ public class GameLoopGUI {
 	    	    	break;
 
 	     	     case MULTIPLAYER_SCOREBOARD_WAITING:
-	    	    	o_waiting.setText("Waiting for opponent");
+	    	    	o_waiting.setText("Waiting for opponent...");
 	     	     	break;
+	     	     	
 	     	     case MULTIPLAYER_SCOREBOARD_CLOSE:
 		    	    	o_waiting.setText("");
-		    	    	dialogPause.dismiss();
+		    	    	dialogSCOREBOARD.dismiss();
 		     	     	break;
+		     	     	
 	     	     case MULTIPLAYER_SCOREBOARD:
 	        		 gameInit.showDialog(MULTIPLAYER_SCOREBOARD);
 	        		 break;

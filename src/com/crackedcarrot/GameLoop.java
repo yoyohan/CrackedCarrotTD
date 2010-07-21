@@ -476,6 +476,12 @@ public class GameLoop implements Runnable {
 		}
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
 		gameFinished.putExtra("score", player.getScore());
+
+		if (gui.multiplayerMode)
+			gameFinished.putExtra("multiplayer", true);
+		else
+			gameFinished.putExtra("multiplayer", false);
+		
 		// Since this is not a multiplayergame we will send 1 to gameinit
 		gui.getGameInit().startActivity(gameFinished);
     }

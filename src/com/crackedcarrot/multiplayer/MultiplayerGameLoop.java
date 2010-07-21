@@ -55,8 +55,10 @@ public class MultiplayerGameLoop extends GameLoop {
 
 		// Show "Waiting for opponent" message
 		//this.gui.sendMessage(gui.OPP_CREATURELEFT, mLvl[this.lvlNbr].nbrCreatures, 0);
-		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_WAITING, 0, 0);
-		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+		if (lvlNbr == 0) {
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_WAITING, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+		}
 
 		// Wait for the opponent
 		try {
@@ -126,49 +128,58 @@ public class MultiplayerGameLoop extends GameLoop {
 		*/
 
 		// Is the opponent dead, in that case you've won the game
+		// Show "Waiting for opponent" message
+		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_WAITING, 0, 0);
+		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		String me = "synchLevel";
+		byte[] sendThis = me.getBytes();
+		mMultiplayerService.write(sendThis);
+
+		// Wait for the opponent
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Log.d("ZZZZZZZ", "Before second synchlevel");
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		synchLevelSemaphore.release();
+
+		// The game is not totally completed
+		if (lvlNbr < mLvl.length) {
+			// Do nothing here
+			// Close "Waiting for opponent" message
+			if (this.opponentLife)
+				gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_CLOSE, 0, 0);
+
+		} else {
+			Log.d("GAMETHREAD", "You have completed this map");
+			// Both players have survived all the enemy waves
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 0, 0);
+			waitForDialogClick();
+			run = false;
+		}
+		
+			// Check if the opponent has died while we waited for synching.
 		if (!this.opponentLife) {
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
 			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 2, 0);
 			waitForDialogClick();
 			run = false;
-		} else {
-			// Show "Waiting for opponent" message
-			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
-
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			String me = "synchLevel";
-			byte[] sendThis = me.getBytes();
-			mMultiplayerService.write(sendThis);
-
-			// Wait for the opponent
-			try {
-				synchLevelSemaphore.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			Log.d("ZZZZZZZ", "Before second synchlevel");
-			try {
-				synchLevelSemaphore.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			synchLevelSemaphore.release();
-
-			// The game is not totally completed
-			if (lvlNbr < mLvl.length) {
-				// Do nothing here
-			} else {
-				Log.d("GAMETHREAD", "You have completed this map");
-				// Both players have survived all the enemy waves
-				gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 0, 0);
-				waitForDialogClick();
-				run = false;
-			}
 		}
+		
 	}
 
 	/** Release the synchronization semaphore from outside this class */
