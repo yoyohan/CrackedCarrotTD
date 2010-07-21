@@ -52,7 +52,7 @@ public class MultiplayerHandler extends Thread {
             @Override
             public void handleMessage(Message msg) {
             	
-            	Log.d("MULTIPLAYER!", "Message: " + msg.arg1);
+            	//Log.d("MULTIPLAYER!", "Message: " + msg.arg1);
             	
                 switch (msg.what) {
                 case MESSAGE_READ:
@@ -64,7 +64,7 @@ public class MultiplayerHandler extends Thread {
                     String readMessage = new String(readBuff);
  	                readMessage = readMessage.substring(0, msg.arg2);
  	                
- 	                Log.d("MULTIPLAYER!", "Message: " + readMessage);
+ 	                //Log.d("MULTIPLAYER!", "Message: " + readMessage);
  	                
  	                if (readMessage.equals("0"))
  	                	return;
@@ -105,7 +105,7 @@ public class MultiplayerHandler extends Thread {
  	                } 
  	                // Level synchronization
  	                else if(readMessage.equals(SYNCH_LEVEL)){
- 	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
+ 	                	//Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
  	                	//MultiplayerGameLoop.synchLevelClick();
  	                	
  	                	if (mpGL == null) {
@@ -117,14 +117,14 @@ public class MultiplayerHandler extends Thread {
  	                }
  	                // The opponent is dead
 	                else if(readMessage.equals(PLAYER_DEAD)){
-	                	Log.d("YYYYY", readMessage);
+	                	//Log.d("YYYYY", readMessage);
 
 	                	mpGL.synchLevelClick();
 
 	                    mpGL.setOpponentLife(false);
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
-	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against an enemy upgrade attack";
@@ -145,7 +145,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(DECREASE_OPP_LIFE)){
-	                	Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against a life attack";
@@ -170,7 +170,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(DESTROY_TOWER)){
-	                	Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against a tower attack";
@@ -191,7 +191,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(MAKE_ELEMENTAL)){
-	                	Log.d("MULTIPLAYERHANDLER", "Make elemental");
+	                	//Log.d("MULTIPLAYERHANDLER", "Make elemental");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against an elemental attack";
@@ -221,7 +221,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else {
-	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
+	                	//Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;
                 	

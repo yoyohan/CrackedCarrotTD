@@ -74,7 +74,7 @@ public class Server extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		Log.d("Server", "onKeyDown KEYCODE_BACK");
+    		//Log.d("Server", "onKeyDown KEYCODE_BACK");
     		finish();
     		return true;
        	}
@@ -137,16 +137,16 @@ public class Server extends Activity {
     	if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
-            Log.d("SERVER", "Start server thread");
+            //Log.d("SERVER", "Start server thread");
     	} else {
-    		Log.d("SERVER", "The Accept thread already exists!!");
+    		//Log.d("SERVER", "The Accept thread already exists!!");
     	}
     }
     
     /** This method is called after the startActivityForResult() is called with
         parameters containing activity id and user choice */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-       Log.d("SERVER","onActivityResult");
+       //Log.d("SERVER","onActivityResult");
     	switch (requestCode) {
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
@@ -186,7 +186,7 @@ public class Server extends Activity {
             	finish();
             }
             mmServerSocket = tmp;
-            Log.d("SERVER", "Serverthread constructor");
+            //Log.d("SERVER", "Serverthread constructor");
         }
 
         public void run() {
@@ -200,21 +200,21 @@ public class Server extends Activity {
             	}
             	else{
             		try {
-                    	Log.d("SERVER", "Kör server accept()");
+                    	//Log.d("SERVER", "Kör server accept()");
                         socket = mmServerSocket.accept();
                     } catch (Exception e) {
                         break;
                     }
             	}
-                Log.d("SERVER", "Serverthread running");
+                //Log.d("SERVER", "Serverthread running");
                 // Connection accepted?
                 if (socket != null) {
-                	Log.d("SERVER", "connection established!");
+                	//Log.d("SERVER", "connection established!");
                 	startGame(socket);
                 	try{
                 		mmServerSocket.close();
                 	} catch (Exception e){
-                		Log.d("SERVER", "Can't close the server socket");
+                		//Log.d("SERVER", "Can't close the server socket");
                 	}
                     break;
                 }
@@ -244,12 +244,12 @@ public class Server extends Activity {
 		byte[] sendMsg = mapMsg.getBytes();
 		mMultiplayerService.write(sendMsg);
     	
-		Log.d("SERVER","SEMAPHORE1");
+		//Log.d("SERVER","SEMAPHORE1");
 		
 		try { handshakeSemaphore.acquire(); }
 		catch (InterruptedException e1) { }
 
-		Log.d("SERVER","SEMAPHORE2");
+		//Log.d("SERVER","SEMAPHORE2");
 
 		
 		// Is the client ok with the selected map, difficulty and gamemode. No if
@@ -307,7 +307,7 @@ public class Server extends Activity {
     	// Fucks up onactivityresult
     	//   Fixed!?
     	
-    	Log.d("SERVER", "onResume()");
+    	//Log.d("SERVER", "onResume()");
     	
     	if (finishOnResume) {
     		finishOnResume = false;
@@ -319,7 +319,7 @@ public class Server extends Activity {
     protected void onRestart(){
     	super.onRestart();
     	
-    	Log.d("SERVER", "onRestart()");
+    	//Log.d("SERVER", "onRestart()");
     	
     	// So we dont hang around in the empty server activity.
     	finish();
