@@ -735,7 +735,8 @@ public class GameLoopGUI {
 		    		new OnClickListener() {
 		    			public void onClick(View v) {
 			        		quitDialogPressed = false;
-			        		gameInit.finish();
+			        		gameInit.gameLoop.dialogClick();
+			        		gameInit.gameLoop.stopGameLoop();
 		    			}
 		    		});	        
 	        
