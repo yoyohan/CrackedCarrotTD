@@ -35,6 +35,7 @@ public class MultiplayerHandler extends Thread {
  	public int DIFFICULTY = 1;
  	public int GAMEMODE = 0;
  	public boolean OK = false;
+ 	public boolean alreadySynced = false;
     
 	public MultiplayerHandler(){
 		//gameLoopGui = glGui;
@@ -104,13 +105,21 @@ public class MultiplayerHandler extends Thread {
  	                // Level synchronization
  	                else if(readMessage.equals(SYNCH_LEVEL)){
  	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
- 	                	//MultiplayerGameLoop.synchLevelClick();                    
- 	                	mpGL.synchLevelClick();                    
+ 	                	//MultiplayerGameLoop.synchLevelClick();
+ 	                	
+ 	                	if (mpGL == null) {
+ 	                		alreadySynced = true;
+ 	                	}
+ 	                	else
+ 	                		mpGL.synchLevelClick();
  	 	                
  	                }
  	                // The opponent is dead
 	                else if(readMessage.equals(PLAYER_DEAD)){
 	                	Log.d("YYYYY", readMessage);
+
+	                	mpGL.synchLevelClick();
+
 	                    mpGL.setOpponentLife(false);
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
@@ -236,6 +245,10 @@ public class MultiplayerHandler extends Thread {
 
 	public void setGameLoop(MultiplayerGameLoop gLoop) {
 		mpGL = gLoop;
+     	if (alreadySynced) {
+     		mpGL.synchLevelClick();
+     		alreadySynced = false;
+     	}     		
 	}
 
 	public void setGameLoopGui(GameLoopGUI glGui) {
