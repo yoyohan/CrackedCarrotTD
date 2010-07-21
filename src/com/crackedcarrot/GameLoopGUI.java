@@ -430,7 +430,7 @@ public class GameLoopGUI {
         
         if (this.multiplayerMode) {
         		// This needs to be initalized before we try using any of it.
-        	dialogSCOREBOARD = new Dialog(gameInit, android.R.style.Theme_Dialog);
+        	dialogSCOREBOARD = new Dialog(gameInit, R.style.InGameMenu);
 	    	dialogSCOREBOARD.setContentView(R.layout.multiplayer_scoreboard);
 	    	//dialogWait.setCancelable(false);
 	    	
