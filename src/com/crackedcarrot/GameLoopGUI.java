@@ -973,7 +973,7 @@ public class GameLoopGUI {
 	        		 tt = String.valueOf(msg.arg1);
 	        		 counterText.setText("Kills: " + tt);
 	        		 if (multiplayerMode) {
-		        		    y_health.setText("Kills: " + tt);
+		        		    y_enemies_left.setText("Kills: " + tt);
 		        		    y_score.setText("Score: " + gameInit.gameLoop.player.getScore());
 	        		 } 
 	        		 break;
