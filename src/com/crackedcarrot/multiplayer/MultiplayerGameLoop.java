@@ -483,6 +483,16 @@ public class MultiplayerGameLoop extends GameLoop {
 		mMultiplayerService.write(sendCreDies);
 	}
 	
+    // When a creature is dead in survival we will notify the status bar
+	@Override
+    public void creatureDiesOnMapSurvival(int n) {
+		super.creatureDiesOnMapSurvival(n);
+		String creDies = "CRE:" + player.getScore()+ ":" + this.survivalCreatureCount;
+		byte[] sendCreDies = creDies.getBytes();
+		mMultiplayerService.write(sendCreDies);
+    }
+	
+	
 	@Override
     public void updatePlayerHealth(){
     	super.updatePlayerHealth();

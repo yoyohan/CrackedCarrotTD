@@ -66,6 +66,7 @@ public class GameLoop implements Runnable {
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
     protected boolean survivalGame = false;
+	protected int survivalCreatureCount = 0;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm, boolean survivalGame){
@@ -600,6 +601,14 @@ public class GameLoop implements Runnable {
     			mCreatures[x].setAllDead(true);
     	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
+
+    // When a creature is dead in survival we will notify the status bar
+    public void creatureDiesOnMapSurvival(int n) {
+    	this.survivalCreatureCount  += n;
+    	gui.sendMessage(gui.GUI_CREATURESURVIVAL_ID, remainingCreaturesALIVE, 0);
+    }
+    
+    
     
     public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures
