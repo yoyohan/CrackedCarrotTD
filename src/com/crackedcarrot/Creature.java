@@ -509,7 +509,7 @@ public class Creature extends Sprite{
 	 * Function to set speed for this creature
 	 * @param velocity
 	 */
-	//public void setVelocity(float velocity){ this.velocity = velocity; }
+	public void setVelocity(float velocity){ this.velocity = velocity; }
 
 	/**
 	 * Function to set base speed for this creature. Needed when a fast creep needs to be slowed

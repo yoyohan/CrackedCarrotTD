@@ -320,7 +320,7 @@ public class MultiplayerGameLoop extends GameLoop {
 			if (!mCreatures[tmp].creatureFast) {
 				mCreatures[tmp].creatureFast = true;
 				mCreatures[tmp]
-					.setVelocity(mCreatures[z].getVelocity() * 1.5f);
+					.setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
 			}
 			mCreatures[tmp].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 			updateCreatureProgress(0);
