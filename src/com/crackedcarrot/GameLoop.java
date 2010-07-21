@@ -605,7 +605,7 @@ public class GameLoop implements Runnable {
     // When a creature is dead in survival we will notify the status bar
     public void creatureDiesOnMapSurvival(int n) {
     	this.survivalCreatureCount  += n;
-    	gui.sendMessage(gui.GUI_CREATURESURVIVAL_ID, remainingCreaturesALIVE, 0);
+    	gui.sendMessage(gui.GUI_CREATURESURVIVAL_ID, survivalCreatureCount, 0);
     }
     
     
