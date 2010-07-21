@@ -968,6 +968,7 @@ public class GameLoopGUI {
 	        	 case GUI_HIDECREATUREDATA_ID:
 	        		 //If we play a survival game nonen of the following bars are of use
 	        		 creatureBar.setVisibility(View.GONE);
+	        		 counterText.setText("");
 	        		 break;
 	        	 case GUI_CREATURESURVIVAL_ID:
 	        		 tt = String.valueOf(msg.arg1);
@@ -986,7 +987,7 @@ public class GameLoopGUI {
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL:
 	        		 opponentScore = msg.arg1;
 	        		 opponentEnLeft = msg.arg2;
-	     	    	 o_score.setText("Score" + opponentScore);
+	     	    	 o_score.setText("Score: " + opponentScore);
 	    	    	 o_enemies_left.setText("Kills: " + opponentEnLeft);
 	        	 	 break;
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_HEALTH:
