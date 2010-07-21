@@ -92,8 +92,8 @@ public class MultiplayerHandler extends Thread {
  	                	int score = Integer.parseInt(temp[1]);
  	                	int enemiesleft = Integer.parseInt(temp[2]);
  	                	if (mpGL.isSurvivalGame())
- 	                		gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES, score, enemiesleft);
- 	                	else gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL, score, enemiesleft);
+ 	                		gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL, score, enemiesleft);
+ 	                	else gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES, score, enemiesleft);
  	                }	                
  	                // COntains iformation about how mutch healt opponent has left
 	                else if(readMessage.startsWith("HEALTH")) {
