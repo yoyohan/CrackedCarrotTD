@@ -722,8 +722,11 @@ public class GameLoopGUI {
 	    	
 
 	        o_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
-	        o_enemies_left.setText("Enemies left: -");
+	        o_enemies_left.setText("");
 	        o_score.setText("Score: 0");
+	        y_enemies_left.setText("");
+	        y_score.setText("Score: 0");
+	        y_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
 	        
 	        dialogSCOREBOARD.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
