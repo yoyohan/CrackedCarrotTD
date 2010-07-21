@@ -66,7 +66,7 @@ public class MultiplayerOp extends Activity {
 		difChooser = (Spinner) findViewById  (R.id.difChooser);
 	    ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
 	            this, R.array.difficulty, android.R.layout.simple_spinner_item);
-	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    difChooser.setAdapter(adapter2);
 	    difChooser.setOnItemSelectedListener(difListener);
 	    difChooser.setSelection(1);
@@ -74,7 +74,7 @@ public class MultiplayerOp extends Activity {
 		modeChooser = (Spinner) findViewById  (R.id.modeChooser);
 	    ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
 	            this, R.array.gamemode, android.R.layout.simple_spinner_item);
-	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    modeChooser.setAdapter(adapter3);
 	    modeChooser.setOnItemSelectedListener(modeListener);
 	    

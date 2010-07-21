@@ -13,7 +13,9 @@ import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -46,7 +48,25 @@ public class Server extends Activity {
     private int GAMEMODE = 0;
     protected static Semaphore handshakeSemaphore = new Semaphore(0);
    
+    //////////////////////////////////////////
+    // MINI HANDLER
+    //////////////////////////////////////////
+
     private ImageView mBackground;
+    // Need handler for callbacks to the UI thread
+    final Handler mHandler = new Handler();
+
+    // Create runnable for posting
+    final Runnable mUpdateResults = new Runnable() {
+        public void run() {
+        	mBackground.setImageResource(R.drawable.loadimage);
+    		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+        }
+    };
+
+    //////////////////////////////////////////
+    // END MINI HANDLER
+    //////////////////////////////////////////
     
     /** if user presses back button, this activity will finish */
     @Override
@@ -62,12 +82,12 @@ public class Server extends Activity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.server);
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.server);
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+                
     	mBackground = (ImageView) findViewById(R.id.ServerBackground);
     	
     	// Get the local Bluetooth adapter
@@ -95,27 +115,20 @@ public class Server extends Activity {
         	DIFFICULTY =  extras.getInt("com.crackedcarrot.multiplayer.difficulty");
         	GAMEMODE =  extras.getInt("com.crackedcarrot.multiplayer.gamemode");
         } 
-        
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
-        
-        showDialog(PROGRESS_DIALOG);
-    }
-    
-    /** When the activity first starts, do following */
-    @Override
-    public void onStart() {
-        super.onStart();
-        
-        /** Request that Bluetooth will be activated if not on.
-         *  setupServer() will then be called during onActivityResult */
-       // if (!mBluetoothAdapter.isEnabled()) {
-       //     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        //    startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
-        //} else {
-        //    setupServer();
-       // } 
+    	
+        if (!mBluetoothAdapter.isEnabled() && Build.MODEL.equals("Liquid")) {
+       		CharSequence text = "Please manually start bluetooth in android settings.";
+       		int duration = Toast.LENGTH_SHORT;
+       		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+       		toast.show();
+        	finish();
+        } 
+        else {
+	        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+	        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+	        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+	        showDialog(PROGRESS_DIALOG);
+        }
     }
     
     private void setupServer() {
@@ -131,7 +144,8 @@ public class Server extends Activity {
     /** This method is called after the startActivityForResult() is called with
         parameters containing activity id and user choice */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
+       Log.d("SERVER","onActivityResult");
+    	switch (requestCode) {
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
@@ -175,6 +189,7 @@ public class Server extends Activity {
 
         public void run() {
             BluetoothSocket socket = null;
+            
             // Listen, by calling accept(), until exception occurs or a socket is returned
             while (true) {
             	if(mmServerSocket == null){
@@ -208,9 +223,9 @@ public class Server extends Activity {
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
 
-    	//mBackground.setImageResource(R.drawable.loadimage);
-		//mBackground.setScaleType(ScaleType.CENTER_INSIDE);
-    	
+        //Send message to UI to change background
+    	mHandler.post(mUpdateResults);
+        
     	mAcceptThread = null;
     	
 		mMultiplayerService = new MultiplayerService(socket);
@@ -283,8 +298,17 @@ public class Server extends Activity {
     
     protected void onResume(){
     	super.onResume();
+    	// So we dont hang around in the empty server activity.
+    	// Fucks up onactivityresult
+    	//finish();
+    }
+    
+
+    protected void onRestart(){
+    	super.onResume();
     	
-    		// So we dont hang around in the empty server activity.
+    	// So we dont hang around in the empty server activity.
     	finish();
     }
+    
 }

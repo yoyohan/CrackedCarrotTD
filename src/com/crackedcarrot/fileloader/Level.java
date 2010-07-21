@@ -30,6 +30,8 @@ public class Level extends Creature {
 		clone.setCurrentHealth(this.startHealth);
 		clone.setStartHealth(this.startHealth);
 		clone.setVelocity(this.velocity);
+		clone.setBaseVelocity(this.basevelocity);
+		
 		clone.setWidth(this.getWidth());
 		clone.setHeight(this.getHeight());
 		
