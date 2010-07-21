@@ -293,7 +293,9 @@ public class GameInit extends Activity {
     protected void onStop() {
     	super.onStop();
     		// Fix for user pressing Home during the game.
-    	gameLoopGui.quitDialogPressed = true;
+    	if (!multiplayergame)
+    		gameLoopGui.quitDialogPressed = true;
+    	
     	gameLoop.stopGameLoop();
     	gameLoop.soundManager.release();
     	if(multiplayergame){

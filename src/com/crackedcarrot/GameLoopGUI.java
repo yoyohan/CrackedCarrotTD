@@ -712,6 +712,7 @@ public class GameLoopGUI {
 	        ScoreBoardButton.setOnClickListener(
 		    		new OnClickListener() {
 		    			public void onClick(View v) {
+			        		quitDialogPressed = false;
 			        		gameInit.finish();
 		    			}
 		    		});	        
