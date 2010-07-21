@@ -103,6 +103,7 @@ public class GameLoopGUI {
     public final int MULTIPLAYER_SCOREBOARD_UPDATE_END = 11;
     public final int MULTIPLAYER_SCOREBOARD_WAITING = 12;
     public final int MULTIPLAYER_SCOREBOARD_CLOSE = 13;
+    public final int MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL = 14;
     public final int GUI_PLAYERMONEY_ID     = 20;
     public final int GUI_PLAYERHEALTH_ID    = 21;
     public final int GUI_CREATUREVIEW_ID    = 22;
@@ -117,6 +118,7 @@ public class GameLoopGUI {
     public final int GUI_HIDECREATUREDATA_ID = 31;
     public final int GUI_SHOWSHIELDBUTTON = 32;
     public final int GUI_TELEPORTSUCCESS = 33;
+    public final int GUI_CREATURESURVIVAL_ID = 34;
     
     final Button towerbutton1;
     final Button towerbutton2;
@@ -266,6 +268,10 @@ public class GameLoopGUI {
         lessHealthButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if(gameInit.gLoop.decreaseOppLife()){
+        			CharSequence text = "Item purchased.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         			expandMenu.switchMenu();
         			if (!gameInit.gLoop.survivalGame)
         				lessHealthButton.setVisibility(View.INVISIBLE); //set visible when new level
@@ -283,6 +289,10 @@ public class GameLoopGUI {
         enemyFastButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if(gameInit.gLoop.increaseEnemySpeed()){
+        			CharSequence text = "Item purchased.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         			expandMenu.switchMenu();
         			if (!gameInit.gLoop.survivalGame)
         				enemyFastButton.setVisibility(View.INVISIBLE); //set visible when new level
@@ -300,6 +310,10 @@ public class GameLoopGUI {
         destroyTowerButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if(gameInit.gLoop.destroyTower()){
+        			CharSequence text = "Item purchased.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         			expandMenu.switchMenu();
         			if (!gameInit.gLoop.survivalGame)
         				destroyTowerButton.setVisibility(View.INVISIBLE); //set visible when new level
@@ -317,6 +331,10 @@ public class GameLoopGUI {
         makeElementalButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if(gameInit.gLoop.makeElemental()){
+        			CharSequence text = "Item purchased.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         			expandMenu.switchMenu();
         			if (!gameInit.gLoop.survivalGame) 
         				makeElementalButton.setVisibility(View.INVISIBLE); //set visible when new level
@@ -334,6 +352,10 @@ public class GameLoopGUI {
         makeShieldButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if(gameInit.gLoop.makeShield()){
+        			CharSequence text = "Item purchased.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(getGameInit(), text, duration);
+        			toast.show();
         			expandMenu.switchMenu();
         			makeShieldButton.setVisibility(View.INVISIBLE); //set visible when new level
         		}else{
@@ -938,14 +960,27 @@ public class GameLoopGUI {
 	        	 case GUI_HIDECREATUREDATA_ID:
 	        		 //If we play a survival game nonen of the following bars are of use
 	        		 creatureBar.setVisibility(View.GONE);
-	        		 counterBar.setVisibility(View.INVISIBLE);
+	        		 break;
+	        	 case GUI_CREATURESURVIVAL_ID:
+	        		 tt = String.valueOf(msg.arg1);
+	        		 counterText.setText("Kills: " + tt);
+	        		 if (multiplayerMode) {
+		        		    y_health.setText("Kills: " + tt);
+		        		    y_score.setText("Score: " + gameInit.gameLoop.player.getScore());
+	        		 } 
 	        		 break;
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES:
 	        		 opponentScore = msg.arg1;
 	        		 opponentEnLeft = msg.arg2;
 	     	    	 o_score.setText("Score" + opponentScore);
-	    	    	 o_enemies_left.setText("Enemies Left" + opponentEnLeft);
+	    	    	 o_enemies_left.setText("Enemies left: " + opponentEnLeft);
 	        		 break;
+	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL:
+	        		 opponentScore = msg.arg1;
+	        		 opponentEnLeft = msg.arg2;
+	     	    	 o_score.setText("Score" + opponentScore);
+	    	    	 o_enemies_left.setText("Enemies left: " + opponentEnLeft);
+	        	 	 break;
 	        	 case MULTIPLAYER_SCOREBOARD_UPDATE_HEALTH:
 	        		 opponentScore = msg.arg1;
 	        		 opponentHealthLeft = msg.arg2;

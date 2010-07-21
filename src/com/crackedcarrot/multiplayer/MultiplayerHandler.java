@@ -199,11 +199,11 @@ public class MultiplayerHandler extends Thread {
 		            		if (tmp.charAt(0) == '1')
 			                	text += "speed ";
 		            		else if (tmp.charAt(1) == '1')
-			                	text = "fireresistans ";
+			                	text = "fireresistance ";
 		            		else if (tmp.charAt(2) == '1')
-			                	text = "frostresistans ";
+			                	text = "frostresistance ";
 			                else if (tmp.charAt(1) == '1')
-			                	text = "poisonresistans";
+			                	text = "poisonresistance";
 
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
