@@ -2,19 +2,20 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="fill_parent"   
     android:gravity="center">
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="vertical"
 	    android:layout_width="250dp"
-	    android:background="#22b4b4b4"
+	    android:background="#BBb4b4b4"
 	    android:layout_height="wrap_content">
 	
 			    <TextView android:id="@+id/title_your_details"
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
 			        android:text="Your details:"
+			        android:textSize="15dip"
 			        android:background="#5571dfff"
 			        android:textColor="#000000"
 			        android:paddingLeft="10dp"/>
@@ -24,6 +25,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Enemies left"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -32,6 +34,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Score"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -40,6 +43,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Health"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -47,6 +51,7 @@
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
 			        android:text="Opponent details:"
+			        android:textSize="15dip"
 			        android:background="#5571dfff"
 			        android:textColor="#000000"
 			        android:paddingLeft="10dp"/>
@@ -56,6 +61,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Enemies left"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -64,6 +70,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Score"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -72,6 +79,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Health"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 	
@@ -82,6 +90,7 @@
 			        android:textSize="18sp"
 			        android:text="Waiting for opponent"
 			        android:background="#3371dfff"
+			        android:textColor="#000000"
 			        android:paddingLeft="10dp"
 			        />
 			        
