@@ -22,19 +22,13 @@ public class MultiplayerHandler extends Thread {
     public static final int MESSAGE_DEVICE_NAME = 30;
     public static final int MESSAGE_BT_KILLED = 40;
     
-    private int opponentScore;
-    private int opponentEnLeft;
-    
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
-    private final String PLAYER_SCORE = "Score";
     private final String PLAYER_DEAD = "Dead";
     private final String INCREASE_ENEMY_SPEED = "incEnSp";
     private final String DECREASE_OPP_LIFE = "decOppLife";
     private final String DESTROY_TOWER = "desTower";
     private final String MAKE_ELEMENTAL = "mkElem";
-    private final String MAKE_SHIELD = "mkShield";
-    private final String OPP_CRE_LEFT = "cre";
 	
     //Handshake variables
  	public int MAP = 1;
@@ -73,7 +67,8 @@ public class MultiplayerHandler extends Thread {
  	                
  	                if (readMessage.equals("0"))
  	                	return;
- 	                
+
+ 	                //Recevied by client when game starts
  	                if(readMessage.startsWith("SERVER")) {
  	                	String[] temp = readMessage.split(":");
  	                	MAP = Integer.parseInt(temp[1]);
@@ -82,6 +77,7 @@ public class MultiplayerHandler extends Thread {
  	                	Client.handshakeSemaphore.release();
 
  	                }
+ 	                //Recevied by server when game starts
  	                else if(readMessage.startsWith("CLIENT")) {
  	                	String[] temp = readMessage.split(":");
  	                	// If we receive an ok from client then run with map selection otherwise set to default.
@@ -89,7 +85,22 @@ public class MultiplayerHandler extends Thread {
  	                	Server.handshakeSemaphore.release();
 
  	                }
- 	                
+ 	                // COntains iformation about how many creeps that opponent has left
+	                else if(readMessage.startsWith("CRE")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	int score = Integer.parseInt(temp[1]);
+ 	                	int enemiesleft = Integer.parseInt(temp[2]);
+	                    gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES, score, enemiesleft);
+ 	                	
+ 	                }	                
+ 	                // COntains iformation about how mutch healt opponent has left
+	                else if(readMessage.startsWith("HEALTH")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	int score = Integer.parseInt(temp[1]);
+ 	                	int healthleft = Integer.parseInt(temp[2]);
+	                    gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_HEALTH, score, healthleft);
+ 	                	
+ 	                } 
  	                // Level synchronization
  	                else if(readMessage.equals(SYNCH_LEVEL)){
  	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
@@ -101,25 +112,6 @@ public class MultiplayerHandler extends Thread {
 	                else if(readMessage.equals(PLAYER_DEAD)){
 	                	Log.d("YYYYY", readMessage);
 	                    mpGL.setOpponentLife(false);
-	                }
- 	                // The data consists of the opponents enemies left
-	                else if((readMessage.substring(0, 3)).equals(OPP_CRE_LEFT)){
-	                	readMessage = readMessage.substring(3, msg.arg2);
-	                	Log.d("MULTIPLAYERHANDLER", "Opponents enemies left: " + readMessage);
-	                    opponentEnLeft = Integer.parseInt(readMessage);
-	                    
-	                    if (gameLoopGui == null)
-	                    	Log.d("MULTIPLAYER", "HH");
-	                    
-	                    gameLoopGui.sendMessage(gameLoopGui.OPP_CREATURELEFT, opponentEnLeft, 0);
-
-	                }
-	                // The data consists of the opponents score
-	                else if((readMessage.substring(0, 5)).equals(PLAYER_SCORE)){
-	                	readMessage = readMessage.substring(5, msg.arg2);
-	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
-	                     opponentScore = Integer.parseInt(readMessage);
-	                     gameLoopGui.setOpponentScore(opponentScore);
 	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
 	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
@@ -240,10 +232,6 @@ public class MultiplayerHandler extends Thread {
         };
         
         Looper.loop();
-	}
-	
-	public int getOpponentScore(){
-		return this.opponentScore;
 	}
 
 	public void setGameLoop(MultiplayerGameLoop gLoop) {
