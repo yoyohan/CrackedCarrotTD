@@ -721,7 +721,12 @@ public class GameLoopGUI {
 	    case MULTIPLAYER_SCOREBOARD:
 	    	
 
-	        o_health.setText("Health: "+gameInit.gameLoop.player.getHealth());
+	        o_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
+	        o_enemies_left.setText("");
+	        o_score.setText("Score: 0");
+	        y_enemies_left.setText("");
+	        y_score.setText("Score: 0");
+	        y_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
 	        
 	        dialogSCOREBOARD.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
@@ -735,7 +740,8 @@ public class GameLoopGUI {
 		    		new OnClickListener() {
 		    			public void onClick(View v) {
 			        		quitDialogPressed = false;
-			        		gameInit.finish();
+			        		gameInit.gameLoop.dialogClick();
+			        		gameInit.gameLoop.stopGameLoop();
 		    			}
 		    		});	        
 	        

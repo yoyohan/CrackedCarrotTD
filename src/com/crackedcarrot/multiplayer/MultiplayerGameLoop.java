@@ -83,7 +83,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	/** Overriding the run method from super class GameLoop */
 	public void run() {
 		super.run();
-		Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
+		//Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
 		String stopMsg = "Dead";
 		byte[] sendStop = stopMsg.getBytes();
 		mMultiplayerService.write(sendStop);
@@ -92,7 +92,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	// Override
 	public void showYouLost() {
 		// If you have lost all your lives then the game ends.
-		Log.d("GAMETHREAD", "You are dead");
+		//Log.d("GAMETHREAD", "You are dead");
 
 		// Send info to opponent that player is dead
 		String message = "Dead";
@@ -121,7 +121,7 @@ public class MultiplayerGameLoop extends GameLoop {
 
 	public void showYouCompletedWave() {
 		// Send players score to opponent
-		Log.d("GAMETHREAD", "Wave complete");
+		//Log.d("GAMETHREAD", "Wave complete");
 		lvlNbr++;
 		/**
 		
@@ -148,7 +148,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Log.d("ZZZZZZZ", "Before second synchlevel");
+		//Log.d("ZZZZZZZ", "Before second synchlevel");
 		try {
 			synchLevelSemaphore.acquire();
 		} catch (InterruptedException e) {
@@ -164,7 +164,7 @@ public class MultiplayerGameLoop extends GameLoop {
 				gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_CLOSE, 0, 0);
 
 		} else {
-			Log.d("GAMETHREAD", "You have completed this map");
+			//Log.d("GAMETHREAD", "You have completed this map");
 			// Both players have survived all the enemy waves
 			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
 			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 0, 0);
