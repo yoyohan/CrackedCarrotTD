@@ -8,7 +8,7 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="vertical"
 	    android:layout_width="250dp"
-	    android:background="#BBb4b4b4"
+	    android:background="#DDb4b4b4"
 	    android:layout_height="wrap_content">
 	
 			    <TextView android:id="@+id/title_your_details"
@@ -16,7 +16,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Your details:"
 			        android:textSize="15dip"
-			        android:background="#5571dfff"
+			        android:background="#8871dfff"
 			        android:textColor="#000000"
 			        android:paddingLeft="10dp"/>
 			        
@@ -52,7 +52,7 @@
 			        android:layout_height="wrap_content"
 			        android:text="Opponent details:"
 			        android:textSize="15dip"
-			        android:background="#5571dfff"
+			        android:background="#8871dfff"
 			        android:textColor="#000000"
 			        android:paddingLeft="10dp"/>
 			        
