@@ -8,7 +8,7 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:orientation="vertical"
 	    android:layout_width="250dp"
-	    android:background="#55b4b4b4"
+	    android:background="#99b4b4b4"
 	    android:layout_height="wrap_content">
 	
 			    <TextView android:id="@+id/title_your_details"
