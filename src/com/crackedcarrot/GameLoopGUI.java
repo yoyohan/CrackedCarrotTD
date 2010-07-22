@@ -722,12 +722,19 @@ public class GameLoopGUI {
 	    	
 
 	        o_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
-	        o_enemies_left.setText("");
 	        o_score.setText("Score: 0");
-	        y_enemies_left.setText("");
 	        y_score.setText("Score: 0");
 	        y_health.setText("Health: " + gameInit.gameLoop.player.getHealth());
 	        
+	        if (gameInit.gLoop.survivalGame) { 
+	        	o_enemies_left.setText("Kills: 0");
+	        	y_enemies_left.setText("Kills: 0");
+	        }
+	        else {
+	        	o_enemies_left.setText("Enemies left: " + gameInit.gLoop.mLvl[0].nbrCreatures);
+	        	y_enemies_left.setText("Enemies left: " + gameInit.gLoop.mLvl[0].nbrCreatures);
+	        }
+
 	        dialogSCOREBOARD.setOnDismissListener(
 	    			new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface dialog) {
