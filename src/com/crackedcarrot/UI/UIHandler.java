@@ -2,7 +2,6 @@ package com.crackedcarrot.UI;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import com.crackedcarrot.Scaler;
 import com.crackedcarrot.Sprite;
 

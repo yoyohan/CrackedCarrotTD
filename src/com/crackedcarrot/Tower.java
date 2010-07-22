@@ -1,9 +1,6 @@
 package com.crackedcarrot;
 
 import java.util.Random;
-
-import android.util.Log;
-
 import com.crackedcarrot.menu.R;
 
 /**

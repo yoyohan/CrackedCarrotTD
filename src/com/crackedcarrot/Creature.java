@@ -312,6 +312,7 @@ public class Creature extends Sprite{
 			TextureData tmp = this.getCurrentTexture();
 			setCurrentTexture(this.mDeadTextureData);
 			this.setDeadTexture(tmp);
+			GL.creatureDiesOnMapSurvival(1);
 		}
 		else {
 			setCurrentTexture(this.mDeadTextureData);

@@ -1,14 +1,10 @@
 package com.crackedcarrot;
 
-import java.util.Random;
 import java.util.concurrent.Semaphore;
-
 import android.content.Intent;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -66,6 +62,7 @@ public class GameLoop implements Runnable {
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
     protected boolean survivalGame = false;
+	protected int survivalCreatureCount = 0;
     
     public GameLoop(NativeRender renderHandle, Map gameMap, Level[] waveList, Tower[] tTypes,
 			Player p, GameLoopGUI gui, SoundManager sm, boolean survivalGame){
@@ -475,6 +472,12 @@ public class GameLoop implements Runnable {
 		}
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
 		gameFinished.putExtra("score", player.getScore());
+
+		if (gui.multiplayerMode)
+			gameFinished.putExtra("multiplayer", true);
+		else
+			gameFinished.putExtra("multiplayer", false);
+		
 		// Since this is not a multiplayergame we will send 1 to gameinit
 		gui.getGameInit().startActivity(gameFinished);
     }
@@ -594,6 +597,14 @@ public class GameLoop implements Runnable {
     			mCreatures[x].setAllDead(true);
     	gui.sendMessage(gui.GUI_CREATURELEFT_ID, remainingCreaturesALIVE, 0);
     }
+
+    // When a creature is dead in survival we will notify the status bar
+    public void creatureDiesOnMapSurvival(int n) {
+    	this.survivalCreatureCount  += n;
+    	gui.sendMessage(gui.GUI_CREATURESURVIVAL_ID, survivalCreatureCount, 0);
+    }
+    
+    
     
     public void updateCreatureProgress(float dmg) {
     	// Update the status, displaying total health of all creatures

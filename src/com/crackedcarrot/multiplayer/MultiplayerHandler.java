@@ -3,9 +3,7 @@ package com.crackedcarrot.multiplayer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
-
 import com.crackedcarrot.GameLoopGUI;
 
 public class MultiplayerHandler extends Thread {
@@ -22,25 +20,20 @@ public class MultiplayerHandler extends Thread {
     public static final int MESSAGE_DEVICE_NAME = 30;
     public static final int MESSAGE_BT_KILLED = 40;
     
-    private int opponentScore;
-    private int opponentEnLeft;
-    
     // Message read types sent to the MultiplayerService Handler: MESSAGE_READ
     private final String SYNCH_LEVEL = "synchLevel";
-    private final String PLAYER_SCORE = "Score";
     private final String PLAYER_DEAD = "Dead";
     private final String INCREASE_ENEMY_SPEED = "incEnSp";
     private final String DECREASE_OPP_LIFE = "decOppLife";
     private final String DESTROY_TOWER = "desTower";
     private final String MAKE_ELEMENTAL = "mkElem";
-    private final String MAKE_SHIELD = "mkShield";
-    private final String OPP_CRE_LEFT = "cre";
 	
     //Handshake variables
  	public int MAP = 1;
  	public int DIFFICULTY = 1;
  	public int GAMEMODE = 0;
  	public boolean OK = false;
+ 	public boolean alreadySynced = false;
     
 	public MultiplayerHandler(){
 		//gameLoopGui = glGui;
@@ -57,7 +50,7 @@ public class MultiplayerHandler extends Thread {
             @Override
             public void handleMessage(Message msg) {
             	
-            	Log.d("MULTIPLAYER!", "Message: " + msg.arg1);
+            	//Log.d("MULTIPLAYER!", "Message: " + msg.arg1);
             	
                 switch (msg.what) {
                 case MESSAGE_READ:
@@ -69,11 +62,12 @@ public class MultiplayerHandler extends Thread {
                     String readMessage = new String(readBuff);
  	                readMessage = readMessage.substring(0, msg.arg2);
  	                
- 	                Log.d("MULTIPLAYER!", "Message: " + readMessage);
+ 	                //Log.d("MULTIPLAYER!", "Message: " + readMessage);
  	                
  	                if (readMessage.equals("0"))
  	                	return;
- 	                
+
+ 	                //Recevied by client when game starts
  	                if(readMessage.startsWith("SERVER")) {
  	                	String[] temp = readMessage.split(":");
  	                	MAP = Integer.parseInt(temp[1]);
@@ -82,6 +76,7 @@ public class MultiplayerHandler extends Thread {
  	                	Client.handshakeSemaphore.release();
 
  	                }
+ 	                //Recevied by server when game starts
  	                else if(readMessage.startsWith("CLIENT")) {
  	                	String[] temp = readMessage.split(":");
  	                	// If we receive an ok from client then run with map selection otherwise set to default.
@@ -89,40 +84,45 @@ public class MultiplayerHandler extends Thread {
  	                	Server.handshakeSemaphore.release();
 
  	                }
- 	                
+ 	                // COntains iformation about how many creeps that opponent has left
+	                else if(readMessage.startsWith("CRE")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	int score = Integer.parseInt(temp[1]);
+ 	                	int enemiesleft = Integer.parseInt(temp[2]);
+ 	                	if (mpGL.isSurvivalGame())
+ 	                		gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES_SURVIVAL, score, enemiesleft);
+ 	                	else gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_ENEMIES, score, enemiesleft);
+ 	                }	                
+ 	                // COntains iformation about how mutch healt opponent has left
+	                else if(readMessage.startsWith("HEALTH")) {
+ 	                	String[] temp = readMessage.split(":");
+ 	                	int score = Integer.parseInt(temp[1]);
+ 	                	int healthleft = Integer.parseInt(temp[2]);
+	                    gameLoopGui.sendMessage(gameLoopGui.MULTIPLAYER_SCOREBOARD_UPDATE_HEALTH, score, healthleft);
+ 	                	
+ 	                } 
  	                // Level synchronization
  	                else if(readMessage.equals(SYNCH_LEVEL)){
- 	                	Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
- 	                	//MultiplayerGameLoop.synchLevelClick();                    
- 	                	mpGL.synchLevelClick();                    
+ 	                	//Log.d("MULTIPLAYERHANDLER", "Release synchSemaphore");
+ 	                	//MultiplayerGameLoop.synchLevelClick();
+ 	                	
+ 	                	if (mpGL == null) {
+ 	                		alreadySynced = true;
+ 	                	}
+ 	                	else
+ 	                		mpGL.synchLevelClick();
  	 	                
  	                }
  	                // The opponent is dead
 	                else if(readMessage.equals(PLAYER_DEAD)){
-	                	Log.d("YYYYY", readMessage);
+	                	//Log.d("YYYYY", readMessage);
+
+	                	mpGL.synchLevelClick();
+
 	                    mpGL.setOpponentLife(false);
 	                }
- 	                // The data consists of the opponents enemies left
-	                else if((readMessage.substring(0, 3)).equals(OPP_CRE_LEFT)){
-	                	readMessage = readMessage.substring(3, msg.arg2);
-	                	Log.d("MULTIPLAYERHANDLER", "Opponents enemies left: " + readMessage);
-	                    opponentEnLeft = Integer.parseInt(readMessage);
-	                    
-	                    if (gameLoopGui == null)
-	                    	Log.d("MULTIPLAYER", "HH");
-	                    
-	                    gameLoopGui.sendMessage(gameLoopGui.OPP_CREATURELEFT, opponentEnLeft, 0);
-
-	                }
-	                // The data consists of the opponents score
-	                else if((readMessage.substring(0, 5)).equals(PLAYER_SCORE)){
-	                	readMessage = readMessage.substring(5, msg.arg2);
-	                	 Log.d("MULTIPLAYERHANDLER", "Opponents score: " + readMessage);
-	                     opponentScore = Integer.parseInt(readMessage);
-	                     gameLoopGui.setOpponentScore(opponentScore);
-	                }
 	                else if(readMessage.equals(INCREASE_ENEMY_SPEED)){
-	                	Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Increase enemy speed and health!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against an enemy upgrade attack";
@@ -143,7 +143,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(DECREASE_OPP_LIFE)){
-	                	Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Decrease opponents life!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against a life attack";
@@ -168,7 +168,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(DESTROY_TOWER)){
-	                	Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
+	                	//Log.d("MULTIPLAYERHANDLER", "Destroy tower!!");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against a tower attack";
@@ -189,7 +189,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else if(readMessage.equals(MAKE_ELEMENTAL)){
-	                	Log.d("MULTIPLAYERHANDLER", "Make elemental");
+	                	//Log.d("MULTIPLAYERHANDLER", "Make elemental");
 	                	if(mpGL.multiplayerShield){
 	                		mpGL.multiplayerShield = false;
 	                		CharSequence text = "Your shield was used against an elemental attack";
@@ -207,11 +207,11 @@ public class MultiplayerHandler extends Thread {
 		            		if (tmp.charAt(0) == '1')
 			                	text += "speed ";
 		            		else if (tmp.charAt(1) == '1')
-			                	text = "fireresistans ";
+			                	text = "fireresistance ";
 		            		else if (tmp.charAt(2) == '1')
-			                	text = "frostresistans ";
+			                	text = "frostresistance ";
 			                else if (tmp.charAt(1) == '1')
-			                	text = "poisonresistans";
+			                	text = "poisonresistance";
 
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);
@@ -219,7 +219,7 @@ public class MultiplayerHandler extends Thread {
 	                	}
 	                }
 	                else {
-	                	Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
+	                	//Log.d("!!!!!!!", "Got wrong message!!: " + readMessage);
 	                }
                 	break;
                 	
@@ -241,13 +241,13 @@ public class MultiplayerHandler extends Thread {
         
         Looper.loop();
 	}
-	
-	public int getOpponentScore(){
-		return this.opponentScore;
-	}
 
 	public void setGameLoop(MultiplayerGameLoop gLoop) {
 		mpGL = gLoop;
+     	if (alreadySynced) {
+     		mpGL.synchLevelClick();
+     		alreadySynced = false;
+     	}     		
 	}
 
 	public void setGameLoopGui(GameLoopGUI glGui) {

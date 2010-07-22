@@ -3,7 +3,6 @@ package com.crackedcarrot.multiplayer;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,7 +15,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -101,7 +99,7 @@ public class Client extends Activity {
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
-            Log.d("CLIENT", "Request enable Bluetooth");
+            //Log.d("CLIENT", "Request enable Bluetooth");
         } 
     }
     
@@ -114,7 +112,7 @@ public class Client extends Activity {
     	if (mConnectThread == null) {
     		mConnectThread = new ConnectThread(device);
     		mConnectThread.start();
-    		Log.d("CLIENT", "Start connect thread");
+    		//Log.d("CLIENT", "Start connect thread");
     	}
     }
     
@@ -166,7 +164,7 @@ public class Client extends Activity {
         public ConnectThread(BluetoothDevice device) {
         	// mmClientSocket is final so use a temporary object first
             BluetoothSocket tmp = null;
-            Log.d("CLIENT", "Connect thread constructor");
+            //Log.d("CLIENT", "Connect thread constructor");
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
@@ -184,10 +182,10 @@ public class Client extends Activity {
         	
             // Cancel discovery because it will slow down the connection
             mBluetoothAdapter.cancelDiscovery();
-            Log.d("CLIENT", "Connectthread runs");
+            //Log.d("CLIENT", "Connectthread runs");
             try {
                 // Connect through the socket. This will block until it succeeds or throws an exception
-            	Log.d("CLIENT", "Connectthread call connect");
+            	//Log.d("CLIENT", "Connectthread call connect");
                 mmClientSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
@@ -200,18 +198,18 @@ public class Client extends Activity {
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
-                	Log.e("CLIENT", "Can't close socket", closeException);
+                	//Log.e("CLIENT", "Can't close socket", closeException);
                 }
                 
             	return;
             }
-            Log.d("CLIENT", "Ansluten!!!");
+            //Log.d("CLIENT", "Ansluten!!!");
             startGame();
         }
     }
 
     private void startGame(){
-    	Log.d("CLIENT", "Start game");
+    	//Log.d("CLIENT", "Start game");
     	
     	mMultiplayerService = new MultiplayerService(mmClientSocket);
     	mMultiplayerService.start();

@@ -1,8 +1,6 @@
 package com.crackedcarrot.menu;
 
 import com.crackedcarrot.menu.R;
-import com.scoreninja.adapter.ScoreNinjaAdapter;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
