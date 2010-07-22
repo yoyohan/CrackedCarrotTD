@@ -3,7 +3,7 @@
 
 void Java_com_crackedcarrot_NativeRender_nativeResize(JNIEnv*  env, jobject  thiz, jint w, jint h){
 	
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_RESIZE", "The surface has been resized!.");
 	
 	glViewport(0, 0, w, h);
 	
@@ -166,12 +166,12 @@ void drawSprite(JNIEnv* env, GLSprite* sprite){
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobject thiz){
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Resetting library to known state before drawing.");
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "The surface has been created.");
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Resetting library to known state before drawing.");
 	
 	int i;
 	if(texData != NULL){
-	    for(i = 1; i < texDataLength; i++){
+	    for(i = 0; i < texDataLength; i++){
 	        glDeleteBuffers(texData[i].nFrames, texData[i].texCoBuffNames);
 	        free(texData[i].texCoBuffNames);
 	        texData[i].texCoBuffNames = NULL;
@@ -181,11 +181,11 @@ void Java_com_crackedcarrot_NativeRender_nativeSurfaceCreated(JNIEnv*  env, jobj
 	texData = NULL;
 	texDataLength = 0;
 	
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Textures Clean");
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Textures Clean");
 	
 	Java_com_crackedcarrot_NativeRender_nativeFreeSprites(env, thiz);
 	
-	__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Sprites Clean");
+	//__android_log_print(ANDROID_LOG_DEBUG, "NATIVE_SURFACE_CREATED", "Sprites Clean");
 	
 	/*for(i = 0; i < 7; i++){
 	    noOfSprites[i] = 0;
