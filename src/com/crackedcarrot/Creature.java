@@ -34,6 +34,8 @@ public class Creature extends Sprite{
 	private int mDisplayResourceId;
     // The speed of the creature
     protected float velocity;
+    // Base speed
+    protected float basevelocity;
     // Delay before spawning the creature to the map
     private float spawndelay;
     // How much gold this creature gives when it's killed.
@@ -171,6 +173,10 @@ public class Creature extends Sprite{
 				    		setCreatureSpecials(this.creatureFast,false, this.creatureFrostResistant, this.creaturePoisonResistant);
 				    	else if (this.creaturePoisonResistant)
 				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, this.creatureFrostResistant, false);
+				    	else if (this.creatureFast) {
+				    		setCreatureSpecials(false,this.creatureFireResistant, this.creatureFrostResistant, this.creaturePoisonResistant);
+				    		this.velocity = this.basevelocity;
+				    	}
 				    }
 				}
 				
@@ -306,6 +312,7 @@ public class Creature extends Sprite{
 			TextureData tmp = this.getCurrentTexture();
 			setCurrentTexture(this.mDeadTextureData);
 			this.setDeadTexture(tmp);
+			GL.creatureDiesOnMapSurvival(1);
 		}
 		else {
 			setCurrentTexture(this.mDeadTextureData);
@@ -504,6 +511,12 @@ public class Creature extends Sprite{
 	 * @param velocity
 	 */
 	public void setVelocity(float velocity){ this.velocity = velocity; }
+
+	/**
+	 * Function to set base speed for this creature. Needed when a fast creep needs to be slowed
+	 * @param basevelocity
+	 */
+	public void setBaseVelocity(float basevelocity){ this.basevelocity = basevelocity; }
 
 	/**
 	 * This setters is needed to show creature between levels

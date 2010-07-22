@@ -21,6 +21,7 @@ public class GameFinished extends Activity {
 	
 	private int score;
 	private int mapChoice;
+	private boolean multiplayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class GameFinished extends Activity {
         score          = extras.getInt("score");
         mapChoice  = extras.getInt("map");
         boolean win    = extras.getBoolean("win");
+        multiplayer = extras.getBoolean("multiplayer");
 
         
 		// Handle scoreninja-thingie.
@@ -99,6 +101,11 @@ public class GameFinished extends Activity {
     @Override
     protected void onStop() {
        super.onStop();
+       
+       //Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
+       
+       if (this.multiplayer == false)
+    	   return;
 
            // Load/prepare Scoreninja if it's active and installed.
        SharedPreferences settings = getSharedPreferences("Options", 0);

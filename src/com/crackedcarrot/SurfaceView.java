@@ -3,7 +3,6 @@ package com.crackedcarrot;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.crackedcarrot.UI.UIHandler;

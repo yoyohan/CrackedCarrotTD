@@ -11,10 +11,10 @@ void Java_com_crackedcarrot_NativeRender_nativeDataPoolSize(JNIEnv* env,
         
         __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in nativeDataPoolSize");
     }
-    __android_log_print(ANDROID_LOG_DEBUG, 
-		    				"NATIVE ALLOC",
-		    				"Allocating memory pool for Sprites, Type %d of size %d ", 
-		    				type, noOfSprites[type]);
+    //__android_log_print(ANDROID_LOG_DEBUG, 
+	//	    				"NATIVE ALLOC",
+	//	    				"Allocating memory pool for Sprites, Type %d of size %d ", 
+	//	    				type, noOfSprites[type]);
 }
 
 void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, jobject thiz, jint length){
@@ -25,7 +25,7 @@ void Java_com_crackedcarrot_NativeRender_nativeAllocTextureBuffers(JNIEnv* env, 
             __android_log_print(ANDROID_LOG_ERROR, "NATIVE ALLOC","MALLOC ERROR in allocTextureBuffers");
         }
         texDataLength = length;
-        __android_log_print(ANDROID_LOG_DEBUG, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
+        //__android_log_print(ANDROID_LOG_DEBUG, "TEXTURE BUFFER ALLOC" , "Allocating buffer for max %d textures", length);
     }
     else{
         __android_log_print(ANDROID_LOG_ERROR, "TEXTURE BUFFER ALLOC" , "Invalid buffer length! Buffer not allocated!");

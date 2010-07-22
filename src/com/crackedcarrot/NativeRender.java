@@ -5,21 +5,18 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Semaphore;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
-
 import com.crackedcarrot.textures.TextureData;
 import com.crackedcarrot.textures.TextureLibrary;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.util.Log;
+
 
 public class NativeRender implements GLSurfaceView.Renderer {
 	
@@ -121,7 +118,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 				if(sprites[i][j].getSubType() == sprites[i][j+1].getSubType() &&
 						!sprites[i][j].equals(sprites[i][j+1])){
 				
-					Log.e("NATIVE RENDER", "Inconsistent data in the same subtype");
+					//Log.e("NATIVE RENDER", "Inconsistent data in the same subtype");
 				}
 			}
 		}
@@ -219,14 +216,14 @@ public class NativeRender implements GLSurfaceView.Renderer {
 			lastTextureId = loadBitmap(mContext, glContext, resourceId);
 			TextureData d = new TextureData(noLoadedTextures, lastTextureId, texLib.getFrameData(resourceId));
 			noLoadedTextures++;
-			if(noLoadedTextures > texLib.size()){
-				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
-				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
-				Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+			//if(noLoadedTextures > texLib.size()){
+				//Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+				//Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
+				//Log.e("NATIVE RENDER", "BUG TRIGGERD, GAME IN FAULTY STATE");
 				
-				Log.e("NATIVE RENDER", "lastTexture Id was: " + lastTextureId);
-				Log.e("NATIVE RENDER", "Maximum was: " + texLib.size());
-			}
+				//Log.e("NATIVE RENDER", "lastTexture Id was: " + lastTextureId);
+				//Log.e("NATIVE RENDER", "Maximum was: " + texLib.size());
+			//}
 			textureMap.put(resourceId, d);
 			nativeSetTextureBuffer(d);
 			return d;
@@ -299,7 +296,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 
 				Iterator<TextureData> it = map.values().iterator();
 				while(it.hasNext()){
-					nativeFreeTex(it.next().mTextureName);
+					nativeFreeTex(it.next().texIndex);
 				}
 				lock2.release();
 			}
@@ -367,7 +364,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
             
             int error = gl.glGetError();
             if (error != GL10.GL_NO_ERROR) {
-                Log.e("JAVA_LOADTEXTURE", "Texture Load GLError: " + error);
+                //Log.e("JAVA_LOADTEXTURE", "Texture Load GLError: " + error);
             }
         
         }

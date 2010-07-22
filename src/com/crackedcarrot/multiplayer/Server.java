@@ -3,7 +3,6 @@ package com.crackedcarrot.multiplayer;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -13,17 +12,19 @@ import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
-
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 
 public class Server extends Activity {
+	
+	private boolean finishOnResume = false;
 
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -46,13 +47,31 @@ public class Server extends Activity {
     private int GAMEMODE = 0;
     protected static Semaphore handshakeSemaphore = new Semaphore(0);
    
+    //////////////////////////////////////////
+    // MINI HANDLER
+    //////////////////////////////////////////
+
     private ImageView mBackground;
+    // Need handler for callbacks to the UI thread
+    final Handler mHandler = new Handler();
+
+    // Create runnable for posting
+    final Runnable mUpdateResults = new Runnable() {
+        public void run() {
+        	mBackground.setImageResource(R.drawable.loadimage);
+    		mBackground.setScaleType(ScaleType.CENTER_INSIDE);
+        }
+    };
+
+    //////////////////////////////////////////
+    // END MINI HANDLER
+    //////////////////////////////////////////
     
     /** if user presses back button, this activity will finish */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		Log.d("Server", "onKeyDown KEYCODE_BACK");
+    		//Log.d("Server", "onKeyDown KEYCODE_BACK");
     		finish();
     		return true;
        	}
@@ -62,12 +81,12 @@ public class Server extends Activity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.server);
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.server);
         
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+                
     	mBackground = (ImageView) findViewById(R.id.ServerBackground);
     	
     	// Get the local Bluetooth adapter
@@ -95,43 +114,37 @@ public class Server extends Activity {
         	DIFFICULTY =  extras.getInt("com.crackedcarrot.multiplayer.difficulty");
         	GAMEMODE =  extras.getInt("com.crackedcarrot.multiplayer.gamemode");
         } 
-        
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
-        
-        showDialog(PROGRESS_DIALOG);
-    }
-    
-    /** When the activity first starts, do following */
-    @Override
-    public void onStart() {
-        super.onStart();
-        
-        /** Request that Bluetooth will be activated if not on.
-         *  setupServer() will then be called during onActivityResult */
-       // if (!mBluetoothAdapter.isEnabled()) {
-       //     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        //    startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
-        //} else {
-        //    setupServer();
-       // } 
+    	
+        if (!mBluetoothAdapter.isEnabled() && Build.MODEL.equals("Liquid")) {
+       		CharSequence text = "Please manually start bluetooth in android settings.";
+       		int duration = Toast.LENGTH_SHORT;
+       		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+       		toast.show();
+        	finish();
+        } 
+        else {
+	        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+	        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+	        startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE);
+	        showDialog(PROGRESS_DIALOG);
+        }
     }
     
     private void setupServer() {
     	if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
-            Log.d("SERVER", "Start server thread");
+            //Log.d("SERVER", "Start server thread");
     	} else {
-    		Log.d("SERVER", "The Accept thread already exists!!");
+    		//Log.d("SERVER", "The Accept thread already exists!!");
     	}
     }
     
     /** This method is called after the startActivityForResult() is called with
         parameters containing activity id and user choice */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
+       //Log.d("SERVER","onActivityResult");
+    	switch (requestCode) {
         case REQUEST_ENABLE_BLUETOOTH:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {
@@ -170,11 +183,12 @@ public class Server extends Activity {
             	finish();
             }
             mmServerSocket = tmp;
-            Log.d("SERVER", "Serverthread constructor");
+            //Log.d("SERVER", "Serverthread constructor");
         }
 
         public void run() {
             BluetoothSocket socket = null;
+            
             // Listen, by calling accept(), until exception occurs or a socket is returned
             while (true) {
             	if(mmServerSocket == null){
@@ -183,21 +197,21 @@ public class Server extends Activity {
             	}
             	else{
             		try {
-                    	Log.d("SERVER", "Kör server accept()");
+                    	//Log.d("SERVER", "Kör server accept()");
                         socket = mmServerSocket.accept();
                     } catch (Exception e) {
                         break;
                     }
             	}
-                Log.d("SERVER", "Serverthread running");
+                //Log.d("SERVER", "Serverthread running");
                 // Connection accepted?
                 if (socket != null) {
-                	Log.d("SERVER", "connection established!");
+                	//Log.d("SERVER", "connection established!");
                 	startGame(socket);
                 	try{
                 		mmServerSocket.close();
                 	} catch (Exception e){
-                		Log.d("SERVER", "Can't close the server socket");
+                		//Log.d("SERVER", "Can't close the server socket");
                 	}
                     break;
                 }
@@ -208,9 +222,9 @@ public class Server extends Activity {
     /** Method that sets the AcceptThread to null and starts the game in multiplayer mode */
     private void startGame(BluetoothSocket socket){
 
-    	//mBackground.setImageResource(R.drawable.loadimage);
-		//mBackground.setScaleType(ScaleType.CENTER_INSIDE);
-    	
+        //Send message to UI to change background
+    	mHandler.post(mUpdateResults);
+        
     	mAcceptThread = null;
     	
 		mMultiplayerService = new MultiplayerService(socket);
@@ -227,12 +241,12 @@ public class Server extends Activity {
 		byte[] sendMsg = mapMsg.getBytes();
 		mMultiplayerService.write(sendMsg);
     	
-		Log.d("SERVER","SEMAPHORE1");
+		//Log.d("SERVER","SEMAPHORE1");
 		
 		try { handshakeSemaphore.acquire(); }
 		catch (InterruptedException e1) { }
 
-		Log.d("SERVER","SEMAPHORE2");
+		//Log.d("SERVER","SEMAPHORE2");
 
 		
 		// Is the client ok with the selected map, difficulty and gamemode. No if
@@ -246,6 +260,9 @@ public class Server extends Activity {
 		}
 		
     	// Start the game and finish the activity
+		
+		finishOnResume = true;
+		
     	GameInit.setMultiplayer(mMultiplayerService);
     	Intent StartGame = new Intent(this, GameInit.class);
 		StartGame.putExtra("com.crackedcarrot.menu.map", MAP);
@@ -283,8 +300,26 @@ public class Server extends Activity {
     
     protected void onResume(){
     	super.onResume();
+    	// So we dont hang around in the empty server activity.
+    	// Fucks up onactivityresult
+    	//   Fixed!?
     	
-    		// So we dont hang around in the empty server activity.
+    	//Log.d("SERVER", "onResume()");
+    	
+    	if (finishOnResume) {
+    		finishOnResume = false;
+    		finish();
+    	}
+    }
+    
+
+    protected void onRestart(){
+    	super.onRestart();
+    	
+    	//Log.d("SERVER", "onRestart()");
+    	
+    	// So we dont hang around in the empty server activity.
     	finish();
     }
+    
 }

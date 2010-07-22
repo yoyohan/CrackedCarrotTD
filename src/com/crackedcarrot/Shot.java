@@ -1,7 +1,5 @@
 package com.crackedcarrot;
 
-import android.util.Log;
-
 /**
 * Class defining a shot in the game. This can be both a projectile and a aoen
 * */

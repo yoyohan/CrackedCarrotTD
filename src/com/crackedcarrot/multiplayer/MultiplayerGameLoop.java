@@ -4,11 +4,6 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import android.content.Intent;
-import android.os.SystemClock;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.crackedcarrot.Coords;
 import com.crackedcarrot.GameFinished;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.GameLoopGUI;
@@ -43,25 +38,22 @@ public class MultiplayerGameLoop extends GameLoop {
 	protected void initializeLvl() {
 
 		super.initializeLvl();
-        this.gui.sendMessage(gui.OPP_CREATURELEFT, mLvl[this.lvlNbr].nbrCreatures, 0);
-		// The dialog showing the players score is shown right after next level
-		// dialog
-		gui.sendMessage(gui.LEVEL_SCORE, player.getScore(), 0);
 
-		waitForDialogClick();
-
-		// Make the five multiplayer buttons visible for the current level
-		if (this.multiplayerShield)
-			gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
-		else gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 1, 0);
 		
-		// When player clicked ok, send message to opponent that it's done
+		// Make the five multiplayer buttons visible for the current level
+		gui.sendMessage(gui.SETMULTIPLAYERVISIBLE, 0, 0);
+		
+		// Send message to opponent that the player is ready for next level
 		String message2 = "synchLevel";
 		byte[] send2 = message2.getBytes();
 		mMultiplayerService.write(send2);
 
 		// Show "Waiting for opponent" message
-		gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
+		//this.gui.sendMessage(gui.OPP_CREATURELEFT, mLvl[this.lvlNbr].nbrCreatures, 0);
+		if (lvlNbr == 0) {
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_WAITING, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+		}
 
 		// Wait for the opponent
 		try {
@@ -77,7 +69,7 @@ public class MultiplayerGameLoop extends GameLoop {
 		synchLevelSemaphore.release();
 
 		// Close "Waiting for opponent" message
-		gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
+		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_CLOSE, 0, 0);
 		
 		this.multiplayerShield = false;
 
@@ -86,7 +78,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	/** Overriding the run method from super class GameLoop */
 	public void run() {
 		super.run();
-		Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
+		//Log.d("MULTIGAMELOOP", "DU DÖDAR DIG SJÄLV!!!");
 		String stopMsg = "Dead";
 		byte[] sendStop = stopMsg.getBytes();
 		mMultiplayerService.write(sendStop);
@@ -95,7 +87,7 @@ public class MultiplayerGameLoop extends GameLoop {
 	// Override
 	public void showYouLost() {
 		// If you have lost all your lives then the game ends.
-		Log.d("GAMETHREAD", "You are dead");
+		//Log.d("GAMETHREAD", "You are dead");
 
 		// Send info to opponent that player is dead
 		String message = "Dead";
@@ -109,12 +101,14 @@ public class MultiplayerGameLoop extends GameLoop {
 			byte[] sendMessage = lastMessage.getBytes();
 			mMultiplayerService.write(sendMessage);
 			// Show the "You Lost"-dialog.
-			gui.sendMessage(gui.MULTIPLAYER_LOST, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 1, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
 			waitForDialogClick();
 			run = false;
 		} else {
 			// The one who dies first is the looser, so this player has won
-			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 2, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
 			waitForDialogClick();
 			run = false;
 		}
@@ -122,63 +116,65 @@ public class MultiplayerGameLoop extends GameLoop {
 
 	public void showYouCompletedWave() {
 		// Send players score to opponent
-		String message = "Score" + player.getScore();
-		byte[] send = message.getBytes();
-		mMultiplayerService.write(send);
-		Log.d("GAMETHREAD", "Wave complete");
+		//Log.d("GAMETHREAD", "Wave complete");
 		lvlNbr++;
 		/**
 		
 		*/
 
 		// Is the opponent dead, in that case you've won the game
-		if (!this.opponentLife) {
-			gui.sendMessage(gui.MULTIPLAYER_WON, player.getScore(), 0);
+		// Show "Waiting for opponent" message
+		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_WAITING, 0, 0);
+		gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		String me = "synchLevel";
+		byte[] sendThis = me.getBytes();
+		mMultiplayerService.write(sendThis);
+
+		// Wait for the opponent
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		//Log.d("ZZZZZZZ", "Before second synchlevel");
+		try {
+			synchLevelSemaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		synchLevelSemaphore.release();
+
+		// The game is not totally completed
+		if (lvlNbr < mLvl.length) {
+			// Do nothing here
+			// Close "Waiting for opponent" message
+			if (this.opponentLife)
+				gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_CLOSE, 0, 0);
+
+		} else {
+			//Log.d("GAMETHREAD", "You have completed this map");
+			// Both players have survived all the enemy waves
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 0, 0);
 			waitForDialogClick();
 			run = false;
-		} else {
-			// Show "Waiting for opponent" message
-			gui.sendMessage(gui.WAIT_OPPONENT_ID, 0, 0);
-
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			String me = "synchLevel";
-			byte[] sendThis = me.getBytes();
-			mMultiplayerService.write(sendThis);
-
-			Log.d("ZZZZZZZ", "Before first synchlevel");
-			// Wait for the opponent
-			try {
-				synchLevelSemaphore.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			Log.d("ZZZZZZZ", "Before second synchlevel");
-			try {
-				synchLevelSemaphore.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			synchLevelSemaphore.release();
-
-			Log.d("ZZZZZZZ", "close wait for....");
-			// Close "Waiting for opponent" message
-			gui.sendMessage(gui.CLOSE_WAIT_OPPONENT, 0, 0);
-			// The game is not totally completed
-			if (lvlNbr < mLvl.length) {
-				// Do nothing here
-			} else {
-				Log.d("GAMETHREAD", "You have completed this map");
-				// Both players have survived all the enemy waves
-				gui.sendMessage(gui.COMPARE_PLAYERS, player.getScore(), 0);
-				waitForDialogClick();
-				run = false;
-			}
 		}
+		
+			// Check if the opponent has died while we waited for synching.
+		if (!this.opponentLife) {
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD, 0, 0);
+			gui.sendMessage(gui.MULTIPLAYER_SCOREBOARD_UPDATE_END, 2, 0);
+			waitForDialogClick();
+			run = false;
+		}
+		
 	}
 
 	/** Release the synchronization semaphore from outside this class */
@@ -299,9 +295,12 @@ public class MultiplayerGameLoop extends GameLoop {
 		if (nbr >= 1) {
 			for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
 				if (mCreatures[z].draw && mCreatures[z].getHealth() > 0) {
-					mCreatures[z].creatureFast = true;
-					mCreatures[z]
+					
+					if (!mCreatures[z].creatureFast) {
+						mCreatures[z].creatureFast = true;
+						mCreatures[z]
 							.setVelocity(mCreatures[z].getVelocity() * 1.5f);
+					}
 					mCreatures[z].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 					updateCreatureProgress(0);
 					break;
@@ -314,8 +313,11 @@ public class MultiplayerGameLoop extends GameLoop {
 		Random rand = new Random();
 		int tmp = rand.nextInt(mLvl[lvlNbr].nbrCreatures);
 		if (mCreatures[tmp].draw && mCreatures[tmp].getHealth() > 0) {
-			mCreatures[tmp].creatureFast = true;
-			mCreatures[tmp].setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
+			if (!mCreatures[tmp].creatureFast) {
+				mCreatures[tmp].creatureFast = true;
+				mCreatures[tmp]
+					.setVelocity(mCreatures[tmp].getVelocity() * 1.5f);
+			}
 			mCreatures[tmp].setCurrentHealth(mLvl[lvlNbr].getHealth() * 4);
 			updateCreatureProgress(0);
 		} else {
@@ -432,13 +434,13 @@ public class MultiplayerGameLoop extends GameLoop {
 			}
 		}
 		for (int z = 0; z < mLvl[lvlNbr].nbrCreatures; z++) {
+			if (fast && !mCreatures[z].creatureFast) {
+				mCreatures[z].setVelocity(mCreatures[z].getVelocity()*1.5f);
+			}
+
 			mCreatures[z].setCreatureSpecials(fast, fireResistant,
 					frostResistant, poisonResistant);
 			
-			if (fast && !mCreatures[z].creatureFast) {
-				mCreatures[z].setVelocity(mCreatures[z].getVelocity()*1.5f);
-				
-			}
 		}
 		
 		int returnint = 0;
@@ -471,11 +473,28 @@ public class MultiplayerGameLoop extends GameLoop {
 	// Override
 	public void creatureDiesOnMap(int n) {
 		super.creatureDiesOnMap(n);
-		String creDies = "cre" + remainingCreaturesALIVE;
+		String creDies = "CRE:" + player.getScore()+ ":" + remainingCreaturesALIVE;
 		byte[] sendCreDies = creDies.getBytes();
 		mMultiplayerService.write(sendCreDies);
-		
 	}
+	
+    // When a creature is dead in survival we will notify the status bar
+	@Override
+    public void creatureDiesOnMapSurvival(int n) {
+		super.creatureDiesOnMapSurvival(n);
+		String creDies = "CRE:" + player.getScore()+ ":" + this.survivalCreatureCount;
+		byte[] sendCreDies = creDies.getBytes();
+		mMultiplayerService.write(sendCreDies);
+    }
+	
+	
+	@Override
+    public void updatePlayerHealth(){
+    	super.updatePlayerHealth();
+		String health = "HEALTH:" + player.getScore()+ ":" + player.getHealth();
+		byte[] sendHealth = health.getBytes();
+		mMultiplayerService.write(sendHealth);
+    }
 	
 	public boolean isSurvivalGame() {
 		return this.survivalGame;
