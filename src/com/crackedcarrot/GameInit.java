@@ -2,14 +2,12 @@ package com.crackedcarrot;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 

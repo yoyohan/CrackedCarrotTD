@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.crackedcarrot.menu.R;
 

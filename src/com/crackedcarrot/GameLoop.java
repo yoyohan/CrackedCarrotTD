@@ -1,14 +1,10 @@
 package com.crackedcarrot;
 
-import java.util.Random;
 import java.util.concurrent.Semaphore;
-
 import android.content.Intent;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;

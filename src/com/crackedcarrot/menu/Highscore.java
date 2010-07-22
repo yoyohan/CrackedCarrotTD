@@ -2,9 +2,7 @@ package com.crackedcarrot.menu;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import com.scoreninja.adapter.ScoreNinjaAdapter;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

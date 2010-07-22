@@ -3,9 +3,7 @@ package com.crackedcarrot.multiplayer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
-
 import com.crackedcarrot.GameLoopGUI;
 
 public class MultiplayerHandler extends Thread {

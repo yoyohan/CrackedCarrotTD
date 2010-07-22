@@ -3,7 +3,6 @@ package com.crackedcarrot.multiplayer;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,7 +15,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -200,7 +198,7 @@ public class Client extends Activity {
                 try {
                     mmClientSocket.close();
                 } catch (IOException closeException) {
-                	Log.e("CLIENT", "Can't close socket", closeException);
+                	//Log.e("CLIENT", "Can't close socket", closeException);
                 }
                 
             	return;

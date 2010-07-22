@@ -3,9 +3,7 @@ package com.crackedcarrot.multiplayer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 import com.crackedcarrot.GameLoopGUI;
 
 
@@ -114,10 +112,6 @@ public class MultiplayerService extends Thread {
 
 	public void setLoopAndGUI(MultiplayerGameLoop gLoop, GameLoopGUI glGui) {
 		
-		//Log.d("MPSERVICE", "setLoopAdnGUI");
-		
-		if (gLoop == null)
-			//Log.d("MPSERVICE", "is null!");
 		
 		mpHandler.setGameLoop(gLoop);
 		mpHandler.setGameLoopGui(glGui);

@@ -4,11 +4,6 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import android.content.Intent;
-import android.os.SystemClock;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.crackedcarrot.Coords;
 import com.crackedcarrot.GameFinished;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.GameLoopGUI;
