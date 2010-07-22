@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -1069,7 +1068,7 @@ public class GameLoopGUI {
 	        		 break;
 	        		 
 	        	 default:
-	                 Log.e("GAMELOOPGUI", "guiHandler error! msg.what: " + msg.what);
+	                 //Log.e("GAMELOOPGUI", "guiHandler error! msg.what: " + msg.what);
 	                 break;
 	        }
 	    }

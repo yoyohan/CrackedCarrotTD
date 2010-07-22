@@ -3,7 +3,6 @@ package com.crackedcarrot.multiplayer;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,12 +15,10 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
-
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.menu.R;
 

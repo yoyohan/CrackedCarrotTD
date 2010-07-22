@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -103,7 +102,7 @@ public class GameFinished extends Activity {
     protected void onStop() {
        super.onStop();
        
-       Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
+       //Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
        
        if (this.multiplayer == false)
     	   return;

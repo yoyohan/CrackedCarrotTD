@@ -3,9 +3,7 @@ package com.crackedcarrot.multiplayer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 import com.crackedcarrot.GameLoopGUI;
 
 
