@@ -653,13 +653,18 @@ public class Tower extends Sprite {
 		if (money >= 100) {
 			if (this.towerType == Tower.AOE) {
 				this.hasSuper_element = true;
-				if (this.upgradeLvl == 6)
+				if (this.upgradeLvl == 6) {
 					this.setCurrentTexture(mSpecialTowers[3].getCurrentTexture());
-				else if (this.upgradeLvl == 10)
+					this.setResourceId(R.drawable.poisontower_special_1);
+				}
+				else if (this.upgradeLvl == 10) {
 					this.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
-				else if (this.upgradeLvl == -1)
+					this.setResourceId(R.drawable.poisontower_special_2);
+				}
+				else if (this.upgradeLvl == -1) {
 					this.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
-				
+					this.setResourceId(R.drawable.poisontower_special_3);
+				}				
 				this.relatedShot.r = 0.7f;
 				this.relatedShot.g = 0.7f;
 				this.relatedShot.b = 1f;
@@ -667,13 +672,18 @@ public class Tower extends Sprite {
 			}
 			if (this.towerType == Tower.TELSA) {
 				this.hasSuper_teleport = true;
-				if (this.upgradeLvl == 7)
+				if (this.upgradeLvl == 7) {
 					this.setCurrentTexture(mSpecialTowers[0].getCurrentTexture());
-				else if (this.upgradeLvl == 11)
+					this.setResourceId(R.drawable.tesla_special_1);
+				}
+				else if (this.upgradeLvl == 11) {
 					this.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
-				else if (this.upgradeLvl == -1)
+					this.setResourceId(R.drawable.tesla_special_2);
+				}
+				else if (this.upgradeLvl == -1) {
 					this.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
-
+					this.setResourceId(R.drawable.tesla_special_3);
+				}
 				this.relatedShot.r = 1f;
 				this.relatedShot.g = 1f;
 				this.relatedShot.b = 0.7f;

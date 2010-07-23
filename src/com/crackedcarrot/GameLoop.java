@@ -1,10 +1,13 @@
 package com.crackedcarrot;
 
 import java.util.concurrent.Semaphore;
+
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -188,7 +191,7 @@ public class GameLoop implements Runnable {
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			
-			if (survivalGame) {
+    		if (survivalGame) {
        			mLvl[z].cloneCreature(mCreatures[z]);
 			}
 			else 
@@ -756,18 +759,24 @@ public class GameLoop implements Runnable {
     				
     				try {
         				if (t.towerType == Tower.TELSA && t.getSuperTeleport()) {
-        					if (t.getUpgradeTowerLvl() == 11)
+        					if (t.getUpgradeTowerLvl() == 11) {
         						t.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
-        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setResourceId(R.drawable.tesla_special_2);
+        					}
+        					if (t.getUpgradeTowerLvl() == -1) {
         						t.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
-
+        						t.setResourceId(R.drawable.tesla_special_3);
+        					}
         				}
         				else if (t.towerType == Tower.AOE && t.getSuperElement()) {
-        					if (t.getUpgradeTowerLvl() == 10)
+        					if (t.getUpgradeTowerLvl() == 10) {
         						t.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
-        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setResourceId(R.drawable.poisontower_special_2);
+        					}
+        					if (t.getUpgradeTowerLvl() == -1) {
         						t.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
-
+        						t.setResourceId(R.drawable.poisontower_special_3);
+        					}
         				}
         				else {
         					TextureData tex = renderHandle.getTexture(t.getResourceId());
