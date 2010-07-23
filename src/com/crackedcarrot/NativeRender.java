@@ -296,7 +296,7 @@ public class NativeRender implements GLSurfaceView.Renderer {
 
 				Iterator<TextureData> it = map.values().iterator();
 				while(it.hasNext()){
-					nativeFreeTex(it.next().mTextureName);
+					nativeFreeTex(it.next().texIndex);
 				}
 				lock2.release();
 			}
