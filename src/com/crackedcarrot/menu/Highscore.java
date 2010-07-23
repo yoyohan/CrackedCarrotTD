@@ -68,10 +68,10 @@ public class Highscore extends Activity {
         
         try {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
-            if (fullversion == 0)
-        		options.inSampleSize = 1;  
         	is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
+            if (fullversion == 0)
+        		options.inSampleSize = 1; 
             is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map4);
