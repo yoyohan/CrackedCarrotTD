@@ -201,7 +201,7 @@ public class MultiplayerHandler extends Thread {
 		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else{
-		                	String tmp = String.valueOf(mpGL.mkElem());
+		                	String tmp = mpGL.mkElem();
 		                	String text = "Enemies have gained: ";
 		                	
 		            		if (tmp.charAt(0) == '1')

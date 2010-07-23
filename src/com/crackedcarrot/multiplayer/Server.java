@@ -253,7 +253,9 @@ public class Server extends Activity {
 		// the client is running a lite version.
 		Boolean clientOK = mMultiplayerService.mpHandler.OK;
 		if (!clientOK) {
-			MAP = 1;
+			if (MAP != 1 && MAP != 2) {
+				MAP = 1;
+			}
 			if (DIFFICULTY == 3)
 				DIFFICULTY = 2;
 			GAMEMODE = 1;

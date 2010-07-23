@@ -225,7 +225,9 @@ public class Client extends Activity {
 		//client only can run a lite version game.
 		boolean serverSettingsOK = true;
 		if (fullversion == 0) {
-			MAP = 1;
+			if (MAP != 1 && MAP != 2) {
+				MAP = 1;
+			}
 			if (DIFFICULTY == 3)
 				DIFFICULTY = 2;
 			GAMEMODE = 1;

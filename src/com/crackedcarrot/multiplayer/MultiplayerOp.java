@@ -118,7 +118,7 @@ public class MultiplayerOp extends Activity {
        new Spinner.OnItemSelectedListener() {
        public void onItemSelected(AdapterView parent, View v, int position, long id) {
     	   mapId = parent.getSelectedItemPosition();
-    	   if (fullversion == 0 && mapId != 0) {
+    	   if (fullversion == 0 && mapId != 0 && mapId != 1) {
     		    mapId = 0;
         	    parent.setSelection(0);
            		CharSequence text = "This map is not avaible in this version.";
