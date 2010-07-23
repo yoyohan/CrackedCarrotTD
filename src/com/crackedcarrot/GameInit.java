@@ -145,7 +145,7 @@ public class GameInit extends Activity {
     		editor.commit();
     		resumes = resume.getInt("resumes", 0);
     		difficulty = -1;		// load saved health/money-values as well.
-        } else {
+        } else if (gameLoopGui.multiplayerMode == false) {
         		// We are not resuming anything, clear the old flag(s) and
         		// prepare for a new save. Saves the chosen map directly.
     		SharedPreferences.Editor editor = resume.edit();
@@ -297,8 +297,8 @@ public class GameInit extends Activity {
     	gameLoop.stopGameLoop();
     	gameLoop.soundManager.release();
     	if(multiplayergame){
-    		this.mMultiplayerService.endBluetooth();
-    		this.mMultiplayerService = null;
+    		GameInit.mMultiplayerService.endBluetooth();
+    		GameInit.mMultiplayerService = null;
     		// Log.d("GAMEINIT", "End Bluetooth");
     	}
     	// Log.d("GAMEINIT", "onStop");
