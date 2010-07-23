@@ -72,8 +72,8 @@ public class MainMenu extends Activity {
 		        		Intent StartGame = new Intent(v.getContext(),GameInit.class);
 		        		StartGame.putExtra("com.crackedcarrot.menu.map", 0);
 		        		StartGame.putExtra("com.crackedcarrot.menu.difficulty", 0);
-		        		// Since this is not a multiplayergame we will send 1 to gameinit
-		        		StartGame.putExtra("com.crackedcarrot.menu.wave", 1);
+		        		// Since this is not a multiplayergame we will send 0 to gameinit
+		        		StartGame.putExtra("com.crackedcarrot.menu.wave", 0);
 		        		startActivity(StartGame);
 		        	}
 		        });
