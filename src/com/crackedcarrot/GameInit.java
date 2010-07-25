@@ -218,7 +218,15 @@ public class GameInit extends Activity {
         }
         else {
         	//Normal game
-        	waveList  = waveLoad.readWave("wave1",difficulty);
+        	if (mapChoice == 1)
+        		waveList = waveLoad.readWave("wave1",difficulty);
+        	
+        	else if (mapChoice == 2)
+        		waveList = waveLoad.readWave("wave2normal",difficulty);
+        	
+        	else
+        		waveList = waveLoad.readWave("wave6normal",difficulty);
+        	
         }
        	// Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
