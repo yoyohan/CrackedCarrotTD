@@ -190,7 +190,7 @@ public class MapOp extends Activity implements ViewFactory {
         radioHard.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if (fullversion == 0) {
-                	CharSequence text = "Hard is not avaible in this version.";
+                	CharSequence text = "Hard is not available in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
             		toast.show();
@@ -227,7 +227,7 @@ public class MapOp extends Activity implements ViewFactory {
         	
         	public void onClick(View v) {
         		if (fullversion == 0) {
-                	CharSequence text = "Hard is not avaible in this version.";
+                	CharSequence text = "Hard is not available in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
             		toast.show();
@@ -299,7 +299,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 2: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 3: Not avaible in this version.");
+						tv.setText("Map 3: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 3;
@@ -309,7 +309,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 3: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 4: Not avaible in this version.");
+						tv.setText("Map 4: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 4;
@@ -319,7 +319,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 4: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 5: Not avaible in this version.");
+						tv.setText("Map 5: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 5;
@@ -329,7 +329,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 5: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 6: Not avaible in this version.");
+						tv.setText("Map 6: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 6;
