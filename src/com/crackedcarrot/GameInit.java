@@ -139,23 +139,24 @@ public class GameInit extends Activity {
         	// Are we resuming an old saved game?
         SharedPreferences resume = getSharedPreferences("resume", 0);
         int               resumes = 0;
-        if (mapChoice == 0) {
-        		// Increase the resumes-counter, keep people from cheating.
-    		SharedPreferences.Editor editor = resume.edit();
-    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
-    		editor.commit();
-    		resumes = resume.getInt("resumes", 0);
-    		difficulty = -1;		// load saved health/money-values as well.
-        } else if (multiplayergame == false && survivalGame == false) {
-        		// We are not resuming anything, clear the old flag(s) and
-        		// prepare for a new save. Saves the chosen map directly.
-    		SharedPreferences.Editor editor = resume.edit();
-    		editor.putInt("map", mapChoice);
-    		editor.putInt("resumes", 0);
-    		editor.commit();
+        
+        if (gameMode == 0) {
+	        if (mapChoice == 0) {
+	        		// Increase the resumes-counter, keep people from cheating.
+	    		SharedPreferences.Editor editor = resume.edit();
+	    		editor.putInt("resumes", resume.getInt("resumes", 0) + 1);
+	    		editor.commit();
+	    		resumes = resume.getInt("resumes", 0);
+	    		difficulty = -1;		// load saved health/money-values as well.
+	        } else if (multiplayergame == false) {
+	        		// We are not resuming anything, clear the old flag(s) and
+	        		// prepare for a new save. Saves the chosen map directly.
+	    		SharedPreferences.Editor editor = resume.edit();
+	    		editor.putInt("map", mapChoice);
+	    		editor.putInt("resumes", 0);
+	    		editor.commit();
+	        }
         }
-        
-        
         // Create the map requested by the player
 
        	// resume needs to load the correct map as well.
@@ -215,7 +216,7 @@ public class GameInit extends Activity {
         	waveList  = waveLoad.readWave(difficulty);
         	survivalGame = true;
         }
-        else if (gameMode == 4) {
+        else if (gameMode == 3) {
          	// Survival game. No multiplayer
          	waveList  = waveLoad.readWave(difficulty);
          	survivalGame = true;

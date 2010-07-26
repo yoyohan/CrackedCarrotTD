@@ -44,7 +44,7 @@ public class MapOp extends Activity implements ViewFactory {
     /** The index for our "maps" array */
     private int difficulty = 1;
     private int mapSelected = 1;
-    private int gameMode = 3;
+    private int gameMode = 0;
         
     private TextView    tv;
     
@@ -215,7 +215,7 @@ public class MapOp extends Activity implements ViewFactory {
 
        	radioNormalGame.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		gameMode=3;
+        		gameMode=0;
         		radioNormalGame.setChecked(true);
         		radioSurvivalGame.setChecked(false);
 			}
@@ -224,7 +224,7 @@ public class MapOp extends Activity implements ViewFactory {
         
        	radioSurvivalGame.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		gameMode=4;
+        		gameMode=3;
         		radioNormalGame.setChecked(false);
         		radioSurvivalGame.setChecked(true);
 			}
