@@ -91,11 +91,11 @@ public class GameFinished extends Activity {
        		if (score >= 500)
         		tvText.setText("Great work. But can you beat 700?");
         	if (score >= 700 && difficulty == 0)
-        		tvText.setText("Nice! Time to kick ass on hard");
+        		tvText.setText("Nice! Time to kick ass on hard...");
         	if (score >= 700 && difficulty == 1)
         		tvText.setText("Excellent work. You are one of the best rabbit slayers in the world! Maybe it is time to try hard?");
            	if (score >= 700 && difficulty == 2)
-        		tvText.setText("Amazing. You are probebly the best rabbit slayers in the world!");
+        		tvText.setText("Amazing! You've proved yourself to be among the ranks of the best rabbit slayers in the world!");
         	tvScore.setText("Kills: " + extras.getInt("score"));
         }
         else tvScore.setText("Final score: " + extras.getInt("score"));
