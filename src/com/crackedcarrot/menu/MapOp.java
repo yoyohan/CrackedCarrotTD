@@ -56,6 +56,8 @@ public class MapOp extends Activity implements ViewFactory {
     private RadioButton radioEasy;
     private RadioButton radioNormal;
     private RadioButton radioHard;
+    private RadioButton radioSurvivalGame;
+    private RadioButton radioNormalGame;
     
     private Button StartGameButton;
     
