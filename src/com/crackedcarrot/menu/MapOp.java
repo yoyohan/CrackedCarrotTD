@@ -43,7 +43,8 @@ public class MapOp extends Activity implements ViewFactory {
 	
     /** The index for our "maps" array */
     private int difficulty = 1;
-    private int mapSelected;
+    private int mapSelected = 1;
+    private int gameMode = 3;
         
     private TextView    tv;
     
@@ -146,6 +147,8 @@ public class MapOp extends Activity implements ViewFactory {
         		radioEasy.setVisibility(View.INVISIBLE);
         		radioNormal.setVisibility(View.INVISIBLE);
         		radioHard.setVisibility(View.INVISIBLE);
+        		radioNormalGame.setVisibility(View.INVISIBLE);
+        		radioSurvivalGame.setVisibility(View.INVISIBLE);
         		
         		easy.setVisibility(View.INVISIBLE);
         		normal.setVisibility(View.INVISIBLE);
@@ -159,7 +162,7 @@ public class MapOp extends Activity implements ViewFactory {
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
        			StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
-        		StartGame.putExtra("com.crackedcarrot.menu.wave", 0);
+        		StartGame.putExtra("com.crackedcarrot.menu.wave", gameMode);
         		startActivity(StartGame);
         		finish();
         	}
@@ -173,6 +176,10 @@ public class MapOp extends Activity implements ViewFactory {
        	radioNormal.setTypeface(face);
         radioHard = (RadioButton) findViewById(R.id.radioHard);
        	radioHard.setTypeface(face);
+        radioNormalGame = (RadioButton) findViewById(R.id.radioNormalGame);
+        radioNormalGame.setTypeface(face);
+       	radioSurvivalGame = (RadioButton) findViewById(R.id.radioSurvivalGame);
+        radioSurvivalGame.setTypeface(face);
        	
        	radioEasy.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
@@ -205,6 +212,24 @@ public class MapOp extends Activity implements ViewFactory {
         		}
 			}
         }); 
+
+       	radioNormalGame.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		gameMode=3;
+        		radioNormalGame.setChecked(true);
+        		radioSurvivalGame.setChecked(false);
+			}
+
+        });        
+        
+       	radioSurvivalGame.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		gameMode=4;
+        		radioNormalGame.setChecked(false);
+        		radioSurvivalGame.setChecked(true);
+			}
+
+        });        
         
         easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
         easy.setOnClickListener(new OnClickListener() {

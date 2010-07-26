@@ -22,7 +22,9 @@ public class GameFinished extends Activity {
 	private int score;
 	private int mapChoice;
 	private boolean multiplayer;
-
+	private boolean survivalgame;
+	private int difficulty;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,8 @@ public class GameFinished extends Activity {
         mapChoice  = extras.getInt("map");
         boolean win    = extras.getBoolean("win");
         multiplayer = extras.getBoolean("multiplayer");
+        survivalgame = extras.getBoolean("survival");
+        difficulty = extras.getInt("difficulty");
 
         
 		// Handle scoreninja-thingie.
@@ -78,7 +82,23 @@ public class GameFinished extends Activity {
         
         TextView tvScore = (TextView) findViewById(R.id.GameFinishedTextViewScore);
         tvScore.setTypeface(typefaceSniglet);
-        tvScore.setText("Final score: " + extras.getInt("score"));
+        
+        if (survivalgame) {
+        	tvTitle.setText("In survival game there is no winner...");
+        	tvText.setText("Training makes perfect. Try again!");
+       		if (score >= 300)
+        		tvText.setText("Good game but you can do better!");
+       		if (score >= 500)
+        		tvText.setText("Great work. But can you beat 700?");
+        	if (score >= 700 && difficulty == 0)
+        		tvText.setText("Nice! Time to kick ass on hard");
+        	if (score >= 700 && difficulty == 1)
+        		tvText.setText("Excellent work. You are one of the best rabbit slayers in the world! Maybe it is time to try hard?");
+           	if (score >= 700 && difficulty == 2)
+        		tvText.setText("Amazing. You are probebly the best rabbit slayers in the world!");
+        	tvScore.setText("Kills: " + extras.getInt("score"));
+        }
+        else tvScore.setText("Final score: " + extras.getInt("score"));
         
     	// Save everything and return to mainmenu.
         Button buttonBack = (Button) findViewById(R.id.GameFinished_Button_Ok);
@@ -104,7 +124,7 @@ public class GameFinished extends Activity {
        
        //Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
        
-       if (this.multiplayer == false)
+       if (this.multiplayer == false || survivalgame == true)
     	   return;
 
            // Load/prepare Scoreninja if it's active and installed.

@@ -37,7 +37,8 @@ public class GameInit extends Activity {
     	// GameFinished wants this to determine highscores.
     public int          mapChoice;
     
-
+    public static boolean survivalGame = false;
+    
     ///////////////// Multiplayer ////////////////////////////
     private static MultiplayerService mMultiplayerService;
     public static boolean multiplayergame = false;
@@ -126,13 +127,13 @@ public class GameInit extends Activity {
         Bundle extras  = getIntent().getExtras();
         mapChoice = 0;
         int difficulty = 0;
-        int wave = 0;
+        int gameMode = 0;
         
         if (extras != null) {
         	// Log.d("GAMEINIT", "Extras != null, fetching intents...");
         	mapChoice = extras.getInt("com.crackedcarrot.menu.map");
         	difficulty =  extras.getInt("com.crackedcarrot.menu.difficulty");
-        	wave =  extras.getInt("com.crackedcarrot.menu.wave");
+        	gameMode =  extras.getInt("com.crackedcarrot.menu.wave");
         }
         
         	// Are we resuming an old saved game?
@@ -145,7 +146,7 @@ public class GameInit extends Activity {
     		editor.commit();
     		resumes = resume.getInt("resumes", 0);
     		difficulty = -1;		// load saved health/money-values as well.
-        } else if (multiplayergame == false) {
+        } else if (multiplayergame == false && survivalGame == false) {
         		// We are not resuming anything, clear the old flag(s) and
         		// prepare for a new save. Saves the chosen map directly.
     		SharedPreferences.Editor editor = resume.edit();
@@ -205,29 +206,30 @@ public class GameInit extends Activity {
         WaveLoader waveLoad = new WaveLoader(this, scaler);
         Level[] waveList;
         
-        boolean survivalGame = false;
-        
-        if (wave == 1) {
+        if (gameMode == 1) {
         	// Normal multiplayer game
         	waveList  = waveLoad.readWave("wave2",difficulty);
         }
-        else if (wave == 2) {
+        else if (gameMode == 2) {
         	// Survival multiplayer game
         	waveList  = waveLoad.readWave(difficulty);
         	survivalGame = true;
         }
-        else {
+        else if (gameMode == 4) {
+         	// Survival game. No multiplayer
+         	waveList  = waveLoad.readWave(difficulty);
+         	survivalGame = true;
+        } else {
         	//Normal game
         	if (mapChoice == 1)
         		waveList = waveLoad.readWave("wave1",difficulty);
-        	
         	else if (mapChoice == 2)
         		waveList = waveLoad.readWave("wave2normal",difficulty);
-        	
         	else
         		waveList = waveLoad.readWave("wave6normal",difficulty);
-        	
         }
+
+        
        	// Load all available towers and the shots related to the tower
         TowerLoader towerLoad = new TowerLoader(this, scaler, soundManager);
         Tower[] tTypes  = towerLoad.readTowers("towers");
@@ -325,7 +327,7 @@ public class GameInit extends Activity {
     	// in between levels when the NextLevel-dialog is shown.
     	
     		// Never save multiplayer-status.
-    	if (multiplayergame == true)
+    	if (multiplayergame == true || survivalGame == true)
     		return;
     	
     	if (i == 1) {

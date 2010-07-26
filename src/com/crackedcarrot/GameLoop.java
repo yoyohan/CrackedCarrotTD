@@ -473,8 +473,17 @@ public class GameLoop implements Runnable {
 		} else {
 			gameFinished.putExtra("win", false);
 		}
+		if (survivalGame) {
+			gameFinished.putExtra("survival", true);
+			gameFinished.putExtra("score", this.survivalCreatureCount);
+		} else {
+			gameFinished.putExtra("survival", false);
+			gameFinished.putExtra("score", player.getScore());
+		}
+		
+		gameFinished.putExtra("difficulty", this.player.getDifficulty());
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
-		gameFinished.putExtra("score", player.getScore());
+
 
 		if (gui.multiplayerMode)
 			gameFinished.putExtra("multiplayer", true);

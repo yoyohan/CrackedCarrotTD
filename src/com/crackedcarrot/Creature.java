@@ -161,6 +161,7 @@ public class Creature extends Sprite{
 				    		this.creatureFast = true;
 				    		this.velocity = this.velocity*1.5f;
 				    	}
+				    	distance = 0;
 				    	this.GL.alertTeleport();
 				    }
 				}
@@ -287,6 +288,7 @@ public class Creature extends Sprite{
     		score();
     		moveToWaypoint(0);
     		setNextWayPoint(1);
+	    	distance = 0;
     		this.mapLap++;
     	}
     	else { 		
@@ -388,7 +390,7 @@ public class Creature extends Sprite{
 			if (this.survivalgame) {
 		    	moveToWaypoint(0);
 	    		setNextWayPoint(1);
-	    		setSpawnPoint();
+	    		this.setSpawnPoint();
 	    		this.dead = false;
     			startHealth = startHealth*1.15f;
     			currentHealth = startHealth;
@@ -403,7 +405,7 @@ public class Creature extends Sprite{
     			this.setDeadTexture(tmp);
     			
     			Random generator = new Random();
-    			spawndelay = generator.nextFloat();
+    			spawndelay = generator.nextFloat()*2;
     			
     			this.goldValue = 1+mapLap/3;
     			mapLap++;
