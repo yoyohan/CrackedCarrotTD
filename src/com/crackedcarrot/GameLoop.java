@@ -60,7 +60,7 @@ public class GameLoop implements Runnable {
     public int progressbarLastSent = 0;
     
     protected static boolean   pause = false;
-    protected static Semaphore pauseSemaphore = new Semaphore(1);
+    protected static Semaphore pauseSemaphore = new Semaphore(0);
     
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
@@ -374,7 +374,6 @@ public class GameLoop implements Runnable {
 				if (pause) {
 	    			try { pauseSemaphore.acquire(); }
 	    			catch (InterruptedException e1) { }
-	    			pauseSemaphore.release();
 				}
     			
 	            // Used to calculate creature movement.
@@ -744,8 +743,6 @@ public class GameLoop implements Runnable {
 	}
 	
 	public static void pause() {
-		try { pauseSemaphore.acquire(); }
-		catch (InterruptedException e) { e.printStackTrace(); }
 		pause = true;
 	}
 	

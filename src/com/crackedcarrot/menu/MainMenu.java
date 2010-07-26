@@ -2,14 +2,21 @@ package com.crackedcarrot.menu;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -17,6 +24,7 @@ import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
 import com.crackedcarrot.GameInit;
+import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerOp;
 
 public class MainMenu extends Activity {
@@ -25,7 +33,11 @@ public class MainMenu extends Activity {
 	private int resumes;
     private ImageView mBackground;
     private TableLayout mTable;
-	
+	private Dialog dialogInfo = null;
+    private WebView mWebView; // used to display html-pages.
+    private SharedPreferences mPrefs;
+    private String url = "";
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -87,6 +99,62 @@ public class MainMenu extends Activity {
 		        
 		    	break;
 		    	
+		    case 2:
+		    	dialogInfo.setCancelable(true);
+		    	
+		    	Button close = (Button) dialogInfo.findViewById(R.id.closewebdialog);
+		    	close.setOnClickListener(
+		    			new View.OnClickListener() {
+		    				public void onClick(View v) {
+		    					// nothing else. handled by onDismissListener instead, it's better.
+		    					dialogInfo.dismiss();
+		    				}
+		    			});
+
+		    	final Button back = (Button) dialogInfo.findViewById(R.id.backwebdialog);
+		    	back.setOnClickListener(
+		    			new View.OnClickListener() {
+		    				public void onClick(View v) {
+		    					// We'll never have a Back button in this dialog.
+		    					mWebView.goBack();
+		    				}
+		    			});
+		    	
+		    	dialogInfo.setOnDismissListener(
+		    			new DialogInterface.OnDismissListener() {
+							public void onDismiss(DialogInterface dialog) {
+									// Done with this window, unpause stuff.
+								mWebView.clearView();
+								GameLoop.unPause();
+							}
+		    			});
+		    		    	
+		    	mWebView.setBackgroundColor(0);
+
+		        WebSettings webSettings = mWebView.getSettings();
+		        webSettings.setSavePassword(false);
+		        webSettings.setSaveFormData(false);
+		        webSettings.setJavaScriptEnabled(false);
+		        webSettings.setSupportZoom(false);
+		        
+		        mWebView.setWebViewClient(new WebViewClient() {
+		        	   public void  onPageFinished(WebView  view, String  url) {
+		               	   if (mWebView.getUrl().equals("file:///android_asset/instructions.html")) {
+		               		   mWebView.clearHistory();	
+		               	    }
+		        		   
+		        		   if (mWebView.canGoBack()) {
+		        			  back.setVisibility(View.VISIBLE); 
+		        		   } else {
+		         			  back.setVisibility(View.INVISIBLE); 
+		        		   }
+		        	   }
+		        	 });
+		        
+		        
+		        return dialogInfo;
+		    	
+		    	
 		    default:
 		    	// Log.d("MAINMENU", "onCreateDialog got unknown dialog id: " + id);
 		        dialog = null;
@@ -99,7 +167,10 @@ public class MainMenu extends Activity {
 	    case 1:
 	    	TextView textView = (TextView) dialog.findViewById(R.id.LevelResume_Text);
 	    	textView.setText("Resume last game? You have " + (3 - resumes) + " resume(s) left.");
-	    	
+	    case 2:
+        	mWebView.clearHistory();
+	        mWebView.loadUrl(url);
+	        break;	
 	    default:
 	    	// Log.d("MAINMENU", "onPrepareDialog got unknown dialog id: " + id);
 	        dialog = null;
@@ -151,8 +222,8 @@ public class MainMenu extends Activity {
         HelpButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent Help = new Intent(MainMenu.this,InstructionWebView.class);
-        		startActivity(Help);
+            	url = "file:///android_asset/instructions.html";
+        		showDialog(2);
         	}
         });
         
@@ -164,6 +235,30 @@ public class MainMenu extends Activity {
         		startActivity(Multiplayer);
         	}
         });
+        
+    	dialogInfo = new Dialog(this, R.style.NextlevelTheme);
+    	dialogInfo.setContentView(R.layout.webinstruction);
+        mWebView = (WebView) dialogInfo.findViewById(R.id.webview);	
+        
+        Context mContext = this.getApplicationContext();
+        mPrefs = mContext.getSharedPreferences("myAppPrefs", 0); //0 = mode private. only this app can read these preferences
+        
+    	String versionNo = "";
+        PackageInfo pInfo = null;
+        try{
+                pInfo = getPackageManager().getPackageInfo("com.crackedcarrot",PackageManager.GET_META_DATA);
+        } catch (NameNotFoundException e) {
+                pInfo = null;
+        }
+        if(pInfo != null)
+                versionNo = ""+pInfo.versionCode; 
+        
+        if (getFirstRun(versionNo)) {
+        	url = "file:///android_asset/changelog.html";
+        	showDialog(2);
+        	setRunned(versionNo);
+        }
+        
        
     }
 
@@ -196,5 +291,25 @@ public class MainMenu extends Activity {
     	SharedPreferences resume = getSharedPreferences("resume", 0);
     	resumes = resume.getInt("resumes", -1);
     }
+    
+    
+    /**
+     * get if this is the first run
+     *
+     * @return returns true, if this is the first run
+     */
+        public boolean getFirstRun(String versionNo) {
+            String tmp = mPrefs.getString("firstRun", "1.00");
+            return (!tmp.equals(versionNo));
+     }
+
+     /**
+     * store the first run
+     */
+     public void setRunned(String versionNo) {
+        SharedPreferences.Editor edit = mPrefs.edit();
+        edit.putString("firstRun", versionNo);
+        edit.commit();
+     } 
     
 }

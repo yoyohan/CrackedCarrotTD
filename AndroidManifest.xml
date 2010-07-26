@@ -34,14 +34,7 @@
 		<activity android:name=".MapOp"
 			android:screenOrientation="portrait" />
 		<activity android:name=".Highscore"
-			android:screenOrientation="portrait" />
-
-    	<activity
-    	 	android:name="InstructionWebView" 
-    		android:theme="@android:style/Theme.Translucent.NoTitleBar"
-    		android:screenOrientation="portrait"
-    		android:configChanges="keyboardHidden|orientation" />
-			
+			android:screenOrientation="portrait" />			
     	<activity
     		android:name="com.crackedcarrot.GameInit"
     		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
