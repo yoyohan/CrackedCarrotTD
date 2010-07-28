@@ -1,10 +1,13 @@
 package com.crackedcarrot;
 
 import java.util.concurrent.Semaphore;
+
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
 import com.crackedcarrot.fileloader.Level;
 import com.crackedcarrot.fileloader.Map;
 import com.crackedcarrot.menu.R;
@@ -57,7 +60,7 @@ public class GameLoop implements Runnable {
     public int progressbarLastSent = 0;
     
     protected static boolean   pause = false;
-    protected static Semaphore pauseSemaphore = new Semaphore(1);
+    protected static Semaphore pauseSemaphore = new Semaphore(0);
     
     private boolean superupgrade_teleport = false;
     private boolean superupgrade_element = false;
@@ -188,7 +191,7 @@ public class GameLoop implements Runnable {
     	for (int z = 0; z < remainingCreaturesALL; z++) {
 			// The following line is used to add the following wave of creatures to the list of creatures.
 			
-			if (survivalGame) {
+    		if (survivalGame) {
        			mLvl[z].cloneCreature(mCreatures[z]);
 			}
 			else 
@@ -371,7 +374,6 @@ public class GameLoop implements Runnable {
 				if (pause) {
 	    			try { pauseSemaphore.acquire(); }
 	    			catch (InterruptedException e1) { }
-	    			pauseSemaphore.release();
 				}
     			
 	            // Used to calculate creature movement.
@@ -470,8 +472,17 @@ public class GameLoop implements Runnable {
 		} else {
 			gameFinished.putExtra("win", false);
 		}
+		if (survivalGame) {
+			gameFinished.putExtra("survival", true);
+			gameFinished.putExtra("score", this.survivalCreatureCount);
+		} else {
+			gameFinished.putExtra("survival", false);
+			gameFinished.putExtra("score", player.getScore());
+		}
+		
+		gameFinished.putExtra("difficulty", this.player.getDifficulty());
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
-		gameFinished.putExtra("score", player.getScore());
+
 
 		if (gui.multiplayerMode)
 			gameFinished.putExtra("multiplayer", true);
@@ -732,8 +743,6 @@ public class GameLoop implements Runnable {
 	}
 	
 	public static void pause() {
-		try { pauseSemaphore.acquire(); }
-		catch (InterruptedException e) { e.printStackTrace(); }
 		pause = true;
 	}
 	
@@ -756,18 +765,24 @@ public class GameLoop implements Runnable {
     				
     				try {
         				if (t.towerType == Tower.TELSA && t.getSuperTeleport()) {
-        					if (t.getUpgradeTowerLvl() == 11)
+        					if (t.getUpgradeTowerLvl() == 11) {
         						t.setCurrentTexture(mSpecialTowers[1].getCurrentTexture());
-        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setResourceId(R.drawable.tesla_special_2);
+        					}
+        					if (t.getUpgradeTowerLvl() == -1) {
         						t.setCurrentTexture(mSpecialTowers[2].getCurrentTexture());
-
+        						t.setResourceId(R.drawable.tesla_special_3);
+        					}
         				}
         				else if (t.towerType == Tower.AOE && t.getSuperElement()) {
-        					if (t.getUpgradeTowerLvl() == 10)
+        					if (t.getUpgradeTowerLvl() == 10) {
         						t.setCurrentTexture(mSpecialTowers[4].getCurrentTexture());
-        					if (t.getUpgradeTowerLvl() == -1)
+        						t.setResourceId(R.drawable.poisontower_special_2);
+        					}
+        					if (t.getUpgradeTowerLvl() == -1) {
         						t.setCurrentTexture(mSpecialTowers[5].getCurrentTexture());
-
+        						t.setResourceId(R.drawable.poisontower_special_3);
+        					}
         				}
         				else {
         					TextureData tex = renderHandle.getTexture(t.getResourceId());

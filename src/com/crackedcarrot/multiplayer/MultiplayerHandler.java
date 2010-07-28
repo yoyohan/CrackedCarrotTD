@@ -201,17 +201,17 @@ public class MultiplayerHandler extends Thread {
 		            			gameLoopGui.sendMessage(gameLoopGui.GUI_SHOWSHIELDBUTTON, 0, 0);
 	                	}
 	                	else{
-		                	String tmp = String.valueOf(mpGL.mkElem());
+		                	String tmp = mpGL.mkElem();
 		                	String text = "Enemies have gained: ";
 		                	
 		            		if (tmp.charAt(0) == '1')
 			                	text += "speed ";
 		            		else if (tmp.charAt(1) == '1')
-			                	text = "fireresistance ";
+			                	text += "fireresistance ";
 		            		else if (tmp.charAt(2) == '1')
-			                	text = "frostresistance ";
+			                	text += "frostresistance ";
 			                else if (tmp.charAt(1) == '1')
-			                	text = "poisonresistance";
+			                	text += "poisonresistance";
 
 		            		int duration = Toast.LENGTH_SHORT;
 		            		Toast toast = Toast.makeText(gameLoopGui.getGameInit(), text, duration);

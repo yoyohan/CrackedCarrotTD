@@ -43,7 +43,8 @@ public class MapOp extends Activity implements ViewFactory {
 	
     /** The index for our "maps" array */
     private int difficulty = 1;
-    private int mapSelected;
+    private int mapSelected = 1;
+    private int gameMode = 0;
         
     private TextView    tv;
     
@@ -56,6 +57,8 @@ public class MapOp extends Activity implements ViewFactory {
     private RadioButton radioEasy;
     private RadioButton radioNormal;
     private RadioButton radioHard;
+    private RadioButton radioSurvivalGame;
+    private RadioButton radioNormalGame;
     
     private Button StartGameButton;
     
@@ -96,10 +99,10 @@ public class MapOp extends Activity implements ViewFactory {
         
         try {
         	mmaps[0] = BitmapFactory.decodeStream(is, null, options);
-        	if (fullversion == 0)
-        		options.inSampleSize = 1;        	
             is = this.getResources().openRawResource(R.drawable.map2);
             mmaps[1] = BitmapFactory.decodeStream(is, null, options);
+        	if (fullversion == 0)
+        		options.inSampleSize = 1;   
             is = this.getResources().openRawResource(R.drawable.map3);
             mmaps[2] = BitmapFactory.decodeStream(is, null, options);
             is = this.getResources().openRawResource(R.drawable.map4);
@@ -144,6 +147,8 @@ public class MapOp extends Activity implements ViewFactory {
         		radioEasy.setVisibility(View.INVISIBLE);
         		radioNormal.setVisibility(View.INVISIBLE);
         		radioHard.setVisibility(View.INVISIBLE);
+        		radioNormalGame.setVisibility(View.INVISIBLE);
+        		radioSurvivalGame.setVisibility(View.INVISIBLE);
         		
         		easy.setVisibility(View.INVISIBLE);
         		normal.setVisibility(View.INVISIBLE);
@@ -157,7 +162,7 @@ public class MapOp extends Activity implements ViewFactory {
         		Intent StartGame = new Intent(v.getContext(),GameInit.class);
        			StartGame.putExtra("com.crackedcarrot.menu.map", mapSelected);
         		StartGame.putExtra("com.crackedcarrot.menu.difficulty", difficulty);
-        		StartGame.putExtra("com.crackedcarrot.menu.wave", 0);
+        		StartGame.putExtra("com.crackedcarrot.menu.wave", gameMode);
         		startActivity(StartGame);
         		finish();
         	}
@@ -171,6 +176,10 @@ public class MapOp extends Activity implements ViewFactory {
        	radioNormal.setTypeface(face);
         radioHard = (RadioButton) findViewById(R.id.radioHard);
        	radioHard.setTypeface(face);
+        radioNormalGame = (RadioButton) findViewById(R.id.radioNormalGame);
+        radioNormalGame.setTypeface(face);
+       	radioSurvivalGame = (RadioButton) findViewById(R.id.radioSurvivalGame);
+        radioSurvivalGame.setTypeface(face);
        	
        	radioEasy.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
@@ -190,7 +199,7 @@ public class MapOp extends Activity implements ViewFactory {
         radioHard.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		if (fullversion == 0) {
-                	CharSequence text = "Hard is not avaible in this version.";
+                	CharSequence text = "Hard is not available in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
             		toast.show();
@@ -203,6 +212,24 @@ public class MapOp extends Activity implements ViewFactory {
         		}
 			}
         }); 
+
+       	radioNormalGame.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		gameMode=0;
+        		radioNormalGame.setChecked(true);
+        		radioSurvivalGame.setChecked(false);
+			}
+
+        });        
+        
+       	radioSurvivalGame.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		gameMode=3;
+        		radioNormalGame.setChecked(false);
+        		radioSurvivalGame.setChecked(true);
+			}
+
+        });        
         
         easy = (ImageView) findViewById(R.id.StartGameImageViewEasy);
         easy.setOnClickListener(new OnClickListener() {
@@ -227,7 +254,7 @@ public class MapOp extends Activity implements ViewFactory {
         	
         	public void onClick(View v) {
         		if (fullversion == 0) {
-                	CharSequence text = "Hard is not avaible in this version.";
+                	CharSequence text = "Hard is not available in this version.";
             		int duration = Toast.LENGTH_SHORT;
             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
             		toast.show();
@@ -293,19 +320,13 @@ public class MapOp extends Activity implements ViewFactory {
 					mapSelected = 1;
 					break;
 				case 1: 
-			       	if (fullversion == 0) {
-						mapSelected = 1;
-						tv.setText("Map 2: Not avaible in this version.");
-			       	}
-			       	else {
-			       		mapSelected = 2;
-						tv.setText("Map 2: The field of cold grass.");
-			       	}
+		       		mapSelected = 2;
+					tv.setText("Map 2: The field of cold grass.");
 					break;	
 				case 2: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 3: Not avaible in this version.");
+						tv.setText("Map 3: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 3;
@@ -315,7 +336,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 3: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 4: Not avaible in this version.");
+						tv.setText("Map 4: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 4;
@@ -325,7 +346,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 4: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 5: Not avaible in this version.");
+						tv.setText("Map 5: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 5;
@@ -335,7 +356,7 @@ public class MapOp extends Activity implements ViewFactory {
 				case 5: 
 			       	if (fullversion == 0) {
 						mapSelected = 1;
-						tv.setText("Map 6: Not avaible in this version.");
+						tv.setText("Map 6: Not available in this version.");
 			       	}
 			       	else {
 			       		mapSelected = 6;

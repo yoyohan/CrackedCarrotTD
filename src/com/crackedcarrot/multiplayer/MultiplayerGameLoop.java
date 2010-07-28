@@ -356,7 +356,7 @@ public class MultiplayerGameLoop extends GameLoop {
 			desTower(1);
 	}
 
-	public int mkElem() {
+	public String mkElem() {
 		
 		boolean fast = mCreatures[0].creatureFast;
 		boolean fireResistant = mCreatures[0].creatureFireResistant;
@@ -443,17 +443,21 @@ public class MultiplayerGameLoop extends GameLoop {
 			
 		}
 		
-		int returnint = 0;
+		String returnS = "";
 		if (fast)
-			returnint = 1;
+			returnS = "1";
+		else returnS = "0";
 		if (fireResistant)
-			returnint += 10;
+			returnS += "1";
+		else returnS += "0";
 		if (frostResistant)
-			returnint += 100;
+			returnS += "1";
+		else returnS += "0";
 		if (poisonResistant)
-			returnint += 1000;
+			returnS += "1";
+		else returnS += "0";
 
-		return returnint;
+		return returnS;
 	}
 
 	public void mkShield() {
