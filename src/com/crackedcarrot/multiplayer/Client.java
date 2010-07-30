@@ -228,9 +228,6 @@ public class Client extends Activity {
 			if (MAP != 1 && MAP != 2) {
 				MAP = 1;
 			}
-			if (DIFFICULTY == 3)
-				DIFFICULTY = 2;
-			GAMEMODE = 1;
 			serverSettingsOK = false;
 		}
 		

@@ -134,14 +134,6 @@ public class MultiplayerOp extends Activity {
          new Spinner.OnItemSelectedListener() {
          public void onItemSelected(AdapterView parent, View v, int position, long id) {
       	   difId = parent.getSelectedItemPosition();
-      	   if (fullversion == 0 && difId == 2) {
-      		    difId = 0;
-          	    parent.setSelection(1);
-             		CharSequence text = "This difficulty is not avaible in this version.";
-             		int duration = Toast.LENGTH_SHORT;
-             		Toast toast = Toast.makeText(getBaseContext(), text, duration);
-             		toast.show();
-      	   }
          }
          public void onNothingSelected(AdapterView parent) { }            
        };
@@ -149,17 +141,8 @@ public class MultiplayerOp extends Activity {
        private Spinner.OnItemSelectedListener modeListener =
            new Spinner.OnItemSelectedListener() {
            public void onItemSelected(AdapterView parent, View v, int position, long id) {
-        	   modeId = parent.getSelectedItemPosition();
-        	   if (fullversion == 0 && modeId != 0) {
-        		    modeId = 0;
-            	    parent.setSelection(0);
-               		CharSequence text = "This game mode is not avaible in this version.";
-               		int duration = Toast.LENGTH_SHORT;
-               		Toast toast = Toast.makeText(getBaseContext(), text, duration);
-               		toast.show();
-        	   }
+        	 modeId = parent.getSelectedItemPosition();
            }
            public void onNothingSelected(AdapterView parent) { }            
          };
-
 }
