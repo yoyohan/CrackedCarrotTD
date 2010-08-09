@@ -133,7 +133,6 @@ public class GameFinished extends Activity {
 
        // Load/prepare Scoreninja if it's active and installed.
        
-       scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
        if (ScoreNinjaAdapter.isInstalled(this)) {
     	   
            if (mapChoice == 1) {
