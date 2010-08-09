@@ -418,7 +418,7 @@ fire resistant::true
 frost resistant::true
 poison resistant::true
 damage/creep::5
-goldValue::0
+goldValue::400
 nbrOfCreaturs::1
 /////////////////////////////// level 31
 Texture animate::mrevilrabbit_animate
