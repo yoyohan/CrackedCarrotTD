@@ -1,6 +1,5 @@
 package com.crackedcarrot.menu;
 
-import com.crackedcarrot.menu.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class Options extends Activity {
 
@@ -21,6 +23,7 @@ public class Options extends Activity {
 	private Button button2;
 	private Button button3;
 
+	public ScoreNinjaAdapter scoreNinjaAdapter;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -30,6 +33,8 @@ public class Options extends Activity {
 
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    	
+    	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");    	
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
@@ -118,7 +123,13 @@ public class Options extends Activity {
 
       SharedPreferences settings = getSharedPreferences("Options", 0);
       SharedPreferences.Editor editor = settings.edit();
-      editor.putBoolean("optionsHighscore", optionsHighscore);
+      
+	  if (ScoreNinjaAdapter.isInstalled(this) == false) {
+	    editor.putBoolean("optionsHighscore", false);
+	  }
+	  else {
+		    editor.putBoolean("optionsHighscore", true);
+	  }
       editor.putBoolean("optionsNextLevel", optionsNextLevel);
       editor.putBoolean("optionsSound", optionsSound);
 
@@ -130,6 +141,10 @@ public class Options extends Activity {
     	this.optionsHighscore = b;
     	
     	if (b) {
+    	    if (ScoreNinjaAdapter.isInstalled(this) == false) {
+        		// If ScoreNinja is enabled but not installed we try to install it:
+    	    	scoreNinjaAdapter.show();
+    	    }
 			button2.setText("ScoreNinja: On");
     	} else {
 			button2.setText("ScoreNinja: Off");

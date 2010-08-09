@@ -214,20 +214,20 @@ public class MapOp extends Activity implements ViewFactory {
         
        	radioSurvivalGame.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		//if (fullversion == 0) {
-                //	CharSequence text = "Survival is not available in this version.";
-            	//	int duration = Toast.LENGTH_SHORT;
-            	//	Toast toast = Toast.makeText(getBaseContext(), text, duration);
-            	//	toast.show();
-        		//	gameMode = 0;
-            	//	radioNormalGame.setChecked(true);
-            	//	radioSurvivalGame.setChecked(false);
-        		//}
-        		//else {
+        		if (fullversion == 0) {
+                	CharSequence text = "Survival is not available in this version.";
+            		int duration = Toast.LENGTH_SHORT;
+            		Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            		toast.show();
+        			gameMode = 0;
+            		radioNormalGame.setChecked(true);
+            		radioSurvivalGame.setChecked(false);
+        		}
+        		else {
         			gameMode=3;
         			radioNormalGame.setChecked(false);
         			radioSurvivalGame.setChecked(true);
-        		//}
+        		}
         	}
 
         });        

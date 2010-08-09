@@ -42,15 +42,6 @@ public class GameFinished extends Activity {
         multiplayer = extras.getBoolean("multiplayer");
         survivalgame = extras.getBoolean("survival");
         difficulty = extras.getInt("difficulty");
-
-        
-		// Handle scoreninja-thingie.
-    	ScoreNinjaAdapter scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
-		SharedPreferences settings = getSharedPreferences("Options", 0);
-	    if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this) == false) {
-	    		// If ScoreNinja is enabled but not installed we try to install it:
-	    	scoreNinjaAdapter.show();
-	    }
 	    
 	    ImageView imageTitle = (ImageView) findViewById(R.id.GameFinishedImageViewTitle);
 	    if (win)
@@ -124,12 +115,13 @@ public class GameFinished extends Activity {
        
        //Log.d("GAMEFINISHED", "mp: " + this.multiplayer);
        
-       if (this.multiplayer == false || survivalgame == true)
+       if (this.multiplayer == true || survivalgame == true)
     	   return;
 
-           // Load/prepare Scoreninja if it's active and installed.
-       SharedPreferences settings = getSharedPreferences("Options", 0);
-       if (settings.getBoolean("optionsHighscore", false) && ScoreNinjaAdapter.isInstalled(this)) {
+       // Load/prepare Scoreninja if it's active and installed.
+       
+       scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
+       if (ScoreNinjaAdapter.isInstalled(this)) {
     	   
            if (mapChoice == 1) {
            	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");
