@@ -39,7 +39,7 @@ public class GameFinished extends Activity {
         score          = extras.getInt("score");
         mapChoice  = extras.getInt("map");
         boolean win    = extras.getBoolean("win");
-        multiplayer = extras.getBoolean("multiplayer");
+        multiplayer = extras.getBoolean("multiplayer",true);
         survivalgame = extras.getBoolean("survival");
         difficulty = extras.getInt("difficulty");
 	    
@@ -59,34 +59,47 @@ public class GameFinished extends Activity {
 	    
         TextView tvTitle = (TextView) findViewById(R.id.GameFinishedTextViewTitle);
         tvTitle.setTypeface(typefaceSniglet);
-        if (win)
-        	tvTitle.setText("Congratulations!");
-        else
-        	tvTitle.setText("You lost...");
-        
+
         TextView tvText = (TextView) findViewById(R.id.GameFinishedTextViewText);
         tvText.setTag(typefaceSniglet);
-        if (win)
+
+        
+        if (win) {
+        	tvTitle.setText("Congratulations!");
         	tvText.setText("You've slain all the vile rabbits and their evil companions and saved your precious carrots!");
-        else
+        }
+        else {
+        	tvTitle.setText("You lost...");
         	tvText.setText("The vile rabbits have conquered your pitiful backgarden, and worse, the world!");
+        }
+        
+        if (multiplayer && win) {
+        	tvText.setText("You've defeated your opponent and watched him fall in the hands of the vile rabbits and their evil companions!");
+        }
+        else if (multiplayer && !win){
+        	tvText.setText("Your opponent have used his vile rabbits to conquerer your pitiful backgarden!");
+        	
+        }
         
         TextView tvScore = (TextView) findViewById(R.id.GameFinishedTextViewScore);
         tvScore.setTypeface(typefaceSniglet);
-        
+
         if (survivalgame) {
-        	tvTitle.setText("In survival game there is no winner...");
-        	tvText.setText("Training makes perfect. Try again!");
-       		if (score >= 300)
-        		tvText.setText("Good game but you can do better!");
-       		if (score >= 500)
-        		tvText.setText("Great work. But can you beat 700?");
-        	if (score >= 700 && difficulty == 0)
-        		tvText.setText("Nice! Time to kick ass on hard...");
-        	if (score >= 700 && difficulty == 1)
-        		tvText.setText("Excellent work. You are one of the best rabbit slayers in the world! Maybe it is time to try hard?");
-           	if (score >= 700 && difficulty == 2)
-        		tvText.setText("Amazing! You've proved yourself to be among the ranks of the best rabbit slayers in the world!");
+        	if (!multiplayer) {
+            	tvTitle.setText("In survival game there is no winner...");
+            	
+            	tvText.setText("Training makes perfect. Try again!");
+           		if (score >= 300)
+            		tvText.setText("Good game but you can do better!");
+           		if (score >= 500)
+            		tvText.setText("Great work. But can you beat 700?");
+            	if (score >= 700 && difficulty == 0)
+            		tvText.setText("Nice! Time to kick ass on hard...");
+            	if (score >= 700 && difficulty == 1)
+            		tvText.setText("Excellent work. You are one of the best rabbit slayers in the world! Maybe it is time to try hard?");
+               	if (score >= 700 && difficulty == 2)
+            		tvText.setText("Amazing! You've proved yourself to be among the ranks of the best rabbit slayers in the world!");
+        	}
         	tvScore.setText("Kills: " + extras.getInt("score"));
         }
         else tvScore.setText("Final score: " + extras.getInt("score"));

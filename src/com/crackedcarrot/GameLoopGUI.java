@@ -1278,7 +1278,8 @@ public class GameLoopGUI {
 	private class InfoListener implements OnClickListener{
     	public void onClick(View v){
     		if (GameLoop.pause == false) {
-    			GameLoop.pause();
+           		if (!multiplayerMode)           			
+           			GameLoop.pause();
     			towerInfo = currentSelectedTower;
     			gameInit.showDialog(DIALOG_HELP);
     		}

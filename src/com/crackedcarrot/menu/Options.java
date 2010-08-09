@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 import com.scoreninja.adapter.ScoreNinjaAdapter;
@@ -35,10 +36,10 @@ public class Options extends Activity {
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
     	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");    	
+    	optionsHighscore = ScoreNinjaAdapter.isInstalled(this);
     	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
-        optionsHighscore = settings.getBoolean("optionsHighscore", false);
         optionsNextLevel = settings.getBoolean("optionsNextLevel", true);
         optionsSound     = settings.getBoolean("optionsSound", true);
         
@@ -123,16 +124,8 @@ public class Options extends Activity {
 
       SharedPreferences settings = getSharedPreferences("Options", 0);
       SharedPreferences.Editor editor = settings.edit();
-      
-	  if (ScoreNinjaAdapter.isInstalled(this) == false) {
-	    editor.putBoolean("optionsHighscore", false);
-	  }
-	  else {
-		    editor.putBoolean("optionsHighscore", true);
-	  }
       editor.putBoolean("optionsNextLevel", optionsNextLevel);
       editor.putBoolean("optionsSound", optionsSound);
-
       editor.commit();
     }
 
@@ -147,7 +140,19 @@ public class Options extends Activity {
     	    }
 			button2.setText("ScoreNinja: On");
     	} else {
-			button2.setText("ScoreNinja: Off");
+    	    if (ScoreNinjaAdapter.isInstalled(this) == true) {
+    			button2.setText("ScoreNinja: On");
+    			
+    			CharSequence text = "You have to manually unistall Scoreninja in android settings";
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast = Toast.makeText(this, text, duration);
+    			toast.show();
+    			
+    			
+    	    }
+    	    else {
+    			button2.setText("ScoreNinja: Off");
+    	    }
     	}
     }
     
