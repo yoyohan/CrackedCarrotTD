@@ -148,6 +148,7 @@ public class Options extends Activity {
     	    		// If ScoreNinja is enabled but not installed we try to install it:
     	    	scoreNinjaAdapter.show();
     	    }
+    	    else button2.setText("ScoreNinja: On");
     	} else {
     	    if (ScoreNinjaAdapter.isInstalled(this) == true) {
     			button2.setText("ScoreNinja: On");
