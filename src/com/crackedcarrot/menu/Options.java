@@ -135,15 +135,24 @@ public class Options extends Activity {
     	
     	if (b) {
     	    if (ScoreNinjaAdapter.isInstalled(this) == false) {
-        		// If ScoreNinja is enabled but not installed we try to install it:
+    	    	if (ScoreNinjaAdapter.neverAskAgain(this)) {
+        			CharSequence text = "You have clicked never ask again and therefore ScoreNinja will not be installed.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(this, text, duration);
+        			toast.show();
+        			button2.setText("ScoreNinja: Off");
+    	    	}
+    	    	else 
+        			button2.setText("ScoreNinja: On");
+
+    	    		// If ScoreNinja is enabled but not installed we try to install it:
     	    	scoreNinjaAdapter.show();
     	    }
-			button2.setText("ScoreNinja: On");
     	} else {
     	    if (ScoreNinjaAdapter.isInstalled(this) == true) {
     			button2.setText("ScoreNinja: On");
     			
-    			CharSequence text = "You have to manually unistall Scoreninja in android settings";
+    			CharSequence text = "You have to manually unistall ScoreNinja in android settings";
     			int duration = Toast.LENGTH_SHORT;
     			Toast toast = Toast.makeText(this, text, duration);
     			toast.show();
