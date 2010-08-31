@@ -166,7 +166,7 @@ public class Creature extends Sprite{
 				    }
 				}
 				if (towerHasRemoveElement) {
-				    int randomInt = rand.nextInt(5);
+				    int randomInt = rand.nextInt(4);
 				    if (randomInt == 2) {
 				    	if (this.creatureFrostResistant)
 				    		setCreatureSpecials(this.creatureFast,this.creatureFireResistant, false, this.creaturePoisonResistant);

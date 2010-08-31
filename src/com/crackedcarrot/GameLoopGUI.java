@@ -133,18 +133,37 @@ public class GameLoopGUI {
     final Button upgradeFire1;
     final Button upgradeFire2;
     final Button upgradeFire3;
+    final Button upgradeFire4;
+    final Button upgradeFire5;
     final Button upgradeFrost1;
     final Button upgradeFrost2;
     final Button upgradeFrost3;
+    final Button upgradeFrost4;
+    final Button upgradeFrost5;
     final Button upgradePoison1;
     final Button upgradePoison2;
     final Button upgradePoison3;
+    final Button upgradePoison4;
+    final Button upgradePoison5;
     final Button upgradeSpecial;
+    
+    final LinearLayout towerstats;
+    final TextView towerDamage;
+    final TextView towerLvl;
+    final TextView towerSpecial;
+    final ImageView icon_lvl;
+    final ImageView icon_fire;
+    final ImageView icon_frost;
+    final ImageView icon_poison;
+    final ImageView icon_special;
     
     final Button tower1Information;
     final Button tower2Information;
     final Button tower3Information;
     final Button tower4Information;
+    
+    final Button forward;
+    final Button play;
     
     final ExpandMenu expandMenu;
     final Button lessHealthButton;
@@ -165,13 +184,33 @@ public class GameLoopGUI {
     	upgradeFire1 = (Button) gameInit.findViewById(R.id.upgrade_fire1);
     	upgradeFire2 = (Button) gameInit.findViewById(R.id.upgrade_fire2);
     	upgradeFire3 = (Button) gameInit.findViewById(R.id.upgrade_fire3);
+    	upgradeFire4 = (Button) gameInit.findViewById(R.id.upgrade_fire4);
+    	upgradeFire5 = (Button) gameInit.findViewById(R.id.upgrade_fire5);
     	upgradeFrost1 = (Button) gameInit.findViewById(R.id.upgrade_frost1);
     	upgradeFrost2 = (Button) gameInit.findViewById(R.id.upgrade_frost2);
     	upgradeFrost3 = (Button) gameInit.findViewById(R.id.upgrade_frost3);
+    	upgradeFrost4 = (Button) gameInit.findViewById(R.id.upgrade_frost4);
+    	upgradeFrost5 = (Button) gameInit.findViewById(R.id.upgrade_frost5);
     	upgradePoison1 = (Button) gameInit.findViewById(R.id.upgrade_poison1);
     	upgradePoison2 = (Button) gameInit.findViewById(R.id.upgrade_poison2);
     	upgradePoison3 = (Button) gameInit.findViewById(R.id.upgrade_poison3);
+    	upgradePoison4 = (Button) gameInit.findViewById(R.id.upgrade_poison4);
+    	upgradePoison5 = (Button) gameInit.findViewById(R.id.upgrade_poison5);
     	upgradeSpecial = (Button) gameInit.findViewById(R.id.upgrade_special);
+
+    	
+    	towerstats = (LinearLayout) gameInit.findViewById(R.id.towerstats);
+    	towerDamage =  (TextView) gameInit.findViewById(R.id.towerDamage);
+        towerLvl = (TextView) gameInit.findViewById(R.id.towerLvl);
+        towerSpecial = (TextView) gameInit.findViewById(R.id.towerSpecial);
+        
+    	icon_lvl = (ImageView) gameInit.findViewById(R.id.icon_lvl);
+        icon_fire = (ImageView) gameInit.findViewById(R.id.icon_fire);
+        icon_frost = (ImageView) gameInit.findViewById(R.id.icon_frost);
+        icon_poison = (ImageView) gameInit.findViewById(R.id.icon_poison);
+        icon_special = (ImageView) gameInit.findViewById(R.id.icon_special);
+    	
+    	
     	sellTower = (Button) gameInit.findViewById(R.id.sell);
     	closeUpgrade = (Button) gameInit.findViewById(R.id.close_upgrade);
 
@@ -244,8 +283,8 @@ public class GameLoopGUI {
         makeElementalButton = (Button) gameInit.findViewById(R.id.make_elemental);
         makeShieldButton = (Button) gameInit.findViewById(R.id.make_shield);
         
-        final Button forward = (Button) gameInit.findViewById(R.id.forward);
-        final Button play = (Button) gameInit.findViewById(R.id.play);
+        forward = (Button) gameInit.findViewById(R.id.forward);
+        play = (Button) gameInit.findViewById(R.id.play);
         final Button expandMenuButton = (Button) gameInit.findViewById(R.id.expand_menu);
         
         if (multiplayerMode){
@@ -387,14 +426,8 @@ public class GameLoopGUI {
         closeUpgrade.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		// Log.d("GUI", "Close Upgrade clicked!");
-        		
         		gameInit.hudHandler.hideRangeIndicator();
-
-        		towerUpgrade.setVisibility(View.GONE);
-           		towerbutton1.setVisibility(View.VISIBLE);
-        		towerbutton2.setVisibility(View.VISIBLE);
-        		towerbutton3.setVisibility(View.VISIBLE);
-        		towerbutton4.setVisibility(View.VISIBLE);
+        		hideTowerUpgrade();
         	}
         });
         
@@ -1148,17 +1181,24 @@ public class GameLoopGUI {
 								int showFrostUpgrade, int FrostPrice, 
 								int showPoisonUpgrade, int PoisonPrice,
 								int showSpecialUpgrade, int SpecialPrice,
-								int recellValue) {
+								int recellValue,
+								int minDamage, int maxDamage, boolean aoeTower) {
 		
 		this.upgradeFire1.setVisibility(View.GONE);
 		this.upgradeFire2.setVisibility(View.GONE);
 		this.upgradeFire3.setVisibility(View.GONE);
+		this.upgradeFire4.setVisibility(View.GONE);
+		this.upgradeFire5.setVisibility(View.GONE);
 		this.upgradeFrost1.setVisibility(View.GONE);
 		this.upgradeFrost2.setVisibility(View.GONE);
 		this.upgradeFrost3.setVisibility(View.GONE);
+		this.upgradeFrost4.setVisibility(View.GONE);
+		this.upgradeFrost5.setVisibility(View.GONE);
 		this.upgradePoison1.setVisibility(View.GONE);
 		this.upgradePoison2.setVisibility(View.GONE);
 		this.upgradePoison3.setVisibility(View.GONE);
+		this.upgradePoison4.setVisibility(View.GONE);
+		this.upgradePoison5.setVisibility(View.GONE);
 		this.upgradeLvl2.setVisibility(View.GONE);
 		this.upgradeLvl3.setVisibility(View.GONE);
 		this.upgradeSpecial.setVisibility(View.GONE);
@@ -1169,41 +1209,59 @@ public class GameLoopGUI {
 			case(1):
 				this.upgradeLvl2.setText("-"+LevelPrice);
 				this.upgradeLvl2.setVisibility(View.VISIBLE);
-
 				break;
 			case(2):
 				this.upgradeLvl3.setText("-"+LevelPrice);
 				this.upgradeLvl3.setVisibility(View.VISIBLE);
 				break;
 		}
+		
 		switch(showFireUpgrade) {
-		case(0):
-			this.upgradeFire1.setText("-"+FirePrice);
-			this.upgradeFire1.setVisibility(View.VISIBLE);
-    		break;
-		case(1):
-			this.upgradeFire2.setText("-"+FirePrice);
-			this.upgradeFire2.setVisibility(View.VISIBLE);
-			break;
-		case(2):
-			this.upgradeFire3.setText("-"+FirePrice);
-			this.upgradeFire3.setVisibility(View.VISIBLE);
-			break;
+			case(0):
+				this.upgradeFire1.setText("-"+FirePrice);
+				this.upgradeFire1.setVisibility(View.VISIBLE);
+	    		break;
+			case(1):
+				this.upgradeFire2.setText("-"+FirePrice);
+				this.upgradeFire2.setVisibility(View.VISIBLE);
+				break;
+			case(2):
+				this.upgradeFire3.setText("-"+FirePrice);
+				this.upgradeFire3.setVisibility(View.VISIBLE);
+				break;
+			case(3):
+				this.upgradeFire4.setText("-"+FirePrice);
+				this.upgradeFire4.setVisibility(View.VISIBLE);
+				break;
+			case(4):
+				this.upgradeFire5.setText("-"+FirePrice);
+				this.upgradeFire5.setVisibility(View.VISIBLE);
+				break;
 		}
+		
 		switch(showFrostUpgrade) {
-		case(0):
-			this.upgradeFrost1.setText("-"+FrostPrice);
-			this.upgradeFrost1.setVisibility(View.VISIBLE);
-    		break;
-		case(1):
-			this.upgradeFrost2.setText("-"+FrostPrice);
-			this.upgradeFrost2.setVisibility(View.VISIBLE);
-			break;
-		case(2):
-			this.upgradeFrost3.setText("-"+FrostPrice);
-			this.upgradeFrost3.setVisibility(View.VISIBLE);
-			break;
+			case(0):
+				this.upgradeFrost1.setText("-"+FrostPrice);
+				this.upgradeFrost1.setVisibility(View.VISIBLE);
+	    		break;
+			case(1):
+				this.upgradeFrost2.setText("-"+FrostPrice);
+				this.upgradeFrost2.setVisibility(View.VISIBLE);
+				break;
+			case(2):
+				this.upgradeFrost3.setText("-"+FrostPrice);
+				this.upgradeFrost3.setVisibility(View.VISIBLE);
+				break;
+			case(3):
+				this.upgradeFrost4.setText("-"+FrostPrice);
+				this.upgradeFrost4.setVisibility(View.VISIBLE);
+				break;
+			case(4):
+				this.upgradeFrost5.setText("-"+FrostPrice);
+				this.upgradeFrost5.setVisibility(View.VISIBLE);
+				break;
 		}
+		
 		switch(showPoisonUpgrade) {
 		case(0):
 			this.upgradePoison1.setText("-"+PoisonPrice);
@@ -1212,17 +1270,60 @@ public class GameLoopGUI {
 		case(1):
 			this.upgradePoison2.setText("-"+PoisonPrice);
 			this.upgradePoison2.setVisibility(View.VISIBLE);
-		break;
+			break;
 		case(2):
 			this.upgradePoison3.setText("-"+PoisonPrice);
 			this.upgradePoison3.setVisibility(View.VISIBLE);
-		break;
+			break;
+		case(3):
+			this.upgradePoison4.setText("-"+PoisonPrice);
+			this.upgradePoison4.setVisibility(View.VISIBLE);
+			break;
+		case(4):
+			this.upgradePoison5.setText("-"+PoisonPrice);
+			this.upgradePoison5.setVisibility(View.VISIBLE);
+			break;
 		}
-
+		
+		
 		if (showSpecialUpgrade == 1) {
 			this.upgradeSpecial.setText("-"+SpecialPrice);
 			this.upgradeSpecial.setVisibility(View.VISIBLE);
 		}
+
+
+		towerDamage.setText(minDamage + "-" + maxDamage);
+		towerLvl.setText("" + showLevelUpgrade);
+		if (showLevelUpgrade == -1)
+			towerLvl.setText("3");
+		else towerLvl.setText("" + showLevelUpgrade);
+
+        this.icon_fire.setVisibility(View.GONE);
+        this.icon_frost.setVisibility(View.GONE);
+        this.icon_poison.setVisibility(View.GONE);
+        this.icon_special.setVisibility(View.GONE);		
+        this.towerSpecial.setText("");
+        
+		if (showFrostUpgrade > 0) {
+			this.icon_frost.setVisibility(View.VISIBLE);
+	        this.towerSpecial.setText("" + showFrostUpgrade);
+		}		
+		else if (showPoisonUpgrade > 0) {
+			this.icon_poison.setVisibility(View.VISIBLE);
+	        this.towerSpecial.setText("" + showPoisonUpgrade);
+		}
+		else if (showFireUpgrade > 0) {
+	        this.icon_fire.setVisibility(View.VISIBLE);
+	        this.towerSpecial.setText("" + showFireUpgrade);
+		}
+		else if (showSpecialUpgrade == 2 || showSpecialUpgrade == 3) {
+	        this.icon_special.setVisibility(View.VISIBLE);	
+		}
+		
+		
+		if (aoeTower)
+			this.icon_poison.setVisibility(View.VISIBLE);
+			
 		
 		gameInit.mGLSurfaceView.setTowerType(-1);
 		hud.hideGrid();
@@ -1231,18 +1332,30 @@ public class GameLoopGUI {
 		towerbutton2.setVisibility(View.GONE);
 		towerbutton3.setVisibility(View.GONE);
 		towerbutton4.setVisibility(View.GONE);
+		play.setVisibility(View.GONE);
+		forward.setVisibility(View.GONE);
+		
 		towerUpgrade.setVisibility(View.VISIBLE);
-
 	}
 	
 	public void hideTowerUpgrade() {
+
 		towerUpgrade.setVisibility(View.GONE);
+
+		if (gameInit.gameLoop.gameSpeed ==1) {
+			forward.setVisibility(View.VISIBLE);
+		}
+		else {
+			play.setVisibility(View.VISIBLE);	
+		}
+
 		towerbutton1.setVisibility(View.VISIBLE);
 		towerbutton2.setVisibility(View.VISIBLE);
 		towerbutton3.setVisibility(View.VISIBLE);
 		towerbutton4.setVisibility(View.VISIBLE);
 		
 	}
+	
 	public void setUpgradeListeners(OnClickListener upgradeTowerLvlListener,
 									OnClickListener upgradeFireListener,
 									OnClickListener upgradeFrostListener,
@@ -1256,12 +1369,18 @@ public class GameLoopGUI {
 		this.upgradeFire1.setOnClickListener(upgradeFireListener);
 		this.upgradeFire2.setOnClickListener(upgradeFireListener);
 		this.upgradeFire3.setOnClickListener(upgradeFireListener);
+		this.upgradeFire4.setOnClickListener(upgradeFireListener);
+		this.upgradeFire5.setOnClickListener(upgradeFireListener);
 		this.upgradeFrost1.setOnClickListener(upgradeFrostListener);
 		this.upgradeFrost2.setOnClickListener(upgradeFrostListener);
 		this.upgradeFrost3.setOnClickListener(upgradeFrostListener);
+		this.upgradeFrost4.setOnClickListener(upgradeFrostListener);
+		this.upgradeFrost5.setOnClickListener(upgradeFrostListener);
 		this.upgradePoison1.setOnClickListener(upgradePoisonListener);
 		this.upgradePoison2.setOnClickListener(upgradePoisonListener);
 		this.upgradePoison3.setOnClickListener(upgradePoisonListener);
+		this.upgradePoison4.setOnClickListener(upgradePoisonListener);
+		this.upgradePoison5.setOnClickListener(upgradePoisonListener);
 		this.sellTower.setOnClickListener(sellListener);
 		this.upgradeSpecial.setOnClickListener(upgradeSpecialListener);
 	}

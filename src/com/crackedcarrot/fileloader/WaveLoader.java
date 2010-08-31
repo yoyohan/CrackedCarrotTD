@@ -36,7 +36,7 @@ public class WaveLoader {
 	 * @param  String	The filename of the requested file
  	 * @return Level[]  A list of Level objects			
 	 */
-	public Level[] readWave(String waveFile,int difficulty){
+	public Level[] readWave(String waveFile,int maxNbrWaves ,int difficulty){
 		int resID = context.getResources().getIdentifier(waveFile, "raw", context.getPackageName());
 		in = context.getResources().openRawResource(resID);
 		int i = 0;
@@ -57,7 +57,7 @@ public class WaveLoader {
 		
 		try {
 			String buf = "";
-			while((i = in.read()) != -1){
+			while((i = in.read()) != -1 && lvlNbr <= (maxNbrWaves-1)){
 				char c = (char)i;
 				if(c != '\n'){
 					buf += c;
@@ -67,10 +67,7 @@ public class WaveLoader {
 
 					if(lineNo <= 1){
 						//Contains info about the file. Do nothing here.
-					}
-					else if(lineNo == 2){
-		            	tmpStr = buf.split("::");
-						levelList = new Level[Integer.parseInt(tmpStr[1].trim())];
+						levelList = new Level[maxNbrWaves];
 					}
 					else{
 						tmpCount++;

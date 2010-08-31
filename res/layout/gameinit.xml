@@ -179,11 +179,12 @@
 			android:visibility="gone"
 			android:background="@drawable/upgradeback"
 			android:layout_height="50dp"
-			android:layout_width="256dp">
+			android:layout_width="fill_parent">
 
 			<LinearLayout
 				android:layout_height="50dp"
-				android:layout_width="192dp">
+				android:layout_weight="2"
+				android:layout_width="fill_parent">
 
 				<Button
 	   	    		android:layout_width="48dp"
@@ -234,7 +235,22 @@
 					android:gravity="bottom|center"
 	       			android:background="@drawable/xml_upgrade_fire3"
 	       			android:id="@+id/upgrade_fire3" />
-
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_fire4"
+	       			android:id="@+id/upgrade_fire4" />
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_fire5"
+	       			android:id="@+id/upgrade_fire5" />
 	     	   	<Button
 	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
@@ -259,7 +275,22 @@
 					android:gravity="bottom|center"
 	       			android:background="@drawable/xml_upgrade_frost3"
 	       			android:id="@+id/upgrade_frost3" />       	  	
-
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_frost4"
+	       			android:id="@+id/upgrade_frost4" />       	  	
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_frost5"
+	       			android:id="@+id/upgrade_frost5" />       	  	
 	     	   	<Button
 	     	  		android:layout_width="48dp"
 					android:layout_height="fill_parent"
@@ -290,11 +321,125 @@
 					android:scaleType="fitXY"
 					android:visibility="gone"				
 					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_poison4"
+	       			android:id="@+id/upgrade_poison4" />
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
+	       			android:background="@drawable/xml_upgrade_poison5"
+	       			android:id="@+id/upgrade_poison5" />
+	     	   	<Button
+	     	  		android:layout_width="48dp"
+					android:layout_height="fill_parent"
+					android:scaleType="fitXY"
+					android:visibility="gone"				
+					android:gravity="bottom|center"
 	       			android:background="@drawable/xml_upgrade_special"
 	       			android:id="@+id/upgrade_special" />		       			
+
+
+			   <LinearLayout
+			   	android:id="@+id/towerstats"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:gravity="center_vertical|right"
+				android:background="#00000000"
+   				android:orientation="vertical"
+   				    >
+
+			   <LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				>
+
+			       <ImageView
+				       	android:id="@+id/sword"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/sword" >
+					</ImageView>
+
+					<TextView
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:textSize="12sp"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/towerDamage"
+						android:paddingRight="4dp"						>
+					</TextView>
+
+				</LinearLayout>
+
+			   <LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+
+				>
+
+			       <ImageView
+				       	android:id="@+id/icon_fire"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/icon_fire" >
+					</ImageView>
+			       <ImageView
+				       	android:id="@+id/icon_frost"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/icon_frost" >
+					</ImageView>
+			       <ImageView
+				       	android:id="@+id/icon_poison"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/icon_poison" >
+					</ImageView>
+			       <ImageView
+				       	android:id="@+id/icon_special"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/icon_special" >
+					</ImageView>
+
+					<TextView
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:textSize="12sp"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:id="@+id/towerSpecial"
+						android:paddingRight="4dp"
+						>
+					</TextView>
+
+			       <ImageView
+				       	android:id="@+id/icon_lvl"
+						android:layout_width="18dp" 
+						android:layout_height="18dp"
+						android:src="@drawable/icon_lvl" >
+					</ImageView>
+					<TextView
+						android:textColor="#000000"
+						android:textStyle="bold"
+						android:textSize="12sp"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingRight="4dp"
+						android:id="@+id/towerLvl">
+					</TextView>
+
+
+				</LinearLayout>
+				</LinearLayout>
+
 	       	</LinearLayout>       	  	
      	  	<Button
-     	  		android:layout_width="64dp"
+     	  		android:layout_width="90dp"
+     	  		android:layout_weight="1"
 				android:layout_height="50dp"
 				android:scaleType="fitXY"
 				android:gravity="bottom|center"
