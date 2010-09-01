@@ -1,6 +1,5 @@
 package com.crackedcarrot.menu;
 
-import com.crackedcarrot.menu.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
+
+
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class Options extends Activity {
 
@@ -21,6 +24,7 @@ public class Options extends Activity {
 	private Button button2;
 	private Button button3;
 
+	public ScoreNinjaAdapter scoreNinjaAdapter;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -31,9 +35,11 @@ public class Options extends Activity {
         /** Ensures that the activity is displayed only in the portrait orientation */
     	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     	
+    	scoreNinjaAdapter = new ScoreNinjaAdapter(this, "mapzeroone", "E70411F009D4EDFBAD53DB7BE528BFE2");    	
+    	optionsHighscore = ScoreNinjaAdapter.isInstalled(this);
+    	
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("Options", 0);
-        optionsHighscore = settings.getBoolean("optionsHighscore", false);
         optionsNextLevel = settings.getBoolean("optionsNextLevel", true);
         optionsSound     = settings.getBoolean("optionsSound", true);
         
@@ -118,10 +124,8 @@ public class Options extends Activity {
 
       SharedPreferences settings = getSharedPreferences("Options", 0);
       SharedPreferences.Editor editor = settings.edit();
-      editor.putBoolean("optionsHighscore", optionsHighscore);
       editor.putBoolean("optionsNextLevel", optionsNextLevel);
       editor.putBoolean("optionsSound", optionsSound);
-
       editor.commit();
     }
 
@@ -130,9 +134,35 @@ public class Options extends Activity {
     	this.optionsHighscore = b;
     	
     	if (b) {
-			button2.setText("ScoreNinja: On");
+    	    if (ScoreNinjaAdapter.isInstalled(this) == false) {
+    	    	if (ScoreNinjaAdapter.neverAskAgain(this)) {
+        			CharSequence text = "You have clicked never ask again and therefore ScoreNinja will not be installed.";
+        			int duration = Toast.LENGTH_SHORT;
+        			Toast toast = Toast.makeText(this, text, duration);
+        			toast.show();
+        			button2.setText("ScoreNinja: Off");
+    	    	}
+    	    	else 
+        			button2.setText("ScoreNinja: On");
+
+    	    		// If ScoreNinja is enabled but not installed we try to install it:
+    	    	scoreNinjaAdapter.show();
+    	    }
+    	    else button2.setText("ScoreNinja: On");
     	} else {
-			button2.setText("ScoreNinja: Off");
+    	    if (ScoreNinjaAdapter.isInstalled(this) == true) {
+    			button2.setText("ScoreNinja: On");
+    			
+    			CharSequence text = "You have to manually unistall ScoreNinja in android settings";
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast = Toast.makeText(this, text, duration);
+    			toast.show();
+    			
+    			
+    	    }
+    	    else {
+    			button2.setText("ScoreNinja: Off");
+    	    }
     	}
     }
     

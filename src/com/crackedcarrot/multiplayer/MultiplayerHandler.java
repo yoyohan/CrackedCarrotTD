@@ -210,7 +210,7 @@ public class MultiplayerHandler extends Thread {
 			                	text += "fireresistance ";
 		            		else if (tmp.charAt(2) == '1')
 			                	text += "frostresistance ";
-			                else if (tmp.charAt(1) == '1')
+			                else if (tmp.charAt(3) == '1')
 			                	text += "poisonresistance";
 
 		            		int duration = Toast.LENGTH_SHORT;

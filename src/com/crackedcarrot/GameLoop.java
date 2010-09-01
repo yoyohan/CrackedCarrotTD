@@ -739,7 +739,10 @@ public class GameLoop implements Runnable {
 		selectedTower = mScaler.getGridXandY(x, y);
 		Tower t = mTowerGrid[selectedTower.x][selectedTower.y];
 		int[] test = t.getUpgradeTypeIndex(this.mTTypes,superupgrade_teleport,superupgrade_element);
-		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8], test[9], test[10]);
+		int min = (int) (t.getMinDamage() + t.getAoeDamage());
+		int max =  (int) (t.getMaxDamage() + t.getAoeDamage());
+		boolean aoeTower = t.getTowerType() == Tower.AOE;
+		gui.showTowerUpgrade(test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8], test[9], test[10], min, max, aoeTower);
 	}
 	
 	public static void pause() {

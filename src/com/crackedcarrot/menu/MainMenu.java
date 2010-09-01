@@ -26,6 +26,7 @@ import android.widget.ImageView.ScaleType;
 import com.crackedcarrot.GameInit;
 import com.crackedcarrot.GameLoop;
 import com.crackedcarrot.multiplayer.MultiplayerOp;
+import com.scoreninja.adapter.ScoreNinjaAdapter;
 
 public class MainMenu extends Activity {
 	
@@ -258,8 +259,6 @@ public class MainMenu extends Activity {
         	showDialog(2);
         	setRunned(versionNo);
         }
-        
-       
     }
 
 	// Called when we get focus again (after a game has ended).
@@ -311,5 +310,5 @@ public class MainMenu extends Activity {
         edit.putString("firstRun", versionNo);
         edit.commit();
      } 
-    
+   
 }

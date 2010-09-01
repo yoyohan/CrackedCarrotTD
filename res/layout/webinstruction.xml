@@ -8,8 +8,8 @@
 	<LinearLayout 
 		android:id="@+id/level_instr"
 		android:orientation="vertical"
-		android:minHeight="420dp" 
-	    android:layout_height="420dp"
+		android:minHeight="410dp" 
+	    android:layout_height="410dp"
 	    android:minWidth="260dp" 
 	    android:layout_width="260dp" 
 		android:layout_centerHorizontal="true"

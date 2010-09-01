@@ -209,7 +209,7 @@ public class GameInit extends Activity {
         
         if (gameMode == 1) {
         	// Normal multiplayer game
-        	waveList  = waveLoad.readWave("wave2",difficulty);
+        	waveList  = waveLoad.readWave("wave_multiplayer_game",20,difficulty);
         }
         else if (gameMode == 2) {
         	// Survival multiplayer game
@@ -222,12 +222,24 @@ public class GameInit extends Activity {
          	survivalGame = true;
         } else {
         	//Normal game
+ 
+        	int maxNbrWaves = 0;
+        	
         	if (mapChoice == 1)
-        		waveList = waveLoad.readWave("wave1",difficulty);
+        		maxNbrWaves = 30;	
         	else if (mapChoice == 2)
-        		waveList = waveLoad.readWave("wave2normal",difficulty);
+        		maxNbrWaves = 35;	
+        	else if (mapChoice == 3)
+        		maxNbrWaves = 40;	
+        	else if (mapChoice == 4)
+        		maxNbrWaves = 45;	
+        	else if (mapChoice == 5)
+        		maxNbrWaves = 50;	
         	else
-        		waveList = waveLoad.readWave("wave6normal",difficulty);
+        		maxNbrWaves = 55;	
+
+    		waveList = waveLoad.readWave("wave_normal_game",maxNbrWaves,difficulty);
+
         }
 
         

@@ -573,75 +573,144 @@ public class Tower extends Sprite {
 		
 		if(opt == UpgradeOption.upgrade_fire) {
 			if (this.getUpgradeFire() == 0 && money >= 30) {
-				this.fireFactor = 1.7f;
+				this.fireFactor = 1.8f;
 				this.hasFireDamage = true;
 				this.r = 1;
-				this.g = 0.7f;
-				this.b = 0.7f;
+				this.g = 0.8f;
+				this.b = 0.8f;
 				this.relatedShot.r = 1;
-				this.relatedShot.g = 0.7f;
-				this.relatedShot.b = 0.7f;
+				this.relatedShot.g = 0.6f;
+				this.relatedShot.b = 0.6f;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 30;
 			}
 			else if (this.getUpgradeFire() == 1 && money >= 60) {
-				this.fireFactor = 2.8f;
+				this.r = 1;
+				this.g = 0.7f;
+				this.b = 0.7f;
+				this.fireFactor = 3;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 60;
 			}
 			else if (this.getUpgradeFire() == 2 && money >= 90) {
-				this.fireFactor = 3.7f;
+				this.r = 1;
+				this.g = 0.6f;
+				this.b = 0.6f;
+				this.fireFactor = 4;
 				this.setUpgradeFire(this.getUpgradeFire() + 1);
 				price = 90;
+			}
+			else if (this.getUpgradeFire() == 3 && money >= 180) {
+				this.r = 1;
+				this.g = 0.5f;
+				this.b = 0.5f;
+				this.fireFactor = 8;
+				this.setUpgradeFire(this.getUpgradeFire() + 1);
+				price = 180;
+			}
+			else if (this.getUpgradeFire() == 4 && money >= 360) {
+				this.r = 1;
+				this.g = 0.4f;
+				this.b = 0.4f;
+				this.fireFactor = 16;
+				this.setUpgradeFire(this.getUpgradeFire() + 1);
+				price = 360;
 			}
 		}
 		else if (opt == UpgradeOption.upgrade_frost) {
 			if (this.getUpgradeFrost() == 0 && money >= 30) {
 				this.relatedShot.setResourceId(R.drawable.cannonshot_ice);
 				this.frostTime = 3;
-				this.frostAmount = 0.6f;
+				this.frostAmount = 0.7f;
 				this.hasFrostDamage = true;
-				this.r = 0.7f;
-				this.g = 0.7f;
+				this.r = 0.8f;
+				this.g = 0.8f;
 				this.b = 1;
 				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 30;
 			}
 			else if (this.getUpgradeFrost() == 1 && money >= 60) {
 				this.frostTime = 4;
-				this.frostAmount = 0.5f;
+				this.frostAmount = 0.6f;
+				this.r = 0.7f;
+				this.g = 0.7f;
+				this.b = 1;
 				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 60;
 			}
 			else if (this.getUpgradeFrost() == 2 && money >= 90) {
 				this.frostTime = 5;
-				this.frostAmount = 0.4f;
+				this.frostAmount = 0.5f;
+				this.r = 0.6f;
+				this.g = 0.6f;
+				this.b = 1;
 				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
 				price = 90;
 			}
+			else if (this.getUpgradeFrost() == 3 && money >= 180) {
+				this.frostTime = 6;
+				this.frostAmount = 0.4f;
+				this.r = 0.5f;
+				this.g = 0.5f;
+				this.b = 1;
+				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
+				price = 180;
+			}
+			else if (this.getUpgradeFrost() == 4 && money >= 360) {
+				this.frostTime = 7;
+				this.frostAmount = 0.3f;
+				this.r = 0.4f;
+				this.g = 0.4f;
+				this.b = 1;
+				this.setUpgradeFrost(this.getUpgradeFrost() + 1);
+				price = 360;
+			}
+			
 		}
 		else if (opt == UpgradeOption.upgrade_poison) {
 			if (this.getUpgradePoison() == 0 && money >= 30) {
 				this.hasPoisonDamage = true;
 				this.poisonFactor = 0.2f;
-				this.r = 0.6f;
+				this.r = 0.8f;
 				this.g = 1;
-				this.b = 0.6f;
-				this.relatedShot.r = 0.7f;
+				this.b = 0.8f;
+				this.relatedShot.r = 0.6f;
 				this.relatedShot.g = 1;
-				this.relatedShot.b = 0.7f;
+				this.relatedShot.b = 0.6f;
 				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 30;
 			}
 			else if (this.getUpgradePoison() == 1 && money >= 60) {
 				this.poisonFactor = 0.5f;
+				this.r = 0.7f;
+				this.g = 1;
+				this.b = 0.7f;
 				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 60;
 			}
 			else if (this.getUpgradePoison() == 2 && money >= 90) {
 				this.poisonFactor = 1;
+				this.r = 0.6f;
+				this.g = 1;
+				this.b = 0.6f;
 				this.setUpgradePoison(this.getUpgradePoison() + 1);
 				price = 90;
+			}
+			else if (this.getUpgradePoison() == 3 && money >= 180) {
+				this.poisonFactor = 2;
+				this.r = 0.5f;
+				this.g = 1;
+				this.b = 0.5f;
+				this.setUpgradePoison(this.getUpgradePoison() + 1);
+				price = 180;
+			}
+			else if (this.getUpgradePoison() == 4 && money >= 360) {
+				this.poisonFactor = 4;
+				this.r = 0.4f;
+				this.g = 1;
+				this.b = 0.4f;
+				this.setUpgradePoison(this.getUpgradePoison() + 1);
+				price = 360;
 			}
 		}
 		return price;
@@ -732,16 +801,22 @@ public class Tower extends Sprite {
 
 	public int getResellPrice() {
 		int resell = 0;
-		if (this.upgradeFire > 0) {
-			resell = 15 + upgradeFire * 15;
+		if (this.upgradeFire == 1 || this.upgradeFrost == 1 || this.upgradePoison == 1) {
+			resell = 15;
 		}
-		if (this.upgradeFrost > 0) {
-			resell = 15 + upgradeFrost * 15;
+		if (this.upgradeFire == 2 || this.upgradeFrost == 2 || this.upgradePoison == 2) {
+			resell = 30;
 		}
-		if (this.upgradePoison > 0) {
-			resell = 15 + upgradePoison * 15;			
+		if (this.upgradeFire == 3 || this.upgradeFrost == 3 || this.upgradePoison == 3) {
+			resell = 45;
 		}
-		
+		if (this.upgradeFire == 4 || this.upgradeFrost == 4 || this.upgradePoison == 4) {
+			resell = 90;
+		}
+		if (this.upgradeFire == 5 || this.upgradeFrost == 5 || this.upgradePoison == 5) {
+			resell = 180;
+		}
+
 		if (hasSuper_teleport || hasSuper_element)
 			resell =  50;
 		
@@ -766,21 +841,50 @@ public class Tower extends Sprite {
 		if (getUpgradePoison() == 0 && getUpgradeFrost() == 0 && (towerType == Tower.BUNKER || towerType == Tower.CANNON))
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
 				Upgrade[2] = getUpgradeFire();
-				Upgrade[3] = 30 + getUpgradeFire()*30;
+				if (getUpgradeFire() == 0)
+					Upgrade[3] = 30;
+				if (getUpgradeFire() == 1)
+					Upgrade[3] = 60;
+				if (getUpgradeFire() == 2)
+					Upgrade[3] = 90;
+				if (getUpgradeFire() == 3)
+					Upgrade[3] = 180;
+				if (getUpgradeFire() == 4)
+					Upgrade[3] = 360;
+
 			} else Upgrade[2] = -1;
 		else Upgrade[2] = -1;
 		
 		if (getUpgradePoison() == 0 && getUpgradeFire() == 0 && towerType == Tower.CANNON)
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
 				Upgrade[4] = getUpgradeFrost();
-				Upgrade[5] = 30 + getUpgradeFrost()*30;
+				if (getUpgradeFrost() == 0)
+					Upgrade[5] = 30;
+				if (getUpgradeFrost() == 1)
+					Upgrade[5] = 60;
+				if (getUpgradeFrost() == 2)
+					Upgrade[5] = 90;
+				if (getUpgradeFrost() == 3)
+					Upgrade[5] = 180;
+				if (getUpgradeFrost() == 4)
+					Upgrade[5] = 360;
+
 			} else Upgrade[4] = -1;
 		else Upgrade[4] = -1;
 
 		if (getUpgradeFrost() == 0 && getUpgradeFire() == 0 && towerType == Tower.BUNKER)
 			if (upgradeLvl > 7 || upgradeLvl == -1) {
 				Upgrade[6] = getUpgradePoison();
-				Upgrade[7] = 30 + getUpgradePoison()*30;
+				if (getUpgradePoison() == 0)
+					Upgrade[7] = 30;
+				if (getUpgradePoison() == 1)
+					Upgrade[7] = 60;
+				if (getUpgradePoison() == 2)
+					Upgrade[7] = 90;
+				if (getUpgradePoison() == 3)
+					Upgrade[7] = 180;
+				if (getUpgradePoison() == 4)
+					Upgrade[7] = 360;
 			}
 			else Upgrade[6] = -1;
 		else Upgrade[6] = -1;
@@ -793,6 +897,13 @@ public class Tower extends Sprite {
 		if (!specialupgrade_element_remove && towerType == Tower.AOE) {
 			Upgrade[8] = 1;
 			Upgrade[9] = 100;
+		}
+
+		if (specialupgrade_element_remove && this.hasSuper_element) {
+			Upgrade[8] = 2;
+		}
+		if (specialupgrade_teleport && this.hasSuper_teleport) {
+			Upgrade[8] = 3;
 		}
 			
 		
@@ -885,6 +996,10 @@ public class Tower extends Sprite {
 	 */
 	public boolean getSuperTeleport() {
 		return this.hasSuper_teleport;
+	}
+
+	public float getAoeDamage() {
+		return this.aoeDamage;
 	}
 	
 }

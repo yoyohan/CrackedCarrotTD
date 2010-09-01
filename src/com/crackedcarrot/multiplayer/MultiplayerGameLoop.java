@@ -512,8 +512,24 @@ public class MultiplayerGameLoop extends GameLoop {
 		} else {
 			gameFinished.putExtra("win", true);
 		}
+
+		if (survivalGame) {
+			gameFinished.putExtra("survival", true);
+			gameFinished.putExtra("score", this.survivalCreatureCount);
+		} else {
+			gameFinished.putExtra("survival", false);
+			gameFinished.putExtra("score", player.getScore());
+		}
+		
+		gameFinished.putExtra("difficulty", this.player.getDifficulty());
 		gameFinished.putExtra("map", gui.getGameInit().mapChoice);
-		gameFinished.putExtra("score", player.getScore());
+
+
+		if (gui.multiplayerMode)
+			gameFinished.putExtra("multiplayer", true);
+		else
+			gameFinished.putExtra("multiplayer", false);
+		
 		// Since this is not a multiplayergame we will send 1 to gameinit
 		gui.getGameInit().startActivity(gameFinished);
 	}
