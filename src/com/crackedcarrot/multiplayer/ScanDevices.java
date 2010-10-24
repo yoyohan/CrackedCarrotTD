@@ -47,13 +47,13 @@ public class ScanDevices extends Activity {
         setResult(Activity.RESULT_CANCELED);
 
         // Initialize the button to perform device discovery
-        Button scanButton = (Button) findViewById(R.id.button_scan);
+        /**Button scanButton = (Button) findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 doDiscovery();
                 v.setVisibility(View.GONE);
             }
-        });
+        }); */
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
@@ -96,6 +96,7 @@ public class ScanDevices extends Activity {
             mPairedDevicesArrayAdapter.add(noDevices);
             //Log.d("SCANDEVICES", noDevices);
         }
+        doDiscovery();
     }
 
     @Override
